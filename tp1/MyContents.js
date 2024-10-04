@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { MyAxis } from './MyAxis.js';
+import { MyTable } from './MyTable.js';
 
 /**
  *  This class contains the contents of out application
@@ -13,6 +14,7 @@ class MyContents  {
     constructor(app) {
         this.app = app
         this.axis = null
+        this.table = null
 
         // box related attributes
         this.boxMesh = null
@@ -53,6 +55,12 @@ class MyContents  {
             // create and attach the axis to the scene
             this.axis = new MyAxis(this)
             this.app.scene.add(this.axis)
+        }
+
+        if (this.table === null) {
+            // create and attach the axis to the scene
+            this.table = new MyTable(this,2,0.1,2,3)
+            this.app.scene.add(this.table)
         }
 
         // add a point light on top of the model
