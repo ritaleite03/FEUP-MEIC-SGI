@@ -11,16 +11,16 @@ class MyLeg extends THREE.Object3D {
      * @param {MyApp} app the application object
      * @param {number} height the height of the leg 
      * @param {number} radius the radius of the leg
-     * @param {number} xPosition position of the leg on the axis Ox
-     * @param {number} zPosition position of the leg on the axis Oy
+     * @param {number} x position of the leg on the axis Ox
+     * @param {number} z position of the leg on the axis Oy
      */
-    constructor(app, height, radius, xPosition, zPosition) {
+    constructor(app, height, radius, x, z) {
         super();
         this.app = app;
         const leg = new THREE.CylinderGeometry(radius,  radius, height); 
         const legMaterial = new THREE.MeshBasicMaterial( {color: "#1fff77"} );
         const legMesh = new THREE.Mesh(leg, legMaterial ); 
-        legMesh.position.set(xPosition, 0, zPosition);
+        legMesh.position.set(x, 0, z);
         legMesh.position.y = height / 2
         this.add(legMesh);
     }

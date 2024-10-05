@@ -1,11 +1,11 @@
 # SGI 2024/2025 - TP1
 
-## Group: T0xG0y
+## Group: T04G08
 
 | Name             | Number    | E-Mail             |
 | ---------------- | --------- | ------------------ |
-| John Doe         | 201901010 | ...                |
-| Jane Doe         | 201901011 | ...                |
+| Rita Leite       | 202105309 | up202105309@up.pt  |
+| Tiago Azevedo    | 202108699 | up202108699@up.pt  |
 
 ----
 ## Project information

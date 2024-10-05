@@ -1,6 +1,8 @@
 import * as THREE from 'three';
 import { MyAxis } from './MyAxis.js';
 import { MyTable } from './MyTable.js';
+import { MyFlame } from './MyFlame.js';
+import { MyCandle } from './MyCandle.js';
 
 /**
  *  This class contains the contents of out application
@@ -12,23 +14,24 @@ class MyContents  {
        @param {MyApp} app The application object
     */ 
     constructor(app) {
-        this.app = app
-        this.axis = null
-        this.table = null
+        this.app = app;
+        this.axis = null;
+        this.table = null;
+        this.candle = null;
 
         // box related attributes
-        this.boxMesh = null
-        this.boxMeshSize = 1.0
-        this.boxEnabled = true
-        this.lastBoxEnabled = null
-        this.boxDisplacement = new THREE.Vector3(0,2,0)
+        this.boxMesh = null;
+        this.boxMeshSize = 1.0;
+        this.boxEnabled = true;
+        this.lastBoxEnabled = null;
+        this.boxDisplacement = new THREE.Vector3(0,2,0);
 
         // plane related attributes
-        this.diffusePlaneColor = "#00ffff"
-        this.specularPlaneColor = "#777777"
-        this.planeShininess = 30
+        this.diffusePlaneColor = "#00ffff";
+        this.specularPlaneColor = "#777777";
+        this.planeShininess = 30;
         this.planeMaterial = new THREE.MeshPhongMaterial({ color: this.diffusePlaneColor, 
-            specular: this.specularPlaneColor, emissive: "#000000", shininess: this.planeShininess })
+            specular: this.specularPlaneColor, emissive: "#000000", shininess: this.planeShininess });
     }
 
     /**
@@ -36,7 +39,7 @@ class MyContents  {
      */
     buildBox() {    
         let boxMaterial = new THREE.MeshPhongMaterial({ color: "#ffff77", 
-        specular: "#000000", emissive: "#000000", shininess: 90 })
+        specular: "#000000", emissive: "#000000", shininess: 90 });
 
         // Create a Cube Mesh with basic material
         let box = new THREE.BoxGeometry(  this.boxMeshSize,  this.boxMeshSize,  this.boxMeshSize );
@@ -59,8 +62,22 @@ class MyContents  {
 
         if (this.table === null) {
             // create and attach the axis to the scene
-            this.table = new MyTable(this,2,0.1,2,3)
-            this.app.scene.add(this.table)
+            const height = 2;
+            const radius = 0.1;
+            const xLenght = 2;
+            const zLenght = 3;
+            this.table = new MyTable(this, height, radius, xLenght, zLenght);
+            this.app.scene.add(this.table);
+        }
+        
+        if (this.candle === null) {
+            // create and attach the axis to the scene
+            const radiusStick = 0.02
+            const radiusFlame = 0.05
+            const heightStick = 0.5
+            const heightFlame = 0.2
+            this.candle = new MyCandle(this, radiusStick, radiusFlame, heightStick, heightFlame,2,0,0)
+            this.app.scene.add(this.candle)
         }
 
         // add a point light on top of the model
