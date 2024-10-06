@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { MyAxis } from './MyAxis.js';
 import { MyWalls } from './MyWalls.js';
+import { MyCake } from './MyCake.js';
 
 /**
  *  This class contains the contents of out application
@@ -76,6 +77,13 @@ class MyContents  {
         
         this.walls = new MyWalls(this.app, 20, 15, 10, 0.5)
         this.app.scene.add( this.walls );
+
+        let cake = new MyCake(this.app, 1, 0.5, 11*Math.PI/6);
+        this.app.scene.add(cake);
+
+        let cakeSlice = new MyCake(this.app, 1, 0.5, Math.PI/6);
+        cakeSlice.rotateZ(Math.PI/2);
+        this.app.scene.add(cakeSlice);
 
         
         // Create a Plane Mesh with basic material
