@@ -12,6 +12,7 @@ class MyCake extends THREE.Object3D {
     constructor(app, radius, height, angleLength) {
         super()
         this.app = app
+        this.type = 'Group';
 
         let boxMaterial = new THREE.MeshPhongMaterial({ color: "#ffff77", 
             specular: "#000000", emissive: "#000000", shininess: 90 })
@@ -28,14 +29,14 @@ class MyCake extends THREE.Object3D {
         this.insideMesh1 = new THREE.Mesh(insideCake, boxMaterial);
         let rotateAngle1 = startAngle - Math.PI/2;
         this.insideMesh1.rotateY(rotateAngle1);
-        this.insideMesh1.position.x= 0.5 * Math.cos(rotateAngle1);
-        this.insideMesh1.position.z= -0.5 * Math.sin(rotateAngle1);
+        this.insideMesh1.position.x= 0.5 * Math.cos(rotateAngle1) * radius;
+        this.insideMesh1.position.z= -0.5 * Math.sin(rotateAngle1) * radius;
 
         this.insideMesh2 = new THREE.Mesh( insideCake, boxMaterial);
         let rotateAngle2 = Math.PI/2 - gapAngle;
         this.insideMesh2.rotateY(rotateAngle2);
-        this.insideMesh2.position.x= -0.5 * Math.cos(rotateAngle2);
-        this.insideMesh2.position.z= 0.5 * Math.sin(rotateAngle2);
+        this.insideMesh2.position.x= -0.5 * Math.cos(rotateAngle2) * radius;
+        this.insideMesh2.position.z= 0.5 * Math.sin(rotateAngle2) * radius;
 
         this.add( this.insideMesh1);
         this.add( this.insideMesh2 );

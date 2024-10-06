@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { MyAxis } from './MyAxis.js';
 import { MyWalls } from './MyWalls.js';
 import { MyCake } from './MyCake.js';
+import { MyTable } from './MyTable.js';
 
 /**
  *  This class contains the contents of out application
@@ -15,6 +16,7 @@ class MyContents  {
     constructor(app) {
         this.app = app
         this.axis = null
+        this.table = null
 
         // box related attributes
         this.boxMesh = null
@@ -59,6 +61,11 @@ class MyContents  {
             this.app.scene.add(this.axis)
         }
 
+        if (this.table === null) {
+            this.table = new MyTable(this,2,0.1,2,3)
+            this.app.scene.add(this.table)
+        }
+
         // add a point light on top of the model
         const pointLight = new THREE.PointLight( 0xffffff, 500, 0 );
         pointLight.position.set( 0, 20, 0 );
@@ -78,11 +85,13 @@ class MyContents  {
         this.walls = new MyWalls(this.app, 20, 15, 10, 0.5)
         this.app.scene.add( this.walls );
 
-        let cake = new MyCake(this.app, 1, 0.5, 11*Math.PI/6);
+        let cake = new MyCake(this.app, 0.5, 0.2, 11*Math.PI/6);
+        cake.position.y= 2.1;
         this.app.scene.add(cake);
 
-        let cakeSlice = new MyCake(this.app, 1, 0.5, Math.PI/6);
+        let cakeSlice = new MyCake(this.app, 0.5, 0.2, Math.PI/6);
         cakeSlice.rotateZ(Math.PI/2);
+        cakeSlice.position.set(0.5, 2.1, 0.5);
         this.app.scene.add(cakeSlice);
 
         
@@ -91,7 +100,7 @@ class MyContents  {
         this.planeMesh = new THREE.Mesh( plane, this.planeMaterial );
         this.planeMesh.rotation.x = -Math.PI / 2;
         this.planeMesh.position.y = -0;
-        this.app.scene.add( this.planeMesh );
+        //this.app.scene.add( this.planeMesh );
     }
     
     /**
