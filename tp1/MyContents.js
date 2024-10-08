@@ -1,5 +1,7 @@
 import * as THREE from 'three';
 import { MyAxis } from './MyAxis.js';
+import { MyWalls } from './MyWalls.js';
+import { MyCake } from './MyCake.js';
 import { MyTable } from './MyTable.js';
 import { MyFlame } from './MyFlame.js';
 import { MyCandle } from './MyCandle.js';
@@ -31,7 +33,9 @@ class MyContents  {
         this.specularPlaneColor = "#777777";
         this.planeShininess = 30;
         this.planeMaterial = new THREE.MeshPhongMaterial({ color: this.diffusePlaneColor, 
-            specular: this.specularPlaneColor, emissive: "#000000", shininess: this.planeShininess });
+            specular: this.specularPlaneColor, emissive: "#000000", shininess: this.planeShininess })
+
+        this.walls = null;
     }
 
     /**
@@ -96,13 +100,25 @@ class MyContents  {
 
         this.buildBox()
         
-        // Create a Plane Mesh with basic material
+        this.walls = new MyWalls(this.app, 20, 15, 10, 0.5)
+        this.app.scene.add( this.walls );
+
+        let cake = new MyCake(this.app, 0.5, 0.2, 11*Math.PI/6);
+        cake.position.y= 2.1;
+        this.app.scene.add(cake);
+
+        let cakeSlice = new MyCake(this.app, 0.5, 0.2, Math.PI/6);
+        cakeSlice.rotateZ(Math.PI/2);
+        cakeSlice.position.set(0.5, 2.1, 0.5);
+        this.app.scene.add(cakeSlice);
+
         
-        let plane = new THREE.PlaneGeometry( 10, 10 );
+        // Create a Plane Mesh with basic material
+        let plane = new THREE.PlaneGeometry( 20, 15 );
         this.planeMesh = new THREE.Mesh( plane, this.planeMaterial );
         this.planeMesh.rotation.x = -Math.PI / 2;
         this.planeMesh.position.y = -0;
-        this.app.scene.add( this.planeMesh );
+        //this.app.scene.add( this.planeMesh );
     }
     
     /**
