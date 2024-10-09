@@ -16,7 +16,13 @@ class MyWalls extends THREE.Object3D {
         super();
         this.app = app
         this.type = 'Group';
-
+        
+        // texture and material of the wall's skirting board
+        let woodenTexture = new THREE.TextureLoader().load('textures/wooden_top.jpg');
+        woodenTexture.wrapS = THREE.MirroredRepeatWrapping;
+        woodenTexture.wrapT = THREE.MirroredRepeatWrapping;
+        const woodenMaterial = new THREE.MeshPhongMaterial({color: "#ffffff", specular: "#000000", emissive: "#000000", shininess: 0, map: woodenTexture})
+                
         // Right wall
         this.wallA = new MyWall(app, length, widthRoom, height * 0.2, widthWall);
         this.wallA.position.y = height * 0.8;
@@ -63,6 +69,41 @@ class MyWalls extends THREE.Object3D {
 
         this.window = new MyWindow(widthRoom * 0.6, height * 0.4, widthWall, height * 0.4 + height * 0.2, length * 0.5 + widthWall)
         this.add(this.window)
+
+        // skirting board
+        const skirtingBoardFront = new THREE.BoxGeometry(widthWall / 2, widthRoom, widthWall / 2)
+        const skirtingBoardLateral1 = new THREE.BoxGeometry(widthWall / 2, length, widthWall / 2)
+        const skirtingBoardLateral2 = new THREE.BoxGeometry(widthWall / 2, length * 0.5, widthWall / 2)
+        const skirtingBoardLateral3 = new THREE.BoxGeometry(widthWall / 2, length * 0.2, widthWall / 2)
+
+
+        this.skirtingBoardFront1Mesh = new THREE.Mesh (skirtingBoardFront, woodenMaterial);
+        this.skirtingBoardFront1Mesh.rotateZ(Math.PI/2)
+        this.skirtingBoardFront1Mesh.position.set(0, widthWall / 4, length / 2 - widthWall / 4)
+        this.add(this.skirtingBoardFront1Mesh);
+
+        this.skirtingBoardFront2Mesh = new THREE.Mesh (skirtingBoardFront, woodenMaterial);
+        this.skirtingBoardFront2Mesh.rotateZ(Math.PI/2)
+        this.skirtingBoardFront2Mesh.position.set(0, widthWall / 4, -length / 2 + widthWall / 4)
+        this.add(this.skirtingBoardFront2Mesh);
+
+        this.skirtingBoardLateral1Mesh = new THREE.Mesh (skirtingBoardLateral1, woodenMaterial);
+        this.skirtingBoardLateral1Mesh.rotateY(Math.PI/2)
+        this.skirtingBoardLateral1Mesh.rotateZ(Math.PI/2)
+        this.skirtingBoardLateral1Mesh.position.set(-widthRoom / 2 + widthWall / 4, widthWall / 4, 0)
+        this.add(this.skirtingBoardLateral1Mesh);
+
+        this.skirtingBoardLateral2Mesh = new THREE.Mesh (skirtingBoardLateral2, woodenMaterial);
+        this.skirtingBoardLateral2Mesh.rotateY(Math.PI/2)
+        this.skirtingBoardLateral2Mesh.rotateZ(Math.PI/2)
+        this.skirtingBoardLateral2Mesh.position.set(widthRoom / 2 - widthWall / 4, widthWall / 4, -length * 0.5 / 2)
+        this.add(this.skirtingBoardLateral2Mesh);
+
+        this.skirtingBoardLateral3Mesh = new THREE.Mesh (skirtingBoardLateral3, woodenMaterial);
+        this.skirtingBoardLateral3Mesh.rotateY(Math.PI/2)
+        this.skirtingBoardLateral3Mesh.rotateZ(Math.PI/2)
+        this.skirtingBoardLateral3Mesh.position.set(widthRoom / 2 - widthWall / 4, widthWall / 4, length / 2 - length * 0.2 / 2)
+        this.add(this.skirtingBoardLateral3Mesh);
     }
 
 }

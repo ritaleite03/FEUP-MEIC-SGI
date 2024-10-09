@@ -19,12 +19,11 @@ class MyWindow extends THREE.Object3D {
         landescapeTexture.wrapT = THREE.MirroredRepeatWrapping;
         const landescapeMaterial = new THREE.MeshPhongMaterial({color: "#ffffff", specular: "#000000", emissive: "#000000", shininess: 0, map: landescapeTexture})
 
-        // texture and materiall of the window's frame
+        // texture and material of the window's frame and grid
         let woodenTexture = new THREE.TextureLoader().load('textures/wooden_top.jpg');
         woodenTexture.wrapS = THREE.MirroredRepeatWrapping;
         woodenTexture.wrapT = THREE.MirroredRepeatWrapping;
         const woodenMaterial = new THREE.MeshPhongMaterial({color: "#ffffff", specular: "#000000", emissive: "#000000", shininess: 0, map: woodenTexture})
-
 
         // add landescape
         let wall = new THREE.PlaneGeometry(width, height);
