@@ -127,21 +127,21 @@ class MyContents  {
         this.app.scene.add(this.table);
         
         // add candle to the scene
-        const radiusStick = 0.02
-        const radiusFlame = 0.05
-        const heightStick = 0.5
-        const heightFlame = 0.2
-        this.candle = new MyCandle(this, radiusStick, radiusFlame, heightStick, heightFlame,2,0,0)
-        this.app.scene.add(this.candle)
+        //const radiusStick = 0.02
+        //const radiusFlame = 0.05
+        //const heightStick = 0.5
+        //const heightFlame = 0.2
+        //this.candle = new MyCandle(this, radiusStick, radiusFlame, heightStick, heightFlame,2,0,0)
+        //this.app.scene.add(this.candle)
 
         this.walls = new MyWalls(this.app, 20, 15, 10, 0.5)
         this.app.scene.add( this.walls );
 
-        let cake = new MyCake(this.app, 0.5, 0.2, 11*Math.PI/6, false, 3, 0.3);
+        let cake = new MyCake(this.app, 0.5, 0.2, 10*Math.PI/6, false, 3, 0.3);
         cake.position.y= 2.0 + 0.5 * 0.4 + 0.15;
         this.app.scene.add(cake);
 
-        let cakeSlice = new MyCake(this.app, 0.3, 0.2, 5*Math.PI/6, true);
+        let cakeSlice = new MyCake(this.app, 0.3, 0.2, 2*Math.PI/6, true);
         cakeSlice.position.set(0.5, 2.18, 0.5);
         this.app.scene.add(cakeSlice);
 

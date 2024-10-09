@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { MyPlate } from './MyPlate.js';
+import { MyCandle } from './MyCandle.js';
 
 class MyCake extends THREE.Object3D {
 
@@ -22,6 +23,11 @@ class MyCake extends THREE.Object3D {
         let boxMaterial = new THREE.MeshPhongMaterial({ color: "#ffff77", 
             specular: "#000000", emissive: "#000000", shininess: 90 })
 
+        
+        const radiusStick = 0.02 * radius;
+        const radiusFlame = 0.05 * radius;
+        const heightStick = 0.2 * radius;
+        const heightFlame = 0.15 * radius;
         
         let startAngle = 0;
         let gapAngle = 2*Math.PI - angleLength + startAngle;
@@ -52,6 +58,20 @@ class MyCake extends THREE.Object3D {
 
                 this.add( insideMesh1);
                 this.add( insideMesh2 );
+
+                if(!slice){
+                    let nCandles = Math.round((angleLength * 9) / (2* Math.PI));
+                    let candleGap = angleLength/nCandles;
+                    let startGap = candleGap/2 + startAngle;
+
+                    for (let j = 0; j < nCandles; j++ ){
+                        let angle = startGap + j * candleGap;
+                        let x = Math.sin(angle) * radiusLast * 0.7;
+                        let z = Math.cos(angle) * radiusLast * 0.7;
+                        let candle = new MyCandle(app, radiusStick, radiusFlame, heightStick, heightFlame,x,height * (i + 0.5),z)
+                        this.add(candle)
+                    }
+                }
             }
             else{
                 let r = radius - i * diff;
