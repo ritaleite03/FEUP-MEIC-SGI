@@ -23,6 +23,14 @@ class MyTable extends THREE.Object3D {
         const x = xLenght / 2 - radius; // position of the leg in Ox
         const z = zLenght / 2 - radius; // position of the leg in Oz
 
+        // texture and material of the top
+        let topTexture = new THREE.TextureLoader().load('textures/wooden_top.jpg');
+        topTexture.wrapS = THREE.MirroredRepeatWrapping;
+        topTexture.wrapT = THREE.MirroredRepeatWrapping;
+        topTexture.rotation = Math.PI / 2;
+        topTexture.repeat.set(xLenght, zLenght);
+        const topMaterial = new THREE.MeshPhongMaterial({color: "#ffffff", specular: "#000000", emissive: "#000000", shininess: 0, map: topTexture})
+
         // add legs
         this.add(
             new MyLeg(app, height, radius, x, z),
@@ -33,7 +41,6 @@ class MyTable extends THREE.Object3D {
 
         // add top
         const top = new THREE.BoxGeometry(xLenght, 0.1, zLenght); 
-        const topMaterial = new THREE.MeshBasicMaterial( {color: "#ffff77"} );
         const topMesh = new THREE.Mesh(top, topMaterial );
         topMesh.position.y = height;
         this.add(topMesh);

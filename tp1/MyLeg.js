@@ -16,9 +16,17 @@ class MyLeg extends THREE.Object3D {
      */
     constructor(app, height, radius, x, z) {
         super();
+
+        // texture and material of the leg
+        let texture = new THREE.TextureLoader().load('textures/wooden_top.jpg');
+        texture.wrapS = THREE.MirroredRepeatWrapping;
+        texture.wrapT = THREE.MirroredRepeatWrapping;
+        texture.rotation = Math.PI / 2;
+        const material = new THREE.MeshPhongMaterial({color: "#ffffff", specular: "#000000", emissive: "#000000", shininess: 0, map: texture})
+
+        // add leg
         const leg = new THREE.CylinderGeometry(radius,  radius, height); 
-        const legMaterial = new THREE.MeshBasicMaterial( {color: "#1fff77"} );
-        const legMesh = new THREE.Mesh(leg, legMaterial ); 
+        const legMesh = new THREE.Mesh(leg, material ); 
         legMesh.position.set(x, 0, z);
         legMesh.position.y = height / 2
         this.add(legMesh);
