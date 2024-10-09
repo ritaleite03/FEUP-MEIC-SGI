@@ -18,9 +18,12 @@ class MyTable extends THREE.Object3D {
     constructor(app, height, radius, xLenght, zLenght) {
         super();
         this.type = 'Group';
-        const x = xLenght / 2 - radius;
-        const z = zLenght / 2 - radius;
 
+        // variables
+        const x = xLenght / 2 - radius; // position of the leg in Ox
+        const z = zLenght / 2 - radius; // position of the leg in Oz
+
+        // add legs
         this.add(
             new MyLeg(app, height, radius, x, z),
             new MyLeg(app, height, radius, -x, z),
@@ -28,6 +31,7 @@ class MyTable extends THREE.Object3D {
             new MyLeg(app, height, radius, -x, -z)
         )
 
+        // add top
         const top = new THREE.BoxGeometry(xLenght, 0.1, zLenght); 
         const topMaterial = new THREE.MeshBasicMaterial( {color: "#ffff77"} );
         const topMesh = new THREE.Mesh(top, topMaterial );

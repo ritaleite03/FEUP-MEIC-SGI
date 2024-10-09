@@ -19,10 +19,13 @@ class MyFlame extends THREE.Object3D {
     constructor(app, radius, height, x, y, z, segments) {
         super();
         this.type = 'Group';
+
+        // variables
         const heightCone = height - radius // height of the cone
         const ySphere = y + radius // position of the sphere on Oy
         const yCone = ySphere + heightCone / 2 // position of the cone on Oy
 
+        // add sphere
         const sphere = new THREE.SphereGeometry(radius, segments, segments, 0, Math.PI , 0, Math.PI)
         const sphereMaterial = new THREE.MeshBasicMaterial( {color: "#e6b449",side: THREE.DoubleSide} );
         const sphereMesh = new THREE.Mesh(sphere, sphereMaterial );
@@ -30,6 +33,7 @@ class MyFlame extends THREE.Object3D {
         sphereMesh.rotation.x = Math.PI/2
         this.add(sphereMesh);
 
+        // add cone
         const cone = new THREE.ConeGeometry(radius, heightCone, segments, segments, false)
         const coneMaterial = new THREE.MeshBasicMaterial( {color: "#e6b449"} );
         const coneMesh = new THREE.Mesh(cone, coneMaterial);

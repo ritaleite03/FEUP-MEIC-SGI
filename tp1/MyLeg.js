@@ -16,7 +16,6 @@ class MyLeg extends THREE.Object3D {
      */
     constructor(app, height, radius, x, z) {
         super();
-        this.app = app;
         const leg = new THREE.CylinderGeometry(radius,  radius, height); 
         const legMaterial = new THREE.MeshBasicMaterial( {color: "#1fff77"} );
         const legMesh = new THREE.Mesh(leg, legMaterial ); 

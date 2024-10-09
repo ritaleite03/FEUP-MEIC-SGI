@@ -22,12 +22,16 @@ class MyCandle extends THREE.Object3D {
     constructor(app, radiusStick, radiusFlame, heightStick, heightFlame, x, y, z, segments) {
         super();
         this.type = 'Group';
-        const yFlame = y + heightStick;
-        const yStick = y + heightStick / 2
 
+        // variables
+        const yFlame = y + heightStick; // position of the flame in Oy
+        const yStick = y + heightStick / 2 // position of the stick in Oy
+
+        // add flame
         const flame = new MyFlame(app, radiusFlame, heightFlame, x, yFlame, z, segments);
         this.add(flame)
 
+        // add stick
         const stick = new THREE.CylinderGeometry(radiusStick, radiusStick, heightStick, segments, segments)
         const stickMaterial = new THREE.MeshBasicMaterial( {color: "#f9fae3"} );
         const stickMesh = new THREE.Mesh(stick, stickMaterial);
