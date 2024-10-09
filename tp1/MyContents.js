@@ -137,12 +137,21 @@ class MyContents  {
         this.walls = new MyWalls(this.app, 20, 15, 10, 0.5)
         this.app.scene.add( this.walls );
 
-        let cake = new MyCake(this.app, 0.5, 0.2, 10*Math.PI/6, false, 3, 0.3);
-        cake.position.y= 2.0 + 0.5 * 0.4 + 0.15;
+        let tableThickness = 0.05;
+        let layerHeight = 0.2;
+        let baseRadius = 0.5;
+        let topRadius = 0.3;
+
+        let topTablePosition = height + layerHeight/2 + tableThickness;
+
+        let cake = new MyCake(this.app, baseRadius, layerHeight, 10*Math.PI/6, false, 3, topRadius);
+        cake.position.y= topTablePosition + baseRadius * 0.4 + 0.005;
+        //cake.position.y= 2.0 + 0.5 * 0.4 + 0.15;
         this.app.scene.add(cake);
 
-        let cakeSlice = new MyCake(this.app, 0.3, 0.2, 2*Math.PI/6, true);
-        cakeSlice.position.set(0.5, 2.18, 0.5);
+        let cakeSlice = new MyCake(this.app, topRadius, layerHeight, 2*Math.PI/6, true);
+        cakeSlice.position.set(0.5, topTablePosition + 0.03, 0.5);
+        //cakeSlice.position.set(0.5, height + 2.18, 0.5);
         this.app.scene.add(cakeSlice);
 
         
