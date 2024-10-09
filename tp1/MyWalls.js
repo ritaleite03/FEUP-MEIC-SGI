@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { MyWall } from './MyWall.js';
+import { MyWindow } from './MyWindow.js';
 
 class MyWalls extends THREE.Object3D {
 
@@ -59,6 +60,9 @@ class MyWalls extends THREE.Object3D {
         this.wallFrontD.rotateY(3*Math.PI/2);
         this.wallFrontD.position.x = gap;
         this.add(this.wallFrontD);
+
+        this.window = new MyWindow(widthRoom * 0.6, height * 0.4, widthWall, height * 0.4 + height * 0.2, length * 0.5 + widthWall)
+        this.add(this.window)
     }
 
 }
