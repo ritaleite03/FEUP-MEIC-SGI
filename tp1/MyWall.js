@@ -14,7 +14,7 @@ class MyWall extends THREE.Object3D {
         super()
         this.app = app
 
-        let boxMaterial = new THREE.MeshPhongMaterial({ color: "#ffff77", 
+        let boxMaterial = new THREE.MeshPhongMaterial({ color: "#78866b", 
             specular: "#000000", emissive: "#000000", shininess: 90 })
         let wall = new THREE.BoxGeometry(width, height, length);
 

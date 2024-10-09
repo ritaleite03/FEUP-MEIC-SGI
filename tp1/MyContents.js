@@ -119,10 +119,10 @@ class MyContents  {
         this.buildBox()
         
         // add table to the scene
-        const height = 2;
-        const radius = 0.1;
-        const xLenght = 2;
-        const zLenght = 3;
+        const height = 3;
+        const radius = 0.2;
+        const xLenght = 6;
+        const zLenght = 4;
         this.table = new MyTable(this, height, radius, xLenght, zLenght);
         this.app.scene.add(this.table);
         
@@ -146,12 +146,10 @@ class MyContents  {
 
         let cake = new MyCake(this.app, baseRadius, layerHeight, 10*Math.PI/6, false, 3, topRadius);
         cake.position.y= topTablePosition + baseRadius * 0.4 + 0.005;
-        //cake.position.y= 2.0 + 0.5 * 0.4 + 0.15;
         this.app.scene.add(cake);
 
         let cakeSlice = new MyCake(this.app, topRadius, layerHeight, 2*Math.PI/6, true);
         cakeSlice.position.set(0.5, topTablePosition + 0.03, 0.5);
-        //cakeSlice.position.set(0.5, height + 2.18, 0.5);
         this.app.scene.add(cakeSlice);
 
         

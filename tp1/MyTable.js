@@ -27,7 +27,7 @@ class MyTable extends THREE.Object3D {
         let topTexture = new THREE.TextureLoader().load('textures/wooden_top.jpg');
         topTexture.wrapS = THREE.MirroredRepeatWrapping;
         topTexture.wrapT = THREE.MirroredRepeatWrapping;
-        topTexture.rotation = Math.PI / 2;
+        //topTexture.rotation = Math.PI / 2;
         topTexture.repeat.set(xLenght, zLenght);
         const topMaterial = new THREE.MeshPhongMaterial({color: "#ffffff", specular: "#000000", emissive: "#000000", shininess: 0, map: topTexture})
 
@@ -40,7 +40,7 @@ class MyTable extends THREE.Object3D {
         )
 
         // add top
-        const top = new THREE.BoxGeometry(xLenght, 0.1, zLenght); 
+        const top = new THREE.BoxGeometry(xLenght, radius, zLenght); 
         const topMesh = new THREE.Mesh(top, topMaterial );
         topMesh.position.y = height;
         this.add(topMesh);
