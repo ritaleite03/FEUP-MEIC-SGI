@@ -6,7 +6,7 @@ class MyWall extends THREE.Object3D {
        constructs the object
        @param {MyApp} app The application object
        @param {number} length Wall length
-       @param {number} placa Room placa
+       @param {number} place Room placa
        @param {number} height Wall height
        @param {number} width Wall width
     */ 

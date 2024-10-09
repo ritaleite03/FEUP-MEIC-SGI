@@ -30,35 +30,35 @@ class MyWalls extends THREE.Object3D {
         this.add(this.wallC);
 
         // Back wall
-        this.wallBackA = new MyWall(app, widthRoom, length, height * 0.2, widthWall);
-        this.wallBackA.rotateY(Math.PI/2);
-        this.wallBackA.position.y = height * 0.8;
-        this.add(this.wallBackA);
+        this.wall2 = new MyWall(app, widthRoom, length, height, widthWall);
+        this.wall2.rotateY(Math.PI/2)
+        this.add(this.wall2);
 
-        this.wallBackB = new MyWall(app, widthRoom, length, height * 0.4, widthWall);
-        this.wallBackB.rotateY(Math.PI/2);
-        this.add(this.wallBackB);
-
-        let gap = widthRoom * 0.8 * 0.5;
-        this.wallBackC = new MyWall(app, widthRoom * 0.2, length, height, widthWall);
-        this.wallBackC.rotateY(Math.PI/2);
-        this.wallBackC.position.x = -gap;
-        this.add(this.wallBackC);
-
-        this.wallBackD = new MyWall(app, widthRoom * 0.2, length, height, widthWall);
-        this.wallBackD.rotateY(Math.PI/2);
-        this.wallBackD.position.x = gap;
-        this.add(this.wallBackD);
-
-        // Front wall
+        // Left wall
         this.wall3 = new MyWall(app, length, widthRoom, height, widthWall);
         this.wall3.rotateY(Math.PI)
         this.add(this.wall3);
 
-        // Left wall
-        this.wall4 = new MyWall(app, widthRoom, length, height, widthWall);
-        this.wall4.rotateY(3*Math.PI/2)
-        this.add(this.wall4);
+        // Front wall
+        this.wallFrontA = new MyWall(app, widthRoom, length, height * 0.2, widthWall);
+        this.wallFrontA.rotateY(3*Math.PI/2);
+        this.wallFrontA.position.y = height * 0.8;
+        this.add(this.wallFrontA);
+
+        this.wallFrontB = new MyWall(app, widthRoom, length, height * 0.4, widthWall);
+        this.wallFrontB.rotateY(3*Math.PI/2);
+        this.add(this.wallFrontB);
+
+        let gap = widthRoom * 0.8 * 0.5;
+        this.wallFrontC = new MyWall(app, widthRoom * 0.2, length, height, widthWall);
+        this.wallFrontC.rotateY(3*Math.PI/2);
+        this.wallFrontC.position.x = -gap;
+        this.add(this.wallFrontC);
+
+        this.wallFrontD = new MyWall(app, widthRoom * 0.2, length, height, widthWall);
+        this.wallFrontD.rotateY(3*Math.PI/2);
+        this.wallFrontD.position.x = gap;
+        this.add(this.wallFrontD);
     }
 
 }

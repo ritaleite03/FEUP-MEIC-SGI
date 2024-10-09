@@ -4,6 +4,7 @@ import { MyWalls } from './MyWalls.js';
 import { MyCake } from './MyCake.js';
 import { MyTable } from './MyTable.js';
 import { MyCandle } from './MyCandle.js';
+import { MyPlate } from './MyPlate.js';
 
 /**
  *  This class contains the contents of out application
@@ -136,13 +137,12 @@ class MyContents  {
         this.walls = new MyWalls(this.app, 20, 15, 10, 0.5)
         this.app.scene.add( this.walls );
 
-        let cake = new MyCake(this.app, 0.5, 0.2, 11*Math.PI/6);
-        cake.position.y= 2.1;
+        let cake = new MyCake(this.app, 0.5, 0.2, 11*Math.PI/6, false, 3, 0.3);
+        cake.position.y= 2.0 + 0.5 * 0.4 + 0.15;
         this.app.scene.add(cake);
 
-        let cakeSlice = new MyCake(this.app, 0.5, 0.2, Math.PI/6);
-        cakeSlice.rotateZ(Math.PI/2);
-        cakeSlice.position.set(0.5, 2.1, 0.5);
+        let cakeSlice = new MyCake(this.app, 0.3, 0.2, 5*Math.PI/6, true);
+        cakeSlice.position.set(0.5, 2.18, 0.5);
         this.app.scene.add(cakeSlice);
 
         
