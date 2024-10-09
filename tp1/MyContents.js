@@ -3,7 +3,6 @@ import { MyAxis } from './MyAxis.js';
 import { MyWalls } from './MyWalls.js';
 import { MyCake } from './MyCake.js';
 import { MyTable } from './MyTable.js';
-import { MyFlame } from './MyFlame.js';
 import { MyCandle } from './MyCandle.js';
 
 /**
@@ -18,8 +17,6 @@ class MyContents  {
     constructor(app) {
         this.app = app;
         this.axis = null;
-        this.table = null;
-        this.candle = null;
 
         // box related attributes
         this.boxMesh = null;
@@ -34,6 +31,18 @@ class MyContents  {
         this.planeShininess = 30;
         this.planeMaterial = new THREE.MeshPhongMaterial({ color: this.diffusePlaneColor, 
             specular: this.specularPlaneColor, emissive: "#000000", shininess: this.planeShininess })
+        
+        // spot light related attributes
+        this.colorSpotLight = "#ffffff";
+        this.intensitySpotLight = 15;
+        this.limitDistanceSpotLight = 8
+        this.angleSpotLight = 20
+        this.penumbraSpotLight = 0
+        this.decaySpotLight = 0
+        this.xSpotLight = 1
+        this.ySpotLight = 5
+        this.xTargetSpotLight = 1
+        this.yTargetSpotLight = 0
 
         this.walls = null;
     }
@@ -64,42 +73,50 @@ class MyContents  {
             this.app.scene.add(this.axis)
         }
 
-        if (this.table === null) {
-            // create and attach the axis to the scene
-            const height = 2;
-            const radius = 0.1;
-            const xLenght = 2;
-            const zLenght = 3;
-            this.table = new MyTable(this, height, radius, xLenght, zLenght);
-            this.app.scene.add(this.table);
-        }
-        
-        if (this.candle === null) {
-            // create and attach the axis to the scene
-            const radiusStick = 0.02
-            const radiusFlame = 0.05
-            const heightStick = 0.5
-            const heightFlame = 0.2
-            this.candle = new MyCandle(this, radiusStick, radiusFlame, heightStick, heightFlame,2,0,0)
-            this.app.scene.add(this.candle)
-        }
-
         // add a point light on top of the model
-        const pointLight = new THREE.PointLight( 0xffffff, 500, 0 );
-        pointLight.position.set( 0, 20, 0 );
-        this.app.scene.add( pointLight );
+        //const pointLight = new THREE.PointLight( 0xffffff, 500, 0 );
+        //pointLight.position.set( 0, 20, 0 );
+        //this.app.scene.add( pointLight );
 
         // add a point light helper for the previous point light
-        const sphereSize = 0.5;
-        const pointLightHelper = new THREE.PointLightHelper( pointLight, sphereSize );
-        this.app.scene.add( pointLightHelper );
+        //const sphereSize = 0.5;
+        //const pointLightHelper = new THREE.PointLightHelper( pointLight, sphereSize );
+        //this.app.scene.add( pointLightHelper );
 
         // add an ambient light
         const ambientLight = new THREE.AmbientLight( 0x555555 );
         this.app.scene.add( ambientLight );
 
+        // add directional light
+        const light2 = new THREE.DirectionalLight( 0xffffff, 1 );
+        light2.position.set(0,10,0);
+        light2.target.position.set(1,0,1)
+        this.app.scene.add( light2 );
+
+        // add spot light
+        this.spotLight = new THREE.SpotLight( this.colorSpotLight, this.intensitySpotLight, this.limitDistanceSpotLight, this.angleSpotLight * Math.PI / 180, this.penumbra, this.decay );
+        this.spotLight.position.set(this.xSpotLight,this.ySpotLight,1);
+        this.spotLight.target.position.set(this.xTargetSpotLight,this.yTargetSpotLight,1)
+        this.app.scene.add(this.spotLight);
+
         this.buildBox()
         
+        // add table to the scene
+        const height = 2;
+        const radius = 0.1;
+        const xLenght = 2;
+        const zLenght = 3;
+        this.table = new MyTable(this, height, radius, xLenght, zLenght);
+        this.app.scene.add(this.table);
+        
+        // add candle to the scene
+        const radiusStick = 0.02
+        const radiusFlame = 0.05
+        const heightStick = 0.5
+        const heightFlame = 0.2
+        this.candle = new MyCandle(this, radiusStick, radiusFlame, heightStick, heightFlame,2,0,0)
+        this.app.scene.add(this.candle)
+
         this.walls = new MyWalls(this.app, 20, 15, 10, 0.5)
         this.app.scene.add( this.walls );
 
@@ -120,7 +137,22 @@ class MyContents  {
         this.planeMesh.position.y = -0;
         //this.app.scene.add( this.planeMesh );
     }
-    
+
+    /**
+     * updates the spot light attributes
+     * @param {string} propriety
+     * @param {number} value 
+     */
+    updateSpotLight(propriety, value){
+        if (propriety === 'color') this.spotLight[propriety].set(value)
+        else if (propriety === 'x') this.spotLight.position.x = value;
+        else if (propriety === 'y') this.spotLight.position.y = value;
+        else if (propriety === 'xTarget') this.spotLight.target.position.x = value;
+        else if (propriety === 'yTarget') this.spotLight.target.position.y = value;
+        else if (propriety === 'angle') this.spotLight[propriety] = value * Math.PI / 180   
+        else this.spotLight[propriety] = value
+    }
+
     /**
      * updates the diffuse plane color and the material
      * @param {THREE.Color} value 
@@ -146,6 +178,10 @@ class MyContents  {
         this.planeMaterial.shininess = this.planeShininess
     }
     
+    updateSpotLightY(value){
+        this.ySpotLight = value
+        this.spotLight.position.y = value
+    }
     /**
      * rebuilds the box mesh if required
      * this method is called from the gui interface
