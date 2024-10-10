@@ -137,12 +137,11 @@ class MyContents  {
         this.walls = new MyWalls(this.app, 20, 15, 10, 0.5)
         this.app.scene.add( this.walls );
 
-        let tableThickness = 0.05;
         let layerHeight = 0.2;
         let baseRadius = 0.5;
         let topRadius = 0.3;
 
-        let topTablePosition = height + layerHeight/2 + tableThickness;
+        let topTablePosition = height + tierHeight/2 + radius/2;
 
         let cake = new MyCake(this.app, baseRadius, layerHeight, 10*Math.PI/6, false, 3, topRadius);
         cake.position.y= topTablePosition + baseRadius * 0.4 + 0.005;
