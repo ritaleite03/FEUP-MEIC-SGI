@@ -19,9 +19,13 @@ class MyCake extends THREE.Object3D {
         this.app = app
         this.type = 'Group';
 
-        let boxMaterial = new THREE.MeshPhongMaterial({ color: "#ffff77", 
-            specular: "#000000", emissive: "#000000", shininess: 90 })
-
+        const outsideCakeTexture = new THREE.TextureLoader().load('textures/outside_cake.jpg');
+        outsideCakeTexture.wrapS = THREE.MirroredRepeatWrapping;
+        outsideCakeTexture.wrapT = THREE.MirroredRepeatWrapping;
+        const insideCakeTexture = new THREE.TextureLoader().load('textures/inside_cake.jpg');
+        const outsideCakeMaterial = new THREE.MeshPhongMaterial({color: "#ffffff", emissive: "#000000", shininess: 0, map: outsideCakeTexture})
+        const insideCakeMaterial = new THREE.MeshPhongMaterial({color: "#ffffff", emissive: "#000000", shininess: 0, map: insideCakeTexture})
+        let boxMaterial = new THREE.MeshPhongMaterial({ color: "#ffff77" })
         
         let startAngle = 0;
         let gapAngle = 2*Math.PI - angleLength + startAngle;
@@ -31,19 +35,19 @@ class MyCake extends THREE.Object3D {
             if(i === tiers - 1){
                 let segments = (angleLength * 36) / (2* Math.PI); 
                 let cake = new THREE.CylinderGeometry(radiusLast, radiusLast, height, segments, 1, false, startAngle, angleLength);
-                let cakeMesh = new THREE.Mesh(cake, boxMaterial);
+                let cakeMesh = new THREE.Mesh(cake, outsideCakeMaterial);
                 cakeMesh.position.y = height * i;  
                 this.add(cakeMesh);
 
                 let insideCake = new THREE.PlaneGeometry( radiusLast, height);
-                let insideMesh1 = new THREE.Mesh(insideCake, boxMaterial);
+                let insideMesh1 = new THREE.Mesh(insideCake, insideCakeMaterial);
                 let rotateAngle1 = startAngle - Math.PI/2;
                 insideMesh1.rotateY(rotateAngle1);
                 insideMesh1.position.x= 0.5 * Math.cos(rotateAngle1) * radiusLast;
                 insideMesh1.position.z= -0.5 * Math.sin(rotateAngle1) * radiusLast;
                 insideMesh1.position.y = height * i; 
 
-                let insideMesh2 = new THREE.Mesh( insideCake, boxMaterial);
+                let insideMesh2 = new THREE.Mesh( insideCake, insideCakeMaterial);
                 let rotateAngle2 = Math.PI/2 - gapAngle;
                 insideMesh2.rotateY(rotateAngle2);
                 insideMesh2.position.x= -0.5 * Math.cos(rotateAngle2) * radiusLast;
@@ -56,7 +60,7 @@ class MyCake extends THREE.Object3D {
             else{
                 let r = radius - i * diff;
                 let cake = new THREE.CylinderGeometry(r, r, height, 36, 1);
-                let cakeMesh = new THREE.Mesh(cake, boxMaterial);
+                let cakeMesh = new THREE.Mesh(cake, outsideCakeMaterial);
                 cakeMesh.position.y = height * i;  
                 this.add(cakeMesh);
                 
