@@ -32,7 +32,7 @@ class MyContents  {
         //this.planeShininess = 30;
         //this.planeMaterial = new THREE.MeshPhongMaterial({ color: this.diffusePlaneColor, specular: this.specularPlaneColor, emissive: "#000000", shininess: this.planeShininess })
         //texture
-        this.planeTexture = new THREE.TextureLoader().load('textures/feup_b.jpg');
+        this.planeTexture = new THREE.TextureLoader().load('textures/wooden_top.jpg');
         this.planeTexture.wrapS = THREE.RepeatWrapping;
         this.planeTexture.wrapT = THREE.RepeatWrapping;
         // material
@@ -153,14 +153,14 @@ class MyContents  {
         //this.planeMesh.position.y = -0;
         //this.app.scene.add( this.planeMesh );
         // Create a Plane Mesh with basic material
-        let planeSizeU = 10;
-        let planeSizeV = 7;
+        let planeSizeU = 20;
+        let planeSizeV = 15;
         let planeUVRate = planeSizeV / planeSizeU;
         let planeTextureUVRate = 3354 / 2385; // image dimensions
         let planeTextureRepeatU = 1;
         let planeTextureRepeatV = planeTextureRepeatU * planeUVRate * planeTextureUVRate;
         this.planeTexture.repeat.set(planeTextureRepeatU, planeTextureRepeatV );
-        this.planeTexture.rotation = 30 * Math.PI / 180;
+        //this.planeTexture.rotation = 30 * Math.PI / 180;
         this.planeTexture.offset = new THREE.Vector2(0,0);
         var plane = new THREE.PlaneGeometry( planeSizeU, planeSizeV );
         this.planeMesh = new THREE.Mesh( plane, this.planeMaterial );
