@@ -5,6 +5,7 @@ import { MyCake } from './MyCake.js';
 import { MyTable } from './MyTable.js';
 import { MyCandle } from './MyCandle.js';
 import { MyPlate } from './MyPlate.js';
+import { MyChair } from './MyChair.js';
 
 /**
  *  This class contains the contents of out application
@@ -42,7 +43,7 @@ class MyContents  {
         // relating texture and material:
         // two alternatives with different results
         // alternative 1
-        this.planeMaterial = new THREE.MeshPhongMaterial({color: this.diffusePlaneColor, specular: this.specularPlaneColor, emissive: "#000000", shininess: this.planeShininess, map: this.planeTexture })
+        this.planeMaterial = new THREE.MeshStandardMaterial({color: this.diffusePlaneColor, specular: this.specularPlaneColor, emissive: "#000000", shininess: this.planeShininess, map: this.planeTexture })
         // end of alternative 1
         // alternative 2
         // this.planeMaterial = new THREE.MeshLambertMaterial({ map : this.planeTexture });
@@ -101,20 +102,26 @@ class MyContents  {
         //this.app.scene.add( pointLightHelper );
 
         // add an ambient light
-        const ambientLight = new THREE.AmbientLight( 0x555555,4 );
+        const ambientLight = new THREE.AmbientLight( 0x555555, 5);
         this.app.scene.add( ambientLight );
 
         // add directional light
         const light2 = new THREE.DirectionalLight( 0xffffff, 1 );
         light2.position.set(0,10,0);
-        light2.target.position.set(1,0,1)
+        light2.target.position.set(0,0,0)
         this.app.scene.add( light2 );
+
+        const light2Helper = new THREE.DirectionalLightHelper( light2, 5 ); 
+        this.app.scene.add( light2Helper );
 
         // add spot light
         this.spotLight = new THREE.SpotLight( this.colorSpotLight, this.intensitySpotLight, this.limitDistanceSpotLight, this.angleSpotLight * Math.PI / 180, this.penumbra, this.decay );
         this.spotLight.position.set(this.xSpotLight,this.ySpotLight,1);
         this.spotLight.target.position.set(this.xTargetSpotLight,this.yTargetSpotLight,1)
         this.app.scene.add(this.spotLight);
+        
+        const spotLightHelper = new THREE.SpotLightHelper(this.spotLight);
+        this.app.scene.add( spotLightHelper );
 
         this.buildBox()
         
@@ -145,6 +152,12 @@ class MyContents  {
         let cakeSlice = new MyCake(this.app, topRadius, tierHeight, 2*Math.PI/6, true);
         cakeSlice.position.set(0.5, topTablePosition + 0.03, 0.5);
         this.app.scene.add(cakeSlice);
+
+        let chair = new MyChair(5,4,5,2,0.2,3,0.2,2,0.4)
+        chair.rotateY(-Math.PI / 6)
+        chair.scale.set(0.5,0.5,0.5)
+        chair.position.set(-1,0,3)
+        this.app.scene.add(chair);
 
         
         // Create a Plane Mesh with basic material

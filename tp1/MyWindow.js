@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { RectAreaLightHelper } from 'three/addons/helpers/RectAreaLightHelper.js';
 
 class MyWindow extends THREE.Object3D {
 
@@ -10,7 +11,7 @@ class MyWindow extends THREE.Object3D {
        @param {number} height Wall height
        @param {number} width Wall width
     */ 
-    constructor( width, height, depth, y, z) {
+    constructor(width, height, depth, y, z) {
         super()
 
         // texture and material of the window's landscape
@@ -32,9 +33,17 @@ class MyWindow extends THREE.Object3D {
         this.wallMesh.position.set(0, y, z)
         this.add(this.wallMesh);
 
+        let rectLight = new THREE.RectAreaLight( 0xffffff, 5,  width, height);
+        rectLight.position.set(0, y, z - 0.1)
+        rectLight.lookAt( 0, y, 0);
+        this.add(rectLight)
+
+        //const rectLightHelper = new RectAreaLightHelper(rectLight);
+        //rectLight.add(rectLightHelper);
+
         // add grid
-        const gridHorizonal = new THREE.BoxGeometry(depth / 2, width, depth)
-        const gridVertical = new THREE.BoxGeometry(depth / 2, height, depth)
+        const gridHorizonal = new THREE.BoxGeometry(depth / 2, width, depth / 2)
+        const gridVertical = new THREE.BoxGeometry(depth / 2, height, depth / 2)
         const gap = (width - depth) / 3
 
         this.gridHorizontalMesh = new THREE.Mesh (gridHorizonal, woodenMaterial);
