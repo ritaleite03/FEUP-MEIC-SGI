@@ -1,14 +1,21 @@
 import * as THREE from 'three';
 
+/**
+ * This class contains the representation of the a chair
+ */
 class MyChair extends THREE.Object3D {
 
     /**
-       constructs the object
        @param {MyApp} app The application object
-       @param {number} length Wall length
-       @param {number} place Room placa
-       @param {number} height Wall height
-       @param {number} width Wall width
+       @param {number} widthBottom width of the chair's bottom
+       @param {number} heightBottom heigth of the chair's bottom
+       @param {number} widthTop width of the chair's top
+       @param {number} heightTop heigth of the chair's top
+       @param {number} radiusLegs radius of the chair's leg
+       @param {number} heightLegs height of the chair's leg
+       @param {number} radiusBack radius of the chair's back
+       @param {number} heightBack height of the chair's back
+       @param {number} thickness thickness of the wood
     */ 
     constructor(widthBottom, heightBottom, widthTop, heightTop, radiusLegs, heightLegs, radiusBack, heightBack, thickness) {
         super()
@@ -17,8 +24,6 @@ class MyChair extends THREE.Object3D {
         woodenTexture.wrapS = THREE.MirroredRepeatWrapping;
         woodenTexture.wrapT = THREE.MirroredRepeatWrapping;
         const woodenMaterial = new THREE.MeshPhongMaterial({color: "#ffffff", specular: "#000000", emissive: "#000000", shininess: 0, map: woodenTexture})
-        const whiteMaterial = new THREE.MeshPhongMaterial({color: "#ffffff", specular: "#000000", emissive: "#000000", shininess: 0})
-
 
         const bottom = new THREE.BoxGeometry(widthBottom, heightBottom, thickness);
         const top = new THREE.BoxGeometry(widthTop, heightTop, thickness);
