@@ -24,27 +24,27 @@ class MyWalls extends THREE.Object3D {
         const woodenMaterial = new THREE.MeshPhongMaterial({color: "#ffffff", specular: "#000000", emissive: "#000000", shininess: 0, map: woodenTexture})
                 
         // Right wall
-        this.wallA = new MyWall(app, length, widthRoom, height * 0.2, widthWall);
-        this.wallA.position.y = height * 0.8;
-        this.add(this.wallA);
+        this.wallRightA = new MyWall(app, length, widthRoom, height * 0.2, widthWall);
+        this.wallRightA.position.y = height * 0.8;
+        this.add(this.wallRightA);
 
-        this.wallB = new MyWall(app, length * 0.5, widthRoom, height * 0.8, widthWall);
-        this.wallB.position.z = -length * 0.5 * 0.5;
-        this.add(this.wallB);
+        this.wallRightB = new MyWall(app, length * 0.5, widthRoom, height * 0.8, widthWall);
+        this.wallRightB.position.z = -length * 0.5 * 0.5;
+        this.add(this.wallRightB);
 
-        this.wallC = new MyWall(app, length * 0.2, widthRoom, height * 0.8, widthWall);
-        this.wallC.position.z = length * 0.8 * 0.5;
-        this.add(this.wallC);
+        this.wallRightC = new MyWall(app, length * 0.2, widthRoom, height * 0.8, widthWall);
+        this.wallRightC.position.z = length * 0.8 * 0.5;
+        this.add(this.wallRightC);
 
         // Back wall
-        this.wall2 = new MyWall(app, widthRoom, length, height, widthWall);
-        this.wall2.rotateY(Math.PI/2)
-        this.add(this.wall2);
+        this.wallBack = new MyWall(app, widthRoom, length, height, widthWall);
+        this.wallBack.rotateY(Math.PI/2)
+        this.add(this.wallBack);
 
         // Left wall
-        this.wall3 = new MyWall(app, length, widthRoom, height, widthWall);
-        this.wall3.rotateY(Math.PI)
-        this.add(this.wall3);
+        this.wallLeft = new MyWall(app, length, widthRoom, height, widthWall);
+        this.wallLeft.rotateY(Math.PI)
+        this.add(this.wallLeft);
 
         // Front wall
         this.wallFrontA = new MyWall(app, widthRoom, length, height * 0.2, widthWall);

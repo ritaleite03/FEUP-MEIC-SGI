@@ -32,7 +32,7 @@ class MyContents  {
         //this.planeShininess = 30;
         //this.planeMaterial = new THREE.MeshPhongMaterial({ color: this.diffusePlaneColor, specular: this.specularPlaneColor, emissive: "#000000", shininess: this.planeShininess })
         //texture
-        this.planeTexture = new THREE.TextureLoader().load('textures/feup_b.jpg');
+        this.planeTexture = new THREE.TextureLoader().load('textures/wooden_top.jpg');
         this.planeTexture.wrapS = THREE.RepeatWrapping;
         this.planeTexture.wrapT = THREE.RepeatWrapping;
         // material
@@ -125,29 +125,24 @@ class MyContents  {
         const zLenght = 4;
         this.table = new MyTable(this, height, radius, xLenght, zLenght);
         this.app.scene.add(this.table);
-        
-        // add candle to the scene
-        //const radiusStick = 0.02
-        //const radiusFlame = 0.05
-        //const heightStick = 0.5
-        //const heightFlame = 0.2
-        //this.candle = new MyCandle(this, radiusStick, radiusFlame, heightStick, heightFlame,2,0,0)
-        //this.app.scene.add(this.candle)
 
+        // create and attach walls to the scene
         this.walls = new MyWalls(this.app, 20, 15, 10, 0.5)
         this.app.scene.add( this.walls );
 
-        let layerHeight = 0.2;
+        let tierHeight = 0.2;
         let baseRadius = 0.5;
         let topRadius = 0.3;
 
         let topTablePosition = height + tierHeight/2 + radius/2;
 
-        let cake = new MyCake(this.app, baseRadius, layerHeight, 10*Math.PI/6, false, 3, topRadius);
+        // create and attach the cake to the scene
+        let cake = new MyCake(this.app, baseRadius, tierHeight, 10*Math.PI/6, false, 3, topRadius);
         cake.position.y= topTablePosition + baseRadius * 0.4 + 0.005;
         this.app.scene.add(cake);
 
-        let cakeSlice = new MyCake(this.app, topRadius, layerHeight, 2*Math.PI/6, true);
+        // create and attach the cake slice to the scene
+        let cakeSlice = new MyCake(this.app, topRadius, tierHeight, 2*Math.PI/6, true);
         cakeSlice.position.set(0.5, topTablePosition + 0.03, 0.5);
         this.app.scene.add(cakeSlice);
 
@@ -159,14 +154,14 @@ class MyContents  {
         //this.planeMesh.position.y = -0;
         //this.app.scene.add( this.planeMesh );
         // Create a Plane Mesh with basic material
-        let planeSizeU = 10;
-        let planeSizeV = 7;
+        let planeSizeU = 20;
+        let planeSizeV = 15;
         let planeUVRate = planeSizeV / planeSizeU;
         let planeTextureUVRate = 3354 / 2385; // image dimensions
         let planeTextureRepeatU = 1;
         let planeTextureRepeatV = planeTextureRepeatU * planeUVRate * planeTextureUVRate;
         this.planeTexture.repeat.set(planeTextureRepeatU, planeTextureRepeatV );
-        this.planeTexture.rotation = 30 * Math.PI / 180;
+        //this.planeTexture.rotation = 30 * Math.PI / 180;
         this.planeTexture.offset = new THREE.Vector2(0,0);
         var plane = new THREE.PlaneGeometry( planeSizeU, planeSizeV );
         this.planeMesh = new THREE.Mesh( plane, this.planeMaterial );

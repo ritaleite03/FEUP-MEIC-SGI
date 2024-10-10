@@ -23,25 +23,29 @@ class MyCake extends THREE.Object3D {
         let boxMaterial = new THREE.MeshPhongMaterial({ color: "#ffff77", 
             specular: "#000000", emissive: "#000000", shininess: 90 })
 
-        
+        // Candle dimension
         const radiusStick = 0.02 * radius;
         const radiusFlame = 0.05 * radius;
         const heightStick = 0.2 * radius;
         const heightFlame = 0.15 * radius;
         
-        let startAngle = 0;
-        let gapAngle = 2*Math.PI - angleLength + startAngle;
-        let diff = (radius - radiusLast)/tiers;
+        let startAngle = 0; // Start cake angle
+        let endAngle = angleLength + startAngle; //End cake angle
+        let gapTier = (radius - radiusLast)/tiers; //radius gap between tiers
 
         for(let i = 0; i < tiers; i++){
             if(i === tiers - 1){
-                let segments = (angleLength * 36) / (2* Math.PI); 
+                let segments = Math.floor(angleLength * 36) / (2* Math.PI); //Number of the cylinder's segments
+
+                // Create a cylinder 
                 let cake = new THREE.CylinderGeometry(radiusLast, radiusLast, height, segments, 1, false, startAngle, angleLength);
                 let cakeMesh = new THREE.Mesh(cake, boxMaterial);
                 cakeMesh.position.y = height * i;  
                 this.add(cakeMesh);
 
+                // Create the plans for the inside of the cake
                 let insideCake = new THREE.PlaneGeometry( radiusLast, height);
+                
                 let insideMesh1 = new THREE.Mesh(insideCake, boxMaterial);
                 let rotateAngle1 = startAngle - Math.PI/2;
                 insideMesh1.rotateY(rotateAngle1);
@@ -50,13 +54,13 @@ class MyCake extends THREE.Object3D {
                 insideMesh1.position.y = height * i; 
 
                 let insideMesh2 = new THREE.Mesh( insideCake, boxMaterial);
-                let rotateAngle2 = Math.PI/2 - gapAngle;
+                let rotateAngle2 = endAngle + Math.PI/2;
                 insideMesh2.rotateY(rotateAngle2);
                 insideMesh2.position.x= -0.5 * Math.cos(rotateAngle2) * radiusLast;
                 insideMesh2.position.z= 0.5 * Math.sin(rotateAngle2) * radiusLast;
                 insideMesh2.position.y = height * i; 
 
-                this.add( insideMesh1);
+                this.add( insideMesh1 );
                 this.add( insideMesh2 );
 
                 if(!slice){
@@ -74,7 +78,9 @@ class MyCake extends THREE.Object3D {
                 }
             }
             else{
-                let r = radius - i * diff;
+                let r = radius - i * gapTier;
+
+                // create complete cake tier
                 let cake = new THREE.CylinderGeometry(r, r, height, 36, 1);
                 let cakeMesh = new THREE.Mesh(cake, boxMaterial);
                 cakeMesh.position.y = height * i;  
@@ -83,6 +89,7 @@ class MyCake extends THREE.Object3D {
             }
         }
 
+        // create plate
         this.plate = new MyPlate(app, radius, slice);
         this.plate.position.y =  -height/2;
         if(slice){

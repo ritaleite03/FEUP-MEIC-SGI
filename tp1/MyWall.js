@@ -6,7 +6,7 @@ class MyWall extends THREE.Object3D {
        constructs the object
        @param {MyApp} app The application object
        @param {number} length Wall length
-       @param {number} place Room placa
+       @param {number} place Displacement relative to the center
        @param {number} height Wall height
        @param {number} width Wall width
     */ 
@@ -16,12 +16,13 @@ class MyWall extends THREE.Object3D {
 
         let boxMaterial = new THREE.MeshPhongMaterial({ color: "#78866b", 
             specular: "#000000", emissive: "#000000", shininess: 90 })
-        let wall = new THREE.BoxGeometry(width, height, length);
-
-        this.wallMesh = new THREE.Mesh (wall, boxMaterial);
         
+        //Create a wall
+        let wall = new THREE.BoxGeometry(width, height, length);
+        this.wallMesh = new THREE.Mesh (wall, boxMaterial);
         this.wallMesh.position.y = height/2;
         this.wallMesh.position.x = place/2 + width/2;
+
         this.add(this.wallMesh);
     }
 
