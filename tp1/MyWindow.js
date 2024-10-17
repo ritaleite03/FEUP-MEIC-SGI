@@ -33,7 +33,7 @@ class MyWindow extends THREE.Object3D {
         this.wallMesh.position.set(0, y, z)
         this.add(this.wallMesh);
 
-        let rectLight = new THREE.RectAreaLight( 0xffffff, 5,  width, height);
+        let rectLight = new THREE.RectAreaLight( 0xffffff, 10,  width, height);
         rectLight.position.set(0, y, z - 0.1)
         rectLight.lookAt( 0, y, 0);
         this.add(rectLight)
@@ -48,15 +48,15 @@ class MyWindow extends THREE.Object3D {
 
         this.gridHorizontalMesh = new THREE.Mesh (gridHorizonal, woodenMaterial);
         this.gridHorizontalMesh.rotateZ(Math.PI/2)
-        this.gridHorizontalMesh.position.set(0, y, z - depth / 2)
+        this.gridHorizontalMesh.position.set(0, y, z - depth / 4)
         this.add(this.gridHorizontalMesh);
 
         this.gridVertical1Mesh = new THREE.Mesh (gridVertical, woodenMaterial);
-        this.gridVertical1Mesh.position.set(gap / 2, y, z - depth / 2)
+        this.gridVertical1Mesh.position.set(gap / 2, y, z - depth / 4)
         this.add(this.gridVertical1Mesh);
 
         this.gridVertical2Mesh = new THREE.Mesh (gridVertical, woodenMaterial);
-        this.gridVertical2Mesh.position.set(-gap / 2, y, z - depth / 2)
+        this.gridVertical2Mesh.position.set(-gap / 2, y, z - depth / 4)
         this.add(this.gridVertical2Mesh);
 
         // add frame

@@ -57,8 +57,8 @@ class MyContents  {
         this.angleSpotLight = 20
         this.penumbraSpotLight = 0
         this.decaySpotLight = 0
-        this.xSpotLight = 1
-        this.ySpotLight = 5
+        this.xSpotLight = 0
+        this.ySpotLight = 10
         this.xTargetSpotLight = 1
         this.yTargetSpotLight = 0
 
@@ -71,7 +71,6 @@ class MyContents  {
     buildBox() {    
         let boxMaterial = new THREE.MeshPhongMaterial({ color: "#ffff77", 
         specular: "#000000", emissive: "#000000", shininess: 90 });
-
         // Create a Cube Mesh with basic material
         let box = new THREE.BoxGeometry(  this.boxMeshSize,  this.boxMeshSize,  this.boxMeshSize );
         this.boxMesh = new THREE.Mesh( box, boxMaterial );
@@ -83,13 +82,22 @@ class MyContents  {
      * initializes the contents
      */
     init() {
-       
-        // create once 
         if (this.axis === null) {
-            // create and attach the axis to the scene
             this.axis = new MyAxis(this)
             this.app.scene.add(this.axis)
         }
+
+        // variables to hold the curves
+        this.polyline = null
+        this.quadraticBezierCurve = null
+        this.cubicBezierCurve = null
+        this.catmullRomCurve = null
+        // number of samples to use for the curves (not for polyline)
+        this.numberOfSamples = 20
+        // hull material and geometry
+        this.hullMaterial = new THREE.MeshBasicMaterial( {color: 0xffffff, opacity: 0.50, transparent: true});    
+        // curve recomputation
+        this.recompute();
 
         // add a point light on top of the model
         //const pointLight = new THREE.PointLight( 0xffffff, 500, 0 );
@@ -182,6 +190,90 @@ class MyContents  {
         this.planeMesh.position.y = 0;
         this.app.scene.add( this.planeMesh );
     }
+
+    // Deletes the contents of the line if it exists and recreates them
+    recompute() {
+        // if (this.polyline !== null) this.app.scene.remove(this.polyline)
+        // this.initPolyline([new THREE.Vector3(-0.6,-0.6,0), new THREE.Vector3(0.6,-0.6,0), new THREE.Vector3(0.6,0.6,0), new THREE.Vector3(-0.6,0.6,0)], new THREE.Vector3(0,0,0))
+        // if (this.quadraticBezierCurve !== null) this.app.scene.remove(this.quadraticBezierCurve)
+        // this.initQuadraticBezierCurve([ new THREE.Vector3(-0.6,-0.6,0), new THREE.Vector3(0,0.6,0), new THREE.Vector3(0.6,-0.6,0)], new THREE.Vector3(0,0,0))
+        // if (this.cubicBezierCurve !== null) this.app.scene.remove(this.cubicBezierCurve)
+        // this.initCubicBezierCurve([new THREE.Vector3(-0.6,-0.6,0), new THREE.Vector3(-0.6,0.6,0), new THREE.Vector3(0.6,-0.6,0), new THREE.Vector3(0.6,0.6,0)], new THREE.Vector3(0,0,0))
+        // if (this.catmullRomCurve !== null) this.app.scene.remove(this.catmullRomCurve)
+        // this.initCatmullRomCurve([new THREE.Vector3(-0.6,-0,0), new THREE.Vector3(-0.3,0.6,0.3), new THREE.Vector3(0,0,0), new THREE.Vector3(0.3,-0.6,0.3), new THREE.Vector3(0.6,0,0), new THREE.Vector3(0.9,0.6,0.3), new THREE.Vector3(1.2,0,0)], new THREE.Vector3(0,0,0))
+        
+        let scale = 0.2
+        this.initCubicBezierCurve([new THREE.Vector3(-3 * scale, 0, 0), new THREE.Vector3(-3 * scale, 4 * scale, 0), new THREE.Vector3(3 * scale, 4 * scale, 0), new THREE.Vector3(3 * scale, 0 ,0)], new THREE.Vector3(3 * scale, 0, 0))
+        this.initCubicBezierCurve([new THREE.Vector3(-3 * scale, 0, 0), new THREE.Vector3(-3 * scale, 4 * scale, 0), new THREE.Vector3(3 * scale, 4 * scale, 0), new THREE.Vector3(3 * scale, 0 ,0)], new THREE.Vector3(13 * scale, 0, 0))        
+        this.initCubicBezierCurve([new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 4 / 3 * (Math.sqrt(2) - 1) * 8 * scale, 0), new THREE.Vector3(4 / 3 * (Math.sqrt(2) - 1) * 8 * scale, 8 * scale, 0), new THREE.Vector3(8 * scale, 8 * scale, 0)], new THREE.Vector3(0, 0, 0))
+        this.initCubicBezierCurve([new THREE.Vector3(0, 4 * scale, 0), new THREE.Vector3(4 / 3 * (Math.sqrt(2) - 1) * 4 * scale, 4 * scale, 0), new THREE.Vector3(4 * scale, 4 / 3 * (Math.sqrt(2) - 1) * 4 * scale, 0), new THREE.Vector3(4 * scale, 0, 0)], new THREE.Vector3(8 * scale, 4 * scale, 0))
+        this.initCubicBezierCurve([new THREE.Vector3(0, 4 * scale, 0), new THREE.Vector3(4 / 3 * (Math.sqrt(2) - 1) * 4 * scale, 4 * scale, 0), new THREE.Vector3(4 * scale, 4 / 3 * (Math.sqrt(2) - 1) * 4 * scale, 0), new THREE.Vector3(4 * scale, 0, 0)], new THREE.Vector3(12 * scale, 0, 0))
+
+    }
+
+    
+    drawHull(position, points) {     
+        const geometry = new THREE.BufferGeometry().setFromPoints(points);
+        let line = new THREE.Line( geometry, this.hullMaterial );
+        // set initial position
+        line.position.set(position.x,position.y,position.z)
+        this.app.scene.add(line);
+    }
+    
+
+    initPolyline(points, position) {
+        this.drawHull(position, points);
+        // define geometry
+        const geometry = new THREE.BufferGeometry().setFromPoints( points );
+        // create the line from material and geometry
+        this.polyline = new THREE.Line( geometry,
+            new THREE.LineBasicMaterial( { color: 0xff0000 } ) );
+        // set initial position
+        this.polyline.position.set(position.x,position.y,position.z)
+        // add the line to the scene
+        this.app.scene.add( this.polyline );
+    }
+
+    initQuadraticBezierCurve(points, position) {
+        this.drawHull(position, points);
+        let curve = new THREE.QuadraticBezierCurve3( points[0], points[1], points[2])
+        let sampledPoints = curve.getPoints(this.numberOfSamples);  
+        this.curveGeometry = new THREE.BufferGeometry().setFromPoints(sampledPoints)
+        this.lineMaterial = new THREE.LineBasicMaterial( { color: 0x00ff00 } )
+        this.lineObj = new THREE.Line( this.curveGeometry, this.lineMaterial )
+        this.lineObj.position.set(position.x,position.y,position.z)
+        this.app.scene.add( this.lineObj );
+    }
+
+    initCubicBezierCurve(points, position) {
+        this.drawHull(position, points);
+        let curve = new THREE.CubicBezierCurve3( points[0], points[1], points[2], points[3])
+        let sampledPoints = curve.getPoints(this.numberOfSamples);  
+        this.curveGeometry = new THREE.BufferGeometry().setFromPoints(sampledPoints)
+        this.lineMaterial = new THREE.LineBasicMaterial( { color: 0x00ff00 } )
+        this.lineObj = new THREE.Line( this.curveGeometry, this.lineMaterial )
+        this.lineObj.position.set(position.x,position.y,position.z)
+        this.app.scene.add( this.lineObj );
+    }
+
+    
+    initCatmullRomCurve(points, position) {
+        this.drawHull(position, points);
+        let curve = new THREE.CatmullRomCurve3(points)
+        let sampledPoints = curve.getPoints(this.numberOfSamples);  
+        this.curveGeometry = new THREE.BufferGeometry().setFromPoints(sampledPoints)
+        this.lineMaterial = new THREE.LineBasicMaterial( { color: 0x00ff00 } )
+        this.lineObj = new THREE.Line( this.curveGeometry, this.lineMaterial )
+        this.lineObj.position.set(position.x,position.y,position.z)
+        this.app.scene.add( this.lineObj );
+    }
+
+    /**
+     * updates the contents
+     * this method is called from the render method of the app
+     *
+     */
+    update() {}
 
     /**
      * updates the spot light attributes

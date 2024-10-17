@@ -27,15 +27,22 @@ class MyFlame extends THREE.Object3D {
 
         // add sphere
         const sphere = new THREE.SphereGeometry(radius, segments, segments, 0, Math.PI , 0, Math.PI)
-        const sphereMaterial = new THREE.MeshBasicMaterial( {color: "#e6b449",side: THREE.DoubleSide} );
+        const sphereMaterial = new THREE.MeshBasicMaterial( {color: "#e6b449",transparent: true, opacity: 0.7} );
         const sphereMesh = new THREE.Mesh(sphere, sphereMaterial );
         sphereMesh.position.set(x, ySphere, z);
         sphereMesh.rotation.x = Math.PI/2
         this.add(sphereMesh);
 
+        const sphereSmall = new THREE.SphereGeometry(radius * 0.5, segments, segments, 0, Math.PI , 0, Math.PI)
+        const sphereSmallMaterial = new THREE.MeshBasicMaterial( {color: "#fcf177"} );
+        const sphereSmallMesh = new THREE.Mesh(sphereSmall, sphereSmallMaterial );
+        sphereSmallMesh.position.set(x, ySphere, z);
+        sphereSmallMesh.rotation.x = Math.PI/2
+        this.add(sphereSmallMesh);
+
         // add cone
         const cone = new THREE.ConeGeometry(radius, heightCone, segments, segments, false)
-        const coneMaterial = new THREE.MeshBasicMaterial( {color: "#e6b449"} );
+        const coneMaterial = new THREE.MeshBasicMaterial( {color: "#e6b449", transparent: true, opacity: 0.7} );
         const coneMesh = new THREE.Mesh(cone, coneMaterial);
         coneMesh.position.set(x, yCone, z);
         this.add(coneMesh); 
