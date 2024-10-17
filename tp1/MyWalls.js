@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { MyWall } from './MyWall.js';
 import { MyWindow } from './MyWindow.js';
+import { MyPainting } from './MyPainting.js';
 
 class MyWalls extends THREE.Object3D {
 
@@ -40,6 +41,9 @@ class MyWalls extends THREE.Object3D {
         this.wallBack = new MyWall(app, widthRoom, length, height, widthWall);
         this.wallBack.rotateY(Math.PI/2)
         this.add(this.wallBack);
+       
+        this.painting = new MyPainting(app, 1, height / 4, - length / 4)
+        this.add(this.painting);
 
         // Left wall
         this.wallLeft = new MyWall(app, length, widthRoom, height, widthWall);

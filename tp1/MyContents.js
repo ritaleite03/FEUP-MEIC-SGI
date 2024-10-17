@@ -6,6 +6,7 @@ import { MyTable } from './MyTable.js';
 import { MyCandle } from './MyCandle.js';
 import { MyPlate } from './MyPlate.js';
 import { MyChair } from './MyChair.js';
+import { MyPainting } from './MyPainting.js';
 
 /**
  *  This class contains the contents of out application
@@ -142,7 +143,7 @@ class MyContents  {
         this.app.scene.add(this.table);
 
         // create and attach walls to the scene
-        this.walls = new MyWalls(this.app, 20, 15, 10, 0.5)
+        this.walls = new MyWalls(this, 20, 15, 10, 0.5)
         this.app.scene.add( this.walls );
 
         let tierHeight = 0.2;
@@ -167,7 +168,6 @@ class MyContents  {
         chair.position.set(-1,0,3)
         this.app.scene.add(chair);
 
-        
         // Create a Plane Mesh with basic material
         //let plane = new THREE.PlaneGeometry( 20, 15 );
         //this.planeMesh = new THREE.Mesh( plane, this.planeMaterial );
@@ -201,14 +201,7 @@ class MyContents  {
         // this.initCubicBezierCurve([new THREE.Vector3(-0.6,-0.6,0), new THREE.Vector3(-0.6,0.6,0), new THREE.Vector3(0.6,-0.6,0), new THREE.Vector3(0.6,0.6,0)], new THREE.Vector3(0,0,0))
         // if (this.catmullRomCurve !== null) this.app.scene.remove(this.catmullRomCurve)
         // this.initCatmullRomCurve([new THREE.Vector3(-0.6,-0,0), new THREE.Vector3(-0.3,0.6,0.3), new THREE.Vector3(0,0,0), new THREE.Vector3(0.3,-0.6,0.3), new THREE.Vector3(0.6,0,0), new THREE.Vector3(0.9,0.6,0.3), new THREE.Vector3(1.2,0,0)], new THREE.Vector3(0,0,0))
-        
-        let scale = 0.2
-        this.initCubicBezierCurve([new THREE.Vector3(-3 * scale, 0, 0), new THREE.Vector3(-3 * scale, 4 * scale, 0), new THREE.Vector3(3 * scale, 4 * scale, 0), new THREE.Vector3(3 * scale, 0 ,0)], new THREE.Vector3(3 * scale, 0, 0))
-        this.initCubicBezierCurve([new THREE.Vector3(-3 * scale, 0, 0), new THREE.Vector3(-3 * scale, 4 * scale, 0), new THREE.Vector3(3 * scale, 4 * scale, 0), new THREE.Vector3(3 * scale, 0 ,0)], new THREE.Vector3(13 * scale, 0, 0))        
-        this.initCubicBezierCurve([new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 4 / 3 * (Math.sqrt(2) - 1) * 8 * scale, 0), new THREE.Vector3(4 / 3 * (Math.sqrt(2) - 1) * 8 * scale, 8 * scale, 0), new THREE.Vector3(8 * scale, 8 * scale, 0)], new THREE.Vector3(0, 0, 0))
-        this.initCubicBezierCurve([new THREE.Vector3(0, 4 * scale, 0), new THREE.Vector3(4 / 3 * (Math.sqrt(2) - 1) * 4 * scale, 4 * scale, 0), new THREE.Vector3(4 * scale, 4 / 3 * (Math.sqrt(2) - 1) * 4 * scale, 0), new THREE.Vector3(4 * scale, 0, 0)], new THREE.Vector3(8 * scale, 4 * scale, 0))
-        this.initCubicBezierCurve([new THREE.Vector3(0, 4 * scale, 0), new THREE.Vector3(4 / 3 * (Math.sqrt(2) - 1) * 4 * scale, 4 * scale, 0), new THREE.Vector3(4 * scale, 4 / 3 * (Math.sqrt(2) - 1) * 4 * scale, 0), new THREE.Vector3(4 * scale, 0, 0)], new THREE.Vector3(12 * scale, 0, 0))
-
+    
     }
 
     
