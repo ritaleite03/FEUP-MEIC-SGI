@@ -26,7 +26,7 @@ class MyPainting extends THREE.Object3D {
         app.initCubicBezierCurve([new THREE.Vector3(x, y + 4 * scale, z), new THREE.Vector3(x + 4 / 3 * (Math.sqrt(2) - 1) * 4 * scale, y + 4 * scale, z), new THREE.Vector3(x + 4 * scale, y + 4 / 3 * (Math.sqrt(2) - 1) * 4 * scale, z), new THREE.Vector3(x + 4 * scale, y, z)], new THREE.Vector3(x + 8 * scale, y + 4 * scale, z))
         app.initCubicBezierCurve([new THREE.Vector3(x, y + 4 * scale, z), new THREE.Vector3(x + 4 / 3 * (Math.sqrt(2) - 1) * 4 * scale, y + 4 * scale, z), new THREE.Vector3(x + 4 * scale, y + 4 / 3 * (Math.sqrt(2) - 1) * 4 * scale, z), new THREE.Vector3(x + 4 * scale, y, z)], new THREE.Vector3(x + 12 * scale, y, z))
         
-        const material = new THREE.MeshPhongMaterial({color: "#ffffff", specular: "#000000", emissive: "#000000", shininess: 0})
+        const material = new THREE.MeshPhongMaterial({color: "#ffffff", specular: "#000000", emissive: "#ffffff", shininess: 0})
         const background = new THREE.PlaneGeometry(25 * scale, 15 * scale)
         const backgroundMesh = new THREE.Mesh(background, material); 
         backgroundMesh.position.set(x * 4, y * 2.5, z * 2 - 0.01);

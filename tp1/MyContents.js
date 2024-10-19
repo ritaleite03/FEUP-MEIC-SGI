@@ -3,10 +3,10 @@ import { MyAxis } from './MyAxis.js';
 import { MyWalls } from './MyWalls.js';
 import { MyCake } from './MyCake.js';
 import { MyTable } from './MyTable.js';
-import { MyCandle } from './MyCandle.js';
-import { MyPlate } from './MyPlate.js';
 import { MyChair } from './MyChair.js';
-import { MyPainting } from './MyPainting.js';
+import { MyNurbsBuilder } from './MyNurbsBuilder.js';
+import { MyFlower } from './MyFlower.js';
+
 
 /**
  *  This class contains the contents of out application
@@ -29,29 +29,27 @@ class MyContents  {
         this.boxDisplacement = new THREE.Vector3(0,2,0);
 
         // plane related attributes
-        //this.diffusePlaneColor = "#00ffff";
-        //this.specularPlaneColor = "#777777";
-        //this.planeShininess = 30;
-        //this.planeMaterial = new THREE.MeshPhongMaterial({ color: this.diffusePlaneColor, specular: this.specularPlaneColor, emissive: "#000000", shininess: this.planeShininess })
+
+        // this.diffusePlaneColor = "#00ffff";
+        // this.specularPlaneColor = "#777777";
+        // this.planeShininess = 30;
+        // this.planeMaterial = new THREE.MeshPhongMaterial({ color: this.diffusePlaneColor, specular: this.specularPlaneColor, emissive: "#000000", shininess: this.planeShininess })
+        
         //texture
         this.planeTexture = new THREE.TextureLoader().load('textures/wooden_top.jpg');
         this.planeTexture.wrapS = THREE.RepeatWrapping;
         this.planeTexture.wrapT = THREE.RepeatWrapping;
+        
         // material
         this.diffusePlaneColor =  "rgb(128,128,128)"
         this.specularPlaneColor = "rgb(0,0,0)"
         this.planeShininess = 0
-        // relating texture and material:
-        // two alternatives with different results
-        // alternative 1
-        this.planeMaterial = new THREE.MeshStandardMaterial({color: this.diffusePlaneColor, specular: this.specularPlaneColor, emissive: "#000000", shininess: this.planeShininess, map: this.planeTexture })
-        // end of alternative 1
-        // alternative 2
-        // this.planeMaterial = new THREE.MeshLambertMaterial({ map : this.planeTexture });
-        // end of alternative 2
+
+        // this.planeMaterial = new THREE.MeshLambertMaterial({ map : this.planeTexture }); // alternative 2
+        this.planeMaterial = new THREE.MeshStandardMaterial({color: this.diffusePlaneColor, specular: this.specularPlaneColor, emissive: "#000000", shininess: this.planeShininess, map: this.planeTexture }) // alternative 1
         let plane = new THREE.PlaneGeometry( 10, 10 );
         
-        // spot light related attributes
+        // spotlight related attributes
         this.colorSpotLight = "#ffffff";
         this.intensitySpotLight = 15;
         this.limitDistanceSpotLight = 8
@@ -59,20 +57,27 @@ class MyContents  {
         this.penumbraSpotLight = 0
         this.decaySpotLight = 0
         this.xSpotLight = 0
-        this.ySpotLight = 10
+        this.ySpotLight = 8
         this.xTargetSpotLight = 1
         this.yTargetSpotLight = 0
 
-        this.walls = null;
+        const map = new THREE.TextureLoader().load( 'textures/uv_grid_opengl.jpg' );
+        map.wrapS = map.wrapT = THREE.RepeatWrapping;
+        map.anisotropy = 16;
+        map.colorSpace = THREE.SRGBColorSpace;
+        this.material = new THREE.MeshLambertMaterial( { map: map, side: THREE.DoubleSide, transparent: true, opacity: 0.90 } );
+        this.builder = new MyNurbsBuilder()
+        this.meshes = []
+        this.samplesU = 8 // maximum defined in MyGuiInterface
+        this.samplesV = 8 // maximum defined in MyGuiInterface
+        this.init()
     }
 
     /**
      * builds the box mesh with material assigned
      */
     buildBox() {    
-        let boxMaterial = new THREE.MeshPhongMaterial({ color: "#ffff77", 
-        specular: "#000000", emissive: "#000000", shininess: 90 });
-        // Create a Cube Mesh with basic material
+        let boxMaterial = new THREE.MeshPhongMaterial({ color: "#ffff77", specular: "#000000", emissive: "#000000", shininess: 90 });
         let box = new THREE.BoxGeometry(  this.boxMeshSize,  this.boxMeshSize,  this.boxMeshSize );
         this.boxMesh = new THREE.Mesh( box, boxMaterial );
         this.boxMesh.rotation.x = -Math.PI / 2;
@@ -84,8 +89,8 @@ class MyContents  {
      */
     init() {
         if (this.axis === null) {
-            this.axis = new MyAxis(this)
-            this.app.scene.add(this.axis)
+            this.axis = new MyAxis( this )
+            this.app.scene.add( this.axis )
         }
 
         // variables to hold the curves
@@ -93,95 +98,112 @@ class MyContents  {
         this.quadraticBezierCurve = null
         this.cubicBezierCurve = null
         this.catmullRomCurve = null
-        // number of samples to use for the curves (not for polyline)
-        this.numberOfSamples = 20
-        // hull material and geometry
+        this.numberOfSamples = 8
         this.hullMaterial = new THREE.MeshBasicMaterial( {color: 0xffffff, opacity: 0.50, transparent: true});    
-        // curve recomputation
         this.recompute();
 
-        // add a point light on top of the model
-        //const pointLight = new THREE.PointLight( 0xffffff, 500, 0 );
-        //pointLight.position.set( 0, 20, 0 );
-        //this.app.scene.add( pointLight );
+        // create light
 
-        // add a point light helper for the previous point light
-        //const sphereSize = 0.5;
-        //const pointLightHelper = new THREE.PointLightHelper( pointLight, sphereSize );
-        //this.app.scene.add( pointLightHelper );
+        // add a point light on top of the model
+        // const pointLight = new THREE.PointLight( 0xffffff, 500, 0 );
+        // pointLight.position.set( 0, 20, 0 );
+        // this.app.scene.add( pointLight );
+        // const sphereSize = 0.5;
+        // const pointLightHelper = new THREE.PointLightHelper( pointLight, sphereSize );
+        // this.app.scene.add( pointLightHelper );
 
         // add an ambient light
-        const ambientLight = new THREE.AmbientLight( 0x555555, 5);
+        const ambientLight = new THREE.AmbientLight( 0x555555, 5 );
         this.app.scene.add( ambientLight );
 
         // add directional light
         const light2 = new THREE.DirectionalLight( 0xffffff, 1 );
-        light2.position.set(0,10,0);
-        light2.target.position.set(0,0,0)
+        light2.position.set( 0, 10, 0 );
+        light2.target.position.set( 0, 0, 0 )
         this.app.scene.add( light2 );
-
         const light2Helper = new THREE.DirectionalLightHelper( light2, 5 ); 
         this.app.scene.add( light2Helper );
 
         // add spot light
         this.spotLight = new THREE.SpotLight( this.colorSpotLight, this.intensitySpotLight, this.limitDistanceSpotLight, this.angleSpotLight * Math.PI / 180, this.penumbra, this.decay );
-        this.spotLight.position.set(this.xSpotLight,this.ySpotLight,1);
-        this.spotLight.target.position.set(this.xTargetSpotLight,this.yTargetSpotLight,1)
-        this.app.scene.add(this.spotLight);
-        
-        const spotLightHelper = new THREE.SpotLightHelper(this.spotLight);
-        this.app.scene.add( spotLightHelper );
+        this.spotLight.position.set( this.xSpotLight, this.ySpotLight, 0 );
+        this.spotLight.target.position.set( this.xTargetSpotLight, this.yTargetSpotLight, 0 )
+        this.app.scene.add( this.spotLight );
+        this.spotLightHelper = new THREE.SpotLightHelper( this.spotLight );
+        this.app.scene.add( this.spotLightHelper );
 
         this.buildBox()
+
+        const tierHeightCake = 0.2;
+        const baseRadiusCake = 0.5;
+        const topRadiusCake = 0.3;
         
-        // add table to the scene
-        const height = 3;
-        const radius = 0.2;
-        const xLenght = 6;
-        const zLenght = 4;
-        this.table = new MyTable(this, height, radius, xLenght, zLenght);
-        this.app.scene.add(this.table);
+        const heightTable = 3;
+        const radiusTable = 0.2;
+        const xLenghtTable = 6;
+        const zLenghtTable = 4;
+        const topPositionTable = heightTable + tierHeightCake / 2 + radiusTable / 2;
+
+        const widthBottomChair = 5
+        const heightBottomChair = 4
+        const widthTopChair = 5
+        const heightTopChair = 2
+        const radiusLegsChair = 0.2
+        const heightLegsChair = 3
+        const radiusBackChair = 0.2
+        const heightBackChair = 2
+        const thicknessChair = 0.4
+
+        const scaleJar = 0.2
+        const numberPetals = 8
+        const widthPetal = 0.05
+        const heightPetal = 0.1
+
+        // create and attach the table to the scene
+        const table = new MyTable( this, heightTable, radiusTable, xLenghtTable, zLenghtTable );
+        this.app.scene.add( table );
 
         // create and attach walls to the scene
-        this.walls = new MyWalls(this, 20, 15, 10, 0.5)
-        this.app.scene.add( this.walls );
-
-        let tierHeight = 0.2;
-        let baseRadius = 0.5;
-        let topRadius = 0.3;
-
-        let topTablePosition = height + tierHeight/2 + radius/2;
-
+        const walls = new MyWalls( this, 20, 15, 10, 0.5 )
+        this.app.scene.add( walls );
+        
         // create and attach the cake to the scene
-        let cake = new MyCake(this.app, baseRadius, tierHeight, 10*Math.PI/6, false, 3, topRadius);
-        cake.position.y= topTablePosition + baseRadius * 0.4 + 0.005;
-        this.app.scene.add(cake);
-
+        const cake = new MyCake( this, baseRadiusCake, tierHeightCake, 10 * Math.PI / 6, false, 3, topRadiusCake );
+        cake.position.y = topPositionTable + baseRadiusCake * 0.4 + 0.005;
+        this.app.scene.add( cake );
+        
         // create and attach the cake slice to the scene
-        let cakeSlice = new MyCake(this.app, topRadius, tierHeight, 2*Math.PI/6, true);
-        cakeSlice.position.set(0.5, topTablePosition + 0.03, 0.5);
-        this.app.scene.add(cakeSlice);
+        const cakeSlice = new MyCake( this, topRadiusCake, tierHeightCake, 2 * Math.PI / 6, true );
+        cakeSlice.position.set( 0.5, topPositionTable + 0.03, 0.5 );
+        this.app.scene.add( cakeSlice );
 
-        let chair = new MyChair(5,4,5,2,0.2,3,0.2,2,0.4)
-        chair.rotateY(-Math.PI / 6)
-        chair.scale.set(0.5,0.5,0.5)
-        chair.position.set(-1,0,3)
-        this.app.scene.add(chair);
+        // create and attach the chair to the scene
+        const chair = new MyChair( widthBottomChair, heightBottomChair, widthTopChair, heightTopChair, radiusLegsChair, heightLegsChair, radiusBackChair, heightBackChair, thicknessChair )
+        chair.rotateY( -Math.PI / 6 )
+        chair.scale.set( 0.5, 0.5, 0.5 )
+        chair.position.set( -1, 0, 3)
+        this.app.scene.add( chair );
 
-        // Create a Plane Mesh with basic material
+        const flower = new MyFlower( this , scaleJar,  numberPetals, widthPetal, heightPetal)
+        flower.position.set( xLenghtTable / 4 + 2.5 * scaleJar, heightTable + radiusTable / 2, -zLenghtTable / 4 )
+        this.app.scene.add( flower )
+
+        // create and attach the jar to the scene
+        this.createsideJar( xLenghtTable / 4, heightTable + radiusTable / 2, -zLenghtTable / 4, scaleJar )       
+       
         //let plane = new THREE.PlaneGeometry( 20, 15 );
         //this.planeMesh = new THREE.Mesh( plane, this.planeMaterial );
         //this.planeMesh.rotation.x = -Math.PI / 2;
         //this.planeMesh.position.y = -0;
         //this.app.scene.add( this.planeMesh );
-        // Create a Plane Mesh with basic material
+
         let planeSizeU = 20;
         let planeSizeV = 15;
         let planeUVRate = planeSizeV / planeSizeU;
         let planeTextureUVRate = 3354 / 2385; // image dimensions
         let planeTextureRepeatU = 1;
         let planeTextureRepeatV = planeTextureRepeatU * planeUVRate * planeTextureUVRate;
-        this.planeTexture.repeat.set(planeTextureRepeatU, planeTextureRepeatV );
+        this.planeTexture.repeat.set( planeTextureRepeatU, planeTextureRepeatV );
         //this.planeTexture.rotation = 30 * Math.PI / 180;
         this.planeTexture.offset = new THREE.Vector2(0,0);
         var plane = new THREE.PlaneGeometry( planeSizeU, planeSizeV );
@@ -201,30 +223,22 @@ class MyContents  {
         // this.initCubicBezierCurve([new THREE.Vector3(-0.6,-0.6,0), new THREE.Vector3(-0.6,0.6,0), new THREE.Vector3(0.6,-0.6,0), new THREE.Vector3(0.6,0.6,0)], new THREE.Vector3(0,0,0))
         // if (this.catmullRomCurve !== null) this.app.scene.remove(this.catmullRomCurve)
         // this.initCatmullRomCurve([new THREE.Vector3(-0.6,-0,0), new THREE.Vector3(-0.3,0.6,0.3), new THREE.Vector3(0,0,0), new THREE.Vector3(0.3,-0.6,0.3), new THREE.Vector3(0.6,0,0), new THREE.Vector3(0.9,0.6,0.3), new THREE.Vector3(1.2,0,0)], new THREE.Vector3(0,0,0))
-    
     }
 
     
     drawHull(position, points) {     
         const geometry = new THREE.BufferGeometry().setFromPoints(points);
         let line = new THREE.Line( geometry, this.hullMaterial );
-        // set initial position
         line.position.set(position.x,position.y,position.z)
         this.app.scene.add(line);
     }
     
-
     initPolyline(points, position) {
         this.drawHull(position, points);
-        // define geometry
         const geometry = new THREE.BufferGeometry().setFromPoints( points );
-        // create the line from material and geometry
-        this.polyline = new THREE.Line( geometry,
-            new THREE.LineBasicMaterial( { color: 0xff0000 } ) );
-        // set initial position
+        this.polyline = new THREE.Line( geometry, new THREE.LineBasicMaterial( { color: 0xff0000 } ) );
         this.polyline.position.set(position.x,position.y,position.z)
-        // add the line to the scene
-        this.app.scene.add( this.polyline );
+        this.app.scene.add(this.polyline);
     }
 
     initQuadraticBezierCurve(points, position) {
@@ -235,7 +249,7 @@ class MyContents  {
         this.lineMaterial = new THREE.LineBasicMaterial( { color: 0x00ff00 } )
         this.lineObj = new THREE.Line( this.curveGeometry, this.lineMaterial )
         this.lineObj.position.set(position.x,position.y,position.z)
-        this.app.scene.add( this.lineObj );
+        this.app.scene.add(this.lineObj);
     }
 
     initCubicBezierCurve(points, position) {
@@ -243,7 +257,7 @@ class MyContents  {
         let curve = new THREE.CubicBezierCurve3( points[0], points[1], points[2], points[3])
         let sampledPoints = curve.getPoints(this.numberOfSamples);  
         this.curveGeometry = new THREE.BufferGeometry().setFromPoints(sampledPoints)
-        this.lineMaterial = new THREE.LineBasicMaterial( { color: 0x00ff00 } )
+        this.lineMaterial = new THREE.LineBasicMaterial( { color: 0x00ff00} )
         this.lineObj = new THREE.Line( this.curveGeometry, this.lineMaterial )
         this.lineObj.position.set(position.x,position.y,position.z)
         this.app.scene.add( this.lineObj );
@@ -350,12 +364,68 @@ class MyContents  {
     update() {
         // check if box mesh needs to be updated
         this.updateBoxIfRequired()
-
         // sets the box mesh position based on the displacement vector
         this.boxMesh.position.x = this.boxDisplacement.x
         this.boxMesh.position.y = this.boxDisplacement.y
         this.boxMesh.position.z = this.boxDisplacement.z
         
+    }
+
+    /**
+     * removes (if existing) and recreates the nurbs surfaces
+     */
+    createsideJar(x,y,z,scale) {
+        if (this.meshes !== null) {
+            for (let i=0; i<this.meshes.length; i++) this.app.scene.remove( this.meshes[i] )
+            this.meshes = [] 
+        }
+
+        let controlPointsSide = [
+            [[ 2.0, 0, 0, 1 ],[ 1.0, 2, 0, 1 ],[ 2.0, 3, 0, 1 ]],
+            [[ 2.5, 0, 1, 1 ],[ 2.5, 2, 2, 1 ],[ 2.5, 3, 1, 1 ]],
+            [[ 3.0, 0, 0, 1 ],[ 4.0, 2, 0, 1 ],[ 3.0, 3, 0, 1 ]],
+        ]
+
+        let controlPointsBottom = [
+            [[ 2.0, 0.02, 0, 1 ],[ 2.0, 0.01, 0.0, 1 ],[ 2.0, 0, 0, 1 ]],
+            [[ 2.5, 0.02, 1, 1 ],[ 2.5, 0.01, 0.5, 1 ],[ 2.5, 0, 0, 1 ]],
+            [[ 3.0, 0.02, 0, 1 ],[ 3.0, 0.01, 0.0, 1 ],[ 3.0, 0, 0, 1 ]]
+        ]
+
+        const orderSideU= 2
+        const orderSideV = 2
+        const orderBottomU= 2
+        const orderBottomV = 2
+
+        const material = new THREE.MeshLambertMaterial( { color: "#ffffff", side: THREE.DoubleSide} );             
+        let sideJar = this.builder.build( controlPointsSide, orderSideU, orderSideV, this.samplesU, this.samplesV, material )  
+        let bottomJar = this.builder.build( controlPointsBottom, orderBottomU, orderBottomV, this.samplesU, this.samplesV, material )  
+        
+        let frontMesh = new THREE.Mesh( sideJar, material );
+        frontMesh.scale.set( scale, scale, scale )
+        frontMesh.position.set( x, y + 0.02 * scale, z )
+        this.app.scene.add( frontMesh )
+        this.meshes.push ( frontMesh )
+
+        let backMesh = new THREE.Mesh( sideJar, material );
+        backMesh.scale.set( scale, scale, scale )
+        backMesh.position.set( x + scale * 5, y + 0.02 * scale, z )
+        backMesh.rotateY( Math.PI )
+        this.app.scene.add( backMesh )
+        this.meshes.push( backMesh )
+
+        let frontBottomMesh = new THREE.Mesh( bottomJar, material );
+        frontBottomMesh.scale.set( scale, scale, scale )
+        frontBottomMesh.position.set( x, y, z )
+        this.app.scene.add( frontBottomMesh )
+        this.meshes.push( frontBottomMesh )
+        
+        let backBottomMesh = new THREE.Mesh( bottomJar, material );
+        backBottomMesh.scale.set( scale, scale, scale )
+        backBottomMesh.position.set( x + scale * 5, y, z )
+        backBottomMesh.rotateY( Math.PI )
+        this.app.scene.add( backBottomMesh )
+        this.meshes.push( backBottomMesh )
     }
 
 }
