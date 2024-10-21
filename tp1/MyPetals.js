@@ -19,10 +19,10 @@ class MyPetals extends THREE.Object3D {
             const mesh = new THREE.Mesh(petal, materialPetal);
             const holder = new THREE.Object3D();
             const radius = 0.5 * scale;
-            const petalX = Math.cos(angle) * radius - radiusCenter * 2.5;
+            const petalX = Math.cos(angle) * radius - radiusCenter * 2;
             const petalZ = Math.sin(angle) * radius;
             mesh.position.set(petalX, 4 * scale, petalZ);
-            mesh.scale.set(widthPetal / 3, heightPetal / 2 + radiusCenter / 2, widthPetal / 3);        
+            mesh.scale.set(widthPetal, heightPetal, widthPetal);        
             mesh.rotateZ(Math.PI / 2);        
             holder.add(mesh);        
             holder.rotateY(angle);        

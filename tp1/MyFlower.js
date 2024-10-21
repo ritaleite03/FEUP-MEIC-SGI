@@ -10,6 +10,7 @@ class MyFlower extends THREE.Object3D {
         super();
         this.type = 'Group';
         const radiusStem = 0.02
+        const radiusCenter = radiusStem * 0.5
 
         const curve = new THREE.CatmullRomCurve3([
             new THREE.Vector3( 0, 0, 0 ),
@@ -27,15 +28,16 @@ class MyFlower extends THREE.Object3D {
         const meshStem = new THREE.Mesh( stem, materialStem );
         this.add(meshStem);
 
-        const circle = new THREE.SphereGeometry( radiusStem )
+        const circle = new THREE.SphereGeometry( radiusCenter )
         const materialCircle = new THREE.MeshPhongMaterial( { color: "#a4a832" } );
         const meshCircle = new THREE.Mesh( circle, materialCircle )
         meshCircle.rotateX( -Math.PI / 2 )
-        meshCircle.position.set( 0.1 * scale, 4 * scale + radiusStem / 2, 0 )
+        meshCircle.position.set( 0.1 * scale, 4 * scale + radiusCenter / 2, 0 )
+        meshCircle.scale.set(1,1,0.5)
         this.add(meshCircle);
 
-        const petals = new MyPetals( app, scale, numberPetals, widthPetal, heightPetal, radiusStem )
-        petals.position.x = - radiusStem * 4
+        const petals = new MyPetals( app, scale, numberPetals, widthPetal, heightPetal, radiusCenter)
+        petals.position.set(- heightPetal * 2, 0, 0)
         this.add(petals)
     }
 }
