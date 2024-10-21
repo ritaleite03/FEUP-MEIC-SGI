@@ -1,11 +1,20 @@
 import * as THREE from 'three';
 import { MyPetals } from './MyPetals.js';
+import { MyApp } from './MyApp.js';
 
 /**
  * This class contains the representation of a flower
  */
 class MyFlower extends THREE.Object3D {
 
+    /**
+     * 
+     * @param {MyApp} app the application object
+     * @param {number} scale scale of the flower
+     * @param {number} numberPetals number of petals
+     * @param {number} widthPetal width of the petal
+     * @param {number} heightPetal height of the petal
+     */
     constructor(app, scale, numberPetals, widthPetal, heightPetal) {
         super();
         this.type = 'Group';
