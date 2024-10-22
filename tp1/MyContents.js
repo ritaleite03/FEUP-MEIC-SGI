@@ -7,6 +7,7 @@ import { MyChair } from './MyChair.js';
 import { MyNurbsBuilder } from './MyNurbsBuilder.js';
 import { MyFlower } from './MyFlower.js';
 import { MyNewspaper } from './MyNewsPaper.js';
+import { MySpiralSpring } from './MySpiralSpring.js';
 
 /**
  *  This class contains the contents of out application
@@ -159,6 +160,11 @@ class MyContents  {
         const widthPetal = 0.005
         const heightPetal = 0.04
 
+        const radiusSpiral = 0.4
+        const segmentsSpiral = 20
+        const heightSpiral = 2
+        const heightLevelSpiral = 4
+
         // create and attach the table to the scene
         const table = new MyTable( this, heightTable, radiusTable, xLenghtTable, zLenghtTable );
         this.app.scene.add( table );
@@ -184,19 +190,20 @@ class MyContents  {
         chair.position.set( -1, 0, 3)
         this.app.scene.add( chair );
 
-        const flower1 = new MyFlower( this , scaleJar,  numberPetals, widthPetal, heightPetal)
-        flower1.position.set( xLenghtTable / 4 + 2.5 * scaleJar, heightTable + radiusTable / 2, -zLenghtTable / 4 )
-        flower1.rotateX(Math.PI / 40)
-        this.app.scene.add( flower1 )
-        const flower2 = new MyFlower( this , scaleJar * 0.9,  numberPetals - 1, widthPetal * 0.9, heightPetal * 0.9)
-        flower2.position.set( xLenghtTable / 4 + 2.5 * scaleJar, heightTable + radiusTable / 2, -zLenghtTable / 4 )
-        flower2.rotateZ(Math.PI / 20)
-        this.app.scene.add( flower2 )
-        const flower3 = new MyFlower( this , scaleJar * 0.9,  numberPetals - 2, widthPetal * 0.9, heightPetal * 0.9)
-        flower3.position.set( xLenghtTable / 4 + 2.5 * scaleJar, heightTable + radiusTable / 2, -zLenghtTable / 4 )
-        flower3.rotateX(-Math.PI / 40)
-        flower3.rotateZ(-Math.PI / 50)
-        this.app.scene.add( flower3 )
+        // create and attach the flowers to the scene
+        const flower1 = new MyFlower( this , scaleJar * 1.0,  numberPetals - 0, widthPetal * 1.0, heightPetal * 1.0 );
+        const flower2 = new MyFlower( this , scaleJar * 0.9,  numberPetals - 1, widthPetal * 0.9, heightPetal * 0.9 );
+        const flower3 = new MyFlower( this , scaleJar * 0.9,  numberPetals - 2, widthPetal * 0.9, heightPetal * 0.9 );
+        flower1.position.set( xLenghtTable / 4 + 2.5 * scaleJar, heightTable + radiusTable / 2, -zLenghtTable / 4 );
+        flower2.position.set( xLenghtTable / 4 + 2.5 * scaleJar, heightTable + radiusTable / 2, -zLenghtTable / 4 );
+        flower3.position.set( xLenghtTable / 4 + 2.5 * scaleJar, heightTable + radiusTable / 2, -zLenghtTable / 4 );
+        flower1.rotateX( +Math.PI / 40 );
+        flower2.rotateZ( +Math.PI / 20 );
+        flower3.rotateX( -Math.PI / 40 );
+        flower3.rotateZ( -Math.PI / 50 );
+        this.app.scene.add( flower1 );
+        this.app.scene.add( flower2 );
+        this.app.scene.add( flower3 );
 
         // create and attach the jar to the scene
         this.createsideJar( xLenghtTable / 4, heightTable + radiusTable / 2, -zLenghtTable / 4, scaleJar )       
@@ -205,6 +212,10 @@ class MyContents  {
         const newspaper = new MyNewspaper(this, xLenghtTable / 4, heightTable + radiusTable / 2, zLenghtTable / 4, 1, 5)
         newspaper.rotateY(Math.PI)
         this.app.scene.add(newspaper)
+
+        // create and attach the spiral spring to the scene
+        const spiralSpring = new MySpiralSpring(this, radiusSpiral, segmentsSpiral, heightSpiral, heightLevelSpiral)
+        this.app.scene.add(spiralSpring)
         
         //let plane = new THREE.PlaneGeometry( 20, 15 );
         //this.planeMesh = new THREE.Mesh( plane, this.planeMaterial );
