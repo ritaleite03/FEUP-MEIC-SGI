@@ -156,9 +156,11 @@ class MyContents  {
         const thicknessChair = 0.4
 
         const scaleJar = 0.2
-        const numberPetals = 12
-        const widthPetal = 0.005
+        const numberPetals = 10
+        const widthPetal = 0.01
         const heightPetal = 0.04
+        const radiusStem = 0.008
+        const segmentsStem = 20
 
         const radiusSpiral = 0.4
         const segmentsSpiral = 20
@@ -191,9 +193,9 @@ class MyContents  {
         this.app.scene.add( chair );
 
         // create and attach the flowers to the scene
-        const flower1 = new MyFlower( this , scaleJar * 1.0,  numberPetals - 0, widthPetal * 1.0, heightPetal * 1.0 );
-        const flower2 = new MyFlower( this , scaleJar * 0.9,  numberPetals - 1, widthPetal * 0.9, heightPetal * 0.9 );
-        const flower3 = new MyFlower( this , scaleJar * 0.9,  numberPetals - 2, widthPetal * 0.9, heightPetal * 0.9 );
+        const flower1 = new MyFlower( this , scaleJar * 1.0,  numberPetals - 0, widthPetal * 1.0, heightPetal * 1.0, radiusStem, segmentsStem );
+        const flower2 = new MyFlower( this , scaleJar * 0.9,  numberPetals - 1, widthPetal * 0.9, heightPetal * 0.9, radiusStem, segmentsStem );
+        const flower3 = new MyFlower( this , scaleJar * 0.9,  numberPetals - 2, widthPetal * 0.9, heightPetal * 0.9, radiusStem, segmentsStem );
         flower1.position.set( xLenghtTable / 4 + 2.5 * scaleJar, heightTable + radiusTable / 2, -zLenghtTable / 4 );
         flower2.position.set( xLenghtTable / 4 + 2.5 * scaleJar, heightTable + radiusTable / 2, -zLenghtTable / 4 );
         flower3.position.set( xLenghtTable / 4 + 2.5 * scaleJar, heightTable + radiusTable / 2, -zLenghtTable / 4 );

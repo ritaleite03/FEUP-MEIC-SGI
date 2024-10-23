@@ -1,5 +1,4 @@
 import * as THREE from 'three';
-import { MyPetals } from './MyPetals.js';
 import { MyApp } from './MyApp.js';
 
 /**
@@ -15,39 +14,67 @@ class MyFlower extends THREE.Object3D {
      * @param {number} widthPetal width of the petal
      * @param {number} heightPetal height of the petal
      */
-    constructor(app, scale, numberPetals, widthPetal, heightPetal) {
+    constructor(app, scale, numberPetals, widthPetal, heightPetal, radiusStem, segmentsStem) {
         super();
+        this.app = app;
         this.type = 'Group';
-        const radiusStem = 0.02
-        const radiusCenter = radiusStem * 0.5
 
-        const curve = new THREE.CatmullRomCurve3([
-            new THREE.Vector3( 0, 0, 0 ),
-            new THREE.Vector3( 0.1 * scale, 1 * scale, 0.1 * scale ),
-            new THREE.Vector3( 0.1 * scale, 2 * scale, 0.2 * scale),
-            new THREE.Vector3( 0.2 * scale, 3 * scale, 0.1 * scale ),
-            new THREE.Vector3( 0.1 * scale, 4 * scale, 0 )
-        ]);
+        // variables
+        const radiusCenter = radiusStem * 2;
+        const xCenter = 0.1 * scale;
+        const yCenter = 4 * scale + radiusCenter - radiusCenter / 2;
+        const zCenter = 0;
+        const intervalPetals = 2 * Math.PI / numberPetals;
+        let anglePetals = 0;
 
+        // textures
         const textureStem = new THREE.TextureLoader().load('textures/stem.png');
         textureStem.wrapS = THREE.RepeatWrapping;
         textureStem.wrapT = THREE.RepeatWrapping;
-        const materialStem = new THREE.MeshPhongMaterial({color: "#ffffff", specular: "#000000", emissive: "#000000", shininess: 0, map: textureStem })
-        const stem = new THREE.TubeGeometry( curve, 20, radiusStem / 2, 8, false );
+        const texturePetal = new THREE.TextureLoader().load('textures/petal.jpg');    
+
+        // materials
+        const materialStem = new THREE.MeshPhongMaterial( { color: "#ffffff", specular: "#000000", emissive: "#000000", shininess: 0, map: textureStem } );
+        const materialcenter = new THREE.MeshPhongMaterial( { color: "#a4a832" } );
+        const materialPetal = new THREE.MeshPhongMaterial( { color: "#ffffff", specular: "#000000", emissive: "#000000", shininess: 0, map: texturePetal } );
+
+        // definition of the stem's curve
+        const curve = new THREE.CatmullRomCurve3([
+            new THREE.Vector3( 0.0 * scale, 0 * scale, 0.0 * scale),
+            new THREE.Vector3( 0.1 * scale, 1 * scale, 0.1 * scale ),
+            new THREE.Vector3( 0.1 * scale, 2 * scale, 0.2 * scale ),
+            new THREE.Vector3( 0.2 * scale, 3 * scale, 0.1 * scale ),
+            new THREE.Vector3( 0.1 * scale, 4 * scale, 0.0 * scale ),
+        ]);
+
+        // geometry and mesh of the stem
+        const stem = new THREE.TubeGeometry( curve, segmentsStem, radiusStem, segmentsStem, false );
         const meshStem = new THREE.Mesh( stem, materialStem );
-        this.add(meshStem);
+        this.add( meshStem );
 
-        const circle = new THREE.SphereGeometry( radiusCenter )
-        const materialCircle = new THREE.MeshPhongMaterial( { color: "#a4a832" } );
-        const meshCircle = new THREE.Mesh( circle, materialCircle )
-        meshCircle.rotateX( -Math.PI / 2 )
-        meshCircle.position.set( 0.1 * scale, 4 * scale + radiusCenter / 2, 0 )
-        meshCircle.scale.set(1,1,0.5)
-        this.add(meshCircle);
+        // geometry and mesh of the center
+        const center = new THREE.SphereGeometry( radiusCenter );
+        const meshCenter = new THREE.Mesh( center, materialcenter );
+        meshCenter.position.set( xCenter, yCenter, zCenter );
+        this.add( meshCenter );
 
-        const petals = new MyPetals( app, scale, numberPetals, widthPetal, heightPetal, radiusCenter)
-        petals.position.set(- heightPetal * 2, 0, 0)
-        this.add(petals)
+        // geometry and mesh of the petals
+        const petal = new THREE.SphereGeometry();    
+        for (let i = 0; i < numberPetals; i++) {
+            // mesh and holder to the operations on the right order
+            const mesh = new THREE.Mesh(petal, materialPetal);
+            const holder = new THREE.Object3D();
+            // scale to right dimensions, rotate and position on center of flower
+            mesh.scale.set(heightPetal, 0.001, widthPetal);
+            mesh.rotateY(anglePetals);          
+            mesh.position.set(xCenter, yCenter, zCenter);
+            holder.add(mesh);
+            // position on the circle of petals
+            holder.position.set(-Math.cos(anglePetals) * heightPetal, 0, Math.sin(anglePetals) * heightPetal);
+            this.add(holder);
+            // increment angle of the petal
+            anglePetals += intervalPetals;
+        }
     }
 }
 
