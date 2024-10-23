@@ -1,6 +1,5 @@
 import * as THREE from 'three';
 import { MyApp } from './MyApp.js';
-import { MyFlame } from './MyFlame.js';
 
 /**
  * This class contains the representation of a candle
@@ -22,21 +21,48 @@ class MyCandle extends THREE.Object3D {
     constructor(app, radiusStick, radiusFlame, heightStick, heightFlame, x, y, z, segments) {
         super();
         this.type = 'Group';
+        this.app = app;
 
         // variables
-        const yFlame = y + heightStick; // position of the flame in Oy
-        const yStick = y + heightStick / 2 // position of the stick in Oy
+        const heightConeFlame = heightFlame - radiusFlame;
+        const yFlame = y + heightStick;
+        const ySphereFlame = yFlame + radiusFlame;
+        const yConeFlame = ySphereFlame + heightConeFlame / 2;
+        const yStick = y + heightStick / 2;
 
-        // add flame
-        const flame = new MyFlame(app, radiusFlame, heightFlame, x, yFlame, z, segments);
-        this.add(flame)
+        // textures and materials
+        const sphereBigFlameMaterial = new THREE.MeshBasicMaterial( { color: "#e6b449",transparent: true, opacity: 0.7 } );
+        const sphereSmallFlameMaterial = new THREE.MeshBasicMaterial( { color: "#fcf177" } );
+        const coneFlameMaterial = new THREE.MeshBasicMaterial( { color: "#e6b449", transparent: true, opacity: 0.7 } );
+        const stickMaterial = new THREE.MeshBasicMaterial( { color: "#f9fae3" } );
 
+        // geometries
+        const sphereBigFlame = new THREE.SphereGeometry( radiusFlame, segments, segments, 0, Math.PI , 0, Math.PI )
+        const sphereSmallFlame = new THREE.SphereGeometry( radiusFlame * 0.5, segments, segments )
+        const coneFlame = new THREE.ConeGeometry( radiusFlame, heightConeFlame, segments, segments, false )
+        const stick = new THREE.CylinderGeometry( radiusStick, radiusStick, heightStick, segments, segments )
+
+        // add big sphere's mesh
+        const sphereBigFlameMesh = new THREE.Mesh( sphereBigFlame, sphereBigFlameMaterial );
+        sphereBigFlameMesh.position.set( x, ySphereFlame, z );
+        sphereBigFlameMesh.rotation.x = Math.PI / 2
+        this.add( sphereBigFlameMesh );
+
+        // add small sphere's mesh
+        const sphereSmallFlameMesh = new THREE.Mesh( sphereSmallFlame, sphereSmallFlameMaterial );
+        sphereSmallFlameMesh.position.set( x, ySphereFlame, z );
+        sphereSmallFlameMesh.rotation.x = Math.PI / 2
+        this.add( sphereSmallFlameMesh );
+
+        // add cone
+        const coneMesh = new THREE.Mesh( coneFlame, coneFlameMaterial );
+        coneMesh.position.set( x, yConeFlame, z );
+        this.add( coneMesh ); 
+        
         // add stick
-        const stick = new THREE.CylinderGeometry(radiusStick, radiusStick, heightStick, segments, segments)
-        const stickMaterial = new THREE.MeshBasicMaterial( {color: "#f9fae3"} );
-        const stickMesh = new THREE.Mesh(stick, stickMaterial);
-        stickMesh.position.set(x,yStick, z);
-        this.add(stickMesh);
+        const stickMesh = new THREE.Mesh( stick, stickMaterial );
+        stickMesh.position.set( x,yStick, z );
+        this.add( stickMesh );
     }
 }
 

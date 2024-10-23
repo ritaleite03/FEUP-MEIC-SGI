@@ -1,6 +1,5 @@
 import * as THREE from 'three';
 import { MyApp } from './MyApp.js';
-import { MyLeg } from './MyLeg.js';
 
 /**
  * This class contains the representation of a table
@@ -18,30 +17,39 @@ class MyTable extends THREE.Object3D {
     constructor(app, height, radius, xLenght, zLenght) {
         super();
         this.type = 'Group';
+        this.app = app;
 
         // variables
         const x = xLenght / 2 - radius; // position of the leg in Ox
         const z = zLenght / 2 - radius; // position of the leg in Oz
 
-        // texture and material of the top
-        let topTexture = new THREE.TextureLoader().load('textures/wooden_top.jpg');
-        topTexture.wrapS = THREE.MirroredRepeatWrapping;
-        topTexture.wrapT = THREE.MirroredRepeatWrapping;
-        //topTexture.rotation = Math.PI / 2;
-        topTexture.repeat.set(xLenght, zLenght);
-        const topMaterial = new THREE.MeshPhongMaterial({color: "#ffffff", specular: "#000000", emissive: "#000000", shininess: 0, map: topTexture})
+        // texture and material
+        let texture = new THREE.TextureLoader().load('textures/wooden_top.jpg');
+        texture.wrapS = THREE.MirroredRepeatWrapping;
+        texture.wrapT = THREE.MirroredRepeatWrapping;
+        texture.repeat.set(xLenght, zLenght);
+        const material = new THREE.MeshPhongMaterial({color: "#ffffff", specular: "#000000", emissive: "#000000", shininess: 0, map: texture});
 
-        // add legs
-        this.add(
-            new MyLeg(app, height, radius, x, z),
-            new MyLeg(app, height, radius, -x, z),
-            new MyLeg(app, height, radius, x, -z),
-            new MyLeg(app, height, radius, -x, -z)
-        )
+        // geometries (leg and top)
+        const leg = new THREE.CylinderGeometry( radius, radius, height ); 
+        const top = new THREE.BoxGeometry(xLenght, radius, zLenght); 
+
+        // add leg
+        const legMesh1 = new THREE.Mesh( leg, material );
+        const legMesh2 = new THREE.Mesh( leg, material );
+        const legMesh3 = new THREE.Mesh( leg, material );
+        const legMesh4 = new THREE.Mesh( leg, material );
+        legMesh1.position.set( +x, height / 2, +z );
+        legMesh2.position.set( -x, height / 2, +z );
+        legMesh3.position.set( +x, height / 2, -z );
+        legMesh4.position.set( -x, height / 2, -z );
+        this.add( legMesh1 );
+        this.add( legMesh2 );
+        this.add( legMesh3 );
+        this.add( legMesh4 );
 
         // add top
-        const top = new THREE.BoxGeometry(xLenght, radius, zLenght); 
-        const topMesh = new THREE.Mesh(top, topMaterial );
+        const topMesh = new THREE.Mesh( top, material );
         topMesh.position.y = height;
         this.add(topMesh);
     }

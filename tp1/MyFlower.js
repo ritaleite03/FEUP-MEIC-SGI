@@ -13,6 +13,8 @@ class MyFlower extends THREE.Object3D {
      * @param {number} numberPetals number of petals
      * @param {number} widthPetal width of the petal
      * @param {number} heightPetal height of the petal
+     * @param {number} radiusStem radius of the flower's stem
+     * @param {*} segmentsStem number of segments to do flower's stem
      */
     constructor(app, scale, numberPetals, widthPetal, heightPetal, radiusStem, segmentsStem) {
         super();
@@ -61,17 +63,21 @@ class MyFlower extends THREE.Object3D {
         // geometry and mesh of the petals
         const petal = new THREE.SphereGeometry();    
         for (let i = 0; i < numberPetals; i++) {
+
             // mesh and holder to the operations on the right order
             const mesh = new THREE.Mesh(petal, materialPetal);
             const holder = new THREE.Object3D();
+            
             // scale to right dimensions, rotate and position on center of flower
             mesh.scale.set(heightPetal, 0.001, widthPetal);
             mesh.rotateY(anglePetals);          
             mesh.position.set(xCenter, yCenter, zCenter);
             holder.add(mesh);
+            
             // position on the circle of petals
             holder.position.set(-Math.cos(anglePetals) * heightPetal, 0, Math.sin(anglePetals) * heightPetal);
             this.add(holder);
+            
             // increment angle of the petal
             anglePetals += intervalPetals;
         }
