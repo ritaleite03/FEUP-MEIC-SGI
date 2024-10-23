@@ -3,10 +3,8 @@ import { MyAxis } from './MyAxis.js';
 import { MyWalls } from './MyWalls.js';
 import { MyCake } from './MyCake.js';
 import { MyTable } from './MyTable.js';
-import { MyCandle } from './MyCandle.js';
-import { MyPlate } from './MyPlate.js';
 import { MyChair } from './MyChair.js';
-
+import { MyPainting } from './MyPainting.js';
 /**
  *  This class contains the contents of out application
  */
@@ -61,6 +59,10 @@ class MyContents  {
         this.ySpotLight = 5
         this.xTargetSpotLight = 1
         this.yTargetSpotLight = 0
+
+        const loader = new THREE.TextureLoader();
+        this.picture1 = loader.load('textures/202105309.jpg');
+        this.picture2 = loader.load('textures/202108699.jpg');
 
         this.walls = null;
     }
@@ -158,6 +160,19 @@ class MyContents  {
         chair.scale.set(0.5,0.5,0.5)
         chair.position.set(-1,0,3)
         this.app.scene.add(chair);
+
+        const photos = new THREE.Group();
+        const photo1 = new MyPainting(this.app, 2.1, 2.7, 0.2, this.picture1);
+        photo1.position.x = - 2.0;
+        photos.add(photo1);
+        const photo2 = new MyPainting(this.app, 2.1, 2.7, 0.2, this.picture2);
+        photo2.position.x = 2.0;
+        photos.add(photo2);
+        photos.rotateY(Math.PI/2);
+        photos.position.set(-10, 5, 0);
+
+        this.app.scene.add(photos);
+
 
         
         // Create a Plane Mesh with basic material
