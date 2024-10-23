@@ -5,8 +5,8 @@ class MyPlate extends THREE.Object3D {
     /**
        constructs the object
        @param {MyApp} app The application object
-       @param {number} radius Plate radius 
-       @param {boolean} slice Cake slice
+       @param {number} radius plate radius 
+       @param {boolean} slice cake slice
     */ 
     constructor(app, radius, slice) {
         super()

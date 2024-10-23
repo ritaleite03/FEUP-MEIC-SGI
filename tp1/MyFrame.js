@@ -42,8 +42,9 @@ class MyFrame extends THREE.Object3D {
 
         geometry.setIndex( indicesOfFaces );
         geometry.setAttribute( 'position', new THREE.BufferAttribute( vertices, 3 ) );
+        geometry.computeVertexNormals()
 
-        const material = new THREE.MeshStandardMaterial( { color: 0xffffff } );
+        const material = new THREE.MeshLambertMaterial( {color: "#554433" } );
         const mesh = new THREE.Mesh( geometry, material )
 
         this.add(mesh)

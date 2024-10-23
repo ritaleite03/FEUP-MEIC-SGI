@@ -6,13 +6,13 @@ class MyCake extends THREE.Object3D {
 
     /**
        constructs the object
-       @param {MyApp} app The application object
-       @param {number} radius Bottom Cake radius 
-       @param {number} height Tier height
-       @param {number} angleLength 
-       @param {boolean} slice Cake slice (default false)
-       @param {number} tiers Number of tiers (default 1)
-       @param {number} tiers Top tier radius (default radius)
+       @param {MyApp} app the application object
+       @param {number} radius bottom Cake radius 
+       @param {number} height tier height
+       @param {number} angleLength topTier's angle
+       @param {boolean} slice cake slice (default false)
+       @param {number} tiers number of tiers (default 1)
+       @param {number} tiers top tier radius (default radius)
 
     */ 
     constructor(app, radius, height, angleLength, slice = false, tiers = 1,  radiusLast = radius) {
@@ -32,7 +32,6 @@ class MyCake extends THREE.Object3D {
         const insideCakeTexture = new THREE.TextureLoader().load('textures/inside_cake.jpg');
         const outsideCakeMaterial = new THREE.MeshPhongMaterial({color: "#ffffff", emissive: "#000000", shininess: 0, map: outsideCakeTexture})
         const insideCakeMaterial = new THREE.MeshPhongMaterial({color: "#ffffff", emissive: "#000000", shininess: 0, map: insideCakeTexture})
-        let boxMaterial = new THREE.MeshPhongMaterial({ color: "#ffff77" })
         
         let startAngle = 0; // Start cake angle
         let endAngle = angleLength + startAngle; //End cake angle

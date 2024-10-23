@@ -5,13 +5,13 @@ import { MyFrame } from './MyFrame.js';
 /**
  * This class contains the representation of a picture frame
  */
-class MyPainting extends THREE.Object3D {
+class MyPicture extends THREE.Object3D {
 
     /**
      * 
      * @param {MyApp} app the application object
-     * @param {number} width painting width
-     * @param {number} length painting length
+     * @param {number} width picture width
+     * @param {number} length picture length
      * @param {number} frameWidth frame width
      * @param {texture} picture picture texture
      */
@@ -63,4 +63,4 @@ class MyPainting extends THREE.Object3D {
 }
 
 
-export { MyPainting };
+export { MyPicture };
