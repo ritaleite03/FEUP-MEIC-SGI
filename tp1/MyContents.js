@@ -186,7 +186,7 @@ class MyContents  {
         this.app.scene.add( cakeSlice );
 
         // create and attach the chair to the scene
-        const chair = new MyChair( widthBottomChair, heightBottomChair, widthTopChair, heightTopChair, radiusLegsChair, heightLegsChair, radiusBackChair, heightBackChair, thicknessChair )
+        const chair = new MyChair( this, widthBottomChair, heightBottomChair, widthTopChair, heightTopChair, radiusLegsChair, heightLegsChair, radiusBackChair, heightBackChair, thicknessChair )
         chair.rotateY( -Math.PI / 6 )
         chair.scale.set( 0.5, 0.5, 0.5 )
         chair.position.set( -1, 0, 3)

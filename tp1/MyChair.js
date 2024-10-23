@@ -7,66 +7,74 @@ class MyChair extends THREE.Object3D {
 
     /**
        @param {MyApp} app The application object
-       @param {number} widthBottom width of the chair's bottom
-       @param {number} heightBottom heigth of the chair's bottom
-       @param {number} widthTop width of the chair's top
-       @param {number} heightTop heigth of the chair's top
-       @param {number} radiusLegs radius of the chair's leg
-       @param {number} heightLegs height of the chair's leg
-       @param {number} radiusBack radius of the chair's back
-       @param {number} heightBack height of the chair's back
+       @param {number} widthPlaneDown width of the chair's plane down (bottom)
+       @param {number} heightPlaneDown heigth of the chair's plane down (bottom)
+       @param {number} widthPlaneUp width of the chair's plane up (back)
+       @param {number} heightPlaneUp heigth of the cchair's plane down (back)
+       @param {number} radiusLegDown radius of the chair's legs down (bottom)
+       @param {number} heightLegDown height of the chair's legs down (bottom)
+       @param {number} radiusLegBack radius of the chair's legs up (back)
+       @param {number} heightLegBack height of the chair's legs up (back)
        @param {number} thickness thickness of the wood
     */ 
-    constructor(widthBottom, heightBottom, widthTop, heightTop, radiusLegs, heightLegs, radiusBack, heightBack, thickness) {
+    constructor(app, widthPlaneDown, heightPlaneDown, widthPlaneUp, heightPlaneUp, radiusLegDown, heightLegDown, radiusLegBack, heightLegBack, thickness) {
         super()
+        this.app = app;
 
+        // variables
+        const xLegDown = widthPlaneDown / 2 - radiusLegDown;
+        const yLegDown = heightLegDown / 2;
+        const zLegDown = heightPlaneDown / 2 - radiusLegDown;
+        const yPlaneDown = yLegDown * 2 + thickness / 2;
+        const xLegUp = widthPlaneDown / 2 - radiusLegDown;
+        const yLegUp = yPlaneDown + thickness / 2 + heightLegBack / 2;
+        const zLegUp = heightPlaneDown / 2 - radiusLegDown;
+
+        // texture and materials
         let woodenTexture = new THREE.TextureLoader().load('textures/wooden_top.jpg');
         woodenTexture.wrapS = THREE.MirroredRepeatWrapping;
         woodenTexture.wrapT = THREE.MirroredRepeatWrapping;
-        const woodenMaterial = new THREE.MeshPhongMaterial({color: "#ffffff", specular: "#000000", emissive: "#000000", shininess: 0, map: woodenTexture})
+        const woodenMaterial = new THREE.MeshPhongMaterial( { color: "#ffffff", specular: "#000000", emissive: "#000000", shininess: 0, map: woodenTexture } );
 
-        const bottom = new THREE.BoxGeometry(widthBottom, heightBottom, thickness);
-        const top = new THREE.BoxGeometry(widthTop, heightTop, thickness);
+        // geometries
+        const planeDown = new THREE.BoxGeometry( widthPlaneDown, heightPlaneDown, thickness );
+        const planeUp = new THREE.BoxGeometry( widthPlaneUp, heightPlaneUp, thickness );
+        const legDown = new THREE.CylinderGeometry( radiusLegDown, radiusLegDown, heightLegDown );
+        const legUp = new THREE.CylinderGeometry( radiusLegBack, radiusLegBack, heightLegBack );
 
-        const leg = new THREE.CylinderGeometry(radiusLegs,radiusLegs,heightLegs)
-        const back = new THREE.CylinderGeometry(radiusBack,radiusBack,heightBack)
+        // mesh legs down (bottom)
+        const legDownMesh1 =  new THREE.Mesh (legDown, woodenMaterial);
+        const legDownMesh2 =  new THREE.Mesh (legDown, woodenMaterial);
+        const legDownMesh3 =  new THREE.Mesh (legDown, woodenMaterial);
+        const legDownMesh4 =  new THREE.Mesh (legDown, woodenMaterial);
+        legDownMesh1.position.set( +xLegDown, yLegDown, +zLegDown );
+        legDownMesh2.position.set( -xLegDown, yLegDown, +zLegDown );
+        legDownMesh3.position.set( +xLegDown, yLegDown, -zLegDown );
+        legDownMesh4.position.set( -xLegDown, yLegDown, -zLegDown );
+        this.add( legDownMesh1 );
+        this.add( legDownMesh2 );
+        this.add( legDownMesh3 );
+        this.add( legDownMesh4 );
 
-        const bottomMesh = new THREE.Mesh (bottom, woodenMaterial);
-        bottomMesh.rotateX(Math.PI / 2)
-        bottomMesh.position.y = heightLegs + thickness / 2;
-        this.add(bottomMesh);
+        // mesh plane down (bottom)
+        const planeDownMesh = new THREE.Mesh( planeDown, woodenMaterial );
+        planeDownMesh.rotateX( Math.PI / 2 );
+        planeDownMesh.position.y = yPlaneDown;
+        this.add( planeDownMesh );
 
-        const legMesh1 =  new THREE.Mesh (leg, woodenMaterial);
-        legMesh1.position.set(widthBottom / 2 - radiusLegs ,heightLegs / 2, heightBottom / 2 - radiusLegs)
-        this.add(legMesh1);
+        // mesh legs up (back)
+        const legUpMesh1 =  new THREE.Mesh( legUp, woodenMaterial );
+        const legUpMesh2 =  new THREE.Mesh( legUp, woodenMaterial );
+        legUpMesh1.position.set( +xLegUp, yLegUp, zLegUp);
+        legUpMesh2.position.set( -xLegUp, yLegUp, zLegUp);
+        this.add( legUpMesh1 );
+        this.add( legUpMesh2 );
 
-        const legMesh2 =  new THREE.Mesh (leg, woodenMaterial);
-        legMesh2.position.set(-widthBottom / 2 + radiusLegs ,heightLegs / 2, heightBottom / 2 - radiusLegs)
-        this.add(legMesh2);
-
-        const legMesh3 =  new THREE.Mesh (leg, woodenMaterial);
-        legMesh3.position.set(widthBottom / 2 - radiusLegs ,heightLegs / 2, -heightBottom / 2 + radiusLegs)
-        this.add(legMesh3);
-
-        const legMesh4 =  new THREE.Mesh (leg, woodenMaterial);
-        legMesh4.position.set(-widthBottom / 2 + radiusLegs ,heightLegs / 2, -heightBottom / 2 + radiusLegs)
-        this.add(legMesh4);
-
-        const topMesh = new THREE.Mesh (top, woodenMaterial);
-        topMesh.position.set(0, heightLegs + thickness + heightBack + heightTop / 2, heightBottom / 2 - thickness / 2);
-        this.add(topMesh);
-
-        const backMesh1 =  new THREE.Mesh (back, woodenMaterial);
-        backMesh1.position.set(widthBottom / 2 - radiusLegs ,heightLegs + thickness + heightBack / 2, heightBottom / 2 - radiusLegs)
-        this.add(backMesh1);
-
-        const backMesh2 =  new THREE.Mesh (leg, woodenMaterial);
-        backMesh2.position.set(-widthBottom / 2 + radiusLegs ,heightLegs + thickness + heightBack / 2, heightBottom / 2 - radiusLegs)
-        this.add(backMesh2);
-
-
+        // mesh plane up (back)
+        const planeUpMesh = new THREE.Mesh( planeUp, woodenMaterial );
+        planeUpMesh.position.set( 0, yLegUp + heightLegBack / 2 + heightPlaneUp / 2, heightPlaneDown / 2 - thickness / 2 );
+        this.add( planeUpMesh );
     }
-
 }
 
 export { MyChair };
