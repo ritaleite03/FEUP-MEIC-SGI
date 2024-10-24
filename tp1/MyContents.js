@@ -24,20 +24,6 @@ class MyContents  {
         this.app = app;
         this.axis = null;
 
-        // box related attributes
-        this.boxMesh = null;
-        this.boxMeshSize = 1.0;
-        this.boxEnabled = true;
-        this.lastBoxEnabled = null;
-        this.boxDisplacement = new THREE.Vector3(0,2,0);
-
-        // plane related attributes
-
-        // this.diffusePlaneColor = "#00ffff";
-        // this.specularPlaneColor = "#777777";
-        // this.planeShininess = 30;
-        // this.planeMaterial = new THREE.MeshPhongMaterial({ color: this.diffusePlaneColor, specular: this.specularPlaneColor, emissive: "#000000", shininess: this.planeShininess })
-        
         //texture
         this.planeTexture = new THREE.TextureLoader().load('textures/wooden_top.jpg');
         this.planeTexture.wrapS = THREE.RepeatWrapping;
@@ -78,17 +64,6 @@ class MyContents  {
         this.samplesU = 8 // maximum defined in MyGuiInterface
         this.samplesV = 8 // maximum defined in MyGuiInterface
         this.init()
-    }
-
-    /**
-     * builds the box mesh with material assigned
-     */
-    buildBox() {    
-        let boxMaterial = new THREE.MeshPhongMaterial({ color: "#ffff77", specular: "#000000", emissive: "#000000", shininess: 90 });
-        let box = new THREE.BoxGeometry(  this.boxMeshSize,  this.boxMeshSize,  this.boxMeshSize );
-        this.boxMesh = new THREE.Mesh( box, boxMaterial );
-        this.boxMesh.rotation.x = -Math.PI / 2;
-        this.boxMesh.position.y = this.boxDisplacement.y;
     }
 
     /**
@@ -138,8 +113,6 @@ class MyContents  {
         this.app.scene.add( this.spotLight );
         this.spotLightHelper = new THREE.SpotLightHelper( this.spotLight );
         this.app.scene.add( this.spotLightHelper );
-
-        this.buildBox()
 
         const tierHeightCake = 0.2;
         const baseRadiusCake = 0.5;
@@ -382,51 +355,7 @@ class MyContents  {
         this.ySpotLight = value
         this.spotLight.position.y = value
     }
-    /**
-     * rebuilds the box mesh if required
-     * this method is called from the gui interface
-     */
-    rebuildBox() {
-        // remove boxMesh if exists
-        if (this.boxMesh !== undefined && this.boxMesh !== null) {  
-            this.app.scene.remove(this.boxMesh)
-        }
-        this.buildBox();
-        this.lastBoxEnabled = null
-    }
     
-    /**
-     * updates the box mesh if required
-     * this method is called from the render method of the app
-     * updates are trigered by boxEnabled property changes
-     */
-    updateBoxIfRequired() {
-        if (this.boxEnabled !== this.lastBoxEnabled) {
-            this.lastBoxEnabled = this.boxEnabled
-            if (this.boxEnabled) {
-                this.app.scene.add(this.boxMesh)
-            }
-            else {
-                this.app.scene.remove(this.boxMesh)
-            }
-        }
-    }
-
-    /**
-     * updates the contents
-     * this method is called from the render method of the app
-     * 
-     */
-    update() {
-        // check if box mesh needs to be updated
-        this.updateBoxIfRequired()
-        // sets the box mesh position based on the displacement vector
-        this.boxMesh.position.x = this.boxDisplacement.x
-        this.boxMesh.position.y = this.boxDisplacement.y
-        this.boxMesh.position.z = this.boxDisplacement.z
-        
-    }
-
     /**
      * removes (if existing) and recreates the nurbs surfaces
      */
