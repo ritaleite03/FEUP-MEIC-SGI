@@ -5,9 +5,11 @@ import { MyCake } from './MyCake.js';
 import { MyTable } from './MyTable.js';
 import { MyChair } from './MyChair.js';
 import { MyNurbsBuilder } from './MyNurbsBuilder.js';
+import { MyPicture } from './MyPicture.js';
 import { MyFlower } from './MyFlower.js';
 import { MyNewspaper } from './MyNewsPaper.js';
 import { MySpiralSpring } from './MySpiralSpring.js';
+import { MyFrame } from './MyFrame.js';
 
 /**
  *  This class contains the contents of out application
@@ -61,6 +63,10 @@ class MyContents  {
         this.ySpotLight = 8
         this.xTargetSpotLight = 1
         this.yTargetSpotLight = 0
+
+        const loader = new THREE.TextureLoader();
+        this.picture1 = loader.load('textures/202105309.jpg');
+        this.picture2 = loader.load('textures/202108699.jpg');
 
         const map = new THREE.TextureLoader().load( 'textures/uv_grid_opengl.jpg' );
         map.wrapS = map.wrapT = THREE.RepeatWrapping;
@@ -191,6 +197,19 @@ class MyContents  {
         chair.scale.set( 0.5, 0.5, 0.5 )
         chair.position.set( -1, 0, 3)
         this.app.scene.add( chair );
+
+        
+        // create and attach the photos to the scene
+        const photos = new THREE.Group();
+        const photo1 = new MyPicture(this.app, 2.1, 2.7, 0.2, this.picture1);
+        photo1.position.x = - 2.0;
+        photos.add(photo1);
+        const photo2 = new MyPicture(this.app, 2.1, 2.7, 0.2, this.picture2);
+        photo2.position.x = 2.0;
+        photos.add(photo2);
+        photos.rotateY(Math.PI/2);
+        photos.position.set(-10, 5, 0);
+        this.app.scene.add(photos);
 
         // create and attach the flowers to the scene
         const flower1 = new MyFlower( this , scaleJar * 1.0,  numberPetals - 0, widthPetal * 1.0, heightPetal * 1.0, radiusStem, segmentsStem );

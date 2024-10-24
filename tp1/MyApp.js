@@ -108,7 +108,7 @@ class MyApp  {
         orthoFront.lookAt( new THREE.Vector3(0,0,0) );
         this.cameras['Front'] = orthoFront
 
-        // create a front view orthographic camera
+        // create a back view orthographic camera
         const orthoBack = new THREE.OrthographicCamera( left, right, top, bottom, near, far);
         orthoBack.up = new THREE.Vector3(0,1,0);
         orthoBack.position.set(0,0, -this.frustumSize /4) 
