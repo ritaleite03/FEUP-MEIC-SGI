@@ -212,8 +212,9 @@ class MyContents  {
         
         // create and attach newspaper to the scene
         const newspaper = new MyNewspaper(this, xLenghtTable / 4, heightTable + radiusTable / 2, zLenghtTable / 4, 1, 5)
-        newspaper.rotateY(Math.PI)
-        this.app.scene.add(newspaper)
+        newspaper.rotateY(Math.PI);
+        newspaper.position.set(0,0.001,0);
+        this.app.scene.add(newspaper);
 
         // create and attach the spiral spring to the scene
         const spiralSpring = new MySpiralSpring(this, radiusSpiral, segmentsSpiral, heightSpiral, heightLevelSpiral)
