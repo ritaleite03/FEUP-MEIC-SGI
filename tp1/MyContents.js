@@ -75,25 +75,6 @@ class MyContents  {
             this.app.scene.add( this.axis )
         }
 
-        // variables to hold the curves
-        this.polyline = null
-        this.quadraticBezierCurve = null
-        this.cubicBezierCurve = null
-        this.catmullRomCurve = null
-        this.numberOfSamples = 8
-        this.hullMaterial = new THREE.MeshBasicMaterial( {color: 0xffffff, opacity: 0.50, transparent: true});    
-        this.recompute();
-
-        // create light
-
-        // add a point light on top of the model
-        // const pointLight = new THREE.PointLight( 0xffffff, 500, 0 );
-        // pointLight.position.set( 0, 20, 0 );
-        // this.app.scene.add( pointLight );
-        // const sphereSize = 0.5;
-        // const pointLightHelper = new THREE.PointLightHelper( pointLight, sphereSize );
-        // this.app.scene.add( pointLightHelper );
-
         // add an ambient light
         const ambientLight = new THREE.AmbientLight( 0x555555, 5 );
         this.app.scene.add( ambientLight );
@@ -154,44 +135,40 @@ class MyContents  {
         const heightSpiral = 2
         const heightLevelSpiral = 4
 
-        // create and attach the table to the scene
         const table = new MyTable( this, heightTable, radiusTable, xLenghtTable, zLenghtTable );
         this.app.scene.add( table );
 
-        // create and attach walls to the scene
         const walls = new MyWalls( this, 20, 15, 10, 0.5 )
         this.app.scene.add( walls );
         
-        // create and attach the cake to the scene
         const cake = new MyCake( this, baseRadiusCake, tierHeightCake, 10 * Math.PI / 6, false, 3, topRadiusCake );
         cake.position.y = topPositionTable + baseRadiusCake * 0.4 + 0.005;
         this.app.scene.add( cake );
         
-        // create and attach the cake slice to the scene
         const cakeSlice = new MyCake( this, topRadiusCake, tierHeightCake, 2 * Math.PI / 6, true );
         cakeSlice.position.set( 0.5, topPositionTable + 0.03, 0.5 );
         this.app.scene.add( cakeSlice );
 
-        // create and attach the chair to the scene
         const chair = new MyChair( this, widthBottomChair, heightBottomChair, widthTopChair, heightTopChair, radiusLegsChair, heightLegsChair, radiusBackChair, heightBackChair, thicknessChair )
         chair.rotateY( -Math.PI / 6 )
         chair.scale.set( 0.5, 0.5, 0.5 )
         chair.position.set( -1, 0, 3)
         this.app.scene.add( chair );
         
-        // create and attach the photos to the scene
         const photos = new THREE.Group();
+        
         const photo1 = new MyPicture(this.app, 2.1, 2.7, 0.2, this.picture1);
         photo1.position.x = - 2.0;
         photos.add(photo1);
+
         const photo2 = new MyPicture(this.app, 2.1, 2.7, 0.2, this.picture2);
         photo2.position.x = 2.0;
         photos.add(photo2);
+        
         photos.rotateY(Math.PI/2);
         photos.position.set(-10, 5, 0);
         this.app.scene.add(photos);
 
-        // create and attach the flowers to the scene
         const flower1 = new MyFlower( this , scaleJar * 1.0,  numberPetals - 0, widthPetal * 1.0, heightPetal * 1.0, radiusStem, segmentsStem );
         const flower2 = new MyFlower( this , scaleJar * 0.9,  numberPetals - 1, widthPetal * 0.9, heightPetal * 0.9, radiusStem, segmentsStem );
         const flower3 = new MyFlower( this , scaleJar * 0.9,  numberPetals - 2, widthPetal * 0.9, heightPetal * 0.9, radiusStem, segmentsStem );
@@ -206,34 +183,24 @@ class MyContents  {
         this.app.scene.add( flower2 );
         this.app.scene.add( flower3 );
 
-        // create and attach the jar to the scene
         this.createsideJar( xLenghtTable / 4, heightTable + radiusTable / 2, -zLenghtTable / 4, scaleJar )       
         
-        // create and attach newspaper to the scene
         const newspaper = new MyNewspaper( this, arcPages, numberPages, widthNewspaper, lengthNewspaper, heightNewspaper );
         newspaper.rotateY( Math.PI );
         newspaper.scale.set( scaleNewspaper, scaleNewspaper, scaleNewspaper )
         newspaper.position.set( positionNewspaper[0], positionNewspaper[1],  positionNewspaper[2] );
         this.app.scene.add( newspaper );
 
-        // create and attach the spiral spring to the scene
         const spiralSpring = new MySpiralSpring(this, radiusSpiral, segmentsSpiral, heightSpiral, heightLevelSpiral)
         this.app.scene.add(spiralSpring)
         
-        //let plane = new THREE.PlaneGeometry( 20, 15 );
-        //this.planeMesh = new THREE.Mesh( plane, this.planeMaterial );
-        //this.planeMesh.rotation.x = -Math.PI / 2;
-        //this.planeMesh.position.y = -0;
-        //this.app.scene.add( this.planeMesh );
-
         let planeSizeU = 20;
         let planeSizeV = 15;
         let planeUVRate = planeSizeV / planeSizeU;
-        let planeTextureUVRate = 3354 / 2385; // image dimensions
+        let planeTextureUVRate = 3354 / 2385;
         let planeTextureRepeatU = 1;
         let planeTextureRepeatV = planeTextureRepeatU * planeUVRate * planeTextureUVRate;
         this.planeTexture.repeat.set( planeTextureRepeatU, planeTextureRepeatV );
-        //this.planeTexture.rotation = 30 * Math.PI / 180;
         this.planeTexture.offset = new THREE.Vector2(0,0);
         var plane = new THREE.PlaneGeometry( planeSizeU, planeSizeV );
         this.planeMesh = new THREE.Mesh( plane, this.planeMaterial );
@@ -242,66 +209,17 @@ class MyContents  {
         this.app.scene.add( this.planeMesh );
     }
 
-    // Deletes the contents of the line if it exists and recreates them
-    recompute() {
-        // if (this.polyline !== null) this.app.scene.remove(this.polyline)
-        // this.initPolyline([new THREE.Vector3(-0.6,-0.6,0), new THREE.Vector3(0.6,-0.6,0), new THREE.Vector3(0.6,0.6,0), new THREE.Vector3(-0.6,0.6,0)], new THREE.Vector3(0,0,0))
-        // if (this.quadraticBezierCurve !== null) this.app.scene.remove(this.quadraticBezierCurve)
-        // this.initQuadraticBezierCurve([ new THREE.Vector3(-0.6,-0.6,0), new THREE.Vector3(0,0.6,0), new THREE.Vector3(0.6,-0.6,0)], new THREE.Vector3(0,0,0))
-        // if (this.cubicBezierCurve !== null) this.app.scene.remove(this.cubicBezierCurve)
-        // this.initCubicBezierCurve([new THREE.Vector3(-0.6,-0.6,0), new THREE.Vector3(-0.6,0.6,0), new THREE.Vector3(0.6,-0.6,0), new THREE.Vector3(0.6,0.6,0)], new THREE.Vector3(0,0,0))
-        // if (this.catmullRomCurve !== null) this.app.scene.remove(this.catmullRomCurve)
-        // this.initCatmullRomCurve([new THREE.Vector3(-0.6,-0,0), new THREE.Vector3(-0.3,0.6,0.3), new THREE.Vector3(0,0,0), new THREE.Vector3(0.3,-0.6,0.3), new THREE.Vector3(0.6,0,0), new THREE.Vector3(0.9,0.6,0.3), new THREE.Vector3(1.2,0,0)], new THREE.Vector3(0,0,0))
-    }
-
-    
-    drawHull(position, points) {     
-        const geometry = new THREE.BufferGeometry().setFromPoints(points);
-        let line = new THREE.Line( geometry, this.hullMaterial );
-        line.position.set(position.x,position.y,position.z)
-        this.app.scene.add(line);
-    }
-    
-    initPolyline(points, position) {
-        this.drawHull(position, points);
-        const geometry = new THREE.BufferGeometry().setFromPoints( points );
-        this.polyline = new THREE.Line( geometry, new THREE.LineBasicMaterial( { color: 0xff0000 } ) );
-        this.polyline.position.set(position.x,position.y,position.z)
-        this.app.scene.add(this.polyline);
-    }
-
-    initQuadraticBezierCurve(points, position) {
-        this.drawHull(position, points);
-        let curve = new THREE.QuadraticBezierCurve3( points[0], points[1], points[2])
-        let sampledPoints = curve.getPoints(this.numberOfSamples);  
-        this.curveGeometry = new THREE.BufferGeometry().setFromPoints(sampledPoints)
-        this.lineMaterial = new THREE.LineBasicMaterial( { color: 0x00ff00 } )
-        this.lineObj = new THREE.Line( this.curveGeometry, this.lineMaterial )
-        this.lineObj.position.set(position.x,position.y,position.z)
-        this.app.scene.add(this.lineObj);
-    }
-
-    initCubicBezierCurve(points, position) {
-        this.drawHull(position, points);
-        let curve = new THREE.CubicBezierCurve3( points[0], points[1], points[2], points[3])
-        let sampledPoints = curve.getPoints(this.numberOfSamples);  
-        this.curveGeometry = new THREE.BufferGeometry().setFromPoints(sampledPoints)
-        this.lineMaterial = new THREE.LineBasicMaterial( { color: 0x00ff00} )
-        this.lineObj = new THREE.Line( this.curveGeometry, this.lineMaterial )
-        this.lineObj.position.set(position.x,position.y,position.z)
-        this.app.scene.add( this.lineObj );
-    }
-
-    
-    initCatmullRomCurve(points, position) {
-        this.drawHull(position, points);
-        let curve = new THREE.CatmullRomCurve3(points)
-        let sampledPoints = curve.getPoints(this.numberOfSamples);  
-        this.curveGeometry = new THREE.BufferGeometry().setFromPoints(sampledPoints)
-        this.lineMaterial = new THREE.LineBasicMaterial( { color: 0x00ff00 } )
-        this.lineObj = new THREE.Line( this.curveGeometry, this.lineMaterial )
-        this.lineObj.position.set(position.x,position.y,position.z)
-        this.app.scene.add( this.lineObj );
+    drawCubicBezierCurve(points, position) {
+        // define the curve
+        const numberSamples = 8;
+        const curve = new THREE.CubicBezierCurve3( points[0], points[1], points[2], points[3])
+        const sampledPoints = curve.getPoints( numberSamples );  
+        // draw the curve
+        const curveGeometry = new THREE.BufferGeometry().setFromPoints( sampledPoints )
+        const lineMaterial = new THREE.LineBasicMaterial( { color: 0x00ff00 } )
+        const lineObj = new THREE.Line( curveGeometry, lineMaterial )
+        lineObj.position.set( position.x, position.y, position.z )
+        this.app.scene.add( lineObj );
     }
 
     /**
