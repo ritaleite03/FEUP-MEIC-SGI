@@ -168,6 +168,14 @@ class MyContents  {
         const radiusStem = 0.008
         const segmentsStem = 20
 
+        const arcPages = 0.6;
+        const numberPages = 5;
+        const widthNewspaper = 0.3;
+        const lengthNewspaper = 0.5;
+        const heightNewspaper = 0.25;
+        const scaleNewspaper = 2;
+        const positionNewspaper = [ xLenghtTable / 4 + 2 * scaleNewspaper * widthNewspaper, heightTable + radiusTable / 2 + 0.001, zLenghtTable / 4 + lengthNewspaper  ];
+
         const radiusSpiral = 0.4
         const segmentsSpiral = 20
         const heightSpiral = 2
@@ -197,7 +205,6 @@ class MyContents  {
         chair.scale.set( 0.5, 0.5, 0.5 )
         chair.position.set( -1, 0, 3)
         this.app.scene.add( chair );
-
         
         // create and attach the photos to the scene
         const photos = new THREE.Group();
@@ -230,10 +237,11 @@ class MyContents  {
         this.createsideJar( xLenghtTable / 4, heightTable + radiusTable / 2, -zLenghtTable / 4, scaleJar )       
         
         // create and attach newspaper to the scene
-        const newspaper = new MyNewspaper(this, xLenghtTable / 4, heightTable + radiusTable / 2, zLenghtTable / 4, 1, 5)
-        newspaper.rotateY(Math.PI);
-        newspaper.position.set(0,0.001,0);
-        this.app.scene.add(newspaper);
+        const newspaper = new MyNewspaper( this, arcPages, numberPages, widthNewspaper, lengthNewspaper, heightNewspaper );
+        newspaper.rotateY( Math.PI );
+        newspaper.scale.set( scaleNewspaper, scaleNewspaper, scaleNewspaper )
+        newspaper.position.set( positionNewspaper[0], positionNewspaper[1],  positionNewspaper[2] );
+        this.app.scene.add( newspaper );
 
         // create and attach the spiral spring to the scene
         const spiralSpring = new MySpiralSpring(this, radiusSpiral, segmentsSpiral, heightSpiral, heightLevelSpiral)
