@@ -10,6 +10,7 @@ import { MyFlower } from './MyFlower.js';
 import { MyNewspaper } from './MyNewsPaper.js';
 import { MySpiralSpring } from './MySpiralSpring.js';
 import { MyLamp } from './MyLamp.js';
+import { MyCurtain } from './MyCurtain.js';
 
 /**
  *  This class contains the contents of out application
@@ -65,15 +66,15 @@ class MyContents  {
         const zLenghtTable = 4;
         const topPositionTable = heightTable + tierHeightCake / 2 + radiusTable / 2;
 
-        const widthBottomChair = 5
-        const heightBottomChair = 4
-        const widthTopChair = 5
-        const heightTopChair = 2
-        const radiusLegsChair = 0.2
-        const heightLegsChair = 3
-        const radiusBackChair = 0.2
-        const heightBackChair = 2
-        const thicknessChair = 0.4
+        const widthBottomChair = 2.5
+        const heightBottomChair = 2.0
+        const widthTopChair = 2.5
+        const heightTopChair = 1.0
+        const radiusLegsChair = 0.1
+        const heightLegsChair = 1.5
+        const radiusBackChair = 0.1
+        const heightBackChair = 1.0
+        const thicknessChair = 0.2
 
         const scaleJar = 0.2
         const numberPetals = 10
@@ -115,13 +116,11 @@ class MyContents  {
 
         const chair1 = new MyChair( this, widthBottomChair, heightBottomChair, widthTopChair, heightTopChair, radiusLegsChair, heightLegsChair, radiusBackChair, heightBackChair, thicknessChair )
         chair1.rotateY( -Math.PI / 6 )
-        chair1.scale.set( 0.5, 0.5, 0.5 )
         chair1.position.set( -1, 0, 3)
         this.app.scene.add( chair1 );
 
         const chair2 = new MyChair( this, widthBottomChair, heightBottomChair, widthTopChair, heightTopChair, radiusLegsChair, heightLegsChair, radiusBackChair, heightBackChair, thicknessChair )
         chair2.rotateY( Math.PI / 6 + Math.PI)
-        chair2.scale.set( 0.5, 0.5, 0.5 )
         chair2.position.set( 1, 0, -3)
         this.app.scene.add( chair2 );
         
@@ -153,8 +152,11 @@ class MyContents  {
         this.app.scene.add( flower2 );
         this.app.scene.add( flower3 );
 
-        this.createsideJar( xLenghtTable / 4, heightTable + radiusTable / 2, -zLenghtTable / 4, scaleJar )       
-        
+        const curtain = new MyCurtain(this, widthRoomWall, lengthRoomWall, heightWall)
+        this.app.scene.add(curtain)
+
+        this.drawJar( xLenghtTable / 4, heightTable + radiusTable / 2, -zLenghtTable / 4, scaleJar )       
+
         const newspaper = new MyNewspaper( this, arcPages, numberPages, widthNewspaper, lengthNewspaper, heightNewspaper );
         newspaper.rotateY( Math.PI );
         newspaper.scale.set( scaleNewspaper, scaleNewspaper, scaleNewspaper )
@@ -187,7 +189,6 @@ class MyContents  {
         ceillingMesh.castShadow = true;
         ceillingMesh.receiveShadow = true;
         this.app.scene.add(ceillingMesh)
-
 
         const radiusFootLamp = 0.8;
         const heighFootLamp = 0.6
@@ -304,19 +305,13 @@ class MyContents  {
     /**
      * removes (if existing) and recreates the nurbs surfaces
      */
-    createsideJar(x,y,z,scale) {
-        if (this.meshes !== null) {
-            for (let i=0; i<this.meshes.length; i++) this.app.scene.remove( this.meshes[i] )
-            this.meshes = [] 
-        }
-
-        let controlPointsSide = [
+    drawJar(x,y,z,scale) {
+        const curveSide = [
             [[ 2.0, 0, 0, 1 ],[ 1.0, 2, 0, 1 ],[ 2.0, 3, 0, 1 ]],
             [[ 2.5, 0, 1, 1 ],[ 2.5, 2, 2, 1 ],[ 2.5, 3, 1, 1 ]],
             [[ 3.0, 0, 0, 1 ],[ 4.0, 2, 0, 1 ],[ 3.0, 3, 0, 1 ]],
         ]
-
-        let controlPointsBottom = [
+        const curveBottom = [
             [[ 2.0, 0.02, 0, 1 ],[ 2.0, 0.01, 0.0, 1 ],[ 2.0, 0, 0, 1 ]],
             [[ 2.5, 0.02, 1, 1 ],[ 2.5, 0.01, 0.5, 1 ],[ 2.5, 0, 0, 1 ]],
             [[ 3.0, 0.02, 0, 1 ],[ 3.0, 0.01, 0.0, 1 ],[ 3.0, 0, 0, 1 ]]
@@ -327,9 +322,9 @@ class MyContents  {
         const orderBottomU= 2
         const orderBottomV = 2
 
-        const material = new THREE.MeshLambertMaterial( { color: "#ffffff", side: THREE.DoubleSide} );             
-        let sideJar = this.builder.build( controlPointsSide, orderSideU, orderSideV, this.samplesU, this.samplesV, material )  
-        let bottomJar = this.builder.build( controlPointsBottom, orderBottomU, orderBottomV, this.samplesU, this.samplesV, material )  
+        const material = new THREE.MeshLambertMaterial( { color: "#ffffff", side: THREE.DoubleSide } );             
+        let sideJar = this.builder.build( curveSide, orderSideU, orderSideV, this.samplesU, this.samplesV, material )  
+        let bottomJar = this.builder.build( curveBottom, orderBottomU, orderBottomV, this.samplesU, this.samplesV, material )  
         
         let frontMesh = new THREE.Mesh( sideJar, material );
         frontMesh.castShadow = true;
@@ -337,7 +332,6 @@ class MyContents  {
         frontMesh.scale.set( scale, scale, scale )
         frontMesh.position.set( x, y + 0.02 * scale, z )
         this.app.scene.add( frontMesh )
-        this.meshes.push ( frontMesh )
 
         let backMesh = new THREE.Mesh( sideJar, material );
         backMesh.castShadow = true;
@@ -346,7 +340,6 @@ class MyContents  {
         backMesh.position.set( x + scale * 5, y + 0.02 * scale, z )
         backMesh.rotateY( Math.PI )
         this.app.scene.add( backMesh )
-        this.meshes.push( backMesh )
 
         let frontBottomMesh = new THREE.Mesh( bottomJar, material );
         frontBottomMesh.castShadow = true;
@@ -354,7 +347,6 @@ class MyContents  {
         frontBottomMesh.scale.set( scale, scale, scale )
         frontBottomMesh.position.set( x, y, z )
         this.app.scene.add( frontBottomMesh )
-        this.meshes.push( frontBottomMesh )
         
         let backBottomMesh = new THREE.Mesh( bottomJar, material );
         backBottomMesh.castShadow = true;
@@ -363,7 +355,29 @@ class MyContents  {
         backBottomMesh.position.set( x + scale * 5, y, z )
         backBottomMesh.rotateY( Math.PI )
         this.app.scene.add( backBottomMesh )
-        this.meshes.push( backBottomMesh )
+    }
+
+    drawCurtains(height, x, y, z) {
+
+        let curve = [
+            [[ 0.0, 0, 0.5, 1 ], [ 0.0, height, 0.5, 1 ]],
+            [[ 0.5, 0, 1.0, 1 ], [ 0.5, height, 1.0, 1 ]],
+            [[ 1.0, 0, 0.5, 1 ], [ 1.0, height, 0.5, 1 ]],
+            [[ 1.5, 0, 0.0, 1 ], [ 1.5, height, 0.0, 1 ]],
+            [[ 2.0, 0, 0.5, 1 ], [ 2.0, height, 0.5, 1 ]],
+        ]
+
+        const orderSideU= 4
+        const orderSideV = 1
+
+        let texture = new THREE.TextureLoader().load('textures/fabric.jpg');
+        const material = new THREE.MeshPhongMaterial( { map: texture, side: THREE.DoubleSide, transparent: true, opacity: 0.8 } );
+
+        let curtain = this.builder.build( curve, orderSideU, orderSideV, this.samplesU, this.samplesV, material )  
+        let curtainMesh = new THREE.Mesh( curtain, material );
+        curtainMesh.position.set(x, y, z)
+        this.app.scene.add( curtainMesh )
+
     }
 
 }
