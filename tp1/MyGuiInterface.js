@@ -49,20 +49,6 @@ class MyGuiInterface  {
         // note that we are using a property from the app 
         cameraFolder.add(this.app.activeCamera.position, 'x', 0, 10).name("x coord")
         cameraFolder.open()
-
-        const spotLightFolder = this.datgui.addFolder('Spot Light')
-        spotLightFolder.addColor( data, 'color' ).onChange( (value) => { this.contents.updateSpotLight('color', value) } );
-        spotLightFolder.add(this.contents, 'intensitySpotLight', 0, 50).name("intensity").onChange( (value) => { this.contents.updateSpotLight('intensity', value) } );
-        spotLightFolder.add(this.contents, 'limitDistanceSpotLight', 0, 50).name("limit distance").onChange( (value) => { this.contents.updateSpotLight('distance', value) } );
-        spotLightFolder.add(this.contents, 'angleSpotLight', 0, 90).name("angle (in degrees)").onChange( (value) => { this.contents.updateSpotLight('angle', value) } );
-        spotLightFolder.add(this.contents, 'penumbraSpotLight', 0, 1).name("penumbra").onChange( (value) => { this.contents.updateSpotLight('penumbra', value) } );
-        spotLightFolder.add(this.contents, 'decaySpotLight', 0, 5).name("decay").onChange( (value) => { this.contents.updateSpotLight('decay', value) } );
-        spotLightFolder.add(this.contents, 'xSpotLight', 0, 50).name("position in Ox").onChange( (value) => { this.contents.updateSpotLight('x', value) } );
-        spotLightFolder.add(this.contents, 'ySpotLight', 0, 50).name("position in Oy").onChange( (value) => { this.contents.updateSpotLight('y', value) } );
-        spotLightFolder.add(this.contents, 'xTargetSpotLight', 0, 50).name("target in Ox").onChange( (value) => { this.contents.updateSpotLight('xTarget', value) } );
-        spotLightFolder.add(this.contents, 'yTargetSpotLight', 0, 50).name("target in Oy").onChange( (value) => { this.contents.updateSpotLight('yTarget', value) } );
-        spotLightFolder.open()
-
     }
 }
 
