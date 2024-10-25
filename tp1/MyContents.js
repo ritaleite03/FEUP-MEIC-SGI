@@ -31,8 +31,8 @@ class MyContents  {
         this.planeTexture.wrapT = THREE.RepeatWrapping;
         
         // material
-        this.diffusePlaneColor =  "rgb(256,256,256)"
-        this.specularPlaneColor = "rgb(0,0,0)"
+        this.diffusePlaneColor =  "#ffffff"
+        this.specularPlaneColor = "#000000"
         this.planeShininess = 0
 
         //this.planeMaterial = new THREE.MeshLambertMaterial({ map : this.planeTexture }); // alternative 2
@@ -153,11 +153,17 @@ class MyContents  {
         cakeSlice.position.set( 0.5, topPositionTable + 0.03, 0.5 );
         this.app.scene.add( cakeSlice );
 
-        const chair = new MyChair( this, widthBottomChair, heightBottomChair, widthTopChair, heightTopChair, radiusLegsChair, heightLegsChair, radiusBackChair, heightBackChair, thicknessChair )
-        chair.rotateY( -Math.PI / 6 )
-        chair.scale.set( 0.5, 0.5, 0.5 )
-        chair.position.set( -1, 0, 3)
-        this.app.scene.add( chair );
+        const chair1 = new MyChair( this, widthBottomChair, heightBottomChair, widthTopChair, heightTopChair, radiusLegsChair, heightLegsChair, radiusBackChair, heightBackChair, thicknessChair )
+        chair1.rotateY( -Math.PI / 6 )
+        chair1.scale.set( 0.5, 0.5, 0.5 )
+        chair1.position.set( -1, 0, 3)
+        this.app.scene.add( chair1 );
+
+        const chair2 = new MyChair( this, widthBottomChair, heightBottomChair, widthTopChair, heightTopChair, radiusLegsChair, heightLegsChair, radiusBackChair, heightBackChair, thicknessChair )
+        chair2.rotateY( Math.PI / 6 + Math.PI)
+        chair2.scale.set( 0.5, 0.5, 0.5 )
+        chair2.position.set( 1, 0, -3)
+        this.app.scene.add( chair2 );
         
         const photos = new THREE.Group();
         
@@ -226,7 +232,7 @@ class MyContents  {
 
 
         const radiusFootLamp = 0.8;
-        const heighFootLamp = 0.8
+        const heighFootLamp = 0.6
         const radiusPole = 0.1
         const heightPole = 7.5
 
