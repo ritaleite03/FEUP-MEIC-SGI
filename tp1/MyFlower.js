@@ -52,11 +52,15 @@ class MyFlower extends THREE.Object3D {
         // geometry and mesh of the stem
         const stem = new THREE.TubeGeometry( curve, segmentsStem, radiusStem, segmentsStem, false );
         const meshStem = new THREE.Mesh( stem, materialStem );
+        meshStem.castShadow = true;
+        meshStem.receiveShadow = true;
         this.add( meshStem );
 
         // geometry and mesh of the center
         const center = new THREE.SphereGeometry( radiusCenter );
         const meshCenter = new THREE.Mesh( center, materialcenter );
+        meshCenter.castShadow = true;
+        meshCenter.receiveShadow = true;
         meshCenter.position.set( xCenter, yCenter, zCenter );
         this.add( meshCenter );
 
@@ -66,6 +70,8 @@ class MyFlower extends THREE.Object3D {
 
             // mesh and holder to the operations on the right order
             const mesh = new THREE.Mesh(petal, materialPetal);
+            mesh.castShadow = true;
+            mesh.receiveShadow = true;
             const holder = new THREE.Object3D();
             
             // scale to right dimensions, rotate and position on center of flower

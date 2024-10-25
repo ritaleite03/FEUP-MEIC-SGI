@@ -49,14 +49,20 @@ class MyWindow extends THREE.Object3D {
         this.gridHorizontalMesh = new THREE.Mesh (gridHorizonal, woodenMaterial);
         this.gridHorizontalMesh.rotateZ(Math.PI/2)
         this.gridHorizontalMesh.position.set(0, y, z - depth / 4)
+        this.gridHorizontalMesh.castShadow = true;
+        this.gridHorizontalMesh.receiveShadow = true;
         this.add(this.gridHorizontalMesh);
 
         this.gridVertical1Mesh = new THREE.Mesh (gridVertical, woodenMaterial);
         this.gridVertical1Mesh.position.set(gap / 2, y, z - depth / 4)
+        this.gridVertical1Mesh.castShadow = true;
+        this.gridVertical1Mesh.receiveShadow = true
         this.add(this.gridVertical1Mesh);
 
         this.gridVertical2Mesh = new THREE.Mesh (gridVertical, woodenMaterial);
         this.gridVertical2Mesh.position.set(-gap / 2, y, z - depth / 4)
+        this.gridVertical2Mesh.castShadow = true;
+        this.gridVertical2Mesh.receiveShadow = true
         this.add(this.gridVertical2Mesh);
 
         // add frame
@@ -66,19 +72,27 @@ class MyWindow extends THREE.Object3D {
         this.frameHorizontal1Mesh = new THREE.Mesh (frameHorizonal, woodenMaterial);
         this.frameHorizontal1Mesh.rotateZ(Math.PI/2)
         this.frameHorizontal1Mesh.position.set(0, y + height / 2 - depth / 4, z - depth / 2 - depth / 4)
+        this.frameHorizontal1Mesh.castShadow = true;
+        this.frameHorizontal1Mesh.receiveShadow = true;
         this.add(this.frameHorizontal1Mesh);
 
         this.frameHorizontal2Mesh = new THREE.Mesh (frameHorizonal, woodenMaterial);
         this.frameHorizontal2Mesh.rotateZ(Math.PI/2)
         this.frameHorizontal2Mesh.position.set(0, y - height / 2 + depth / 4, z - depth / 2 - depth / 4)
+        this.frameHorizontal2Mesh.castShadow = true;
+        this.frameHorizontal2Mesh.receiveShadow = true
         this.add(this.frameHorizontal2Mesh);
 
         this.frameVertical1Mesh = new THREE.Mesh (frameVertical, woodenMaterial);
         this.frameVertical1Mesh.position.set(width / 2 - depth / 4, y, z - depth / 2 - depth / 4)
+        this.frameVertical1Mesh.castShadow = true;
+        this.frameVertical1Mesh.receiveShadow = true
         this.add(this.frameVertical1Mesh);
 
         this.frameVertical2Mesh = new THREE.Mesh (frameVertical, woodenMaterial);
         this.frameVertical2Mesh.position.set(-width / 2 + depth / 4, y, z - depth / 2 - depth / 4)
+        this.frameVertical2Mesh.castShadow = true;
+        this.frameVertical2Mesh.receiveShadow = true
         this.add(this.frameVertical2Mesh);
     }
 

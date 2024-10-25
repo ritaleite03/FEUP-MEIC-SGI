@@ -46,7 +46,8 @@ class MyFrame extends THREE.Object3D {
 
         const material = new THREE.MeshLambertMaterial( {color: "#554433" } );
         const mesh = new THREE.Mesh( geometry, material )
-
+        mesh.castShadow = true;
+        mesh.receiveShadow = true;
         this.add(mesh)
 
     }

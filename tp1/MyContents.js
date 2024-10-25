@@ -30,13 +30,12 @@ class MyContents  {
         this.planeTexture.wrapT = THREE.RepeatWrapping;
         
         // material
-        this.diffusePlaneColor =  "rgb(128,128,128)"
+        this.diffusePlaneColor =  "rgb(256,256,256)"
         this.specularPlaneColor = "rgb(0,0,0)"
         this.planeShininess = 0
 
-        // this.planeMaterial = new THREE.MeshLambertMaterial({ map : this.planeTexture }); // alternative 2
-        this.planeMaterial = new THREE.MeshStandardMaterial({color: this.diffusePlaneColor, specular: this.specularPlaneColor, emissive: "#000000", shininess: this.planeShininess, map: this.planeTexture }) // alternative 1
-        let plane = new THREE.PlaneGeometry( 10, 10 );
+        //this.planeMaterial = new THREE.MeshLambertMaterial({ map : this.planeTexture }); // alternative 2
+        this.planeMaterial = new THREE.MeshPhongMaterial({color: this.diffusePlaneColor, specular: this.specularPlaneColor, emissive: "#000000", shininess: this.planeShininess, map: this.planeTexture }) // alternative 1
         
         // spotlight related attributes
         this.colorSpotLight = "#ffffff";
@@ -63,7 +62,6 @@ class MyContents  {
         this.meshes = []
         this.samplesU = 8 // maximum defined in MyGuiInterface
         this.samplesV = 8 // maximum defined in MyGuiInterface
-        this.init()
     }
 
     /**
@@ -91,6 +89,7 @@ class MyContents  {
         this.spotLight = new THREE.SpotLight( this.colorSpotLight, this.intensitySpotLight, this.limitDistanceSpotLight, this.angleSpotLight * Math.PI / 180, this.penumbra, this.decay );
         this.spotLight.position.set( this.xSpotLight, this.ySpotLight, 0 );
         this.spotLight.target.position.set( this.xTargetSpotLight, this.yTargetSpotLight, 0 )
+        this.spotLight.castShadow = true;
         this.app.scene.add( this.spotLight );
         this.spotLightHelper = new THREE.SpotLightHelper( this.spotLight );
         this.app.scene.add( this.spotLightHelper );
@@ -193,7 +192,7 @@ class MyContents  {
 
         const spiralSpring = new MySpiralSpring(this, radiusSpiral, segmentsSpiral, heightSpiral, heightLevelSpiral)
         this.app.scene.add(spiralSpring)
-        
+
         let planeSizeU = 20;
         let planeSizeV = 15;
         let planeUVRate = planeSizeV / planeSizeU;
@@ -204,9 +203,21 @@ class MyContents  {
         this.planeTexture.offset = new THREE.Vector2(0,0);
         var plane = new THREE.PlaneGeometry( planeSizeU, planeSizeV );
         this.planeMesh = new THREE.Mesh( plane, this.planeMaterial );
+        this.planeMesh.castShadow = true;
+        this.planeMesh.receiveShadow = true;
         this.planeMesh.rotation.x = -Math.PI / 2;
         this.planeMesh.position.y = 0;
+        this.planeMesh.receiveShadow = true;
         this.app.scene.add( this.planeMesh );
+
+        const materialCeilling = new THREE.MeshPhongMaterial( {color: "#ffffff"} )
+        const ceilling = new THREE.PlaneGeometry( planeSizeU, planeSizeV );
+        const ceillingMesh = new THREE.Mesh( ceilling, materialCeilling );
+        ceillingMesh.rotation.x = Math.PI / 2;
+        ceillingMesh.position.y = 10;
+        ceillingMesh.castShadow = true;
+        ceillingMesh.receiveShadow = true;
+        this.app.scene.add(ceillingMesh)
     }
 
     drawCubicBezierCurve(points, position) {
@@ -235,6 +246,9 @@ class MyContents  {
      * @param {number} value 
      */
     updateSpotLight(propriety, value){
+        this.app.scene.remove(this.spotLight)
+        this.app.scene.remove(this.spotLightHelper)
+
         if (propriety === 'color') this.spotLight[propriety].set(value)
         else if (propriety === 'x') this.spotLight.position.x = value;
         else if (propriety === 'y') this.spotLight.position.y = value;
@@ -242,6 +256,9 @@ class MyContents  {
         else if (propriety === 'yTarget') this.spotLight.target.position.y = value;
         else if (propriety === 'angle') this.spotLight[propriety] = value * Math.PI / 180   
         else this.spotLight[propriety] = value
+
+        this.app.scene.add(this.spotLight)
+        this.app.scene.add(this.spotLightHelper)
     }
 
     /**
@@ -305,12 +322,16 @@ class MyContents  {
         let bottomJar = this.builder.build( controlPointsBottom, orderBottomU, orderBottomV, this.samplesU, this.samplesV, material )  
         
         let frontMesh = new THREE.Mesh( sideJar, material );
+        frontMesh.castShadow = true;
+        frontMesh.receiveShadow = true;
         frontMesh.scale.set( scale, scale, scale )
         frontMesh.position.set( x, y + 0.02 * scale, z )
         this.app.scene.add( frontMesh )
         this.meshes.push ( frontMesh )
 
         let backMesh = new THREE.Mesh( sideJar, material );
+        backMesh.castShadow = true;
+        backMesh.receiveShadow = true;
         backMesh.scale.set( scale, scale, scale )
         backMesh.position.set( x + scale * 5, y + 0.02 * scale, z )
         backMesh.rotateY( Math.PI )
@@ -318,12 +339,16 @@ class MyContents  {
         this.meshes.push( backMesh )
 
         let frontBottomMesh = new THREE.Mesh( bottomJar, material );
+        frontBottomMesh.castShadow = true;
+        frontBottomMesh.receiveShadow = true;
         frontBottomMesh.scale.set( scale, scale, scale )
         frontBottomMesh.position.set( x, y, z )
         this.app.scene.add( frontBottomMesh )
         this.meshes.push( frontBottomMesh )
         
         let backBottomMesh = new THREE.Mesh( bottomJar, material );
+        backBottomMesh.castShadow = true;
+        backBottomMesh.receiveShadow = true;
         backBottomMesh.scale.set( scale, scale, scale )
         backBottomMesh.position.set( x + scale * 5, y, z )
         backBottomMesh.rotateY( Math.PI )

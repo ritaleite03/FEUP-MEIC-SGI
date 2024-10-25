@@ -53,9 +53,13 @@ class MyNewspaper extends THREE.Object3D {
             const rightHalfNewspaper = app.builder.build( controlPointsRight, orderU, orderV, this.samplesU, this.samplesV, material ) 
 
             let leftNewspaperMesh = new THREE.Mesh( leftHalfNewspaper, material );
+            leftNewspaperMesh.castShadow = true;
+            leftNewspaperMesh.receiveShadow = true;
             this.add( leftNewspaperMesh )
     
             let rightNewspaperMesh = new THREE.Mesh( rightHalfNewspaper, material );
+            rightNewspaperMesh.castShadow = true;
+            rightNewspaperMesh.receiveShadow = true;
             rightNewspaperMesh.position.x = width
             this.add( rightNewspaperMesh )
             

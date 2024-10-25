@@ -24,16 +24,20 @@ class MyPicture extends THREE.Object3D {
 
         const group = new THREE.Group();
 
-        const pictureM = new THREE.MeshStandardMaterial({ map: picture })
+        const pictureM = new THREE.MeshPhongMaterial({ map: picture })
 
         const photo = new THREE.PlaneGeometry(width, length);
         const photoMesh = new THREE.Mesh(photo, pictureM);
+        photoMesh.castShadow = true;
+        photoMesh.receiveShadow = true;
         photoMesh.position.z= 0.01;
         group.add(photoMesh);
 
-        const material = new THREE.MeshStandardMaterial( { color: 0x7c3a00  } );
+        const material = new THREE.MeshPhongMaterial( { color: 0x7c3a00  } );
         const backStruc = new THREE.PlaneGeometry(fullWidth, fullLength);
         const backMesh = new THREE.Mesh(backStruc, material);
+        backMesh.castShadow = true;
+        backMesh.receiveShadow = true;
         backMesh.rotateX(Math.PI);
         group.add(backMesh);
 

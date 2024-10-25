@@ -62,6 +62,8 @@ class MyCandle extends THREE.Object3D {
         // add stick
         const stickMesh = new THREE.Mesh( stick, stickMaterial );
         stickMesh.position.set( x,yStick, z );
+        stickMesh.castShadow = true;
+        stickMesh.receiveShadow = true;
         this.add( stickMesh );
     }
 }

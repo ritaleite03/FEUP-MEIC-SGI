@@ -47,6 +47,14 @@ class MyChair extends THREE.Object3D {
         const legDownMesh2 =  new THREE.Mesh (legDown, woodenMaterial);
         const legDownMesh3 =  new THREE.Mesh (legDown, woodenMaterial);
         const legDownMesh4 =  new THREE.Mesh (legDown, woodenMaterial);
+        legDownMesh1.castShadow = true;
+        legDownMesh1.receiveShadow = true;
+        legDownMesh2.castShadow = true;
+        legDownMesh2.receiveShadow = true;
+        legDownMesh3.castShadow = true;
+        legDownMesh3.receiveShadow = true;
+        legDownMesh4.castShadow = true;
+        legDownMesh4.receiveShadow = true;
         legDownMesh1.position.set( +xLegDown, yLegDown, +zLegDown );
         legDownMesh2.position.set( -xLegDown, yLegDown, +zLegDown );
         legDownMesh3.position.set( +xLegDown, yLegDown, -zLegDown );
@@ -58,6 +66,8 @@ class MyChair extends THREE.Object3D {
 
         // mesh plane down (bottom)
         const planeDownMesh = new THREE.Mesh( planeDown, woodenMaterial );
+        planeDownMesh.castShadow = true;
+        planeDownMesh.receiveShadow = true;
         planeDownMesh.rotateX( Math.PI / 2 );
         planeDownMesh.position.y = yPlaneDown;
         this.add( planeDownMesh );
@@ -65,6 +75,10 @@ class MyChair extends THREE.Object3D {
         // mesh legs up (back)
         const legUpMesh1 =  new THREE.Mesh( legUp, woodenMaterial );
         const legUpMesh2 =  new THREE.Mesh( legUp, woodenMaterial );
+        legUpMesh1.castShadow = true;
+        legUpMesh1.receiveShadow = true;
+        legUpMesh2.castShadow = true;
+        legUpMesh2.receiveShadow = true;
         legUpMesh1.position.set( +xLegUp, yLegUp, zLegUp);
         legUpMesh2.position.set( -xLegUp, yLegUp, zLegUp);
         this.add( legUpMesh1 );
@@ -72,6 +86,8 @@ class MyChair extends THREE.Object3D {
 
         // mesh plane up (back)
         const planeUpMesh = new THREE.Mesh( planeUp, woodenMaterial );
+        planeUpMesh.castShadow = true;
+        planeUpMesh.receiveShadow = true;
         planeUpMesh.position.set( 0, yLegUp + heightLegBack / 2 + heightPlaneUp / 2, heightPlaneDown / 2 - thickness / 2 );
         this.add( planeUpMesh );
     }

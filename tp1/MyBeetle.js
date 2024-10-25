@@ -132,7 +132,9 @@ class MyBeetle extends THREE.Object3D {
         const material = new THREE.MeshPhongMaterial({color: "#ffffff", specular: "#000000", emissive: "#ffffff", shininess: 0})
         const background = new THREE.PlaneGeometry(length, width);
         const backgroundMesh = new THREE.Mesh(background, material);
-        backgroundMesh.position.z = 0.01 
+        backgroundMesh.receiveShadow = true
+        backgroundMesh.castShadow = true
+        backgroundMesh.position.z = 0.01
         group.add(backgroundMesh);
         
         z -= 0.01

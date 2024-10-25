@@ -26,6 +26,8 @@ class MySpiralSpring extends THREE.Object3D {
         const spiralCurve = new THREE.CatmullRomCurve3(points);
         const spiral = new THREE.TubeGeometry(spiralCurve, segmentsSpiral, radiusSpiral, radiusSegmentsSpiral, false);
         const mesh = new THREE.Mesh(spiral, material);
+        mesh.castShadow = true;
+        mesh.receiveShadow = true;
         this.add(mesh);
         // create caps
         const cap = new THREE.CircleGeometry(radiusSpiral, radiusSegmentsSpiral);

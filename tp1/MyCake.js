@@ -44,12 +44,16 @@ class MyCake extends THREE.Object3D {
                 // Create a cylinder 
                 let cake = new THREE.CylinderGeometry(radiusLast, radiusLast, height, segments, 1, false, startAngle, angleLength);
                 let cakeMesh = new THREE.Mesh(cake, outsideCakeMaterial);
+                cakeMesh.castShadow = true;
+                cakeMesh.receiveShadow = true;
                 cakeMesh.position.y = height * i;  
                 this.add(cakeMesh);
 
                 // Create the plans for the inside of the cake
                 let insideCake = new THREE.PlaneGeometry( radiusLast, height);
                 let insideMesh1 = new THREE.Mesh(insideCake, insideCakeMaterial);
+                insideMesh1.castShadow = true;
+                insideMesh1.receiveShadow = true;
                 let rotateAngle1 = startAngle - Math.PI/2;
                 insideMesh1.rotateY(rotateAngle1);
                 insideMesh1.position.x= 0.5 * Math.cos(rotateAngle1) * radiusLast;
@@ -57,6 +61,8 @@ class MyCake extends THREE.Object3D {
                 insideMesh1.position.y = height * i; 
 
                 let insideMesh2 = new THREE.Mesh( insideCake, insideCakeMaterial);
+                insideMesh2.castShadow = true;
+                insideMesh2.receiveShadow = true;
                 let rotateAngle2 = endAngle + Math.PI/2;
                 insideMesh2.rotateY(rotateAngle2);
                 insideMesh2.position.x= -0.5 * Math.cos(rotateAngle2) * radiusLast;
@@ -86,6 +92,8 @@ class MyCake extends THREE.Object3D {
                 // create complete cake tier
                 let cake = new THREE.CylinderGeometry(r, r, height, 36, 1);
                 let cakeMesh = new THREE.Mesh(cake, outsideCakeMaterial);
+                cakeMesh.castShadow = true;
+                cakeMesh.receiveShadow = true;
                 cakeMesh.position.y = height * i;  
                 this.add(cakeMesh);
                 
