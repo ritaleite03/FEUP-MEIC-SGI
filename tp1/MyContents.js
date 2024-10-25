@@ -10,6 +10,7 @@ import { MyFlower } from './MyFlower.js';
 import { MyNewspaper } from './MyNewsPaper.js';
 import { MySpiralSpring } from './MySpiralSpring.js';
 import { MyFrame } from './MyFrame.js';
+import { MyLamp } from './MyLamp.js';
 
 /**
  *  This class contains the contents of out application
@@ -137,7 +138,11 @@ class MyContents  {
         const table = new MyTable( this, heightTable, radiusTable, xLenghtTable, zLenghtTable );
         this.app.scene.add( table );
 
-        const walls = new MyWalls( this, 20, 15, 10, 0.5 )
+        const lengthRoomWall = 20
+        const widthRoomWall = 15
+        const heightWall = 10
+        const widthWall = 0.5
+        const walls = new MyWalls( this, lengthRoomWall, widthRoomWall, heightWall, widthWall )
         this.app.scene.add( walls );
         
         const cake = new MyCake( this, baseRadiusCake, tierHeightCake, 10 * Math.PI / 6, false, 3, topRadiusCake );
@@ -214,10 +219,33 @@ class MyContents  {
         const ceilling = new THREE.PlaneGeometry( planeSizeU, planeSizeV );
         const ceillingMesh = new THREE.Mesh( ceilling, materialCeilling );
         ceillingMesh.rotation.x = Math.PI / 2;
-        ceillingMesh.position.y = 10;
+        ceillingMesh.position.y = heightWall;
         ceillingMesh.castShadow = true;
         ceillingMesh.receiveShadow = true;
         this.app.scene.add(ceillingMesh)
+
+
+        const radiusFootLamp = 0.8;
+        const heighFootLamp = 0.8
+        const radiusPole = 0.1
+        const heightPole = 7.5
+
+        const radiusShadeBottomLamp = 1
+        const radiusShadeTopLamp = 0.5
+        const heighShadeLamp = 1.5 
+
+        const lamp = new MyLamp(this, radiusFootLamp, heighFootLamp, radiusPole, heightPole, radiusShadeBottomLamp, radiusShadeTopLamp, heighShadeLamp)
+        lamp.position.set(- lengthRoomWall / 2 + radiusShadeBottomLamp + 0.01, 0, - widthRoomWall/2 + radiusShadeBottomLamp + 0.01)
+        this.app.scene.add(lamp)
+
+        const lightLamp = new THREE.SpotLight( "#ffffff", 100, 8, Math.PI / 7);
+        lightLamp.position.set(- lengthRoomWall / 2 + radiusShadeBottomLamp + 0.01, heighFootLamp + heightPole, - widthRoomWall/2 + radiusShadeBottomLamp + 0.01)
+        lightLamp.target.position.set(- lengthRoomWall / 2 + radiusShadeBottomLamp + 0.01, 0, - widthRoomWall/2 + radiusShadeBottomLamp + 0.01)
+        lightLamp.castShadow = true;
+        this.app.scene.add( lightLamp );
+        const lightHelper = new THREE.SpotLightHelper( lightLamp );
+        this.app.scene.add( lightHelper );
+        
     }
 
     drawCubicBezierCurve(points, position) {
