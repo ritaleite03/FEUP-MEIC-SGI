@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { MyWall } from './MyWall.js';
 import { MyWindow } from './MyWindow.js';
 import { MyBeetle } from './MyBeetle.js';
+import { MyDoor } from './MyDoor.js';
 
 class MyWalls extends THREE.Object3D {
 
@@ -36,6 +37,12 @@ class MyWalls extends THREE.Object3D {
         this.wallRightC = new MyWall(app, widthRoom * 0.2, lengthRoom, height * 0.8, widthWall);
         this.wallRightC.position.z = widthRoom * 0.8 * 0.5;
         this.add(this.wallRightC);
+
+        //Door
+        this.door = new MyDoor(app, widthRoom * 0.3, height * 0.8, widthWall, woodenTexture);
+        this.door.position.z = widthRoom * 0.3 * 0.5;
+        this.door.position.x =  lengthRoom * 0.5 +  widthWall * 0.5;
+        this.add(this.door)
 
         // Back wall
         this.wallBack = new MyWall(app, lengthRoom, widthRoom, height, widthWall);
