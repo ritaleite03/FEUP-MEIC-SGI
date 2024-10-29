@@ -11,6 +11,7 @@ import { MyNewspaper } from './MyNewsPaper.js';
 import { MySpiralSpring } from './MySpiralSpring.js';
 import { MyLamp } from './MyLamp.js';
 import { MyCurtain } from './MyCurtain.js';
+import { MySofa } from './MySofa.js';
 
 /**
  *  This class contains the contents of out application
@@ -36,9 +37,11 @@ class MyContents  {
         this.planeShininess = 30
 
         this.planeMaterial = new THREE.MeshPhongMaterial({color: this.diffusePlaneColor, specular: this.specularPlaneColor, emissive: "#000000", shininess: this.planeShininess, map: this.planeTexture }) // alternative 1
+        
         const loader = new THREE.TextureLoader();
         this.picture1 = loader.load('textures/202105309.jpg');
         this.picture2 = loader.load('textures/202108699.jpg');
+        this.sofaTexture = loader.load('textures/gray-sofa4.jpg');
 
         // curves
         this.builder = new MyNurbsBuilder()
@@ -123,6 +126,11 @@ class MyContents  {
         chair2.rotateY( Math.PI / 6 + Math.PI)
         chair2.position.set( 1, 0, -3)
         this.app.scene.add( chair2 );
+
+        const sofa = new MySofa(this, widthBottomChair, widthBottomChair, heightTopChair * 0.7, this.sofaTexture);
+        sofa.rotateY( -Math.PI / 4);
+        sofa.position.set(lengthRoomWall * 0.7 * 0.5, 0, - widthRoomWall* 0.85 * 0.5);
+        this.app.scene.add( sofa );
         
         const photos = new THREE.Group();
         
