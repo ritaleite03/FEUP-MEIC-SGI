@@ -19,7 +19,7 @@ class MyDoor extends THREE.Object3D {
         this.type = "Group";
 
         const frameWidth = width * 0.05;
-        const frameDepth = depth * 1.2;
+        const frameDepth = depth * 1.4;
 
 
         const material = new THREE.MeshPhongMaterial({color: "#ffffff", specular: "#000000", emissive: "#000000", shininess: 0, map: texture});
@@ -83,6 +83,18 @@ class MyDoor extends THREE.Object3D {
         handle.position.z = - width * 0.4;
         handle.position.x = - depth * 0.55;
         this.add(handle)
+
+        const hinge1 = new THREE.Mesh( geometry3, handleMaterial);
+        hinge1.position.set(- depth * 0.60, -0.35*height, width * 0.45);
+        this.add(hinge1)
+
+        const hinge2 = new THREE.Mesh( geometry3, handleMaterial);
+        hinge2.position.set(- depth * 0.60, 0, width * 0.45);
+        this.add(hinge2)
+
+        const hinge3 = new THREE.Mesh( geometry3, handleMaterial);
+        hinge3.position.set(- depth * 0.60, 0.35*height, width * 0.45);
+        this.add(hinge3)
 
         this.position.y = (height - frameWidth) * 0.5;
     }
