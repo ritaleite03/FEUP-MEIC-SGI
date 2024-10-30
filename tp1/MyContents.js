@@ -12,6 +12,7 @@ import { MySpiralSpring } from './MySpiralSpring.js';
 import { MyLamp } from './MyLamp.js';
 import { MyCurtain } from './MyCurtain.js';
 import { MySofa } from './MySofa.js';
+import { MyCarpet } from './MyCarpet.js';
 
 /**
  *  This class contains the contents of out application
@@ -30,18 +31,20 @@ class MyContents  {
         this.planeTexture = new THREE.TextureLoader().load('textures/wooden_top.jpg');
         this.planeTexture.wrapS = THREE.RepeatWrapping;
         this.planeTexture.wrapT = THREE.RepeatWrapping;
+        //this.loadTextures()
+        const loader = new THREE.TextureLoader();
+        this.picture1 = loader.load('textures/202105309.jpg');
+        this.picture2 = loader.load('textures/202108699.jpg');
+        this.sofaTexture = loader.load('textures/gray-sofa4.jpg');
+        this.carpetPattern = loader.load('textures/carpet-hexagonal.jpg');
+        this.carpetReleve = loader.load('textures/gray-carpet.jpg');
         
         // material
         this.diffusePlaneColor =  "#ffffff"
         this.specularPlaneColor = "#ffffff"
         this.planeShininess = 30
-
         this.planeMaterial = new THREE.MeshPhongMaterial({color: this.diffusePlaneColor, specular: this.specularPlaneColor, emissive: "#000000", shininess: this.planeShininess, map: this.planeTexture }) // alternative 1
-        
-        const loader = new THREE.TextureLoader();
-        this.picture1 = loader.load('textures/202105309.jpg');
-        this.picture2 = loader.load('textures/202108699.jpg');
-        this.sofaTexture = loader.load('textures/gray-sofa4.jpg');
+
 
         // curves
         this.builder = new MyNurbsBuilder()
@@ -126,6 +129,9 @@ class MyContents  {
         chair2.rotateY( Math.PI / 6 + Math.PI)
         chair2.position.set( 1, 0, -3)
         this.app.scene.add( chair2 );
+
+        const carpet = new MyCarpet(this.app, xLenghtTable*2, zLenghtTable*2, this.carpetPattern, this.carpetReleve);
+        this.app.scene.add(carpet);
 
         const sofa = new MySofa(this, widthBottomChair, widthBottomChair, heightTopChair * 0.7, this.sofaTexture);
         sofa.rotateY( -Math.PI / 4);
@@ -277,6 +283,28 @@ class MyContents  {
         lineObj.position.set( position.x, position.y, position.z )
         this.app.scene.add( lineObj );
     }
+
+    /**
+     * this method is called from init and loads the textures used
+    */
+    //loadTextures(){
+    //    const loader = new THREE.TextureLoader();
+    //    loader.load('textures/202105309.jpg', (loadedTexture) => {
+    //        this.picture1 = loadedTexture;
+    //    });
+    //    loader.load('textures/202108699.jpg', (loadedTexture) => {
+    //        this.picture2 = loadedTexture;
+    //    });
+    //    loader.load('textures/gray-sofa4.jpg', (loadedTexture) => {
+    //        this.sofaTexture = loadedTexture;
+    //    });
+    //    loader.load('textures/carpet-hexagonal.jpg', (loadedTexture) => {
+    //        this.carpetPattern = loadedTexture;
+    //    });
+    //    loader.load('textures/gray-carpet.jpg', (loadedTexture) => {
+    //        this.carpetReleve = loadedTexture;
+    //    });
+    //}
 
     /**
      * updates the contents
