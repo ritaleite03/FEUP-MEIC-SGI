@@ -3,6 +3,13 @@ import { MyApp } from './MyApp.js';
 
 class MyDoor extends THREE.Object3D {
 
+    /**
+     * 
+     * @param {MyApp} app the application object
+     * @param {number} width door's width
+     * @param {number} height door's height
+     * @param {number} depth door's depth
+     */
     constructor(app, width, height, depth) {
         super()
         this.app = app

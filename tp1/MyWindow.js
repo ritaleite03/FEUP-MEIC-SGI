@@ -5,15 +5,16 @@ class MyWindow extends THREE.Object3D {
 
     /**
        constructs the object
-       @param {MyApp} app The application object
-       @param {number} length Wall length
-       @param {number} place Room placa
-       @param {number} height Wall height
-       @param {number} width Wall width
+       @param {MyApp} app the application object
+       @param {number} width window's width
+       @param {number} height window's height
+       @param {number} depth window's depth
+       @param {number} y position in Oy
+       @param {number} z position in Oz
     */ 
-    constructor(width, height, depth, y, z) {
+    constructor(app, width, height, depth, y, z) {
         super()
-
+        this.app = app
         // texture and material of the window's landscape
         let landescapeTexture = new THREE.TextureLoader().load('textures/window.jpg');
         landescapeTexture.wrapS = THREE.MirroredRepeatWrapping;
@@ -33,15 +34,7 @@ class MyWindow extends THREE.Object3D {
         this.wallMesh.position.set(0, y - 1, z + 5)
         this.add(this.wallMesh);
 
-        let rectLight = new THREE.RectAreaLight( 0xffffff, 10,  width, height);
-        rectLight.position.set(0, y, z - 0.1)
-        rectLight.lookAt( 0, y, 0);
-        this.add(rectLight)
-
-        //const rectLightHelper = new RectAreaLightHelper(rectLight);
-        //rectLight.add(rectLightHelper);
-
-        // add grid
+        // grid
         const gridHorizonal = new THREE.BoxGeometry(depth / 2, width, depth / 2)
         const gridVertical = new THREE.BoxGeometry(depth / 2, height, depth / 2)
         const gap = (width - depth) / 3
@@ -65,7 +58,7 @@ class MyWindow extends THREE.Object3D {
         this.gridVertical2Mesh.receiveShadow = true
         this.add(this.gridVertical2Mesh);
 
-        // add frame
+        // frame
         const frameHorizonal = new THREE.BoxGeometry(depth / 2, width, depth + depth / 2)
         const frameVertical = new THREE.BoxGeometry(depth / 2, height, depth + depth / 2)
 

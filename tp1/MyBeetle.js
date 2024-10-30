@@ -29,50 +29,8 @@ class MyBeetle extends THREE.Object3D {
         const fullWidth = width + 2 * frameWidth;
 
         y -= fullWidth / 2; 
-
         z += 0.01
 
-
-        // draw Beetle
-        //back wheel 
-        //this.app.drawCubicBezierCurve([
-        //    new THREE.Vector3(x - 3 * scale, y, z), 
-        //    new THREE.Vector3(x - 3 * scale, y + 4 * scale, z), 
-        //    new THREE.Vector3(x + 3 * scale, y + 4 * scale, z), 
-        //    new THREE.Vector3(x + 3 * scale, y , z)], 
-        //    new THREE.Vector3(x + 3 * scale, y, z))
-        //
-        ////front wheel
-        //this.app.drawCubicBezierCurve([
-        //    new THREE.Vector3(x - 3 * scale, y, z), 
-        //    new THREE.Vector3(x - 3 * scale, y + 4 * scale, z), 
-        //    new THREE.Vector3(x + 3 * scale, y + 4 * scale, z), 
-        //    new THREE.Vector3(x + 3 * scale, y , z)], 
-        //    new THREE.Vector3(x + 13 * scale, y, z))  
-        //
-        //this.app.drawCubicBezierCurve([
-        //    new THREE.Vector3(x, y, z), 
-        //    new THREE.Vector3(x, y + 4 / 3 * (Math.sqrt(2) - 1) * 8 * scale, z), 
-        //    new THREE.Vector3(x + 4 / 3 * (Math.sqrt(2) - 1) * 8 * scale, y + 8 * scale, z), 
-        //    new THREE.Vector3(x + 8 * scale, y + 8 * scale, z)],
-        //    new THREE.Vector3(x, y, z))
-        //
-        //this.app.drawCubicBezierCurve([
-        //    new THREE.Vector3(x, y + 4 * scale, z), 
-        //    new THREE.Vector3(x + 4 / 3 * (Math.sqrt(2) - 1) * 4 * scale, y + 4 * scale, z), 
-        //    new THREE.Vector3(x + 4 * scale, y + 4 / 3 * (Math.sqrt(2) - 1) * 4 * scale, z), 
-        //    new THREE.Vector3(x + 4 * scale, y, z)], 
-        //    new THREE.Vector3(x + 8 * scale, y + 4 * scale, z))
-        //
-        //this.app.drawCubicBezierCurve([
-        //    new THREE.Vector3(x, y + 4 * scale, z), 
-        //    new THREE.Vector3(x + 4 / 3 * (Math.sqrt(2) - 1) * 4 * scale, y + 4 * scale, z), 
-        //    new THREE.Vector3(x + 4 * scale, y + 4 / 3 * (Math.sqrt(2) - 1) * 4 * scale, z), 
-        //    new THREE.Vector3(x + 4 * scale, y, z)], 
-        //    new THREE.Vector3(x + 12 * scale, y, z))
-        //
-
-        //center = (x,y,z)
         this.app.drawCubicBezierCurve([
             new THREE.Vector3(- 3 * scale, 0, 0), 
             new THREE.Vector3(- 3 * scale, semi * 3 * scale, 0), 
@@ -141,7 +99,6 @@ class MyBeetle extends THREE.Object3D {
         
         z -= 0.01
         group.position.set(x, y, z);
-
         this.add(group)
     }
 

@@ -82,7 +82,7 @@ class MyWalls extends THREE.Object3D {
         wallFrontD.position.x = gap;
         this.add( wallFrontD );
 
-        const window = new MyWindow( lengthRoom * 0.6, height * 0.4, widthWall, height * 0.4 + height * 0.2, widthRoom * 0.5 + widthWall )
+        const window = new MyWindow( app, lengthRoom * 0.6, height * 0.4, widthWall, height * 0.4 + height * 0.2, widthRoom * 0.5 + widthWall )
         this.add( window )
 
         // skirting board

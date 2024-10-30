@@ -1,11 +1,15 @@
 import * as THREE from 'three';
+import { MyApp } from './MyApp.js';
 
 class MyCurtain extends THREE.Object3D {
 
     /**
-       constructs the object
-       @param {MyApp} app The application object
-    */ 
+     * 
+     * @param {MyApp} app the application object
+     * @param {number} widthRoom 
+     * @param {number} lenghtRoom 
+     * @param {number} height 
+     */ 
     constructor(app, widthRoom, lenghtRoom, height) {
         super()
         this.app = app

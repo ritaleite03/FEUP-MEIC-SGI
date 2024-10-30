@@ -138,7 +138,7 @@ class MyContents  {
         const topRadiusCake = 0.3;
         
         const heightTable = 3;
-        const radiusTable = 0.2;
+        const radiusTable = 0.15;
         const xLenghtTable = 6;
         const zLenghtTable = 4;
         const topPositionTable = heightTable + tierHeightCake / 2 + radiusTable / 2;

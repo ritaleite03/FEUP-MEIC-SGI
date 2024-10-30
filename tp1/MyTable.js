@@ -20,25 +20,26 @@ class MyTable extends THREE.Object3D {
         this.app = app;
 
         // variables
-        const x = xLenght / 2 - radius; // position of the leg in Ox
-        const z = zLenght / 2 - radius; // position of the leg in Oz
+        const x = xLenght / 2 - radius * 2; // position of the leg in Ox
+        const z = zLenght / 2 - radius * 2; // position of the leg in Oz
 
         // texture and material
         let texture = new THREE.TextureLoader().load('textures/wooden_top.jpg');
         texture.wrapS = THREE.MirroredRepeatWrapping;
         texture.wrapT = THREE.MirroredRepeatWrapping;
         texture.repeat.set(xLenght, zLenght);
-        const material = new THREE.MeshPhongMaterial({color: "#ffffff", specular: "#000000", emissive: "#000000", shininess: 0, map: texture});
+        const topMaterial = new THREE.MeshLambertMaterial({map: texture});
+        const legsMaterial = new THREE.MeshPhongMaterial({color: "#ffffff", specular: "#ffffff", emissive: "#000000", shininess: 100});
 
         // geometries (leg and top)
         const leg = new THREE.CylinderGeometry( radius, radius, height ); 
         const top = new THREE.BoxGeometry(xLenght, radius, zLenght); 
 
         // add leg
-        const legMesh1 = new THREE.Mesh( leg, material );
-        const legMesh2 = new THREE.Mesh( leg, material );
-        const legMesh3 = new THREE.Mesh( leg, material );
-        const legMesh4 = new THREE.Mesh( leg, material );
+        const legMesh1 = new THREE.Mesh( leg, legsMaterial );
+        const legMesh2 = new THREE.Mesh( leg, legsMaterial );
+        const legMesh3 = new THREE.Mesh( leg, legsMaterial );
+        const legMesh4 = new THREE.Mesh( leg, legsMaterial );
         legMesh1.position.set( +x, height / 2, +z );
         legMesh2.position.set( -x, height / 2, +z );
         legMesh3.position.set( +x, height / 2, -z );
@@ -57,7 +58,7 @@ class MyTable extends THREE.Object3D {
         this.add( legMesh4 );
 
         // add top
-        const topMesh = new THREE.Mesh( top, material );
+        const topMesh = new THREE.Mesh( top, topMaterial );
         topMesh.position.y = height;
         topMesh.castShadow = true;
         topMesh.receiveShadow = true;
