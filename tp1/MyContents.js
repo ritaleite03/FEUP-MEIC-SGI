@@ -202,6 +202,8 @@ class MyContents  {
         this.app.scene.add( newspaper );
         
         const spiralSpring = new MySpiralSpring( this, 0.4, 20, 2, 4 )
+        spiralSpring.scale.set( 0.25, 0.25, 0.25 )
+        spiralSpring.position.set( xLenghtTable / 4 -this.lengthRoom / 4, heightTable + radiusTable / 2, -zLenghtTable / 4 )
         this.app.scene.add( spiralSpring )
     }
 
