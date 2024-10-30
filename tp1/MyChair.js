@@ -37,6 +37,8 @@ class MyChair extends THREE.Object3D {
         const woodenMaterial = new THREE.MeshPhongMaterial( { color: "#ffffff", specular: "#000000", emissive: "#000000", shininess: 0, map: woodenTexture } );
         
         let fabricTexture = new THREE.TextureLoader().load('textures/fabric.jpg');
+        fabricTexture.wrapS = THREE.MirroredRepeatWrapping;
+        fabricTexture.wrapT = THREE.MirroredRepeatWrapping;
         const fabricTextureMaterial = new THREE.MeshPhongMaterial( { color: "#ffffff", specular: "#000000", emissive: "#000000", shininess: 0, map: fabricTexture } );
 
         // geometries

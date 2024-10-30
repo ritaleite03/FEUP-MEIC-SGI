@@ -1,10 +1,19 @@
 import * as THREE from 'three';
+import { MyApp } from './MyApp.js';
 
 /**
  * This class contains the representation of a spiral spring
  */
 class MySpiralSpring extends THREE.Object3D {
 
+    /**
+     * 
+     * @param {MyApp} app the application object
+     * @param {number} radius spiral's radius
+     * @param {number} segments segments of the curve
+     * @param {number} height spiral's height
+     * @param {number} heightLevel spiral's levels height
+     */
     constructor(app, radius, segments, height, heightLevel) {
         super();
         this.type = 'Group';

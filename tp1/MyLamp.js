@@ -1,11 +1,19 @@
 import * as THREE from 'three';
+import { MyApp } from './MyApp.js';
 
 class MyLamp extends THREE.Object3D {
 
     /**
-       constructs the object
-       @param {MyApp} app The application object
-    */ 
+     * 
+     * @param {MyApp} app 
+     * @param {number} radiusFoot lamp's foot's radius
+     * @param {number} heighFoot lamp's foot's height
+     * @param {number} radiusPole lamp's pole's radius
+     * @param {number} heightPole lamp's pole's height
+     * @param {number} radiusShadeBottomLamp lamp's shade's bottom radius
+     * @param {number} radiusShadeTopLamp lamp's shade's top radius
+     * @param {number} heighShadeLamp lamp's shade's height
+     */
     constructor(app, radiusFoot, heighFoot,radiusPole, heightPole, radiusShadeBottomLamp, radiusShadeTopLamp, heighShadeLamp) {
         super()
         this.app = app

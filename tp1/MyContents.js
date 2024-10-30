@@ -11,6 +11,8 @@ import { MyNewspaper } from './MyNewsPaper.js';
 import { MySpiralSpring } from './MySpiralSpring.js';
 import { MyLamp } from './MyLamp.js';
 import { MyCurtain } from './MyCurtain.js';
+import { MyTV } from './MyTV.js';
+import { MySideBoard } from './SideBoard.js';
 
 /**
  *  This class contains the contents of out application
@@ -27,12 +29,12 @@ class MyContents  {
 
         //texture
         this.planeTexture = new THREE.TextureLoader().load('textures/wooden_top.jpg');
-        this.planeTexture.wrapS = THREE.RepeatWrapping;
-        this.planeTexture.wrapT = THREE.RepeatWrapping;
+        this.planeTexture.wrapS = THREE.MirroredRepeatWrapping;
+        this.planeTexture.wrapT = THREE.MirroredRepeatWrapping;
         
         // material
         this.diffusePlaneColor =  "#ffffff"
-        this.specularPlaneColor = "#ffffff"
+        this.specularPlaneColor = "#000000"
         this.planeShininess = 30
 
         this.planeMaterial = new THREE.MeshPhongMaterial({color: this.diffusePlaneColor, specular: this.specularPlaneColor, emissive: "#000000", shininess: this.planeShininess, map: this.planeTexture }) // alternative 1
@@ -76,11 +78,11 @@ class MyContents  {
         const heightBackChair = 1.0
         const thicknessChair = 0.2
 
-        const scaleJar = 0.2
-        const numberPetals = 10
-        const widthPetal = 0.01
-        const heightPetal = 0.04
-        const radiusStem = 0.008
+        const scaleJar = 0.3
+        const numberPetals = 5
+        const widthPetal = 0.04
+        const heightPetal = 0.1
+        const radiusStem = 0.01
         const segmentsStem = 20
 
         const arcPages = 0.6;
@@ -96,32 +98,53 @@ class MyContents  {
         const heightSpiral = 2
         const heightLevelSpiral = 4
 
-        const table = new MyTable( this, heightTable, radiusTable, xLenghtTable, zLenghtTable );
-        this.app.scene.add( table );
-
-        const lengthRoomWall = 20
-        const widthRoomWall = 15
+        const lengthRoomWall = 30
+        const widthRoomWall = 20
         const heightWall = 10
         const widthWall = 0.5
+
+        const table = new MyTable( this, heightTable, radiusTable, xLenghtTable, zLenghtTable );
+        table.position.set(-lengthRoomWall / 4, 0, 0)
+        this.app.scene.add( table );
+
         const walls = new MyWalls( this, lengthRoomWall, widthRoomWall, heightWall, widthWall )
         this.app.scene.add( walls );
         
+        const heightSideBoard = 2
+        const widthSideBoard = 3
+        const depthSideBoard = 0.1
+        const heightSideBoardLeg = 0.5
+        const radiusSideBoardLeg = 0.1
+
+        const sideboard = new MySideBoard( this, widthSideBoard, widthRoomWall / 3 + 1, heightSideBoard, depthSideBoard, heightSideBoardLeg, radiusSideBoardLeg )
+        sideboard.position.set(lengthRoomWall / 3 ,0, - widthRoomWall / 2)
+        this.app.scene.add(sideboard)
+        
+        const widthTV = 7
+        const heightTV = 4
+        const depthTV = 0.2
+        const heightSupportTV = 0.3
+
+        const tv = new MyTV(this, widthTV, heightTV, depthTV, heightSupportTV)
+        tv.position.set(lengthRoomWall / 3, heightSideBoardLeg + heightSideBoard, - widthRoomWall / 2 + widthSideBoard / 2)
+        this.app.scene.add(tv)
+
         const cake = new MyCake( this, baseRadiusCake, tierHeightCake, 10 * Math.PI / 6, false, 3, topRadiusCake );
-        cake.position.y = topPositionTable + baseRadiusCake * 0.4 + 0.005;
+        cake.position.set(-lengthRoomWall / 4, topPositionTable + baseRadiusCake * 0.4 + 0.005, 0)
         this.app.scene.add( cake );
         
         const cakeSlice = new MyCake( this, topRadiusCake, tierHeightCake, 2 * Math.PI / 6, true );
-        cakeSlice.position.set( 0.5, topPositionTable + 0.03, 0.5 );
+        cakeSlice.position.set( 0.5 -lengthRoomWall / 4, topPositionTable + 0.03, 0.5 );
         this.app.scene.add( cakeSlice );
 
         const chair1 = new MyChair( this, widthBottomChair, heightBottomChair, widthTopChair, heightTopChair, radiusLegsChair, heightLegsChair, radiusBackChair, heightBackChair, thicknessChair )
         chair1.rotateY( -Math.PI / 6 )
-        chair1.position.set( -1, 0, 3)
+        chair1.position.set( -1 - lengthRoomWall / 4, 0, 3)
         this.app.scene.add( chair1 );
 
         const chair2 = new MyChair( this, widthBottomChair, heightBottomChair, widthTopChair, heightTopChair, radiusLegsChair, heightLegsChair, radiusBackChair, heightBackChair, thicknessChair )
         chair2.rotateY( Math.PI / 6 + Math.PI)
-        chair2.position.set( 1, 0, -3)
+        chair2.position.set( 1 -lengthRoomWall / 4, 0, -3)
         this.app.scene.add( chair2 );
         
         const photos = new THREE.Group();
@@ -135,15 +158,15 @@ class MyContents  {
         photos.add(photo2);
         
         photos.rotateY(Math.PI/2);
-        photos.position.set(-10, 5, 0);
+        photos.position.set(-lengthRoomWall / 2, 5, 0);
         this.app.scene.add(photos);
 
         const flower1 = new MyFlower( this , scaleJar * 1.0,  numberPetals - 0, widthPetal * 1.0, heightPetal * 1.0, radiusStem, segmentsStem );
         const flower2 = new MyFlower( this , scaleJar * 0.9,  numberPetals - 1, widthPetal * 0.9, heightPetal * 0.9, radiusStem, segmentsStem );
         const flower3 = new MyFlower( this , scaleJar * 0.9,  numberPetals - 2, widthPetal * 0.9, heightPetal * 0.9, radiusStem, segmentsStem );
-        flower1.position.set( xLenghtTable / 4 + 2.5 * scaleJar, heightTable + radiusTable / 2, -zLenghtTable / 4 );
-        flower2.position.set( xLenghtTable / 4 + 2.5 * scaleJar, heightTable + radiusTable / 2, -zLenghtTable / 4 );
-        flower3.position.set( xLenghtTable / 4 + 2.5 * scaleJar, heightTable + radiusTable / 2, -zLenghtTable / 4 );
+        flower1.position.set( xLenghtTable / 4 + 2.5 * scaleJar -lengthRoomWall / 4, heightTable + radiusTable / 2, -zLenghtTable / 4 );
+        flower2.position.set( xLenghtTable / 4 + 2.5 * scaleJar-lengthRoomWall / 4, heightTable + radiusTable / 2, -zLenghtTable / 4 );
+        flower3.position.set( xLenghtTable / 4 + 2.5 * scaleJar-lengthRoomWall / 4, heightTable + radiusTable / 2, -zLenghtTable / 4 );
         flower1.rotateX( +Math.PI / 40 );
         flower2.rotateZ( +Math.PI / 20 );
         flower3.rotateX( -Math.PI / 40 );
@@ -155,34 +178,26 @@ class MyContents  {
         const curtain = new MyCurtain(this, widthRoomWall, lengthRoomWall, heightWall)
         this.app.scene.add(curtain)
 
-        this.drawJar( xLenghtTable / 4, heightTable + radiusTable / 2, -zLenghtTable / 4, scaleJar )       
+        this.drawJar( xLenghtTable / 4 -lengthRoomWall / 4, heightTable + radiusTable / 2, -zLenghtTable / 4, scaleJar )       
 
         const newspaper = new MyNewspaper( this, arcPages, numberPages, widthNewspaper, lengthNewspaper, heightNewspaper );
         newspaper.rotateY( Math.PI );
         newspaper.scale.set( scaleNewspaper, scaleNewspaper, scaleNewspaper )
-        newspaper.position.set( positionNewspaper[0], positionNewspaper[1],  positionNewspaper[2] );
+        newspaper.position.set( positionNewspaper[0] -lengthRoomWall / 4, positionNewspaper[1],  positionNewspaper[2] );
         this.app.scene.add( newspaper );
 
         const spiralSpring = new MySpiralSpring(this, radiusSpiral, segmentsSpiral, heightSpiral, heightLevelSpiral)
         this.app.scene.add(spiralSpring)
 
-        let planeSizeU = 20;
-        let planeSizeV = 15;
-        let planeUVRate = planeSizeV / planeSizeU;
-        let planeTextureUVRate = 3354 / 2385;
-        let planeTextureRepeatU = 1;
-        let planeTextureRepeatV = planeTextureRepeatU * planeUVRate * planeTextureUVRate;
-        this.planeTexture.repeat.set( planeTextureRepeatU, planeTextureRepeatV );
-        this.planeTexture.offset = new THREE.Vector2(0,0);
-        var plane = new THREE.PlaneGeometry( planeSizeU, planeSizeV );
+        this.planeTexture.repeat.set( 4, 4 * widthRoomWall / lengthRoomWall * 626 / 418 );
+        var plane = new THREE.PlaneGeometry( lengthRoomWall, widthRoomWall );
         this.planeMesh = new THREE.Mesh( plane, this.planeMaterial );
         this.planeMesh.receiveShadow = true;
         this.planeMesh.rotation.x = -Math.PI / 2;
-        this.planeMesh.position.y = 0;
         this.app.scene.add( this.planeMesh );
 
         const materialCeilling = new THREE.MeshPhongMaterial( {color: "#ffffff"} )
-        const ceilling = new THREE.PlaneGeometry( planeSizeU, planeSizeV );
+        const ceilling = new THREE.PlaneGeometry( lengthRoomWall, widthRoomWall );
         const ceillingMesh = new THREE.Mesh( ceilling, materialCeilling );
         ceillingMesh.rotation.x = Math.PI / 2;
         ceillingMesh.position.y = heightWall;
@@ -205,25 +220,30 @@ class MyContents  {
 
         // light
         const intensityLight = 50;
-        const angleLight = Math.PI / 8;
+        const angleLight = Math.PI / 6;
+        const angleSun = Math.PI / 4;
        
-        const ambientLight = new THREE.AmbientLight( "#ffffff");
+        const ambientLight = new THREE.AmbientLight( "#ffffff", 1);
         this.app.scene.add( ambientLight );
 
         this.representatingSpotLightCeilling( intensityLight, angleLight, -lengthRoomWall / 4, heightWall );
         this.representatingSpotLightCeilling( intensityLight, angleLight, 0, heightWall );
         this.representatingSpotLightCeilling( intensityLight, angleLight, lengthRoomWall / 4, heightWall );
 
-        const spotLightLamp = new THREE.SpotLight( "#ffffff", intensityLight, heightPole, angleLight);
+        const spotLightLamp = new THREE.SpotLight( "#ffffff", intensityLight, heightPole + 5, angleLight);
         spotLightLamp.position.set(- lengthRoomWall / 2 + radiusShadeBottomLamp + 0.01, heighFootLamp + heightPole, - widthRoomWall/2 + radiusShadeBottomLamp + 0.01);
         spotLightLamp.target.position.set(- lengthRoomWall / 2 + radiusShadeBottomLamp + 0.01, 0, - widthRoomWall/2 + radiusShadeBottomLamp + 0.01);
         spotLightLamp.castShadow = true;
         this.app.scene.add( spotLightLamp );
-
         const spotLightLampHelper = new THREE.SpotLightHelper( spotLightLamp );
-        this.app.scene.add( spotLightLampHelper );
+        //this.app.scene.add( spotLightLampHelper );
 
-
+        const sun = new THREE.SpotLight( "#ffffff", 1000, lengthRoomWall * 2, angleSun)
+        sun.position.set(0,10,20)
+        sun.castShadow = true
+        this.app.scene.add(sun)
+        const sunHelper = new THREE.SpotLightHelper(sun)
+        this.app.scene.add(sunHelper)
     }
 
     representatingSpotLightCeilling(intensity, angle, x, y) {
@@ -233,15 +253,13 @@ class MyContents  {
         const heightfocusInterior = 0.01
 
         // light
-        const light = new THREE.SpotLight( "#ffffff", intensity, y, angle);
+        const light = new THREE.SpotLight( "#ffffff", intensity, y + 5, angle);
         light.position.set( x, y - heightfocusExterior - heightfocusInterior - 0.01, 0 );
         light.target.position.set(x, 0, 0);
         light.castShadow = true;
         this.app.scene.add( light );
-
-        // helper
-        // const helper = new THREE.SpotLightHelper( light );
-        // this.app.scene.add( helper );
+        const helper = new THREE.SpotLightHelper( light );
+        //this.app.scene.add( helper );
 
         // focus exterior
         const focusExterior = new THREE.CylinderGeometry(radiusfocusExterior, radiusfocusExterior, heightfocusExterior)
@@ -322,7 +340,7 @@ class MyContents  {
         const orderBottomU= 2
         const orderBottomV = 2
 
-        const material = new THREE.MeshLambertMaterial( { color: "#ffffff", side: THREE.DoubleSide } );             
+        const material = new THREE.MeshLambertMaterial( { color: "#ffffff", side: THREE.DoubleSide, transparent: true, opacity: 0.6 } );             
         let sideJar = this.builder.build( curveSide, orderSideU, orderSideV, this.samplesU, this.samplesV, material )  
         let bottomJar = this.builder.build( curveBottom, orderBottomU, orderBottomV, this.samplesU, this.samplesV, material )  
         

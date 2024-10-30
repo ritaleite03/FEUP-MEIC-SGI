@@ -30,6 +30,7 @@ class MyNewspaper extends THREE.Object3D {
         const material = new THREE.MeshLambertMaterial( { map:texture, color: "#ffffff", side: THREE.DoubleSide } );
 
         // geometry and mesh of the newspaper's pages
+        
         for(let i = 0; i < numberPages; i++){
             
             const xList = [ 0, width / 3, width / 2, width / 1 ];
@@ -53,17 +54,12 @@ class MyNewspaper extends THREE.Object3D {
             const rightHalfNewspaper = app.builder.build( controlPointsRight, orderU, orderV, this.samplesU, this.samplesV, material ) 
 
             let leftNewspaperMesh = new THREE.Mesh( leftHalfNewspaper, material );
-            leftNewspaperMesh.castShadow = true;
-            leftNewspaperMesh.receiveShadow = true;
             this.add( leftNewspaperMesh )
     
             let rightNewspaperMesh = new THREE.Mesh( rightHalfNewspaper, material );
-            rightNewspaperMesh.castShadow = true;
-            rightNewspaperMesh.receiveShadow = true;
             rightNewspaperMesh.position.x = width
             this.add( rightNewspaperMesh )
             
-            // increment arc of the page
             arc += arcInterval
         }
     }
