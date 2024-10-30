@@ -140,11 +140,11 @@ class MyContents  {
         
         const photos = new THREE.Group();
         
-        const photo1 = new MyPicture(this.app, 2.1, 2.7, 0.2, this.picture1);
+        const photo1 = new MyPicture(this.app, 2.1, 2.7, 0.1, this.picture1);
         photo1.position.x = - 2.0;
         photos.add(photo1);
 
-        const photo2 = new MyPicture(this.app, 2.1, 2.7, 0.2, this.picture2);
+        const photo2 = new MyPicture(this.app, 2.1, 2.7, 0.1, this.picture2);
         photo2.position.x = 2.0;
         photos.add(photo2);
         

@@ -12,8 +12,10 @@ class MyFrame extends THREE.Object3D {
      * @param {number} width Frame width
      * @param {number} insideLength  Painting inside length
      * @param {number} outsideLength Painting outside length
+     * @param {number} height frame height
+     * @param {texture} texture frame texture. default = null (no texture)
      */
-    constructor(width, insideLength, outsideLength) {
+    constructor(width, insideLength, outsideLength, height, texture = null) {
         super();
         const geometry = new THREE.BufferGeometry();
 
@@ -21,10 +23,10 @@ class MyFrame extends THREE.Object3D {
         const halfOut = outsideLength/2;
 
         const vertices = new Float32Array([
-            -halfOut, 0, 0.05,         //0
-            -halfIn, width, 0.05,     //1
-            halfOut, 0, 0.05,          //2
-            halfIn, width, 0.05,      //3
+            -halfOut, 0, height,         //0
+            -halfIn, width, height,     //1
+            halfOut, 0, height,          //2
+            halfIn, width, height,      //3
             -halfOut, 0, 0.0,          //4
             -halfIn, width, 0.0,      //5
             halfOut, 0, 0.0,           //6
@@ -43,8 +45,13 @@ class MyFrame extends THREE.Object3D {
         geometry.setIndex( indicesOfFaces );
         geometry.setAttribute( 'position', new THREE.BufferAttribute( vertices, 3 ) );
         geometry.computeVertexNormals()
+        let material;
+        if(texture == null){
+            material = new THREE.MeshStandardMaterial({color: "#000000", metalness: 1.0,  roughness: 0.1});
+        } else {
+            material = new THREE.MeshPhysicalMaterial({color: "#888888", metalness: 0.7,  roughness: 0.1, map:texture});
+        }
 
-        const material = new THREE.MeshLambertMaterial( {color: "#554433" } );
         const mesh = new THREE.Mesh( geometry, material )
         mesh.castShadow = true;
         mesh.receiveShadow = true;
