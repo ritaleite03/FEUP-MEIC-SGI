@@ -40,10 +40,10 @@ class MyWalls extends THREE.Object3D {
         this.add( wallRightC );
 
         //Door
-        this.door = new MyDoor(app, widthRoom * 0.2, height * 0.8, widthWall, woodenTexture);
-        this.door.position.z = widthRoom * 0.2 * 0.5;
-        this.door.position.x =  lengthRoom * 0.5 +  widthWall * 0.5;
-        this.add(this.door)
+        //this.door = new MyDoor(app, widthRoom * 0.2, height * 0.8, widthWall, woodenTexture);
+        //this.door.position.z = widthRoom * 0.2 * 0.5;
+        //this.door.position.x =  lengthRoom * 0.5 +  widthWall * 0.5;
+        //this.add(this.door)
 
         // Back wall
 
@@ -147,11 +147,10 @@ class MyWalls extends THREE.Object3D {
         this.add( skirtingBoardDoorTopMesh )
 
         // door
-
-        // const door = new MyDoor(app, widthRoom * 0.2, height * 0.8, widthWall / 2 )
-        // door.rotateY( Math.PI / 2 + Math.PI / 12 )
-        // door.position.set( lengthRoom / 2 - widthWall / 4 + widthWall / 4, 0, widthRoom * 0.2)
-        // this.add( door )
+        const door = new MyDoor(app, widthRoom * 0.2, height * 0.8, widthWall / 2 )
+        door.rotateY( Math.PI / 2 + Math.PI / 12 )
+        door.position.set( lengthRoom / 2 - widthWall / 4 + widthWall / 4, 0, widthRoom * 0.2)
+        this.add( door )
     }
 
 }

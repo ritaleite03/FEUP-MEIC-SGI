@@ -7,10 +7,12 @@ class MyCarpet extends THREE.Object3D {
     * @param {MyApp} app the application object
     * @param {number} length carpet length 
     * @param {number} width carpet width  
+    * @param {number} radius carpet width  
     * @param {texture} patternTexture carpet pattern texture
     * @param {texture} releveTexture carpet releve texture
+    * @param {boolean} circle carpet's format
     */ 
-    constructor(app, length, width, patternTexture, releveTexture) {
+    constructor(app, length, width, radius, patternTexture, releveTexture, circle) {
         super()
         this.app = app;
 
@@ -26,7 +28,10 @@ class MyCarpet extends THREE.Object3D {
 
         const material = new THREE.MeshStandardMaterial({ color: "#ffffff", map:pattern,  bumpMap:releve, roughness: 0.3}); // normalMap
 
-        const carpet = new THREE.PlaneGeometry(length, width);
+        let carpet = new THREE.PlaneGeometry(length, width);
+        if(circle) {
+            carpet = new THREE.CircleGeometry(radius)
+        }
         const carpetMesh = new THREE.Mesh(carpet, material);
         carpetMesh.rotateX(-Math.PI/2)
         carpetMesh.position.y = 0.01;
