@@ -24,7 +24,7 @@ class MyBeetle extends THREE.Object3D {
         
         const length = 18 * scale;
         const width = 10 * scale;
-        const frameWidth = 2 * scale; 
+        const frameWidth = scale; 
         const fullLength = length + 2 * frameWidth;
         const fullWidth = width + 2 * frameWidth;
 
@@ -109,27 +109,29 @@ class MyBeetle extends THREE.Object3D {
             new THREE.Vector3(x + 4 * scale, y - 4 * scale, z))
 
         const group = new THREE.Group();
+
+        const texture = new THREE.TextureLoader().load('textures/gold-texture.jpg');
         
-        const bottomStruc = new MyFrame(frameWidth, length, fullLength);
+        const bottomStruc = new MyFrame(frameWidth, length, fullLength, 0.05, texture);
         bottomStruc.position.y = - fullWidth / 2;
         group.add(bottomStruc);
 
-        const topStruc = new MyFrame(frameWidth, length, fullLength);
+        const topStruc = new MyFrame(frameWidth, length, fullLength, 0.05, texture);
         topStruc.rotateZ(Math.PI);
         topStruc.position.y = fullWidth / 2;
         group.add(topStruc);
 
-        const leftStruc = new MyFrame(frameWidth, width, fullWidth);
+        const leftStruc = new MyFrame(frameWidth, width, fullWidth, 0.05, texture);
         leftStruc.rotateZ(-Math.PI/2);
         leftStruc.position.x = - fullLength/ 2;
         group.add(leftStruc);
 
-        const rightStruc = new MyFrame(frameWidth, width, fullWidth);
+        const rightStruc = new MyFrame(frameWidth, width, fullWidth, 0.05, texture);
         rightStruc.rotateZ(Math.PI/2);
         rightStruc.position.x = fullLength / 2;
         group.add(rightStruc);
 
-        const material = new THREE.MeshPhongMaterial({color: "#ffffff", specular: "#000000", emissive: "#ffffff", shininess: 0})
+        const material = new THREE.MeshPhongMaterial({color: "#ffffff", specular: "#000000", emissive: "#000000", shininess: 0})
         const background = new THREE.PlaneGeometry(length, width);
         const backgroundMesh = new THREE.Mesh(background, material);
         backgroundMesh.receiveShadow = true

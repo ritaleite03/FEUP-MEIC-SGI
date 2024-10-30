@@ -41,21 +41,21 @@ class MyPicture extends THREE.Object3D {
         backMesh.rotateX(Math.PI);
         group.add(backMesh);
 
-        const bottomStruc = new MyFrame(frameWidth, width, fullWidth);
+        const bottomStruc = new MyFrame(frameWidth, width, fullWidth, 0.05);
         bottomStruc.position.y = - fullLength / 2;
         group.add(bottomStruc);
 
-        const topStruc = new MyFrame(frameWidth, width, fullWidth);
+        const topStruc = new MyFrame(frameWidth, width, fullWidth, 0.05);
         topStruc.rotateZ(Math.PI);
         topStruc.position.y = fullLength / 2;
         group.add(topStruc);
 
-        const leftStruc = new MyFrame(frameWidth, length, fullLength);
+        const leftStruc = new MyFrame(frameWidth, length, fullLength, 0.05);
         leftStruc.rotateZ(-Math.PI/2);
         leftStruc.position.x = - fullWidth / 2;
         group.add(leftStruc);
 
-        const rightStruc = new MyFrame(frameWidth, length, fullLength);
+        const rightStruc = new MyFrame(frameWidth, length, fullLength, 0.05);
         rightStruc.rotateZ(Math.PI/2);
         rightStruc.position.x = fullWidth / 2;
         group.add(rightStruc);

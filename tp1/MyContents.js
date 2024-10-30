@@ -13,6 +13,8 @@ import { MyLamp } from './MyLamp.js';
 import { MyCurtain } from './MyCurtain.js';
 import { MyTV } from './MyTV.js';
 import { MySideBoard } from './SideBoard.js';
+import { MySofa } from './MySofa.js';
+import { MyCarpet } from './MyCarpet.js';
 
 /**
  *  This class contains the contents of out application
@@ -29,18 +31,22 @@ class MyContents  {
 
         //texture
         this.planeTexture = new THREE.TextureLoader().load('textures/wooden_top.jpg');
-        this.planeTexture.wrapS = THREE.MirroredRepeatWrapping;
-        this.planeTexture.wrapT = THREE.MirroredRepeatWrapping;
+        this.planeTexture.wrapS = THREE.RepeatWrapping;
+        this.planeTexture.wrapT = THREE.RepeatWrapping;
+        //this.loadTextures()
+        const loader = new THREE.TextureLoader();
+        this.picture1 = loader.load('textures/202105309.jpg');
+        this.picture2 = loader.load('textures/202108699.jpg');
+        this.sofaTexture = loader.load('textures/gray-sofa4.jpg');
+        this.carpetPattern = loader.load('textures/carpet-hexagonal.jpg');
+        this.carpetReleve = loader.load('textures/gray-carpet.jpg');
         
         // material
         this.diffusePlaneColor =  "#ffffff"
         this.specularPlaneColor = "#000000"
         this.planeShininess = 30
-
         this.planeMaterial = new THREE.MeshPhongMaterial({color: this.diffusePlaneColor, specular: this.specularPlaneColor, emissive: "#000000", shininess: this.planeShininess, map: this.planeTexture }) // alternative 1
-        const loader = new THREE.TextureLoader();
-        this.picture1 = loader.load('textures/202105309.jpg');
-        this.picture2 = loader.load('textures/202108699.jpg');
+
 
         // curves
         this.builder = new MyNurbsBuilder()
@@ -146,14 +152,28 @@ class MyContents  {
         chair2.rotateY( Math.PI / 6 + Math.PI)
         chair2.position.set( 1 -lengthRoomWall / 4, 0, -3)
         this.app.scene.add( chair2 );
+
+        const carpet = new MyCarpet(this.app, xLenghtTable*2, zLenghtTable*2, this.carpetPattern, this.carpetReleve);
+        carpet.position.set(lengthRoomWall / 4, 0, 0)
+        this.app.scene.add(carpet);
+
+        const sofa = new MySofa(this, widthBottomChair, widthBottomChair, heightTopChair * 0.7, this.sofaTexture);
+        sofa.rotateY( -Math.PI / 4 - Math.PI);
+        sofa.position.set(widthBottomChair, 0, widthRoomWall / 4);
+        this.app.scene.add( sofa );
+
+        const sofa2 = new MySofa(this, widthBottomChair, widthBottomChair, heightTopChair * 0.7, this.sofaTexture);
+        sofa2.rotateY( Math.PI);
+        sofa2.position.set(lengthRoomWall / 4 + widthBottomChair, 0, widthRoomWall / 4 + widthBottomChair);
+        this.app.scene.add( sofa2 );
         
         const photos = new THREE.Group();
         
-        const photo1 = new MyPicture(this.app, 2.1, 2.7, 0.2, this.picture1);
+        const photo1 = new MyPicture(this.app, 2.1, 2.7, 0.1, this.picture1);
         photo1.position.x = - 2.0;
         photos.add(photo1);
 
-        const photo2 = new MyPicture(this.app, 2.1, 2.7, 0.2, this.picture2);
+        const photo2 = new MyPicture(this.app, 2.1, 2.7, 0.1, this.picture2);
         photo2.position.x = 2.0;
         photos.add(photo2);
         
@@ -287,6 +307,28 @@ class MyContents  {
         lineObj.position.set( position.x, position.y, position.z )
         this.app.scene.add( lineObj );
     }
+
+    /**
+     * this method is called from init and loads the textures used
+    */
+    //loadTextures(){
+    //    const loader = new THREE.TextureLoader();
+    //    loader.load('textures/202105309.jpg', (loadedTexture) => {
+    //        this.picture1 = loadedTexture;
+    //    });
+    //    loader.load('textures/202108699.jpg', (loadedTexture) => {
+    //        this.picture2 = loadedTexture;
+    //    });
+    //    loader.load('textures/gray-sofa4.jpg', (loadedTexture) => {
+    //        this.sofaTexture = loadedTexture;
+    //    });
+    //    loader.load('textures/carpet-hexagonal.jpg', (loadedTexture) => {
+    //        this.carpetPattern = loadedTexture;
+    //    });
+    //    loader.load('textures/gray-carpet.jpg', (loadedTexture) => {
+    //        this.carpetReleve = loadedTexture;
+    //    });
+    //}
 
     /**
      * updates the contents
