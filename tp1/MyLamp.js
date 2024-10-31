@@ -14,7 +14,7 @@ class MyLamp extends THREE.Object3D {
      * @param {number} radiusShadeTopLamp lamp's shade's top radius
      * @param {number} heighShadeLamp lamp's shade's height
      */
-    constructor(app, radiusFoot, heighFoot,radiusPole, heightPole, radiusShadeBottomLamp, radiusShadeTopLamp, heighShadeLamp) {
+    constructor(app, radiusFoot, heighFoot, radiusPole, heightPole, radiusShadeBottomLamp, radiusShadeTopLamp, heighShadeLamp) {
         super()
         this.app = app
 
@@ -27,11 +27,11 @@ class MyLamp extends THREE.Object3D {
         textureLamp.repeat.set(2,1)
         const materialLamp = new THREE.MeshPhongMaterial( {color: "#ffffff", map:textureLamp} )
        
-        let textureShade = new THREE.TextureLoader().load('textures/fabric.jpg');
+        let textureShade = new THREE.TextureLoader().load('textures/gray-sofa4.jpg');
         textureShade.wrapS = THREE.MirroredRepeatWrapping;
         textureShade.wrapT = THREE.MirroredRepeatWrapping;
-        textureShade.repeat.set(2,2)
-        const materialShade = new THREE.MeshLambertMaterial( {color: "#ffffff", map:textureShade, side: THREE.DoubleSide} )
+        textureShade.repeat.set(2,1)
+        const materialShade = new THREE.MeshLambertMaterial( {color: "#ffffff", side: THREE.DoubleSide, map: textureShade} )
 
         // geometry
 

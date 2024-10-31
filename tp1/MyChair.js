@@ -36,10 +36,18 @@ class MyChair extends THREE.Object3D {
         woodenTexture.wrapT = THREE.MirroredRepeatWrapping;
         const woodenMaterial = new THREE.MeshPhongMaterial( { color: "#ffffff", specular: "#000000", emissive: "#000000", shininess: 0, map: woodenTexture } );
         
-        let fabricTexture = new THREE.TextureLoader().load('textures/fabric.jpg');
-        fabricTexture.wrapS = THREE.MirroredRepeatWrapping;
-        fabricTexture.wrapT = THREE.MirroredRepeatWrapping;
-        const fabricTextureMaterial = new THREE.MeshPhongMaterial( { color: "#ffffff", specular: "#000000", emissive: "#000000", shininess: 0, map: fabricTexture } );
+        let fabricTextureDown = new THREE.TextureLoader().load('textures/fabric.jpg');
+        fabricTextureDown.wrapS = THREE.MirroredRepeatWrapping;
+        fabricTextureDown.wrapT = THREE.MirroredRepeatWrapping;
+        fabricTextureDown.repeat.set(widthPlaneDown / thickness, heightPlaneDown / thickness);
+        const fabricTexturDownMaterial = new THREE.MeshPhongMaterial( { color: "#ffffff", specular: "#000000", emissive: "#000000", shininess: 0, map: fabricTextureDown } );
+
+        let fabricTextureUp = new THREE.TextureLoader().load('textures/fabric.jpg');
+        fabricTextureUp.wrapS = THREE.MirroredRepeatWrapping;
+        fabricTextureUp.wrapT = THREE.MirroredRepeatWrapping;
+        fabricTextureUp.repeat.set(widthPlaneUp / thickness, heightPlaneUp / thickness);
+        const fabricTexturUpMaterial = new THREE.MeshPhongMaterial( { color: "#ffffff", specular: "#000000", emissive: "#000000", shininess: 0, map: fabricTextureUp } );
+
 
         // geometries
 
@@ -76,7 +84,7 @@ class MyChair extends THREE.Object3D {
 
         // mesh plane down (bottom)
 
-        const planeDownMesh = new THREE.Mesh( planeDown, fabricTextureMaterial );
+        const planeDownMesh = new THREE.Mesh( planeDown, fabricTexturDownMaterial );
         planeDownMesh.castShadow = true;
         planeDownMesh.receiveShadow = true;
         planeDownMesh.rotateX( Math.PI / 2 );
@@ -98,7 +106,7 @@ class MyChair extends THREE.Object3D {
 
         // mesh plane up (back)
 
-        const planeUpMesh = new THREE.Mesh( planeUp, fabricTextureMaterial );
+        const planeUpMesh = new THREE.Mesh( planeUp, fabricTexturUpMaterial );
         planeUpMesh.castShadow = true;
         planeUpMesh.receiveShadow = true;
         planeUpMesh.position.set( 0, yLegUp + heightLegBack / 2 + heightPlaneUp / 2, heightPlaneDown / 2 - thickness / 2 );

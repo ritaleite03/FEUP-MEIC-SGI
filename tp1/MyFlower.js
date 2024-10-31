@@ -14,7 +14,7 @@ class MyFlower extends THREE.Object3D {
      * @param {number} widthPetal width of the petal
      * @param {number} heightPetal height of the petal
      * @param {number} radiusStem radius of the flower's stem
-     * @param {*} segmentsStem number of segments to do flower's stem
+     * @param {number} segmentsStem number of segments to do flower's stem
      */
     constructor(app, scale, numberPetals, widthPetal, heightPetal, radiusStem, segmentsStem) {
         super();
