@@ -75,8 +75,8 @@ class MyContents  {
         this.representationLivingRoom()
 
         // light
-        const intensityLight = 50;
-        const angleLight = Math.PI / 6;
+        const intensityLight = 100;
+        const angleLight = Math.PI / 2;
         const angleSun = Math.PI / 4;
        
         const ambientLight = new THREE.AmbientLight( "#ffffff", 1);
@@ -85,7 +85,7 @@ class MyContents  {
         this.representatingSpotLightCeilling( intensityLight, angleLight, -this.lengthRoom / 4, this.heightWall );
         this.representatingSpotLightCeilling( intensityLight, angleLight, 0, this.heightWall );
         this.representatingSpotLightCeilling( intensityLight, angleLight, this.lengthRoom / 4, this.heightWall );
-        this.representationLampLight(-this.lengthRoom / 2 + 0.01, -this.widthRoom / 2 + 0.01, intensityLight, angleLight)
+        this.representationLampLight(-this.lengthRoom / 2 + 0.01, -this.widthRoom / 2 + 0.01, 40, Math.PI / 6)
 
         const sun = new THREE.SpotLight( "#ffffff", 1000, this.lengthRoom * 2, angleSun)
         sun.position.set(0,10,20)
@@ -260,7 +260,7 @@ class MyContents  {
         lamp.position.set( x + radiusShadeBottomLamp, 0, z + radiusShadeBottomLamp )
         this.app.scene.add( lamp )
 
-        const spotLightLamp = new THREE.SpotLight( "#ffffff", intensityLight, heightPole + 5, angleLight );
+        const spotLightLamp = new THREE.SpotLight( "#ffffff", intensityLight, heightPole + 5, angleLight, 1);
         spotLightLamp.position.set( x + radiusShadeBottomLamp, heighFootLamp + heightPole, z + radiusShadeBottomLamp );
         spotLightLamp.target.position.set( x + radiusShadeBottomLamp, 0, z + radiusShadeBottomLamp );
         spotLightLamp.castShadow = true;
@@ -277,7 +277,7 @@ class MyContents  {
         const heightfocusInterior = 0.01
 
         // light
-        const light = new THREE.SpotLight( "#ffffff", intensity, y + 5, angle);
+        const light = new THREE.SpotLight( "#ffffff", intensity, y + 5, angle, 1);
         light.position.set( x, y - heightfocusExterior - heightfocusInterior - 0.01, 0 );
         light.target.position.set(x, 0, 0);
         light.castShadow = true;
