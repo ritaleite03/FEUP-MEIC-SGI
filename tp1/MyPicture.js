@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { MyApp } from './MyApp.js';
 import { MyFrame } from './MyFrame.js';
+import { MyPictureLight } from './MyPictureLight.js';
 
 /**
  * This class contains the representation of a picture frame
@@ -21,6 +22,11 @@ class MyPicture extends THREE.Object3D {
 
         const fullWidth = width + 2 * frameWidth;
         const fullLength = length + 2 * frameWidth;
+
+        const light = new MyPictureLight(app, 0.01 * width, length * 0.7, 2 * frameWidth);
+        light.position.y = fullLength + frameWidth;
+        this.add(light);
+
 
         const group = new THREE.Group();
 

@@ -18,6 +18,7 @@ import { MyCarpet } from './MyCarpet.js';
 import { MyPanorama } from './MyPanorama.js';
 import { MyCoffeeTable } from './MyCoffeeTable.js';
 
+
 /**
  *  This class contains the contents of out application
  */
@@ -136,6 +137,13 @@ class MyContents  {
     }
 
     representationDiningRoom() {
+
+        const teste = new THREE.PlaneGeometry(60,60);
+        const testeMesh = new THREE.Mesh(teste,  this.planeMaterial)
+        testeMesh.rotateX(-Math.PI/2);
+        testeMesh.position.y = 12;
+        this.app.scene.add( testeMesh );
+
 
         const tierHeightCake = 0.2;
         const baseRadiusCake = 0.5;

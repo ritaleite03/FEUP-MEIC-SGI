@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { MyApp } from './MyApp.js';
 import { MyFrame } from './MyFrame.js';
+import { MyPictureLight } from './MyPictureLight.js';
 
 /**
  * This class contains the representation of a picture frame
@@ -27,6 +28,10 @@ class MyBeetle extends THREE.Object3D {
         const frameWidth = scale; 
         const fullLength = length + 2 * frameWidth;
         const fullWidth = width + 2 * frameWidth;
+
+        const light = new MyPictureLight(app, 0.01 * width, length * 0.7, 2* scale);
+        light.position.set(x, y + scale, z);
+        this.add(light);
 
         y -= fullWidth / 2; 
         z += 0.01
