@@ -1,0 +1,30 @@
+import * as THREE from 'three';
+
+class MyPanorama extends THREE.Object3D {
+
+    /**
+    * @param {MyApp} app the application object
+    * @param {number} lengthRoom room length
+    * @param {number} widthRoom  room width
+    * @param {texture} picture picture texture
+    */ 
+    constructor(app, lengthRoom, widthRoom, picture = 0) {
+        super()
+        this.app = app
+        
+        const landescapeTexture = new THREE.TextureLoader().load('textures/window.jpg')
+        landescapeTexture.magFilter = THREE.LinearFilter;
+        const landescapeMaterial = new THREE.MeshPhongMaterial({color: "#ffffff", specular: "#000000", emissive: "#000000", shininess: 0, map: landescapeTexture,  side: THREE.BackSide });
+        
+        const l = lengthRoom / 2;
+        const w = widthRoom / 2;
+        const radius = Math.sqrt(l*l + w*w) + 3;
+
+        const geometry = new THREE.SphereGeometry( radius, 16, 16, Math.PI/6, 2*Math.PI/3, Math.PI/3.5, Math.PI/3.5);
+        const panorama = new THREE.Mesh( geometry, landescapeMaterial ); 
+        this.add( panorama );
+    }
+
+}
+
+export { MyPanorama };

@@ -15,6 +15,7 @@ import { MyTV } from './MyTV.js';
 import { MySideBoard } from './SideBoard.js';
 import { MySofa } from './MySofa.js';
 import { MyCarpet } from './MyCarpet.js';
+import { MyPanorama } from './MyPanorama.js';
 import { MyCoffeeTable } from './MyCoffeeTable.js';
 
 /**
@@ -99,6 +100,9 @@ class MyContents  {
 
         const walls = new MyWalls( this, this.lengthRoom, this.widthRoom, this.heightWall, this.depthWall )
         this.app.scene.add( walls );
+
+        const panorama = new MyPanorama(this.app, this.lengthRoom, this.widthRoom);
+        this.app.scene.add( panorama );
 
         const curtain = new MyCurtain( this, this.widthRoom, this.lengthRoom, this.heightWall )
         this.app.scene.add( curtain )
