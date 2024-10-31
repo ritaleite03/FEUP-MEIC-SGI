@@ -27,11 +27,11 @@ class MyWindow extends THREE.Object3D {
         const woodenMaterial = new THREE.MeshPhongMaterial({color: "#ffffff", specular: "#000000", emissive: "#000000", shininess: 0, map: woodenTexture})
 
         // add landescape
-        let wall = new THREE.PlaneGeometry(width * 2, height * 4);
-        this.wallMesh = new THREE.Mesh (wall, landescapeMaterial);
-        this.wallMesh.rotateY(Math.PI)
-        this.wallMesh.position.set(0, y - 1, z + 5)
-        this.add(this.wallMesh);
+        //let wall = new THREE.PlaneGeometry(width * 2, height * 4);
+        //this.wallMesh = new THREE.Mesh (wall, landescapeMaterial);
+        //this.wallMesh.rotateY(Math.PI)
+        //this.wallMesh.position.set(0, y - 1, z + 5)
+        //this.add(this.wallMesh);
 
         let rectLight = new THREE.RectAreaLight( 0xffffff, 10,  width, height);
         rectLight.position.set(0, y, z - 0.1)

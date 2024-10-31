@@ -15,6 +15,7 @@ import { MyTV } from './MyTV.js';
 import { MySideBoard } from './SideBoard.js';
 import { MySofa } from './MySofa.js';
 import { MyCarpet } from './MyCarpet.js';
+import { MyPanorama } from './MyPanorama.js';
 
 /**
  *  This class contains the contents of out application
@@ -115,6 +116,9 @@ class MyContents  {
 
         const walls = new MyWalls( this, lengthRoomWall, widthRoomWall, heightWall, widthWall )
         this.app.scene.add( walls );
+
+        const panorama = new MyPanorama(this.app, lengthRoomWall, widthRoomWall);
+        this.app.scene.add( panorama );
         
         const heightSideBoard = 2
         const widthSideBoard = 3
@@ -207,7 +211,7 @@ class MyContents  {
         this.app.scene.add( newspaper );
 
         const spiralSpring = new MySpiralSpring(this, radiusSpiral, segmentsSpiral, heightSpiral, heightLevelSpiral)
-        this.app.scene.add(spiralSpring)
+        //this.app.scene.add(spiralSpring)
 
         this.planeTexture.repeat.set( 4, 4 * widthRoomWall / lengthRoomWall * 626 / 418 );
         var plane = new THREE.PlaneGeometry( lengthRoomWall, widthRoomWall );
