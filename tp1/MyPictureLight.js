@@ -10,14 +10,17 @@ class MyPictureLight extends THREE.Object3D {
      * 
      * @param {MyApp} app the application object
      * @param {number} width picture width
-     * @param {number} length picture length
-     * @param {number} frameWidth frame width
-     * @param {texture} picture picture texture
+     * @param {number} height picture height
+     * @param {texture} texture texture
      */
-    constructor(app, width, length, dist) {
+    constructor(app, width, height) {
         super();
         this.app = app
         this.type = "Group";
+
+        const dist = height * 0.20;
+        const length = width * 0.60;
+        const size = 0.05;
 
         const texture = new THREE.TextureLoader().load('textures/gold-texture.jpg');
 
@@ -37,55 +40,73 @@ class MyPictureLight extends THREE.Object3D {
         ]
 
         const curve = new THREE.CubicBezierCurve3(points[0], points[1], points[2], points[3]);
-        const tubeGeometry = new THREE.TubeGeometry(curve, 20, 0.01, 8, false);
+        const tubeGeometry = new THREE.TubeGeometry(curve, 20, 0.01, 10, false);
         const tubeMesh = new THREE.Mesh(tubeGeometry, material);
-
-        tubeMesh.position.set(0, 0, width*0.5)
+        tubeMesh.position.set(0, 0, size * 0.5)
         this.add(tubeMesh);
 
-        const spotLight = new THREE.SpotLight( "#fefe7c", 10, 10, Math.PI/6, 0);
+        const spotLight = new THREE.SpotLight( "#fefe7c", 3, 6, Math.PI/3, 0.5);
         spotLight.shadow.mapSize.width = 1024;
         spotLight.shadow.mapSize.height = 1024;        
         spotLight.shadow.camera.near = 0.2;
-        spotLight.shadow.camera.far = 4;
-        spotLight.shadow.camera.fov = 30;
-        spotLight.target.position.set(-length*0.10, -length, width + dist)
-        spotLight.position.set(-length*0.25, -width*0.5, width + dist)
+        spotLight.shadow.camera.far = 6;
+        spotLight.shadow.camera.fov = 60;
+        spotLight.castShadow = true;
+        spotLight.position.set(-length*0.40, -size*0.5, dist + size * 0.75)
         this.add(spotLight);
 
-        const spotLightHelper = new THREE.SpotLightHelper( spotLight );
-        this.add( spotLightHelper );
+        const targetSpotLight = new THREE.Object3D();
+        targetSpotLight.position.set(
+            spotLight.position.x + length*0.20,     
+            spotLight.position.y - (height * 0.5), 
+            spotLight.position.z - dist / 2  
+        );
+        this.add(targetSpotLight);
+        spotLight.target = targetSpotLight;
 
-        const spotLight2 = new THREE.SpotLight( "#fefe7c", 10, 10, Math.PI/6, 0);
+        this.spotLightHelper = new THREE.SpotLightHelper( spotLight );
+
+        const spotLight2 = new THREE.SpotLight( "#fefe7c", 3, 6, Math.PI/3, 0.5);
         spotLight2.shadow.mapSize.width = 1024;
         spotLight2.shadow.mapSize.height = 1024;        
         spotLight2.shadow.camera.near = 0.2;
-        spotLight2.shadow.camera.far = 4;
-        spotLight2.shadow.camera.fov = 30;
-        spotLight2.target.position.set(length*0.10, -length, width + dist)
-        spotLight2.position.set(length*0.25, -width*0.5, width + dist)
+        spotLight2.shadow.camera.far = 6;
+        spotLight2.shadow.camera.fov = 60;
+        spotLight2.castShadow = true;
+        spotLight2.position.set(length*0.40, -size*0.5, dist + size * 0.75)
         this.add(spotLight2);
 
-        const spotLightHelper2 = new THREE.SpotLightHelper( spotLight2 );
-        this.add( spotLightHelper2 );
+        const targetSpotLight2 = new THREE.Object3D();
+        targetSpotLight2.position.set(
+            spotLight2.position.x - length*0.20,
+            spotLight2.position.y - (height * 0.5), 
+            spotLight2.position.z - dist / 2  
+        );
+        this.add(targetSpotLight2);
+        spotLight2.target = targetSpotLight2;
 
+        this.spotLightHelper2 = new THREE.SpotLightHelper( spotLight2 );
 
-        const suport = new THREE.BoxGeometry(length*0.2, width, width*0.5);
+        const suport = new THREE.BoxGeometry(length * 0.3, size, size*0.5);
         const suportMesh = new THREE.Mesh( suport, material)
-        suportMesh.position.z = width * 0.25;
+        suportMesh.position.z = size * 0.25;
         this.add(suportMesh);
 
-        const bar = new THREE.BoxGeometry(length, width, width)
+        const bar = new THREE.BoxGeometry(length, size, size)
         const barMesh = new THREE.Mesh( bar, material )
-        barMesh.position.z = width + dist;
+        barMesh.position.z = dist + size * 0.75;
         this.add(barMesh);
 
-        spotLightHelper.update()
-        spotLightHelper2.update()
+        this.spotLightHelper.update()
+        this.spotLightHelper2.update()
+    }
+
+    update() {
+        this.spotLightHelper.update()
+        this.spotLightHelper2.update()
     }
 }
 
 MyPictureLight.prototype.isGroup = true;
-
 
 export { MyPictureLight };

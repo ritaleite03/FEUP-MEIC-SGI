@@ -12,27 +12,30 @@ class MyPicture extends THREE.Object3D {
      * 
      * @param {MyApp} app the application object
      * @param {number} width picture width
-     * @param {number} length picture length
+     * @param {number} height picture height
      * @param {number} frameWidth frame width
      * @param {texture} picture picture texture
+     * @param {number} frameHeight frame height
      */
-    constructor(app, width, length, frameWidth, picture) {
+    constructor(app, width, height, frameWidth, picture, frameHeight = 0.05) {
         super();
         this.app = app;
 
         const fullWidth = width + 2 * frameWidth;
-        const fullLength = length + 2 * frameWidth;
+        const fullHeight = height + 2 * frameWidth;
 
-        const light = new MyPictureLight(app, 0.01 * width, length * 0.7, 2 * frameWidth);
-        light.position.y = fullLength + frameWidth;
+        const light = new MyPictureLight(app, width, height);
+        light.position.y = fullHeight + height * 0.1;
+        this.app.scene.add(light.spotLightHelper);
+        this.app.scene.add(light.spotLightHelper2);
+        light.update();
         this.add(light);
-
 
         const group = new THREE.Group();
 
         const pictureM = new THREE.MeshPhongMaterial({ map: picture })
 
-        const photo = new THREE.PlaneGeometry(width, length);
+        const photo = new THREE.PlaneGeometry(width, height);
         const photoMesh = new THREE.Mesh(photo, pictureM);
         photoMesh.castShadow = true;
         photoMesh.receiveShadow = true;
@@ -40,33 +43,34 @@ class MyPicture extends THREE.Object3D {
         group.add(photoMesh);
 
         const material = new THREE.MeshPhongMaterial( { color: 0x7c3a00  } );
-        const backStruc = new THREE.PlaneGeometry(fullWidth, fullLength);
+        const backStruc = new THREE.PlaneGeometry(fullWidth, fullHeight);
         const backMesh = new THREE.Mesh(backStruc, material);
         backMesh.castShadow = true;
         backMesh.receiveShadow = true;
         backMesh.rotateX(Math.PI);
+        backMesh.position.z = - 0.01;
         group.add(backMesh);
 
-        const bottomStruc = new MyFrame(frameWidth, width, fullWidth, 0.05);
-        bottomStruc.position.y = - fullLength / 2;
+        const bottomStruc = new MyFrame(frameWidth, width, fullWidth, frameHeight);
+        bottomStruc.position.y = - fullHeight / 2;
         group.add(bottomStruc);
 
-        const topStruc = new MyFrame(frameWidth, width, fullWidth, 0.05);
+        const topStruc = new MyFrame(frameWidth, width, fullWidth, frameHeight);
         topStruc.rotateZ(Math.PI);
-        topStruc.position.y = fullLength / 2;
+        topStruc.position.y = fullHeight / 2;
         group.add(topStruc);
 
-        const leftStruc = new MyFrame(frameWidth, length, fullLength, 0.05);
+        const leftStruc = new MyFrame(frameWidth, height, fullHeight, frameHeight);
         leftStruc.rotateZ(-Math.PI/2);
         leftStruc.position.x = - fullWidth / 2;
         group.add(leftStruc);
 
-        const rightStruc = new MyFrame(frameWidth, length, fullLength, 0.05);
+        const rightStruc = new MyFrame(frameWidth, height, fullHeight, frameHeight);
         rightStruc.rotateZ(Math.PI/2);
         rightStruc.position.x = fullWidth / 2;
         group.add(rightStruc);
 
-        group.position.y = fullLength / 2;
+        group.position.y = fullHeight / 2;
 
         this.add(group);
     }

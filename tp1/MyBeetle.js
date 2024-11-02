@@ -23,17 +23,20 @@ class MyBeetle extends THREE.Object3D {
         const semi = 4 / 3;
         const quarter = 4 / 3 * (Math.sqrt(2) - 1);
         
-        const length = 18 * scale;
-        const width = 10 * scale;
+        const width = 18 * scale;
+        const height = 10 * scale;
         const frameWidth = scale; 
-        const fullLength = length + 2 * frameWidth;
+        const fullHeight = height + 2 * frameWidth;
         const fullWidth = width + 2 * frameWidth;
 
-        const light = new MyPictureLight(app, 0.01 * width, length * 0.7, 2* scale);
+        const light = new MyPictureLight(app, width, height);
         light.position.set(x, y + scale, z);
+        this.app.app.scene.add(light.spotLightHelper);
+        this.app.app.scene.add(light.spotLightHelper2);
+        light.update();
         this.add(light);
 
-        y -= fullWidth / 2; 
+        y -= fullHeight / 2; 
         z += 0.01
 
         this.app.drawCubicBezierCurve([
@@ -75,27 +78,27 @@ class MyBeetle extends THREE.Object3D {
 
         const texture = new THREE.TextureLoader().load('textures/gold-texture.jpg');
         
-        const bottomStruc = new MyFrame(frameWidth, length, fullLength, 0.05, texture);
-        bottomStruc.position.y = - fullWidth / 2;
+        const bottomStruc = new MyFrame(frameWidth, width, fullWidth, 0.05, texture);
+        bottomStruc.position.y = - fullHeight/ 2;
         group.add(bottomStruc);
 
-        const topStruc = new MyFrame(frameWidth, length, fullLength, 0.05, texture);
+        const topStruc = new MyFrame(frameWidth, width, fullWidth, 0.05, texture);
         topStruc.rotateZ(Math.PI);
-        topStruc.position.y = fullWidth / 2;
+        topStruc.position.y = fullHeight/ 2;
         group.add(topStruc);
 
-        const leftStruc = new MyFrame(frameWidth, width, fullWidth, 0.05, texture);
+        const leftStruc = new MyFrame(frameWidth, height, fullHeight, 0.05, texture);
         leftStruc.rotateZ(-Math.PI/2);
-        leftStruc.position.x = - fullLength/ 2;
+        leftStruc.position.x = - fullWidth / 2;
         group.add(leftStruc);
 
-        const rightStruc = new MyFrame(frameWidth, width, fullWidth, 0.05, texture);
+        const rightStruc = new MyFrame(frameWidth, height, fullHeight, 0.05, texture);
         rightStruc.rotateZ(Math.PI/2);
-        rightStruc.position.x = fullLength / 2;
+        rightStruc.position.x = fullWidth / 2;
         group.add(rightStruc);
 
         const material = new THREE.MeshPhongMaterial({color: "#ffffff", specular: "#000000", emissive: "#000000", shininess: 0})
-        const background = new THREE.PlaneGeometry(length, width);
+        const background = new THREE.PlaneGeometry(width, height);
         const backgroundMesh = new THREE.Mesh(background, material);
         backgroundMesh.receiveShadow = true
         backgroundMesh.castShadow = true
