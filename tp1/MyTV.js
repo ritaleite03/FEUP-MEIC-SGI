@@ -20,7 +20,7 @@ class MyTV extends THREE.Object3D {
         
         const screenTexture = new THREE.TextureLoader().load('textures/tv.jpg');
         const blackMaterial = new THREE.MeshPhongMaterial({color: "#000000", specular: "#ffffff", emissive: "#000000", shininess: 5})
-        const screenMaterial = new THREE.MeshPhongMaterial({color: "#fffffff", specular: "#ffffff", emissive: "#0000ff", shininess: 0, map: screenTexture})
+        const screenMaterial = new THREE.MeshPhongMaterial({color: "#ffffff", specular: "#ffffff", emissive: "#0000ff", shininess: 0, map: screenTexture})
         
         const tv = new THREE.BoxGeometry(width, height, depth)
         const tvMesh = new THREE.Mesh(tv, blackMaterial)

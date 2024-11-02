@@ -40,6 +40,8 @@ class MyFrame extends THREE.Object3D {
             1,7,5,      //top
             0,6,2,      //bottom
             0,4,6,      //bottom
+            6,4,5,      //back
+            6,5,7,      //back
         ];
 
         geometry.setIndex( indicesOfFaces );

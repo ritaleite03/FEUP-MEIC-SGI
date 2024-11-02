@@ -18,6 +18,7 @@ import { MyCarpet } from './MyCarpet.js';
 import { MyPanorama } from './MyPanorama.js';
 import { MyCoffeeTable } from './MyCoffeeTable.js';
 
+
 /**
  *  This class contains the contents of out application
  */
