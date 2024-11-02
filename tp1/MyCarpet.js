@@ -26,11 +26,11 @@ class MyCarpet extends THREE.Object3D {
         releve.wrapT = THREE.MirroredRepeatWrapping;
         releve.repeat.set(4,4)
 
-        const material = new THREE.MeshStandardMaterial({ color: "#ffffff", map:pattern,  bumpMap:releve, roughness: 0.3}); // normalMap
+        const material = new THREE.MeshStandardMaterial({ color: "#ffffff", map:pattern,  bumpMap:releve});
 
         let carpet = new THREE.PlaneGeometry(length, width);
         if(circle) {
-            carpet = new THREE.CircleGeometry(radius)
+            carpet = new THREE.CircleGeometry(radius, 48)
         }
         const carpetMesh = new THREE.Mesh(carpet, material);
         carpetMesh.rotateX(-Math.PI/2)

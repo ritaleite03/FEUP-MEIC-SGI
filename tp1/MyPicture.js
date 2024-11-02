@@ -26,8 +26,8 @@ class MyPicture extends THREE.Object3D {
 
         const light = new MyPictureLight(app, width, height);
         light.position.y = fullHeight + height * 0.1;
-        this.app.scene.add(light.spotLightHelper);
-        this.app.scene.add(light.spotLightHelper2);
+        //this.app.scene.add(light.spotLightHelper);
+        //this.app.scene.add(light.spotLightHelper2);
         light.update();
         this.add(light);
 

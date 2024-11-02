@@ -31,8 +31,8 @@ class MyBeetle extends THREE.Object3D {
 
         const light = new MyPictureLight(app, width, height);
         light.position.set(x, y + scale, z);
-        this.app.app.scene.add(light.spotLightHelper);
-        this.app.app.scene.add(light.spotLightHelper2);
+        //this.app.app.scene.add(light.spotLightHelper);
+        //this.app.app.scene.add(light.spotLightHelper2);
         light.update();
         this.add(light);
 

@@ -33,19 +33,20 @@ class MyContents  {
         this.axis = null;
 
         //texture
-        this.planeTexture = new THREE.TextureLoader().load('textures/wooden_top.jpg');
+        this.planeTexture = new THREE.TextureLoader().load('textures/wood_floor.jpg');
         this.planeTexture.wrapS = THREE.RepeatWrapping;
-        this.planeTexture.wrapT = THREE.RepeatWrapping;
+        this.planeTexture.wrapT = THREE.MirroredRepeatWrapping;
         //this.loadTextures()
         const loader = new THREE.TextureLoader();
         this.picture1 = loader.load('textures/202105309.jpg');
         this.picture2 = loader.load('textures/202108699.jpg');
         this.sofaTexture = loader.load('textures/gray-sofa4.jpg');
         this.carpetPattern = loader.load('textures/carpet-hexagonal.jpg');
-        this.carpetReleve = loader.load('textures/gray-carpet.jpg');
+        //this.carpetReleve = loader.load('textures/gray-carpet.jpg');
+        this.carpetPattern2 = loader.load('textures/carpet.jpg');
         
         // material
-        this.diffusePlaneColor =  "#ffffff"
+        this.diffusePlaneColor = "#f0e6cc" //"#fff7d6"
         this.specularPlaneColor = "#000000"
         this.planeShininess = 30
         this.planeMaterial = new THREE.MeshPhongMaterial({color: this.diffusePlaneColor, specular: this.specularPlaneColor, emissive: "#000000", shininess: this.planeShininess, map: this.planeTexture }) // alternative 1
@@ -78,16 +79,16 @@ class MyContents  {
 
         // light
         const intensityLight = 100;
-        const angleLight = Math.PI / 2;
+        const angleLight = Math.PI / 5;
         const angleSun = Math.PI / 4;
        
-        const ambientLight = new THREE.AmbientLight( "#ffffff", 1);
+        const ambientLight = new THREE.AmbientLight( "#ffffff", 0.3);
         this.app.scene.add( ambientLight );
 
         this.representatingSpotLightCeilling( intensityLight, angleLight, -this.lengthRoom / 4, this.heightWall );
         this.representatingSpotLightCeilling( intensityLight, angleLight, 0, this.heightWall );
         this.representatingSpotLightCeilling( intensityLight, angleLight, this.lengthRoom / 4, this.heightWall );
-        this.representationLampLight(-this.lengthRoom / 2 + 0.01, -this.widthRoom / 2 + 0.01, 40, Math.PI / 6)
+        this.representationLampLight(-this.lengthRoom / 2 + 0.01, -this.widthRoom / 2 + 0.01, 10)
 
         const sun = new THREE.SpotLight( "#ffffff", 1000, this.lengthRoom * 2, angleSun)
         sun.position.set(0,10,20)
@@ -180,7 +181,7 @@ class MyContents  {
         this.app.scene.add( chair1 );
         this.app.scene.add( chair2 );
 
-        const carpet = new MyCarpet(this.app, 0, 0, 6, this.carpetPattern, this.carpetReleve, true);
+        const carpet = new MyCarpet(this.app, 0, 0, 6, this.carpetPattern, this.carpetPattern, true);
         carpet.position.set(-this.lengthRoom / 4, 0, 0)
         this.app.scene.add(carpet);
 
@@ -235,7 +236,7 @@ class MyContents  {
         tv.position.set( this.lengthRoom / 3, heightLegSB + heightSB, - this.widthRoom / 2 + widthSB / 2 )
         this.app.scene.add( tv )
 
-        const carpet = new MyCarpet( this.app, 0, 0, 6, this.carpetPattern, this.carpetReleve, true );
+        const carpet = new MyCarpet( this.app, 0, 0, 6, this.carpetPattern2, this.carpetPattern2, true );
         carpet.position.set( this.lengthRoom / 4, 0, 0 )
         this.app.scene.add( carpet );
 
@@ -250,7 +251,7 @@ class MyContents  {
         this.app.scene.add( sofa2 );
     }
 
-    representationLampLight( x, z, intensityLight, angleLight ){
+    representationLampLight( x, z, intensityLight){
 
         const radiusFootLamp = 0.8;
         const heighFootLamp = 0.6
@@ -265,12 +266,12 @@ class MyContents  {
         lamp.position.set( x + radiusShadeBottomLamp, 0, z + radiusShadeBottomLamp )
         this.app.scene.add( lamp )
 
-        const spotLightLamp = new THREE.SpotLight( "#ffffff", intensityLight, heightPole + 5, angleLight, 1);
-        spotLightLamp.position.set( x + radiusShadeBottomLamp, heighFootLamp + heightPole, z + radiusShadeBottomLamp );
-        spotLightLamp.target.position.set( x + radiusShadeBottomLamp, 0, z + radiusShadeBottomLamp );
+        const spotLightLamp = new THREE.PointLight( "#ffffff", intensityLight, heightPole + 5); //, angleLight, 1);
+        spotLightLamp.position.set( x + radiusShadeBottomLamp, heighFootLamp + heightPole * 0.9, z + radiusShadeBottomLamp );
+        //spotLightLamp.target.position.set( x + radiusShadeBottomLamp, 0, z + radiusShadeBottomLamp );
         spotLightLamp.castShadow = true;
         this.app.scene.add( spotLightLamp );
-        const spotLightLampHelper = new THREE.SpotLightHelper( spotLightLamp );
+        const spotLightLampHelper = new THREE.PointLightHelper( spotLightLamp );
         //this.app.scene.add( spotLightLampHelper );
 
     }
@@ -282,13 +283,13 @@ class MyContents  {
         const heightfocusInterior = 0.01
 
         // light
-        const light = new THREE.SpotLight( "#ffffff", intensity, y + 5, angle, 1);
+        const light = new THREE.SpotLight( "#ffffff", intensity + 50, y + 5, angle, 0.3, 2);
         light.position.set( x, y - heightfocusExterior - heightfocusInterior - 0.01, 0 );
         light.target.position.set(x, 0, 0);
         light.castShadow = true;
         this.app.scene.add( light );
         const helper = new THREE.SpotLightHelper( light );
-        //this.app.scene.add( helper );
+        this.app.scene.add( helper );
 
         // focus exterior
         const focusExterior = new THREE.CylinderGeometry(radiusfocusExterior, radiusfocusExterior, heightfocusExterior)
@@ -306,7 +307,7 @@ class MyContents  {
 
     drawCubicBezierCurve(points, position) {
         // define the curve
-        const numberSamples = 8;
+        const numberSamples = 20;
         const curve = new THREE.CubicBezierCurve3( points[0], points[1], points[2], points[3])
         const sampledPoints = curve.getPoints( numberSamples );  
         // draw the curve

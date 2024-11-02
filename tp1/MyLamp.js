@@ -31,7 +31,7 @@ class MyLamp extends THREE.Object3D {
         textureShade.wrapS = THREE.MirroredRepeatWrapping;
         textureShade.wrapT = THREE.MirroredRepeatWrapping;
         textureShade.repeat.set(2,1)
-        const materialShade = new THREE.MeshLambertMaterial( {color: "#ffffff", side: THREE.DoubleSide, map: textureShade} )
+        const materialShade = new THREE.MeshLambertMaterial( {color: "#ffffff", side: THREE.DoubleSide, map: textureShade, transparent: true, opacity: 0.7} )
 
         // geometry
 
@@ -49,26 +49,26 @@ class MyLamp extends THREE.Object3D {
         this.add( footMesh )
 
         const poleMesh = new THREE.Mesh( pole, materialLamp )
-        poleMesh.castShadow = true;
+        //poleMesh.castShadow = true;
         poleMesh.receiveShadow = true;
         poleMesh.position.y = heighFoot + heightPole / 2;
         this.add( poleMesh )
 
         const shadeMesh = new THREE.Mesh( shade, materialShade )
-        shadeMesh.castShadow = true;
+        //shadeMesh.castShadow = true;
         shadeMesh.receiveShadow = true;
         shadeMesh.position.y = heighFoot + heightPole - heighShadeLamp / 2
         this.add( shadeMesh )
 
         const link1Mesh = new THREE.Mesh( link, materialLamp )
-        link1Mesh.castShadow = true;
+        //link1Mesh.castShadow = true;
         link1Mesh.receiveShadow = true;
         link1Mesh.rotateZ(Math.PI / 2)
         link1Mesh.position.y = heighFoot + heightPole - radiusLink
         this.add(link1Mesh)
 
         const link2Mesh = new THREE.Mesh(link, materialLamp)
-        link2Mesh.castShadow = true;
+        //link2Mesh.castShadow = true;
         link2Mesh.receiveShadow = true;
         link2Mesh.rotateY(Math.PI / 2);
         link2Mesh.rotateZ(Math.PI / 2);
