@@ -18,8 +18,6 @@ import { MyCarpet } from './MyCarpet.js';
 import { MyPanorama } from './MyPanorama.js';
 import { MyCoffeeTable } from './MyCoffeeTable.js';
 
-import { MyFrame } from './MyFrame.js';
-
 
 /**
  *  This class contains the contents of out application
@@ -49,7 +47,7 @@ class MyContents  {
         this.test = loader.load('textures/dark_wood.jpg')
         
         // material
-        this.diffusePlaneColor = "#f0e6cc" //"#fff7d6"
+        this.diffusePlaneColor = "#f0e6cc"
         this.specularPlaneColor = "#000000"
         this.planeShininess = 30
         this.planeMaterial = new THREE.MeshPhongMaterial({color: this.diffusePlaneColor, specular: this.specularPlaneColor, emissive: "#000000", shininess: this.planeShininess, map: this.planeTexture }) // alternative 1
@@ -82,7 +80,7 @@ class MyContents  {
 
         // light
         const intensityLight = 100;
-        const angleLight = Math.PI / 5;
+        const angleLight = Math.PI / 4;
         const angleSun = Math.PI / 4;
        
         const ambientLight = new THREE.AmbientLight( "#ffffff", 0.3);
@@ -99,6 +97,12 @@ class MyContents  {
         this.app.scene.add(sun)
         const sunHelper = new THREE.SpotLightHelper(sun)
         this.app.scene.add(sunHelper)
+
+        const panoramaLight = new THREE.RectAreaLight( "#ffffff", 1,  this.lengthRoom * 2, this.heightWall * 2 );
+        panoramaLight.rotateX(-Math.PI / 2)
+        panoramaLight.position.set( 0, this.heightWall / 2, this.widthRoom/2 + this.depthWall );
+        panoramaLight.lookAt(  0, this.heightWall / 2, this.widthRoom);
+        this.app.scene.add( panoramaLight )
     }
 
     representationRoom() {

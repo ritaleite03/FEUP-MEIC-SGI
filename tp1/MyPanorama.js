@@ -14,7 +14,7 @@ class MyPanorama extends THREE.Object3D {
         
         const landescapeTexture = new THREE.TextureLoader().load('textures/window.jpg')
         landescapeTexture.magFilter = THREE.LinearFilter;
-        const landescapeMaterial = new THREE.MeshLambertMaterial({color: "#ffffff", map: landescapeTexture,  side: THREE.BackSide });
+        const landescapeMaterial = new THREE.MeshStandardMaterial({color: "#ffffff", map: landescapeTexture,  side: THREE.BackSide});
         
         const l = lengthRoom / 2;
         const w = widthRoom / 2;

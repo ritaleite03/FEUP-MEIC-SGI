@@ -19,7 +19,7 @@ class MySpiralSpring extends THREE.Object3D {
         this.type = 'Group';
 
         // define constants
-        const material = new THREE.MeshStandardMaterial({ color: "#b0b0b0", roughness: 0.2, metalness:0.9 ,side: THREE.DoubleSide });
+        const material = new THREE.MeshStandardMaterial({ color: "#dcdcdc", roughness: 0.2, metalness:0.7 ,side: THREE.DoubleSide }); //dcdcdc
         const segmentsSpiral = segments * heightLevel
         const radiusSpiral = 0.1
         const radiusSegmentsSpiral = 25
