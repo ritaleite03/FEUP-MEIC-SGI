@@ -39,7 +39,6 @@ class MyBeetle extends THREE.Object3D {
         y -= fullHeight / 2; 
         z += 0.01
 
-        console.log(this.app.offsetX)
         this.app.drawCubicBezierCurve([
             new THREE.Vector3(- 3 * scale, 0, 0), 
             new THREE.Vector3(- 3 * scale, semi * 3 * scale, 0), 
