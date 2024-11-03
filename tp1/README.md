@@ -28,7 +28,7 @@
 
 - The scene shows a living and dining room setup.
 
-- In the dining area, there’s a table with two chairs. On the table we have a newspaper, a cake, a vase of flowers, and a small spiral spring. The living area has two sofas facing a coffee table, with a TV on a console nearby.
+- In the dining area, there's a table with two chairs. On the table we have a newspaper, a cake, a vase of flowers, and a small spiral spring. The living area has two sofas facing a coffee table, with a TV on a console nearby.
 
 - Three frames decorate the walls: two portraits on the left wall and a car painting on the back wall. Two circular rugs, each with a unique texture, were also added to both the dining and living areas.
 
