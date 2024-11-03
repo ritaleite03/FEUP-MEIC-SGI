@@ -49,6 +49,12 @@ class MyGuiInterface  {
         // note that we are using a property from the app 
         cameraFolder.add(this.app.activeCamera.position, 'x', 0, 10).name("x coord")
         cameraFolder.open()
+
+        const ceillingFolder = this.datgui.addFolder('Ceilling Lights')
+        ceillingFolder.add(this.contents, 'intensityCeilling', 0, 500).onChange( () => { this.contents.rebuildSpotLightCeilling(0); this.contents.rebuildSpotLightCeilling(1); this.contents.rebuildSpotLightCeilling(2) } );
+        ceillingFolder.add(this.contents, 'angleCeilling', 0, 90).onChange( () => { this.contents.rebuildSpotLightCeilling(0); this.contents.rebuildSpotLightCeilling(1); this.contents.rebuildSpotLightCeilling(2) } );
+        ceillingFolder.add(this.contents, 'helpersEnable').name("enabled").onChange(() => {this.contents.rebuildHelpersCeilling(!this.contents.helpersLastEnable)});
+
     }
 }
 

@@ -27,7 +27,7 @@ class MyLamp extends THREE.Object3D {
         textureLamp.repeat.set(2,1)
         const materialLamp = new THREE.MeshPhongMaterial( {color: "#ffffff", map:textureLamp} )
        
-        let textureShade = new THREE.TextureLoader().load('textures/gray-sofa4.jpg');
+        let textureShade = new THREE.TextureLoader().load('textures/gray-sofa.jpg');
         textureShade.wrapS = THREE.MirroredRepeatWrapping;
         textureShade.wrapT = THREE.MirroredRepeatWrapping;
         textureShade.repeat.set(2,1)

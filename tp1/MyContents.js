@@ -18,7 +18,6 @@ import { MyCarpet } from './MyCarpet.js';
 import { MyPanorama } from './MyPanorama.js';
 import { MyCoffeeTable } from './MyCoffeeTable.js';
 
-import { MyPillow } from './MyPillow.js';
 /**
  *  This class contains the contents of out application
  */
@@ -65,6 +64,19 @@ class MyContents  {
         this.depthWall = 0.5
 
         this.offsetX = this.lengthRoom / 4
+
+        // ceilling lights
+        this.spotLightCeilling0 = null
+        this.spotLightCeilling1 = null
+        this.spotLightCeilling2 = null
+        this.spotLightCeillingHelper0 = null
+        this.spotLightCeillingHelper1 = null
+        this.spotLightCeillingHelper2 = null
+        this.intensityCeilling = 150
+        this.angleCeilling = 45
+        this.xCeilling = [-this.lengthRoom/4,0,this.lengthRoom/4]
+        this.helpersEnable = true
+        this.helpersLastEnable = true
     }
 
     /**
@@ -81,16 +93,14 @@ class MyContents  {
         this.representationLivingRoom()
 
         // light
-        const intensityLight = 100;
-        const angleLight = Math.PI / 4;
         const angleSun = Math.PI / 4;
        
         const ambientLight = new THREE.AmbientLight( "#ffffff", 0.3);
         this.app.scene.add( ambientLight );
 
-        this.representatingSpotLightCeilling( intensityLight, angleLight, -this.lengthRoom / 4, this.heightWall );
-        this.representatingSpotLightCeilling( intensityLight, angleLight, 0, this.heightWall );
-        this.representatingSpotLightCeilling( intensityLight, angleLight, this.lengthRoom / 4, this.heightWall );
+        this.representatingSpotLightCeilling( 0 );
+        this.representatingSpotLightCeilling( 1 );
+        this.representatingSpotLightCeilling( 2 );
         this.representationLampLight(-this.lengthRoom / 2 + 0.01, -this.widthRoom / 2 + 0.01, 10)
 
         const sun = new THREE.SpotLight( "#ffffff", 1000, this.lengthRoom * 2, angleSun)
@@ -290,16 +300,17 @@ class MyContents  {
 
     }
 
-    representatingSpotLightCeilling(intensity, angle, x, y) {
+    representatingSpotLightCeilling(number) {
+
         // variables
         const radiusfocusExterior = 0.5
         const heightfocusExterior = 0.1
         const heightfocusInterior = 0.01
 
         // light
-        const light = new THREE.SpotLight( "#ffffff", intensity + 50, y + 5, angle, 0.3, 2);
-        light.position.set( x + this.offsetX, y - heightfocusExterior - heightfocusInterior - 0.01, 0 );
-        light.target.position.set(x + this.offsetX, 0, 0);
+        const light = new THREE.SpotLight( "#ffffff", this.intensityCeilling, this.heightWall + 5, this.angleCeilling * Math.PI / 180, 0.3, 2);
+        light.position.set(  this.xCeilling[number] + this.offsetX, this.heightWall - heightfocusExterior - heightfocusInterior - 0.01, 0 );
+        light.target.position.set(this.xCeilling[number] + this.offsetX, 0, 0);
         light.castShadow = true;
         this.app.scene.add( light );
         const helper = new THREE.SpotLightHelper( light );
@@ -308,15 +319,99 @@ class MyContents  {
         // focus exterior
         const focusExterior = new THREE.CylinderGeometry(radiusfocusExterior, radiusfocusExterior, heightfocusExterior)
         const focusExteriorMesh = new THREE.Mesh(focusExterior, this.planeMaterial)
-        focusExteriorMesh.position.set( x + this.offsetX, y - heightfocusExterior / 2, 0 );
+        focusExteriorMesh.position.set( this.xCeilling[number] + this.offsetX, this.heightWall - heightfocusExterior / 2, 0 );
         this.app.scene.add(focusExteriorMesh)
 
         // focus interior
         const focusInterior = new THREE.CylinderGeometry(radiusfocusExterior / 2, radiusfocusExterior / 2, heightfocusInterior)
         const focusInteriorMaterial = new THREE.MeshPhongMaterial( {color: "#e3dd78", transparent: true, opacity: 0.6} )
         const focusInteriorMesh = new THREE.Mesh(focusInterior, focusInteriorMaterial)
-        focusInteriorMesh.position.set( x + this.offsetX, y - heightfocusExterior - heightfocusInterior / 2, 0 );
+        focusInteriorMesh.position.set( this.xCeilling[number] + this.offsetX, this.heightWall - heightfocusExterior - heightfocusInterior / 2, 0 );
         this.app.scene.add(focusInteriorMesh)
+
+        if(number == 0){
+            this.spotLightCeilling0 = light
+            this.spotLightCeillingHelper0 = helper
+        }
+        if(number == 1){
+            this.spotLightCeilling1 = light
+            this.spotLightCeillingHelper1 = helper
+        }
+        if(number == 2){
+            this.spotLightCeilling2 = light
+            this.spotLightCeillingHelper2 = helper
+        }
+
+    }
+
+    rebuildHelpersCeilling(value){
+        this.helpersLastEnable = value
+        if(value){
+            this.spotLightCeillingHelper0 = new THREE.SpotLightHelper( this.spotLightCeilling0 );
+            this.app.scene.add( this.spotLightCeillingHelper0 );
+            this.spotLightCeillingHelper1 = new THREE.SpotLightHelper( this.spotLightCeilling1 );
+            this.app.scene.add( this.spotLightCeillingHelper1 );
+            this.spotLightCeillingHelper2 = new THREE.SpotLightHelper( this.spotLightCeilling2 );
+            this.app.scene.add( this.spotLightCeillingHelper2 );
+        }
+        else{
+            this.app.scene.remove(this.spotLightCeillingHelper0)
+            this.app.scene.remove(this.spotLightCeillingHelper1)
+            this.app.scene.remove(this.spotLightCeillingHelper2)
+        }
+    }
+
+    rebuildSpotLightCeilling(number) {
+
+        if(number == 0){
+            if(this.spotLightCeilling0 != null && this.spotLightCeilling0 != undefined)
+                this.app.scene.remove(this.spotLightCeilling0)
+            if(this.spotLightCeillingHelper0 != null && this.spotLightCeillingHelper0 != undefined)
+                this.app.scene.remove(this.spotLightCeillingHelper0)
+        }
+        if(number == 1){
+            if(this.spotLightCeilling1 != null && this.spotLightCeilling1 != undefined)
+                this.app.scene.remove(this.spotLightCeilling1)
+            if(this.spotLightCeillingHelper1 != null && this.spotLightCeillingHelper1 != undefined)
+                this.app.scene.remove(this.spotLightCeillingHelper1)
+        }
+        if(number == 2){
+            if(this.spotLightCeilling2 != null && this.spotLightCeilling2 != undefined)
+                this.app.scene.remove(this.spotLightCeilling2)
+            if(this.spotLightCeillingHelper2 != null && this.spotLightCeillingHelper2 != undefined)
+                this.app.scene.remove(this.spotLightCeillingHelper2)
+        }
+
+        // variables
+        const heightfocusExterior = 0.1
+        const heightfocusInterior = 0.01
+
+        // light
+        const light = new THREE.SpotLight( "#ffffff", this.intensityCeilling, this.heightWall + 5, this.angleCeilling * Math.PI / 180, 0.3, 2);
+        light.position.set(  this.xCeilling[number] + this.offsetX, this.heightWall - heightfocusExterior - heightfocusInterior - 0.01, 0 );
+        light.target.position.set(this.xCeilling[number] + this.offsetX, 0, 0);
+        light.castShadow = true;
+        this.app.scene.add( light );
+
+        let helper = null
+        if(this.helpersLastEnable) {
+            helper = new THREE.SpotLightHelper( light );
+            this.app.scene.add( helper );
+        }
+
+        if(number == 0){
+            this.spotLightCeilling0 = light
+            this.spotLightCeillingHelper0 = helper
+        }
+        if(number == 1){
+            this.spotLightCeilling1 = light
+            this.spotLightCeillingHelper1 = helper
+        }
+        if(number == 2){
+            this.spotLightCeilling2 = light
+            this.spotLightCeillingHelper2 = helper
+        }
+
     }
 
     drawCubicBezierCurve(points, position) {
