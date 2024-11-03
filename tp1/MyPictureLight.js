@@ -1,5 +1,4 @@
 import * as THREE from 'three';
-import { MyApp } from './MyApp.js';
 
 /**
  * This class contains the representation of a picture frame
@@ -8,13 +7,11 @@ class MyPictureLight extends THREE.Object3D {
 
     /**
      * 
-     * @param {MyApp} app the application object
      * @param {number} width picture width
      * @param {number} height picture height
      */
-    constructor(app, width, height) {
+    constructor(width, height) {
         super();
-        this.app = app
         this.type = "Group";
 
         const dist = height * 0.20; // wall distance

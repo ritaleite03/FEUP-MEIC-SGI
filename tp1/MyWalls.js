@@ -27,21 +27,21 @@ class MyWalls extends THREE.Object3D {
                 
         // Right wall
 
-        const wallRightA = new MyWall( app, widthRoom, lengthRoom, height * 0.2, widthWall );
+        const wallRightA = new MyWall( widthRoom, lengthRoom, height * 0.2, widthWall );
         wallRightA.position.y = height * 0.8;
         this.add( wallRightA );
 
-        const wallRightB = new MyWall( app, widthRoom * 0.5, lengthRoom, height * 0.8, widthWall );
+        const wallRightB = new MyWall( widthRoom * 0.5, lengthRoom, height * 0.8, widthWall );
         wallRightB.position.z = -widthRoom * 0.5 * 0.5;
         this.add( wallRightB );
 
-        const wallRightC = new MyWall( app, widthRoom * 0.3, lengthRoom, height * 0.8, widthWall );
+        const wallRightC = new MyWall( widthRoom * 0.3, lengthRoom, height * 0.8, widthWall );
         wallRightC.position.z = widthRoom * 0.7 * 0.5;
         this.add( wallRightC );
 
         // Back wall
 
-        const wallBack = new MyWall(app, lengthRoom, widthRoom, height, widthWall);
+        const wallBack = new MyWall( lengthRoom, widthRoom, height, widthWall);
         wallBack.rotateY(Math.PI/2)
         this.add(wallBack);
        
@@ -50,33 +50,33 @@ class MyWalls extends THREE.Object3D {
 
         // Left wall
 
-        const wallLeft = new MyWall( app, widthRoom, lengthRoom, height, widthWall );
+        const wallLeft = new MyWall( widthRoom, lengthRoom, height, widthWall );
         wallLeft.rotateY( Math.PI )
         this.add( wallLeft );
 
         // Front wall
 
-        const wallFrontA = new MyWall( app, lengthRoom, widthRoom, height * 0.2, widthWall );
+        const wallFrontA = new MyWall( lengthRoom, widthRoom, height * 0.2, widthWall );
         wallFrontA.rotateY( 3 * Math.PI / 2 );
         wallFrontA.position.y = height * 0.8;
         this.add( wallFrontA );
 
-        const wallFrontB = new MyWall( app, lengthRoom, widthRoom, height * 0.4, widthWall );
+        const wallFrontB = new MyWall( lengthRoom, widthRoom, height * 0.4, widthWall );
         wallFrontB.rotateY( 3 * Math.PI / 2 );
         this.add( wallFrontB );
 
         let gap = lengthRoom * 0.8 * 0.5;
-        const wallFrontC = new MyWall( app, lengthRoom * 0.2, widthRoom, height, widthWall );
+        const wallFrontC = new MyWall( lengthRoom * 0.2, widthRoom, height, widthWall );
         wallFrontC.rotateY( 3 * Math.PI / 2 );
         wallFrontC.position.x = -gap;
         this.add( wallFrontC );
 
-        const wallFrontD = new MyWall( app, lengthRoom * 0.2, widthRoom, height, widthWall );
+        const wallFrontD = new MyWall( lengthRoom * 0.2, widthRoom, height, widthWall );
         wallFrontD.rotateY( 3 * Math.PI / 2 );
         wallFrontD.position.x = gap;
         this.add( wallFrontD );
 
-        const window = new MyWindow( app, lengthRoom * 0.6, height * 0.4, widthWall, height * 0.4 + height * 0.2, widthRoom * 0.5 + widthWall )
+        const window = new MyWindow( lengthRoom * 0.6, height * 0.4, widthWall, height * 0.4 + height * 0.2, widthRoom * 0.5 + widthWall )
         this.add( window )
 
         // skirting board
@@ -141,7 +141,7 @@ class MyWalls extends THREE.Object3D {
         this.add( skirtingBoardDoorTopMesh )
 
         // door
-        const door = new MyDoor(app, widthRoom * 0.2, height * 0.8, widthWall / 2 )
+        const door = new MyDoor( widthRoom * 0.2, height * 0.8, widthWall / 2 )
         door.rotateY( Math.PI / 2 + Math.PI / 12 )
         door.position.set( lengthRoom / 2 - widthWall / 4 + widthWall / 4, 0, widthRoom * 0.2)
         this.add( door )

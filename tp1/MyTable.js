@@ -1,5 +1,4 @@
 import * as THREE from 'three';
-import { MyApp } from './MyApp.js';
 
 /**
  * This class contains the representation of a table
@@ -8,16 +7,14 @@ class MyTable extends THREE.Object3D {
 
     /**
      * 
-     * @param {MyApp} app the application object
      * @param {number} height height of the leg of the table
      * @param {number} radius radius of the leg of the table
      * @param {number} xLenght width of the table
      * @param {number} zLenght lenght of the table
      */
-    constructor(app, height, radius, xLenght, zLenght) {
+    constructor(height, radius, xLenght, zLenght) {
         super();
         this.type = 'Group';
-        this.app = app;
 
         // variables
         const x = xLenght / 2 - radius * 2; // position of the leg in Ox

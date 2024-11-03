@@ -16,6 +16,7 @@ class MyPillow extends THREE.Object3D {
     constructor(app, width, length, height) {
         super();
         this.type = 'Group';
+        this.app = app;
 
         // variables
         const orderU = 3;

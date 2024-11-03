@@ -1,20 +1,17 @@
 import * as THREE from 'three';
-import { RectAreaLightHelper } from 'three/addons/helpers/RectAreaLightHelper.js';
 
 class MyWindow extends THREE.Object3D {
 
     /**
        constructs the object
-       @param {MyApp} app the application object
        @param {number} width window's width
        @param {number} height window's height
        @param {number} depth window's depth
        @param {number} y position in Oy
        @param {number} z position in Oz
     */ 
-    constructor(app, width, height, depth, y, z) {
+    constructor(width, height, depth, y, z) {
         super()
-        this.app = app
 
         // texture and material of the window's frame and grid
         let woodenTexture = new THREE.TextureLoader().load('textures/wooden_top.jpg');

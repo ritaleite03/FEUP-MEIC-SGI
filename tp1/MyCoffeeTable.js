@@ -1,19 +1,16 @@
 import * as THREE from 'three';
-import { MyApp } from './MyApp.js';
 
 class MyCoffeeTable extends THREE.Object3D {
 
     /**
      * 
-     * @param {MyApp} app the application object
      * @param {number} radiusTable tables's top's radius
      * @param {number} heightTable height between table's tops
      * @param {number} radiusFoot tables's foot's radius
      * @param {number} heightFoot tables's foot's radius
      */
-    constructor(app, radiusTable, heightTable, radiusFoot, heightFoot) {
+    constructor(radiusTable, heightTable, radiusFoot, heightFoot) {
         super()
-        this.app = app
 
         // textures
         let woodenTexture = new THREE.TextureLoader().load('textures/wooden_top.jpg');

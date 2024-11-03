@@ -1,5 +1,4 @@
 import * as THREE from 'three';
-import { MyApp } from './MyApp.js';
 
 /**
  * This class contains the representation of the a side board
@@ -8,7 +7,6 @@ class MySideBoard extends THREE.Object3D {
 
     /**
      * 
-     * @param {MyApp} app the application object
      * @param {number} width sideboard's width
      * @param {number} length sideboard's length
      * @param {number} height sideboard's height
@@ -16,9 +14,8 @@ class MySideBoard extends THREE.Object3D {
      * @param {number} heightLeg sideboard's leg's height
      * @param {number} radiusLeg sideboard's leg's radius
      */
-    constructor(app, width, length, height, depth, heightLeg, radiusLeg) {
+    constructor(width, length, height, depth, heightLeg, radiusLeg) {
         super()
-        this.app = app;
         
         let woodenTexture = new THREE.TextureLoader().load('textures/wooden_top.jpg');
         woodenTexture.wrapS = THREE.MirroredRepeatWrapping;

@@ -6,7 +6,6 @@ import * as THREE from 'three';
 class MyChair extends THREE.Object3D {
 
     /**
-       @param {MyApp} app The application object
        @param {number} widthPlaneDown width of the chair's plane down (bottom)
        @param {number} heightPlaneDown heigth of the chair's plane down (bottom)
        @param {number} widthPlaneUp width of the chair's plane up (back)
@@ -17,9 +16,8 @@ class MyChair extends THREE.Object3D {
        @param {number} heightLegBack height of the chair's legs up (back)
        @param {number} thickness thickness of the wood
     */ 
-    constructor(app, widthPlaneDown, heightPlaneDown, widthPlaneUp, heightPlaneUp, radiusLegDown, heightLegDown, radiusLegBack, heightLegBack, thickness) {
+    constructor(widthPlaneDown, heightPlaneDown, widthPlaneUp, heightPlaneUp, radiusLegDown, heightLegDown, radiusLegBack, heightLegBack, thickness) {
         super()
-        this.app = app;
 
         // variables
         const xLegDown = widthPlaneDown / 2 - radiusLegDown;

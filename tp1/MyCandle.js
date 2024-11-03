@@ -1,5 +1,4 @@
 import * as THREE from 'three';
-import { MyApp } from './MyApp.js';
 
 /**
  * This class contains the representation of a candle
@@ -8,7 +7,6 @@ class MyCandle extends THREE.Object3D {
 
     /**
      * 
-     * @param {MyApp} app the application object
      * @param {number} radiusStick radius of the stick
      * @param {number} radiusFlame radius of the flame
      * @param {number} heightStick height of the stick
@@ -18,10 +16,9 @@ class MyCandle extends THREE.Object3D {
      * @param {number} z position of the candle on Oz
      * @param {number} segments number of segments for construction
      */
-    constructor(app, radiusStick, radiusFlame, heightStick, heightFlame, x, y, z, segments) {
+    constructor(radiusStick, radiusFlame, heightStick, heightFlame, x, y, z, segments) {
         super();
         this.type = 'Group';
-        this.app = app;
 
         // variables
         const heightConeFlame = heightFlame - radiusFlame;

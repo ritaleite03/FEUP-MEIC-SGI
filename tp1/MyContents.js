@@ -125,7 +125,7 @@ class MyContents  {
         walls.position.set(this.offsetX,0,0)
         this.app.scene.add( walls );
 
-        const panorama = new MyPanorama(this.app, this.lengthRoom, this.widthRoom);
+        const panorama = new MyPanorama(this.lengthRoom, this.widthRoom);
         panorama.position.set(this.offsetX,0,0)
         this.app.scene.add( panorama );
 
@@ -134,10 +134,10 @@ class MyContents  {
         this.app.scene.add( curtain )
 
         const photos = new THREE.Group();
-        const photo1 = new MyPicture( this.app, 2.1, 2.7, 0.1, this.picture1 );
+        const photo1 = new MyPicture( 2.1, 2.7, 0.1, this.picture1 );
         photo1.position.x = - 2.0;
         photos.add( photo1 );
-        const photo2 = new MyPicture( this.app, 2.1, 2.7, 0.1, this.picture2 );
+        const photo2 = new MyPicture( 2.1, 2.7, 0.1, this.picture2 );
         photo2.position.x = 2.0;
         photos.add( photo2 );
         photos.rotateY( Math.PI/2 );
@@ -188,19 +188,19 @@ class MyContents  {
         const scaleNewspaper = 2;
         const positionNewspaper = [ xLenghtTable / 4 + 2 * scaleNewspaper * widthNewspaper, heightTable + radiusTable / 2 + 0.001, zLenghtTable / 4 + lengthNewspaper  ];
 
-        const table = new MyTable( this, heightTable, radiusTable, xLenghtTable, zLenghtTable );
+        const table = new MyTable( heightTable, radiusTable, xLenghtTable, zLenghtTable );
         table.position.set( -this.lengthRoom / 4 + this.offsetX, 0, 0 )
         this.app.scene.add( table );
         
-        const cake = new MyCake( this, baseRadiusCake, tierHeightCake, 10 * Math.PI / 6, false, 3, topRadiusCake );
+        const cake = new MyCake( baseRadiusCake, tierHeightCake, 10 * Math.PI / 6, false, 3, topRadiusCake );
         cake.position.set(-this.lengthRoom / 4 + this.offsetX, topPositionTable + baseRadiusCake * 0.4 + 0.005, 0)
         this.app.scene.add( cake );
         
-        const cakeSlice = new MyCake( this, topRadiusCake, tierHeightCake, 2 * Math.PI / 6, true );
+        const cakeSlice = new MyCake( topRadiusCake, tierHeightCake, 2 * Math.PI / 6, true );
         cakeSlice.position.set( 0.5 -this.lengthRoom / 4 + this.offsetX, topPositionTable + 0.03, 0.5 );
         this.app.scene.add( cakeSlice );
 
-        const chair1 = new MyChair( this, 2.5, 2, 2.5, 1, 0.1, 1.5, 0.1, 1, 0.2 )
+        const chair1 = new MyChair( 2.5, 2, 2.5, 1, 0.1, 1.5, 0.1, 1, 0.2 )
         const chair2 = chair1.clone()
         chair1.rotateY( -1 * Math.PI / 6 )
         chair2.rotateY(  7 * Math.PI / 6 )
@@ -209,13 +209,13 @@ class MyContents  {
         this.app.scene.add( chair1 );
         this.app.scene.add( chair2 );
 
-        const carpet = new MyCarpet(this.app, 0, 0, 6, this.carpetPattern, this.carpetPattern, true);
+        const carpet = new MyCarpet(0, 0, 6, this.carpetPattern, this.carpetPattern, true);
         carpet.position.set(-this.lengthRoom / 4 + this.offsetX, 0, 0)
         this.app.scene.add(carpet);
 
-        const flower1 = new MyFlower( this , scaleJar * 1.0,  5, widthPetal * 1.0, heightPetal * 1.0, radiusStem, segmentsStem );
-        const flower2 = new MyFlower( this , scaleJar * 0.9,  4, widthPetal * 0.9, heightPetal * 0.9, radiusStem, segmentsStem );
-        const flower3 = new MyFlower( this , scaleJar * 0.9,  3, widthPetal * 0.9, heightPetal * 0.9, radiusStem, segmentsStem );
+        const flower1 = new MyFlower( scaleJar * 1.0,  5, widthPetal * 1.0, heightPetal * 1.0, radiusStem, segmentsStem );
+        const flower2 = new MyFlower( scaleJar * 0.9,  4, widthPetal * 0.9, heightPetal * 0.9, radiusStem, segmentsStem );
+        const flower3 = new MyFlower( scaleJar * 0.9,  3, widthPetal * 0.9, heightPetal * 0.9, radiusStem, segmentsStem );
         flower1.position.set( this.offsetX + xLenghtTable / 4 + 2.5 * scaleJar -this.lengthRoom / 4, heightTable + radiusTable / 2, -zLenghtTable / 4 );
         flower2.position.set( this.offsetX + xLenghtTable / 4 + 2.5 * scaleJar-this.lengthRoom / 4, heightTable + radiusTable / 2, -zLenghtTable / 4 );
         flower3.position.set( this.offsetX + xLenghtTable / 4 + 2.5 * scaleJar-this.lengthRoom / 4, heightTable + radiusTable / 2, -zLenghtTable / 4 );
@@ -235,7 +235,7 @@ class MyContents  {
         newspaper.position.set( positionNewspaper[0] -this.lengthRoom / 4 + this.offsetX, positionNewspaper[1],  positionNewspaper[2] );
         this.app.scene.add( newspaper );
         
-        const spiralSpring = new MySpiralSpring( this, 0.4, 20, 2, 4 )
+        const spiralSpring = new MySpiralSpring( 0.4, 20, 2, 4 )
         spiralSpring.scale.set( 0.25, 0.25, 0.25 )
         spiralSpring.position.set( xLenghtTable / 4 -this.lengthRoom / 4 + this.offsetX, heightTable + radiusTable / 2, -zLenghtTable / 4 )
         this.app.scene.add( spiralSpring )
@@ -255,19 +255,19 @@ class MyContents  {
         const widthS = 2.5
         const heightS = 0.7
 
-        const sideboard = new MySideBoard( this, widthSB, this.widthRoom / 3 + 1, heightSB, 0.1, heightLegSB, 0.1 )
+        const sideboard = new MySideBoard( widthSB, this.widthRoom / 3 + 1, heightSB, 0.1, heightLegSB, 0.1 )
         sideboard.position.set( this.lengthRoom / 3 + this.offsetX, 0, - this.widthRoom / 2 )
         this.app.scene.add( sideboard )
 
-        const coffeetable = new MyCoffeeTable( this, 2, 1, 0.1, 1 )
+        const coffeetable = new MyCoffeeTable( 2, 1, 0.1, 1 )
         coffeetable.position.set( this.lengthRoom / 4 + this.offsetX, 0, 0 )
         this.app.scene.add( coffeetable )
 
-        const tv = new MyTV( this, 7, 4, 0.2, 0.3 )
+        const tv = new MyTV( 7, 4, 0.2, 0.3 )
         tv.position.set( this.lengthRoom / 3 + this.offsetX, heightLegSB + heightSB, - this.widthRoom / 2 + widthSB / 2 )
         this.app.scene.add( tv )
 
-        const carpet = new MyCarpet( this.app, 0, 0, 6, this.carpetPattern2, this.carpetPattern2, true );
+        const carpet = new MyCarpet(0, 0, 6, this.carpetPattern2, this.carpetPattern2, true );
         carpet.position.set( this.lengthRoom / 4 + this.offsetX, 0, 0 )
         this.app.scene.add( carpet );
 
@@ -295,7 +295,7 @@ class MyContents  {
         const radiusShadeBottomLamp = 1
 
         // object
-        const lamp = new MyLamp( this, 0.8, heighFootLamp, 0.1, heightPole, radiusShadeBottomLamp, 0.5, 1.5 )
+        const lamp = new MyLamp( 0.8, heighFootLamp, 0.1, heightPole, radiusShadeBottomLamp, 0.5, 1.5 )
         lamp.position.set( x + radiusShadeBottomLamp + this.offsetX, 0, z + radiusShadeBottomLamp )
         this.app.scene.add( lamp )
 

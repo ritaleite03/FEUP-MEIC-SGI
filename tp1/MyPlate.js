@@ -4,13 +4,11 @@ class MyPlate extends THREE.Object3D {
 
     /**
        constructs the object
-       @param {MyApp} app The application object
        @param {number} radius plate radius 
        @param {boolean} slice cake slice
     */ 
-    constructor(app, radius, slice) {
+    constructor(radius, slice) {
         super()
-        this.app = app
         this.type = 'Group';
 
         const material = new THREE.MeshPhongMaterial({ color: "#ffffff", specular: "#aaaaaa", emissive: "#000000", shininess: 90})

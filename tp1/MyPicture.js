@@ -1,5 +1,4 @@
 import * as THREE from 'three';
-import { MyApp } from './MyApp.js';
 import { MyFrame } from './MyFrame.js';
 import { MyPictureLight } from './MyPictureLight.js';
 
@@ -10,24 +9,20 @@ class MyPicture extends THREE.Object3D {
 
     /**
      * 
-     * @param {MyApp} app the application object
      * @param {number} width picture width
      * @param {number} height picture height
      * @param {number} frameWidth frame width
      * @param {texture} picture picture texture
      * @param {number} frameDepth frame depth
      */
-    constructor(app, width, height, frameWidth, picture, frameDepth = 0.05) {
+    constructor(width, height, frameWidth, picture, frameDepth = 0.05) {
         super();
-        this.app = app;
 
         const fullWidth = width + 2 * frameWidth;
         const fullHeight = height + 2 * frameWidth;
 
-        const light = new MyPictureLight(app, width, height);
+        const light = new MyPictureLight(width, height);
         light.position.y = fullHeight + height * 0.1;
-        //this.app.scene.add(light.spotLightHelper);
-        //this.app.scene.add(light.spotLightHelper2);
         light.update();
         this.add(light);
 

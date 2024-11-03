@@ -3,13 +3,11 @@ import * as THREE from 'three';
 class MyPanorama extends THREE.Object3D {
 
     /**
-    * @param {MyApp} app the application object
     * @param {number} lengthRoom room length
     * @param {number} widthRoom  room width
     */ 
-    constructor(app, lengthRoom, widthRoom) {
+    constructor(lengthRoom, widthRoom) {
         super()
-        this.app = app
         
         const landescapeTexture = new THREE.TextureLoader().load('textures/window.jpg')
         landescapeTexture.magFilter = THREE.LinearFilter;

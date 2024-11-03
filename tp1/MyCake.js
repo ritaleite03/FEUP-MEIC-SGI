@@ -6,7 +6,6 @@ class MyCake extends THREE.Object3D {
 
     /**
        constructs the object
-       @param {MyApp} app the application object
        @param {number} radius bottom Cake radius 
        @param {number} height tier height
        @param {number} angleLength topTier's angle
@@ -15,9 +14,8 @@ class MyCake extends THREE.Object3D {
        @param {number} radiusLast top tier radius (default radius)
 
     */ 
-    constructor(app, radius, height, angleLength, slice = false, tiers = 1,  radiusLast = radius) {
+    constructor(radius, height, angleLength, slice = false, tiers = 1,  radiusLast = radius) {
         super()
-        this.app = app
         this.type = 'Group';
 
         // Candle dimension
@@ -81,7 +79,7 @@ class MyCake extends THREE.Object3D {
                         let angle = startGap + j * candleGap;
                         let x = Math.sin(angle) * radiusLast * 0.7;
                         let z = Math.cos(angle) * radiusLast * 0.7;
-                        let candle = new MyCandle(app, radiusStick, radiusFlame, heightStick, heightFlame,x,height * (i + 0.5),z)
+                        let candle = new MyCandle( radiusStick, radiusFlame, heightStick, heightFlame, x, height * (i + 0.5), z )
                         this.add(candle)
                     }
                 }
@@ -101,7 +99,7 @@ class MyCake extends THREE.Object3D {
         }
 
         // create plate
-        this.plate = new MyPlate(app, radius, slice);
+        this.plate = new MyPlate(radius, slice);
         this.plate.position.y =  -height/2;
         if(slice){
             let place = startAngle + angleLength/2;

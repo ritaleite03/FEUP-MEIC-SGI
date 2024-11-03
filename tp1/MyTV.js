@@ -1,5 +1,4 @@
 import * as THREE from 'three';
-import { MyApp } from './MyApp.js';
 
 /**
  * This class contains the representation of the a tv
@@ -8,15 +7,13 @@ class MyTV extends THREE.Object3D {
 
     /**
      * 
-     * @param {MyApp} app the application object
      * @param {number} width tv's width
      * @param {number} height tv's height
      * @param {number} depth tv's depth
      * @param {number} heightSupport tv's support's height
      */
-    constructor(app, width, height, depth, heightSupport) {
+    constructor(width, height, depth, heightSupport) {
         super()
-        this.app = app;
         
         // texture and materials 
         const screenTexture = new THREE.TextureLoader().load('textures/tv.jpg');

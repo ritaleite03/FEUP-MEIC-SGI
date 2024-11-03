@@ -41,4 +41,18 @@ Click [here](MyContents.js) to go to our scene file.
 
 ## Issues/Problems
 
--   To represent a spiral spring we used a TubeGeometry, however this geometry does not allow us to create a "covered" tube. We tried adding two circles, one for each end, to serve as caps, but since the ends have a specific inclination, we were unable to place these caps perfectly. Because of this, we chose to place the caps vertically anyway, knowing that it is visible that there is a space between the cap and the end of the tube.
+We didn't had any problems or issues.
+
+## Screenshots
+
+![Texto alternativo](screenshots/scene_1.png)
+
+![Texto alternativo](screenshots/scene_2.png)
+
+![Texto alternativo](screenshots/scene_3.png)
+
+![Texto alternativo](screenshots/scene_4.png)
+
+![Texto alternativo](screenshots/scene_5.png)
+
+![Texto alternativo](screenshots/scene_6.png)

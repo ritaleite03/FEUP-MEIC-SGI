@@ -4,7 +4,6 @@ import * as THREE from 'three';
 class MyCarpet extends THREE.Object3D {
 
     /**
-    * @param {MyApp} app the application object
     * @param {number} length carpet length 
     * @param {number} width carpet width  
     * @param {number} radius carpet radius  
@@ -12,9 +11,8 @@ class MyCarpet extends THREE.Object3D {
     * @param {texture} releveTexture carpet releve texture
     * @param {boolean} circle carpet's format
     */ 
-    constructor(app, length, width, radius, patternTexture, releveTexture, circle) {
+    constructor(length, width, radius, patternTexture, releveTexture, circle) {
         super()
-        this.app = app;
 
         const pattern = patternTexture.clone();
         pattern.wrapS = THREE.MirroredRepeatWrapping;

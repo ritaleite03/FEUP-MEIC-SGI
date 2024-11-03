@@ -4,15 +4,13 @@ class MyWall extends THREE.Object3D {
 
     /**
        constructs the object
-       @param {MyApp} app The application object
        @param {number} length Wall length
        @param {number} place Displacement relative to the center
        @param {number} height Wall height
        @param {number} width Wall width
     */ 
-    constructor(app, length, place, height, width) {
+    constructor(length, place, height, width) {
         super()
-        this.app = app
 
         let material = new THREE.MeshLambertMaterial({ color: "#78866b"});
 

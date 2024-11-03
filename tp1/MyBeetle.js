@@ -29,7 +29,7 @@ class MyBeetle extends THREE.Object3D {
         const fullHeight = height + 2 * frameWidth;
         const fullWidth = width + 2 * frameWidth;
 
-        const light = new MyPictureLight(app, width, height);
+        const light = new MyPictureLight(width, height);
         light.position.set(x, y + scale, z);
         //this.app.app.scene.add(light.spotLightHelper);
         //this.app.app.scene.add(light.spotLightHelper2);

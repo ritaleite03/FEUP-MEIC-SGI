@@ -1,11 +1,9 @@
 import * as THREE from 'three';
-import { MyApp } from './MyApp.js';
 
 class MyLamp extends THREE.Object3D {
 
     /**
      * 
-     * @param {MyApp} app 
      * @param {number} radiusFoot lamp's foot's radius
      * @param {number} heighFoot lamp's foot's height
      * @param {number} radiusPole lamp's pole's radius
@@ -14,9 +12,8 @@ class MyLamp extends THREE.Object3D {
      * @param {number} radiusShadeTopLamp lamp's shade's top radius
      * @param {number} heighShadeLamp lamp's shade's height
      */
-    constructor(app, radiusFoot, heighFoot, radiusPole, heightPole, radiusShadeBottomLamp, radiusShadeTopLamp, heighShadeLamp) {
+    constructor(radiusFoot, heighFoot, radiusPole, heightPole, radiusShadeBottomLamp, radiusShadeTopLamp, heighShadeLamp) {
         super()
-        this.app = app
 
         const segments = 50;
         const radiusLink = radiusPole / 2
