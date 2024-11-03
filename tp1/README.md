@@ -56,3 +56,5 @@ We didn't had any problems or issues.
 ![Texto alternativo](screenshots/scene_5.png)
 
 ![Texto alternativo](screenshots/scene_6.png)
+
+![Texto alternativo](screenshots/scene_7.png)
