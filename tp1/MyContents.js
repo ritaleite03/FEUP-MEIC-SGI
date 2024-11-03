@@ -328,8 +328,9 @@ class MyContents  {
 
         // light
         const light = new THREE.SpotLight( this.colorCeilling, this.intensityCeilling, this.heightWall + 5, this.angleCeilling * Math.PI / 180, this.penumbraCeilling, this.decayCeilling);
-        light.position.set(  this.xCeilling[number] + this.offsetX, this.heightWall - heightfocusExterior - heightfocusInterior - 0.01, 0 );
-        light.target.position.set(this.xCeilling[number] + this.offsetX, 0, 0);
+        light.position.set( this.xCeilling[number] + this.offsetX, this.heightWall - heightfocusExterior - heightfocusInterior - 0.01, 0 );
+        console.log(this.xCeilling[number])
+        light.target.position.set( this.xCeilling[number] + this.offsetX, 0, 0 );
         light.castShadow = true;
         this.app.scene.add( light );
         const helper = new THREE.SpotLightHelper( light );
@@ -360,7 +361,6 @@ class MyContents  {
             this.spotLightCeilling2 = light
             this.spotLightCeillingHelper2 = helper
         }
-
     }
 
     /**
@@ -423,8 +423,8 @@ class MyContents  {
 
         // helper
         let helper = null
+        helper = new THREE.SpotLightHelper( light );
         if(this.helpersLastEnable) {
-            helper = new THREE.SpotLightHelper( light );
             this.app.scene.add( helper );
         }
 
