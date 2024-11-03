@@ -39,40 +39,41 @@ class MyBeetle extends THREE.Object3D {
         y -= fullHeight / 2; 
         z += 0.01
 
+        console.log(this.app.offsetX)
         this.app.drawCubicBezierCurve([
             new THREE.Vector3(- 3 * scale, 0, 0), 
             new THREE.Vector3(- 3 * scale, semi * 3 * scale, 0), 
             new THREE.Vector3(3 * scale, semi * 3 * scale, 0), 
             new THREE.Vector3(3 * scale, 0 , 0)], 
-            new THREE.Vector3(x - 5 * scale, y - 4 * scale, z))
+            new THREE.Vector3(this.app.offsetX + x - 5 * scale, y - 4 * scale, z))
 
         this.app.drawCubicBezierCurve([
             new THREE.Vector3(- 3 * scale, 0, 0), 
             new THREE.Vector3(- 3 * scale, semi * 3 * scale, 0), 
             new THREE.Vector3(3 * scale, semi * 3 * scale, 0), 
             new THREE.Vector3(3 * scale, 0, 0)], 
-            new THREE.Vector3(x + 5 * scale, y - 4 * scale, z))
+            new THREE.Vector3(this.app.offsetX + x + 5 * scale, y - 4 * scale, z))
             
         this.app.drawCubicBezierCurve([
             new THREE.Vector3(- 8 * scale, 0, 0), 
             new THREE.Vector3(- 8 * scale, quarter * 8 * scale, 0), 
             new THREE.Vector3(- quarter * 8 * scale, 8 * scale, 0), 
             new THREE.Vector3(0 , 8 * scale, 0)],
-            new THREE.Vector3(x, y - 4 * scale, z))
+            new THREE.Vector3(this.app.offsetX + x, y - 4 * scale, z))
         
         this.app.drawCubicBezierCurve([
             new THREE.Vector3(0, 4 * scale, 0), 
             new THREE.Vector3(quarter * 4 * scale, 4 * scale, 0), 
             new THREE.Vector3(4 * scale, quarter * 4 * scale, 0), 
             new THREE.Vector3(4 * scale, 0, 0)], 
-            new THREE.Vector3(x, y, z))
+            new THREE.Vector3(this.app.offsetX + x, y, z))
         
         this.app.drawCubicBezierCurve([
             new THREE.Vector3(0, 4 * scale, 0), 
             new THREE.Vector3(quarter * 4 * scale, 4 * scale, 0), 
             new THREE.Vector3(4 * scale, quarter * 4 * scale, 0), 
             new THREE.Vector3(4 * scale, 0, 0)], 
-            new THREE.Vector3(x + 4 * scale, y - 4 * scale, z))
+            new THREE.Vector3(this.app.offsetX + x + 4 * scale, y - 4 * scale, z))
 
         const group = new THREE.Group();
 

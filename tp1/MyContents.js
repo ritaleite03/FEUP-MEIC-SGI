@@ -63,6 +63,8 @@ class MyContents  {
         this.widthRoom = 20
         this.heightWall = 10
         this.depthWall = 0.5
+
+        this.offsetX = this.lengthRoom / 4
     }
 
     /**
@@ -92,7 +94,7 @@ class MyContents  {
         this.representationLampLight(-this.lengthRoom / 2 + 0.01, -this.widthRoom / 2 + 0.01, 10)
 
         const sun = new THREE.SpotLight( "#ffffff", 1000, this.lengthRoom * 2, angleSun)
-        sun.position.set(0,10,20)
+        sun.position.set(this.offsetX,10,20)
         sun.castShadow = true
         this.app.scene.add(sun)
         const sunHelper = new THREE.SpotLightHelper(sun)
@@ -100,20 +102,23 @@ class MyContents  {
 
         const panoramaLight = new THREE.RectAreaLight( "#ffffff", 1,  this.lengthRoom * 2, this.heightWall * 2 );
         panoramaLight.rotateX(-Math.PI / 2)
-        panoramaLight.position.set( 0, this.heightWall / 2, this.widthRoom/2 + this.depthWall );
-        panoramaLight.lookAt(  0, this.heightWall / 2, this.widthRoom);
+        panoramaLight.position.set( this.offsetX, this.heightWall / 2, this.widthRoom/2 + this.depthWall );
+        panoramaLight.lookAt(  this.offsetX, this.heightWall / 2, this.widthRoom);
         this.app.scene.add( panoramaLight )
     }
 
     representationRoom() {
 
         const walls = new MyWalls( this, this.lengthRoom, this.widthRoom, this.heightWall, this.depthWall )
+        walls.position.set(this.offsetX,0,0)
         this.app.scene.add( walls );
 
         const panorama = new MyPanorama(this.app, this.lengthRoom, this.widthRoom);
+        panorama.position.set(this.offsetX,0,0)
         this.app.scene.add( panorama );
 
         const curtain = new MyCurtain( this, this.widthRoom, this.lengthRoom, this.heightWall )
+        curtain.position.set(this.offsetX,0,0)
         this.app.scene.add( curtain )
 
         const photos = new THREE.Group();
@@ -124,7 +129,7 @@ class MyContents  {
         photo2.position.x = 2.0;
         photos.add( photo2 );
         photos.rotateY( Math.PI/2 );
-        photos.position.set( -this.lengthRoom / 2, 5, 0 );
+        photos.position.set( -this.lengthRoom / 2 + this.offsetX, 5, 0 );
         this.app.scene.add( photos );
 
         this.planeTexture.repeat.set( 4, 4 * this.widthRoom / this.lengthRoom * 626 / 418 );
@@ -132,6 +137,7 @@ class MyContents  {
         this.planeMesh = new THREE.Mesh( plane, this.planeMaterial );
         this.planeMesh.receiveShadow = true;
         this.planeMesh.rotation.x = -Math.PI / 2;
+        this.planeMesh.position.set(this.offsetX, 0, 0)
         this.app.scene.add( this.planeMesh );
 
         const materialCeilling = new THREE.MeshPhongMaterial( {color: "#ffffff"} )
@@ -168,36 +174,36 @@ class MyContents  {
         const positionNewspaper = [ xLenghtTable / 4 + 2 * scaleNewspaper * widthNewspaper, heightTable + radiusTable / 2 + 0.001, zLenghtTable / 4 + lengthNewspaper  ];
 
         const table = new MyTable( this, heightTable, radiusTable, xLenghtTable, zLenghtTable );
-        table.position.set( -this.lengthRoom / 4, 0, 0 )
+        table.position.set( -this.lengthRoom / 4 + this.offsetX, 0, 0 )
         this.app.scene.add( table );
         
         const cake = new MyCake( this, baseRadiusCake, tierHeightCake, 10 * Math.PI / 6, false, 3, topRadiusCake );
-        cake.position.set(-this.lengthRoom / 4, topPositionTable + baseRadiusCake * 0.4 + 0.005, 0)
+        cake.position.set(-this.lengthRoom / 4 + this.offsetX, topPositionTable + baseRadiusCake * 0.4 + 0.005, 0)
         this.app.scene.add( cake );
         
         const cakeSlice = new MyCake( this, topRadiusCake, tierHeightCake, 2 * Math.PI / 6, true );
-        cakeSlice.position.set( 0.5 -this.lengthRoom / 4, topPositionTable + 0.03, 0.5 );
+        cakeSlice.position.set( 0.5 -this.lengthRoom / 4 + this.offsetX, topPositionTable + 0.03, 0.5 );
         this.app.scene.add( cakeSlice );
 
         const chair1 = new MyChair( this, 2.5, 2, 2.5, 1, 0.1, 1.5, 0.1, 1, 0.2 )
         const chair2 = chair1.clone()
         chair1.rotateY( -1 * Math.PI / 6 )
         chair2.rotateY(  7 * Math.PI / 6 )
-        chair1.position.set( -1 - this.lengthRoom / 4, 0,  3)
-        chair2.position.set(  1 - this.lengthRoom / 4, 0, -3)
+        chair1.position.set( -1 - this.lengthRoom / 4 + this.offsetX, 0,  3)
+        chair2.position.set(  1 - this.lengthRoom / 4 + this.offsetX, 0, -3)
         this.app.scene.add( chair1 );
         this.app.scene.add( chair2 );
 
         const carpet = new MyCarpet(this.app, 0, 0, 6, this.carpetPattern, this.carpetPattern, true);
-        carpet.position.set(-this.lengthRoom / 4, 0, 0)
+        carpet.position.set(-this.lengthRoom / 4 + this.offsetX, 0, 0)
         this.app.scene.add(carpet);
 
         const flower1 = new MyFlower( this , scaleJar * 1.0,  5, widthPetal * 1.0, heightPetal * 1.0, radiusStem, segmentsStem );
         const flower2 = new MyFlower( this , scaleJar * 0.9,  4, widthPetal * 0.9, heightPetal * 0.9, radiusStem, segmentsStem );
         const flower3 = new MyFlower( this , scaleJar * 0.9,  3, widthPetal * 0.9, heightPetal * 0.9, radiusStem, segmentsStem );
-        flower1.position.set( xLenghtTable / 4 + 2.5 * scaleJar -this.lengthRoom / 4, heightTable + radiusTable / 2, -zLenghtTable / 4 );
-        flower2.position.set( xLenghtTable / 4 + 2.5 * scaleJar-this.lengthRoom / 4, heightTable + radiusTable / 2, -zLenghtTable / 4 );
-        flower3.position.set( xLenghtTable / 4 + 2.5 * scaleJar-this.lengthRoom / 4, heightTable + radiusTable / 2, -zLenghtTable / 4 );
+        flower1.position.set( this.offsetX + xLenghtTable / 4 + 2.5 * scaleJar -this.lengthRoom / 4, heightTable + radiusTable / 2, -zLenghtTable / 4 );
+        flower2.position.set( this.offsetX + xLenghtTable / 4 + 2.5 * scaleJar-this.lengthRoom / 4, heightTable + radiusTable / 2, -zLenghtTable / 4 );
+        flower3.position.set( this.offsetX + xLenghtTable / 4 + 2.5 * scaleJar-this.lengthRoom / 4, heightTable + radiusTable / 2, -zLenghtTable / 4 );
         flower1.rotateX( +Math.PI / 40 );
         flower2.rotateZ( +Math.PI / 20 );
         flower3.rotateX( -Math.PI / 40 );
@@ -206,17 +212,17 @@ class MyContents  {
         this.app.scene.add( flower2 );
         this.app.scene.add( flower3 );
 
-        this.drawJar( xLenghtTable / 4 -this.lengthRoom / 4, heightTable + radiusTable / 2, -zLenghtTable / 4, scaleJar )       
+        this.drawJar( xLenghtTable / 4 -this.lengthRoom / 4 + this.offsetX, heightTable + radiusTable / 2, -zLenghtTable / 4, scaleJar )       
 
         const newspaper = new MyNewspaper( this, 0.6, 5, widthNewspaper, lengthNewspaper, 0.25 );
         newspaper.rotateY( Math.PI );
         newspaper.scale.set( scaleNewspaper, scaleNewspaper, scaleNewspaper )
-        newspaper.position.set( positionNewspaper[0] -this.lengthRoom / 4, positionNewspaper[1],  positionNewspaper[2] );
+        newspaper.position.set( positionNewspaper[0] -this.lengthRoom / 4 + this.offsetX, positionNewspaper[1],  positionNewspaper[2] );
         this.app.scene.add( newspaper );
         
         const spiralSpring = new MySpiralSpring( this, 0.4, 20, 2, 4 )
         spiralSpring.scale.set( 0.25, 0.25, 0.25 )
-        spiralSpring.position.set( xLenghtTable / 4 -this.lengthRoom / 4, heightTable + radiusTable / 2, -zLenghtTable / 4 )
+        spiralSpring.position.set( xLenghtTable / 4 -this.lengthRoom / 4 + this.offsetX, heightTable + radiusTable / 2, -zLenghtTable / 4 )
         this.app.scene.add( spiralSpring )
     }
 
@@ -232,29 +238,29 @@ class MyContents  {
         const heightS = 0.7
 
         const sideboard = new MySideBoard( this, widthSB, this.widthRoom / 3 + 1, heightSB, 0.1, heightLegSB, 0.1 )
-        sideboard.position.set( this.lengthRoom / 3, 0, - this.widthRoom / 2 )
+        sideboard.position.set( this.lengthRoom / 3 + this.offsetX, 0, - this.widthRoom / 2 )
         this.app.scene.add( sideboard )
 
         const coffeetable = new MyCoffeeTable( this, 2, 1, 0.1, 1 )
-        coffeetable.position.set( this.lengthRoom / 4, 0, 0 )
+        coffeetable.position.set( this.lengthRoom / 4 + this.offsetX, 0, 0 )
         this.app.scene.add( coffeetable )
 
         const tv = new MyTV( this, 7, 4, 0.2, 0.3 )
-        tv.position.set( this.lengthRoom / 3, heightLegSB + heightSB, - this.widthRoom / 2 + widthSB / 2 )
+        tv.position.set( this.lengthRoom / 3 + this.offsetX, heightLegSB + heightSB, - this.widthRoom / 2 + widthSB / 2 )
         this.app.scene.add( tv )
 
         const carpet = new MyCarpet( this.app, 0, 0, 6, this.carpetPattern2, this.carpetPattern2, true );
-        carpet.position.set( this.lengthRoom / 4, 0, 0 )
+        carpet.position.set( this.lengthRoom / 4 + this.offsetX, 0, 0 )
         this.app.scene.add( carpet );
 
         const sofa1 = new MySofa( this, widthS, widthS, heightS, this.sofaTexture );
         sofa1.rotateY( -Math.PI / 4 - Math.PI );
-        sofa1.position.set( widthS, heightS * 0.4, this.widthRoom / 4 );
+        sofa1.position.set( widthS + this.offsetX, heightS * 0.4, this.widthRoom / 4 );
         this.app.scene.add( sofa1 );
 
         const sofa2 = new MySofa( this, widthS, widthS * 2, heightS, this.sofaTexture );
         sofa2.rotateY( Math.PI );
-        sofa2.position.set( this.lengthRoom / 4 + widthS * 1.5, heightS * 0.4, this.widthRoom / 4 + widthS );
+        sofa2.position.set( this.lengthRoom / 4 + widthS * 1.5 + this.offsetX, heightS * 0.4, this.widthRoom / 4 + widthS );
         this.app.scene.add( sofa2 );
     }
 
@@ -270,11 +276,11 @@ class MyContents  {
         const heighShadeLamp = 1.5 
 
         const lamp = new MyLamp( this, radiusFootLamp, heighFootLamp, radiusPole, heightPole, radiusShadeBottomLamp, radiusShadeTopLamp, heighShadeLamp )
-        lamp.position.set( x + radiusShadeBottomLamp, 0, z + radiusShadeBottomLamp )
+        lamp.position.set( x + radiusShadeBottomLamp + this.offsetX, 0, z + radiusShadeBottomLamp )
         this.app.scene.add( lamp )
 
         const spotLightLamp = new THREE.PointLight( "#ffffff", intensityLight, heightPole + 5); //, angleLight, 1);
-        spotLightLamp.position.set( x + radiusShadeBottomLamp, heighFootLamp + heightPole * 0.9, z + radiusShadeBottomLamp );
+        spotLightLamp.position.set( x + radiusShadeBottomLamp + this.offsetX, heighFootLamp + heightPole * 0.9, z + radiusShadeBottomLamp );
         //spotLightLamp.target.position.set( x + radiusShadeBottomLamp, 0, z + radiusShadeBottomLamp );
         spotLightLamp.castShadow = true;
         this.app.scene.add( spotLightLamp );
@@ -291,8 +297,8 @@ class MyContents  {
 
         // light
         const light = new THREE.SpotLight( "#ffffff", intensity + 50, y + 5, angle, 0.3, 2);
-        light.position.set( x, y - heightfocusExterior - heightfocusInterior - 0.01, 0 );
-        light.target.position.set(x, 0, 0);
+        light.position.set( x + this.offsetX, y - heightfocusExterior - heightfocusInterior - 0.01, 0 );
+        light.target.position.set(x + this.offsetX, 0, 0);
         light.castShadow = true;
         this.app.scene.add( light );
         const helper = new THREE.SpotLightHelper( light );
@@ -301,14 +307,14 @@ class MyContents  {
         // focus exterior
         const focusExterior = new THREE.CylinderGeometry(radiusfocusExterior, radiusfocusExterior, heightfocusExterior)
         const focusExteriorMesh = new THREE.Mesh(focusExterior, this.planeMaterial)
-        focusExteriorMesh.position.set( x, y - heightfocusExterior / 2, 0 );
+        focusExteriorMesh.position.set( x + this.offsetX, y - heightfocusExterior / 2, 0 );
         this.app.scene.add(focusExteriorMesh)
 
         // focus interior
         const focusInterior = new THREE.CylinderGeometry(radiusfocusExterior / 2, radiusfocusExterior / 2, heightfocusInterior)
         const focusInteriorMaterial = new THREE.MeshPhongMaterial( {color: "#e3dd78", transparent: true, opacity: 0.6} )
         const focusInteriorMesh = new THREE.Mesh(focusInterior, focusInteriorMaterial)
-        focusInteriorMesh.position.set( x, y - heightfocusExterior - heightfocusInterior / 2, 0 );
+        focusInteriorMesh.position.set( x + this.offsetX, y - heightfocusExterior - heightfocusInterior / 2, 0 );
         this.app.scene.add(focusInteriorMesh)
     }
 
@@ -436,6 +442,7 @@ class MyContents  {
 
     drawCurtains(height, x, y, z) {
 
+        x += this.offsetX
         let curve = [
             [[ 0.0, 0, 0.5, 1 ], [ 0.0, height, 0.5, 1 ]],
             [[ 0.5, 0, 1.0, 1 ], [ 0.5, height, 1.0, 1 ]],
