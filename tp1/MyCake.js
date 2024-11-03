@@ -12,7 +12,7 @@ class MyCake extends THREE.Object3D {
        @param {number} angleLength topTier's angle
        @param {boolean} slice cake slice (default false)
        @param {number} tiers number of tiers (default 1)
-       @param {number} tiers top tier radius (default radius)
+       @param {number} radiusLast top tier radius (default radius)
 
     */ 
     constructor(app, radius, height, angleLength, slice = false, tiers = 1,  radiusLast = radius) {

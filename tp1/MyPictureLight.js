@@ -11,7 +11,6 @@ class MyPictureLight extends THREE.Object3D {
      * @param {MyApp} app the application object
      * @param {number} width picture width
      * @param {number} height picture height
-     * @param {texture} texture texture
      */
     constructor(app, width, height) {
         super();
