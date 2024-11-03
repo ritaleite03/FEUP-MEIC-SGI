@@ -18,7 +18,7 @@ import { MyCarpet } from './MyCarpet.js';
 import { MyPanorama } from './MyPanorama.js';
 import { MyCoffeeTable } from './MyCoffeeTable.js';
 
-
+import { MyPillow } from './MyPillow.js';
 /**
  *  This class contains the contents of out application
  */
@@ -40,7 +40,7 @@ class MyContents  {
         const loader = new THREE.TextureLoader();
         this.picture1 = loader.load('textures/202105309.jpg');
         this.picture2 = loader.load('textures/202108699.jpg');
-        this.sofaTexture = loader.load('textures/gray-sofa4.jpg');
+        this.sofaTexture = loader.load('textures/gray-sofa.jpg');
         this.carpetPattern = loader.load('textures/carpet-hexagonal.jpg');
         //this.carpetReleve = loader.load('textures/gray-carpet.jpg');
         this.carpetPattern2 = loader.load('textures/carpet.jpg');
@@ -96,6 +96,7 @@ class MyContents  {
         const sun = new THREE.SpotLight( "#ffffff", 1000, this.lengthRoom * 2, angleSun)
         sun.position.set(this.offsetX,10,20)
         sun.castShadow = true
+        sun.target.position.set(this.offsetX, 0, 0)
         this.app.scene.add(sun)
         const sunHelper = new THREE.SpotLightHelper(sun)
         this.app.scene.add(sunHelper)
@@ -144,7 +145,7 @@ class MyContents  {
         const ceilling = new THREE.PlaneGeometry( this.lengthRoom, this.widthRoom );
         const ceillingMesh = new THREE.Mesh( ceilling, materialCeilling );
         ceillingMesh.rotation.x = Math.PI / 2;
-        ceillingMesh.position.y = this.heightWall;
+        ceillingMesh.position.set(this.offsetX, this.heightWall, 0)
         ceillingMesh.castShadow = true;
         ceillingMesh.receiveShadow = true;
         this.app.scene.add( ceillingMesh )

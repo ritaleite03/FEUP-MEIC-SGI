@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { MyApp } from './MyApp.js';
 import { MySofaCushion } from './MySofaCushion.js';
+import { MyPillow } from './MyPillow.js';
 
 /**
  * This class contains the representation of a newspaper
@@ -17,6 +18,7 @@ class MySofa extends THREE.Object3D {
      */
     constructor(app, width, length, height, texture) {
         super();
+        this.app = app;
         this.type = 'Group';
         this.texture = texture.clone();
 
@@ -121,7 +123,19 @@ class MySofa extends THREE.Object3D {
         backCushions.position.set(length, 2 * height + 0.1, 0.1);
         this.add(backCushions);
 
+        // Left pillow 
+        const leftPillow = new MyPillow(this.app, width * 0.7, width * 0.7, width * 0.3);
+        leftPillow.rotateY(- Math.PI/8)
+        leftPillow.rotateZ(- Math.PI/3)
+        leftPillow.position.set(height * 0.75, 3.4 * height, height * 2.5);
+        this.add( leftPillow )
 
+        // Right pillow 
+        const rightPillow = new MyPillow(this.app, width * 0.7, width * 0.7, width * 0.3);
+        rightPillow.rotateY(Math.PI/8)
+        rightPillow.rotateZ(Math.PI/3)
+        rightPillow.position.set(length - height * 0.4, 3.4 * height, height * 2.5);
+        this.add( rightPillow )
 
         const material2 = new THREE.MeshLambertMaterial({ color: "#000000"});
 
@@ -149,9 +163,6 @@ class MySofa extends THREE.Object3D {
         const legFR = new THREE.Mesh(leg, material2);
         legFR.position.set(length + 0.3 + desl, down, width -desl);
         this.add(legFR)
-
-        this.position.y = height* 0.1 + 0.1;
-        this.position.x = - length * 0.5 - 0.1;
     }
 }
 
