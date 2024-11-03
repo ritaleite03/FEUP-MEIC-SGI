@@ -101,7 +101,7 @@ class MyContents  {
         this.representatingSpotLightCeilling( 0 );
         this.representatingSpotLightCeilling( 1 );
         this.representatingSpotLightCeilling( 2 );
-        this.representationLampLight(-this.lengthRoom / 2 + 0.01, -this.widthRoom / 2 + 0.01, 10)
+        this.representationLampLight(-this.lengthRoom / 2 + 0.01, -this.widthRoom / 2 + 0.01)
 
         const sun = new THREE.SpotLight( "#ffffff", 1000, this.lengthRoom * 2, angleSun)
         sun.position.set(this.offsetX,10,20)
@@ -118,6 +118,9 @@ class MyContents  {
         this.app.scene.add( panoramaLight )
     }
 
+    /**
+     * adds to the scene the representation of the objects related to the room structure
+     */
     representationRoom() {
 
         const walls = new MyWalls( this, this.lengthRoom, this.widthRoom, this.heightWall, this.depthWall )
@@ -161,6 +164,9 @@ class MyContents  {
         this.app.scene.add( ceillingMesh )
     }
 
+    /**
+     * adds to the scene the representation of the objects related to the dinning area
+     */
     representationDiningRoom() {
 
         const tierHeightCake = 0.2;
@@ -237,6 +243,9 @@ class MyContents  {
         this.app.scene.add( spiralSpring )
     }
 
+    /**
+     * adds to the scene the representation of the objects related to the living area
+     */
     representationLivingRoom() {
 
         // sideboard's variables
@@ -275,31 +284,39 @@ class MyContents  {
         this.app.scene.add( sofa2 );
     }
 
-    representationLampLight( x, z, intensityLight){
+    /**
+     * adds to the scene the representation of the lamp
+     * @param {number} x position of the lamp in Ox
+     * @param {number} z position of the lamp in Oy
+     */
+    representationLampLight( x, z){
 
-        const radiusFootLamp = 0.8;
+        // variables
         const heighFootLamp = 0.6
-        const radiusPole = 0.1
         const heightPole = 7.5
-
         const radiusShadeBottomLamp = 1
-        const radiusShadeTopLamp = 0.5
-        const heighShadeLamp = 1.5 
 
-        const lamp = new MyLamp( this, radiusFootLamp, heighFootLamp, radiusPole, heightPole, radiusShadeBottomLamp, radiusShadeTopLamp, heighShadeLamp )
+        // object
+        const lamp = new MyLamp( this, 0.8, heighFootLamp, 0.1, heightPole, radiusShadeBottomLamp, 0.5, 1.5 )
         lamp.position.set( x + radiusShadeBottomLamp + this.offsetX, 0, z + radiusShadeBottomLamp )
         this.app.scene.add( lamp )
 
-        const spotLightLamp = new THREE.PointLight( "#ffffff", intensityLight, heightPole + 5); //, angleLight, 1);
+        // light
+        const spotLightLamp = new THREE.PointLight( "#ffffff", 10, heightPole + 5);
         spotLightLamp.position.set( x + radiusShadeBottomLamp + this.offsetX, heighFootLamp + heightPole * 0.9, z + radiusShadeBottomLamp );
-        //spotLightLamp.target.position.set( x + radiusShadeBottomLamp, 0, z + radiusShadeBottomLamp );
         spotLightLamp.castShadow = true;
         this.app.scene.add( spotLightLamp );
+
+        // helper
         const spotLightLampHelper = new THREE.PointLightHelper( spotLightLamp );
         //this.app.scene.add( spotLightLampHelper );
 
     }
 
+    /**
+     * adds to the scene the representation of the focus light
+     * @param {number} number number of the focus light (there are 3 focus lights)
+     */
     representatingSpotLightCeilling(number) {
 
         // variables
@@ -344,9 +361,14 @@ class MyContents  {
 
     }
 
+    /**
+     * enables or disables the visibility of the focus lights' helpers
+     * @param {number} value indicates if helper is shown or not
+     */
     rebuildHelpersCeilling(value){
         this.helpersLastEnable = value
-        if(value){
+
+        if( value ) {
             this.spotLightCeillingHelper0 = new THREE.SpotLightHelper( this.spotLightCeilling0 );
             this.app.scene.add( this.spotLightCeillingHelper0 );
             this.spotLightCeillingHelper1 = new THREE.SpotLightHelper( this.spotLightCeilling1 );
@@ -354,32 +376,36 @@ class MyContents  {
             this.spotLightCeillingHelper2 = new THREE.SpotLightHelper( this.spotLightCeilling2 );
             this.app.scene.add( this.spotLightCeillingHelper2 );
         }
-        else{
-            this.app.scene.remove(this.spotLightCeillingHelper0)
-            this.app.scene.remove(this.spotLightCeillingHelper1)
-            this.app.scene.remove(this.spotLightCeillingHelper2)
+        else {
+            this.app.scene.remove( this.spotLightCeillingHelper0 )
+            this.app.scene.remove( this.spotLightCeillingHelper1 )
+            this.app.scene.remove( this.spotLightCeillingHelper2 )
         }
     }
 
+    /**
+     * rebuilds the focus lights with the new specifications of intensity or angle
+     * @param {number} value indicates if helper is shown or not
+     */
     rebuildSpotLightCeilling(number) {
 
-        if(number == 0){
-            if(this.spotLightCeilling0 != null && this.spotLightCeilling0 != undefined)
-                this.app.scene.remove(this.spotLightCeilling0)
-            if(this.spotLightCeillingHelper0 != null && this.spotLightCeillingHelper0 != undefined)
-                this.app.scene.remove(this.spotLightCeillingHelper0)
+        if( number == 0 ) {
+            if( this.spotLightCeilling0 != null && this.spotLightCeilling0 != undefined )
+                this.app.scene.remove( this.spotLightCeilling0 )
+            if( this.spotLightCeillingHelper0 != null && this.spotLightCeillingHelper0 != undefined )
+                this.app.scene.remove( this.spotLightCeillingHelper0 )
         }
-        if(number == 1){
-            if(this.spotLightCeilling1 != null && this.spotLightCeilling1 != undefined)
-                this.app.scene.remove(this.spotLightCeilling1)
-            if(this.spotLightCeillingHelper1 != null && this.spotLightCeillingHelper1 != undefined)
-                this.app.scene.remove(this.spotLightCeillingHelper1)
+        if( number == 1 ) {
+            if( this.spotLightCeilling1 != null && this.spotLightCeilling1 != undefined )
+                this.app.scene.remove( this.spotLightCeilling1 )
+            if( this.spotLightCeillingHelper1 != null && this.spotLightCeillingHelper1 != undefined )
+                this.app.scene.remove( this.spotLightCeillingHelper1 )
         }
-        if(number == 2){
-            if(this.spotLightCeilling2 != null && this.spotLightCeilling2 != undefined)
-                this.app.scene.remove(this.spotLightCeilling2)
-            if(this.spotLightCeillingHelper2 != null && this.spotLightCeillingHelper2 != undefined)
-                this.app.scene.remove(this.spotLightCeillingHelper2)
+        if( number == 2 ){
+            if( this.spotLightCeilling2 != null && this.spotLightCeilling2 != undefined )
+                this.app.scene.remove( this.spotLightCeilling2 )
+            if( this.spotLightCeillingHelper2 != null && this.spotLightCeillingHelper2 != undefined )
+                this.app.scene.remove( this.spotLightCeillingHelper2 )
         }
 
         // variables
@@ -388,43 +414,51 @@ class MyContents  {
 
         // light
         const light = new THREE.SpotLight( "#ffffff", this.intensityCeilling, this.heightWall + 5, this.angleCeilling * Math.PI / 180, 0.3, 2);
-        light.position.set(  this.xCeilling[number] + this.offsetX, this.heightWall - heightfocusExterior - heightfocusInterior - 0.01, 0 );
-        light.target.position.set(this.xCeilling[number] + this.offsetX, 0, 0);
+        light.position.set( this.xCeilling[number] + this.offsetX, this.heightWall - heightfocusExterior - heightfocusInterior - 0.01, 0 );
+        light.target.position.set( this.xCeilling[number] + this.offsetX, 0, 0 );
         light.castShadow = true;
         this.app.scene.add( light );
 
+        // helper
         let helper = null
         if(this.helpersLastEnable) {
             helper = new THREE.SpotLightHelper( light );
             this.app.scene.add( helper );
         }
 
-        if(number == 0){
+        if( number == 0 ) {
             this.spotLightCeilling0 = light
             this.spotLightCeillingHelper0 = helper
         }
-        if(number == 1){
+        if( number == 1 ) {
             this.spotLightCeilling1 = light
             this.spotLightCeillingHelper1 = helper
         }
-        if(number == 2){
+        if( number == 2 ) {
             this.spotLightCeilling2 = light
             this.spotLightCeillingHelper2 = helper
         }
-
     }
 
+    /**
+     * draws a cubic bezier curve
+     * @param {Array<number>} points curve's points of control
+     * @param {number} position position of the curve
+     */
     drawCubicBezierCurve(points, position) {
+
         // define the curve
         const numberSamples = 20;
         const curve = new THREE.CubicBezierCurve3( points[0], points[1], points[2], points[3])
         const sampledPoints = curve.getPoints( numberSamples );  
+        
         // draw the curve
         const curveGeometry = new THREE.BufferGeometry().setFromPoints( sampledPoints )
         const lineMaterial = new THREE.LineBasicMaterial( { color: 0x00ff00 } )
         const lineObj = new THREE.Line( curveGeometry, lineMaterial )
         lineObj.position.set( position.x, position.y, position.z )
         this.app.scene.add( lineObj );
+
     }
 
     /**
@@ -464,6 +498,7 @@ class MyContents  {
         this.diffusePlaneColor = value
         this.planeMaterial.color.set(this.diffusePlaneColor)
     }
+
     /**
      * updates the specular plane color and the material
      * @param {THREE.Color} value 
@@ -472,6 +507,7 @@ class MyContents  {
         this.specularPlaneColor = value
         this.planeMaterial.specular.set(this.specularPlaneColor)
     }
+    
     /**
      * updates the plane shininess and the material
      * @param {number} value 
@@ -480,16 +516,22 @@ class MyContents  {
         this.planeShininess = value
         this.planeMaterial.shininess = this.planeShininess
     }
-    
+
     /**
-     * removes (if existing) and recreates the nurbs surfaces
+     * adds to the scene to jar object
+     * @param {number} x position in Ox
+     * @param {number} y position in Oy
+     * @param {number} z position in Oz
+     * @param {number} scale scale of the jar
      */
     drawJar(x,y,z,scale) {
+
         const curveSide = [
             [[ 2.0, 0, 0, 1 ],[ 1.0, 2, 0, 1 ],[ 2.0, 3, 0, 1 ]],
             [[ 2.5, 0, 1, 1 ],[ 2.5, 2, 2, 1 ],[ 2.5, 3, 1, 1 ]],
             [[ 3.0, 0, 0, 1 ],[ 4.0, 2, 0, 1 ],[ 3.0, 3, 0, 1 ]],
         ]
+        
         const curveBottom = [
             [[ 2.0, 0.02, 0, 1 ],[ 2.0, 0.01, 0.0, 1 ],[ 2.0, 0, 0, 1 ]],
             [[ 2.5, 0.02, 1, 1 ],[ 2.5, 0.01, 0.5, 1 ],[ 2.5, 0, 0, 1 ]],
@@ -534,10 +576,18 @@ class MyContents  {
         backBottomMesh.position.set( x + scale * 5, y, z )
         backBottomMesh.rotateY( Math.PI )
         this.app.scene.add( backBottomMesh )
+
     }
 
+    /**
+     * adds to the scene to curtains object
+     * @param {number} height height of the curtain
+     * @param {number} x position in Ox
+     * @param {number} y position in Oy
+     * @param {number} z position in Oz
+     */
     drawCurtains(height, x, y, z) {
-
+        
         x += this.offsetX
         let curve = [
             [[ 0.0, 0, 0.5, 1 ], [ 0.0, height, 0.5, 1 ]],
