@@ -70,11 +70,15 @@ class MyContents  {
         this.spotLightCeillingHelper0 = null
         this.spotLightCeillingHelper1 = null
         this.spotLightCeillingHelper2 = null
+
         this.intensityCeilling = 150
         this.angleCeilling = 45
+        this.colorCeilling = '#ffffff'
+        this.penumbraCeilling = 0.3
+        this.decayCeilling = 2
         this.xCeilling = [-this.lengthRoom/4,0,this.lengthRoom/4]
-        this.helpersEnable = true
-        this.helpersLastEnable = true
+        this.helpersEnable = false
+        this.helpersLastEnable = false
     }
 
     /**
@@ -323,13 +327,13 @@ class MyContents  {
         const heightfocusInterior = 0.01
 
         // light
-        const light = new THREE.SpotLight( "#ffffff", this.intensityCeilling, this.heightWall + 5, this.angleCeilling * Math.PI / 180, 0.3, 2);
+        const light = new THREE.SpotLight( this.colorCeilling, this.intensityCeilling, this.heightWall + 5, this.angleCeilling * Math.PI / 180, this.penumbraCeilling, this.decayCeilling);
         light.position.set(  this.xCeilling[number] + this.offsetX, this.heightWall - heightfocusExterior - heightfocusInterior - 0.01, 0 );
         light.target.position.set(this.xCeilling[number] + this.offsetX, 0, 0);
         light.castShadow = true;
         this.app.scene.add( light );
         const helper = new THREE.SpotLightHelper( light );
-        this.app.scene.add( helper );
+        //this.app.scene.add( helper );
 
         // focus exterior
         const focusExterior = new THREE.CylinderGeometry(radiusfocusExterior, radiusfocusExterior, heightfocusExterior)
@@ -411,7 +415,7 @@ class MyContents  {
         const heightfocusInterior = 0.01
 
         // light
-        const light = new THREE.SpotLight( "#ffffff", this.intensityCeilling, this.heightWall + 5, this.angleCeilling * Math.PI / 180, 0.3, 2);
+        const light = new THREE.SpotLight( this.colorCeilling, this.intensityCeilling, this.heightWall + 5, this.angleCeilling * Math.PI / 180, this.penumbraCeilling, this.decayCeilling);
         light.position.set( this.xCeilling[number] + this.offsetX, this.heightWall - heightfocusExterior - heightfocusInterior - 0.01, 0 );
         light.target.position.set( this.xCeilling[number] + this.offsetX, 0, 0 );
         light.castShadow = true;
