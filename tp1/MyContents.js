@@ -12,11 +12,13 @@ import { MySpiralSpring } from './MySpiralSpring.js';
 import { MyLamp } from './MyLamp.js';
 import { MyCurtain } from './MyCurtain.js';
 import { MyTV } from './MyTV.js';
-import { MySideBoard } from './SideBoard.js';
+import { MySideBoard } from './MySideBoard.js';
 import { MySofa } from './MySofa.js';
 import { MyCarpet } from './MyCarpet.js';
 import { MyPanorama } from './MyPanorama.js';
 import { MyCoffeeTable } from './MyCoffeeTable.js';
+
+import { MyFrame } from './MyFrame.js';
 
 
 /**
@@ -44,6 +46,7 @@ class MyContents  {
         this.carpetPattern = loader.load('textures/carpet-hexagonal.jpg');
         //this.carpetReleve = loader.load('textures/gray-carpet.jpg');
         this.carpetPattern2 = loader.load('textures/carpet.jpg');
+        this.test = loader.load('textures/dark_wood.jpg')
         
         // material
         this.diffusePlaneColor = "#f0e6cc" //"#fff7d6"
@@ -245,9 +248,9 @@ class MyContents  {
         sofa1.position.set( widthS, heightS * 0.4, this.widthRoom / 4 );
         this.app.scene.add( sofa1 );
 
-        const sofa2 = new MySofa( this, widthS, widthS, heightS, this.sofaTexture );
+        const sofa2 = new MySofa( this, widthS, widthS * 2, heightS, this.sofaTexture );
         sofa2.rotateY( Math.PI );
-        sofa2.position.set( this.lengthRoom / 4 + widthS, heightS * 0.4, this.widthRoom / 4 + widthS );
+        sofa2.position.set( this.lengthRoom / 4 + widthS * 1.5, heightS * 0.4, this.widthRoom / 4 + widthS );
         this.app.scene.add( sofa2 );
     }
 

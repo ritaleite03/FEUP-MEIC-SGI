@@ -34,7 +34,7 @@ class MyCandle extends THREE.Object3D {
         const sphereBigFlameMaterial = new THREE.MeshBasicMaterial( { color: "#e6b449",transparent: true, opacity: 0.7 } );
         const sphereSmallFlameMaterial = new THREE.MeshBasicMaterial( { color: "#fcf177" } );
         const coneFlameMaterial = new THREE.MeshBasicMaterial( { color: "#e6b449", transparent: true, opacity: 0.7 } );
-        const stickMaterial = new THREE.MeshBasicMaterial( { color: "#f9fae3" } );
+        const stickMaterial = new THREE.MeshLambertMaterial( { color: "#f9fae3" } );
 
         // geometries
         const sphereBigFlame = new THREE.SphereGeometry( radiusFlame, segments, segments, 0, Math.PI , 0, Math.PI )

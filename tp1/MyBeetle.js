@@ -76,7 +76,7 @@ class MyBeetle extends THREE.Object3D {
 
         const group = new THREE.Group();
 
-        const texture = new THREE.TextureLoader().load('textures/gold-texture.jpg');
+        const texture = new THREE.TextureLoader().load('textures/dark_wood.jpg');
         
         const bottomStruc = new MyFrame(frameWidth, width, fullWidth, 0.05, texture);
         bottomStruc.position.y = - fullHeight/ 2;
@@ -97,7 +97,7 @@ class MyBeetle extends THREE.Object3D {
         rightStruc.position.x = fullWidth / 2;
         group.add(rightStruc);
 
-        const material = new THREE.MeshPhongMaterial({color: "#ffffff", specular: "#000000", emissive: "#000000", shininess: 0})
+        const material = new THREE.MeshLambertMaterial({color: "#ffffff"})
         const background = new THREE.PlaneGeometry(width, height);
         const backgroundMesh = new THREE.Mesh(background, material);
         backgroundMesh.receiveShadow = true

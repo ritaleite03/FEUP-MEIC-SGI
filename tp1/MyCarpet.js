@@ -7,7 +7,7 @@ class MyCarpet extends THREE.Object3D {
     * @param {MyApp} app the application object
     * @param {number} length carpet length 
     * @param {number} width carpet width  
-    * @param {number} radius carpet width  
+    * @param {number} radius carpet radius  
     * @param {texture} patternTexture carpet pattern texture
     * @param {texture} releveTexture carpet releve texture
     * @param {boolean} circle carpet's format

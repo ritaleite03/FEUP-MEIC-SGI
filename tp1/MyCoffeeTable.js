@@ -21,8 +21,8 @@ class MyCoffeeTable extends THREE.Object3D {
         woodenTexture.wrapT = THREE.MirroredRepeatWrapping;
 
         // materials
-        const woodenMaterial = new THREE.MeshPhongMaterial( {color: "#ffffff", specular: "#000000", emissive: "#000000", shininess: 0, map: woodenTexture} )        
-        const glassMaterial = new THREE.MeshPhongMaterial( {color: "#ffffff", specular: "#000000", emissive: "#000000", shininess: 0, transparent: true, opacity: 0.5} )
+        const woodenMaterial = new THREE.MeshLambertMaterial( {color: "#ffffff", map: woodenTexture} )
+        const glassMaterial = new THREE.MeshPhongMaterial( {color: "#ffffff", transparent: true, opacity: 0.5} )
         
         // variables
         const heightTotal = heightTable + 0.2 + heightFoot

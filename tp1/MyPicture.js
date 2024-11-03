@@ -15,9 +15,9 @@ class MyPicture extends THREE.Object3D {
      * @param {number} height picture height
      * @param {number} frameWidth frame width
      * @param {texture} picture picture texture
-     * @param {number} frameHeight frame height
+     * @param {number} frameDepth frame depth
      */
-    constructor(app, width, height, frameWidth, picture, frameHeight = 0.05) {
+    constructor(app, width, height, frameWidth, picture, frameDepth = 0.05) {
         super();
         this.app = app;
 
@@ -42,7 +42,8 @@ class MyPicture extends THREE.Object3D {
         photoMesh.position.z= 0.01;
         group.add(photoMesh);
 
-        const material = new THREE.MeshPhongMaterial( { color: 0x7c3a00  } );
+        const material = new THREE.MeshPhongMaterial( { color: "#7c3a00"  } );
+
         const backStruc = new THREE.PlaneGeometry(fullWidth, fullHeight);
         const backMesh = new THREE.Mesh(backStruc, material);
         backMesh.castShadow = true;
@@ -51,21 +52,21 @@ class MyPicture extends THREE.Object3D {
         backMesh.position.z = - 0.01;
         group.add(backMesh);
 
-        const bottomStruc = new MyFrame(frameWidth, width, fullWidth, frameHeight);
+        const bottomStruc = new MyFrame(frameWidth, width, fullWidth, frameDepth);
         bottomStruc.position.y = - fullHeight / 2;
         group.add(bottomStruc);
 
-        const topStruc = new MyFrame(frameWidth, width, fullWidth, frameHeight);
+        const topStruc = new MyFrame(frameWidth, width, fullWidth, frameDepth);
         topStruc.rotateZ(Math.PI);
         topStruc.position.y = fullHeight / 2;
         group.add(topStruc);
 
-        const leftStruc = new MyFrame(frameWidth, height, fullHeight, frameHeight);
+        const leftStruc = new MyFrame(frameWidth, height, fullHeight, frameDepth);
         leftStruc.rotateZ(-Math.PI/2);
         leftStruc.position.x = - fullWidth / 2;
         group.add(leftStruc);
 
-        const rightStruc = new MyFrame(frameWidth, height, fullHeight, frameHeight);
+        const rightStruc = new MyFrame(frameWidth, height, fullHeight, frameDepth);
         rightStruc.rotateZ(Math.PI/2);
         rightStruc.position.x = fullWidth / 2;
         group.add(rightStruc);

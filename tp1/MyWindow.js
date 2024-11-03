@@ -15,24 +15,12 @@ class MyWindow extends THREE.Object3D {
     constructor(app, width, height, depth, y, z) {
         super()
         this.app = app
-        // texture and material of the window's landscape
-        let landescapeTexture = new THREE.TextureLoader().load('textures/window.jpg');
-        landescapeTexture.wrapS = THREE.MirroredRepeatWrapping;
-        landescapeTexture.wrapT = THREE.MirroredRepeatWrapping;
-        const landescapeMaterial = new THREE.MeshPhongMaterial({color: "#ffffff", specular: "#000000", emissive: "#000000", shininess: 0, map: landescapeTexture})
 
         // texture and material of the window's frame and grid
         let woodenTexture = new THREE.TextureLoader().load('textures/wooden_top.jpg');
         woodenTexture.wrapS = THREE.MirroredRepeatWrapping;
         woodenTexture.wrapT = THREE.MirroredRepeatWrapping;
-        const woodenMaterial = new THREE.MeshPhongMaterial({color: "#ffffff", specular: "#000000", emissive: "#000000", shininess: 0, map: woodenTexture})
-
-        // add landescape
-        //let wall = new THREE.PlaneGeometry(width * 2, height * 4);
-        //this.wallMesh = new THREE.Mesh (wall, landescapeMaterial);
-        //this.wallMesh.rotateY(Math.PI)
-        //this.wallMesh.position.set(0, y - 1, z + 5)
-        //this.add(this.wallMesh);
+        const woodenMaterial = new THREE.MeshLambertMaterial({color: "#ffffff", map: woodenTexture})
 
         // grid
         const gridHorizonal = new THREE.BoxGeometry(depth / 2, width, depth / 2)

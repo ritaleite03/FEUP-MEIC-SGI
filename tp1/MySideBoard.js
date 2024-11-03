@@ -23,7 +23,7 @@ class MySideBoard extends THREE.Object3D {
         let woodenTexture = new THREE.TextureLoader().load('textures/wooden_top.jpg');
         woodenTexture.wrapS = THREE.MirroredRepeatWrapping;
         woodenTexture.wrapT = THREE.MirroredRepeatWrapping;
-        const woodenMaterial = new THREE.MeshPhongMaterial( { color: "#ffffff", specular: "#000000", emissive: "#000000", shininess: 0, map: woodenTexture } );
+        const woodenMaterial = new THREE.MeshLambertMaterial( {  map: woodenTexture } );
                 
         // geometries
 

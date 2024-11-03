@@ -12,10 +12,10 @@ class MyFrame extends THREE.Object3D {
      * @param {number} width Frame width
      * @param {number} insideLength  Painting inside length
      * @param {number} outsideLength Painting outside length
-     * @param {number} height frame height
+     * @param {number} depht frame depht
      * @param {texture} texture frame texture. default = null (no texture)
      */
-    constructor(width, insideLength, outsideLength, height, texture = null) {
+    constructor(width, insideLength, outsideLength, depht, texture = null) {
         super();
         const geometry = new THREE.BufferGeometry();
 
@@ -23,10 +23,11 @@ class MyFrame extends THREE.Object3D {
         const halfOut = outsideLength/2;
 
         const vertices = new Float32Array([
-            -halfOut, 0, height,         //0
-            -halfIn, width, height,     //1
-            halfOut, 0, height,          //2
-            halfIn, width, height,      //3
+            -halfOut, 0, depht,         //0
+            -halfIn, width, depht,     //1
+            halfOut, 0, depht,          //2
+            halfIn, width, depht,      //3
+
             -halfOut, 0, 0.0,          //4
             -halfIn, width, 0.0,      //5
             halfOut, 0, 0.0,           //6
@@ -44,14 +45,32 @@ class MyFrame extends THREE.Object3D {
             6,5,7,      //back
         ];
 
+        const u1 = outsideLength;
+        const v1 = 2 * depht + width;
+
+        const uvs = new Float32Array([
+            0.0, depht/v1,                       // 0
+            width/u1, (depht + width) / v1,      // 1
+            1.0 , depht/v1,                      // 2
+            (width + insideLength)/u1, (depht + width) / v1,      // 3
+
+            0.0, 0.0,                           // 4
+            width/u1, 1.0,                      // 5
+            1.0, 0.0,                           // 6
+            (width + insideLength)/u1, 1.0,     // 7
+        ]);
+
         geometry.setIndex( indicesOfFaces );
         geometry.setAttribute( 'position', new THREE.BufferAttribute( vertices, 3 ) );
+        geometry.setAttribute('uv', new THREE.BufferAttribute(uvs, 2));
         geometry.computeVertexNormals()
+        
         let material;
         if(texture == null){
             material = new THREE.MeshStandardMaterial({color: "#000000", metalness: 1.0,  roughness: 0.1});
         } else {
-            material = new THREE.MeshPhysicalMaterial({color: "#888888", metalness: 0.7,  roughness: 0.1, map:texture});
+            //material = new THREE.MeshPhysicalMaterial({color: "#ffffff", metalness: 0.7,  roughness: 0.1, map:texture});
+            material = new THREE.MeshPhongMaterial({color: "#ffffff", map:texture});
         }
 
         const mesh = new THREE.Mesh( geometry, material )

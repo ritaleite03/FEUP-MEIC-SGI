@@ -27,7 +27,7 @@ class MyTable extends THREE.Object3D {
         let texture = new THREE.TextureLoader().load('textures/wooden_top.jpg');
         texture.wrapS = THREE.MirroredRepeatWrapping;
         texture.wrapT = THREE.MirroredRepeatWrapping;
-        texture.repeat.set(xLenght, zLenght);
+
         const topMaterial = new THREE.MeshLambertMaterial({map: texture});
         const legsMaterial = new THREE.MeshPhongMaterial({color: "#ffffff", specular: "#ffffff", emissive: "#000000", shininess: 100});
 

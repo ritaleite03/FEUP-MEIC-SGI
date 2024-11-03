@@ -30,8 +30,8 @@ class MyCake extends THREE.Object3D {
         outsideCakeTexture.wrapS = THREE.MirroredRepeatWrapping;
         outsideCakeTexture.wrapT = THREE.MirroredRepeatWrapping;
         const insideCakeTexture = new THREE.TextureLoader().load('textures/inside_cake.jpg');
-        const outsideCakeMaterial = new THREE.MeshPhongMaterial({color: "#ffffff", emissive: "#000000", shininess: 0, map: outsideCakeTexture})
-        const insideCakeMaterial = new THREE.MeshPhongMaterial({color: "#ffffff", emissive: "#000000", shininess: 0, map: insideCakeTexture})
+        const outsideCakeMaterial = new THREE.MeshLambertMaterial({color: "#ffffff", map: outsideCakeTexture})
+        const insideCakeMaterial = new THREE.MeshLambertMaterial({color: "#ffffff", map: insideCakeTexture})
         
         let startAngle = 0; // Start cake angle
         let endAngle = angleLength + startAngle; //End cake angle
@@ -106,7 +106,7 @@ class MyCake extends THREE.Object3D {
         if(slice){
             let place = startAngle + angleLength/2;
             this.plate.position.x =  0.5 * Math.sin(place) * radius;
-            this.plate.position.z=  0.5 * Math.cos(place) * radius;
+            this.plate.position.z =  0.5 * Math.cos(place) * radius;
         }
 
         this.add(this.plate);

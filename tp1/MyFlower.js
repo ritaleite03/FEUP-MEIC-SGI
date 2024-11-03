@@ -36,9 +36,9 @@ class MyFlower extends THREE.Object3D {
         const texturePetal = new THREE.TextureLoader().load('textures/petal.jpg');    
 
         // materials
-        const materialStem = new THREE.MeshPhongMaterial( { color: "#ffffff", specular: "#000000", emissive: "#000000", shininess: 0, map: textureStem } );
+        const materialStem = new THREE.MeshLambertMaterial( { color: "#ffffff", map: textureStem } );
         const materialcenter = new THREE.MeshPhongMaterial( { color: "#a4a832" } );
-        const materialPetal = new THREE.MeshPhongMaterial( { color: "#ffffff", specular: "#000000", emissive: "#000000", shininess: 0, map: texturePetal } );
+        const materialPetal = new THREE.MeshLambertMaterial( { color: "#ffffff", map: texturePetal } );
 
         // definition of the stem's curve
         const curve = new THREE.CatmullRomCurve3([

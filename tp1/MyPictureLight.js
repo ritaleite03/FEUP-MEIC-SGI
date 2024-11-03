@@ -39,13 +39,27 @@ class MyPictureLight extends THREE.Object3D {
             new THREE.Vector3(0, 0, dist)
         ]
 
+        // Support rod
         const curve = new THREE.CubicBezierCurve3(points[0], points[1], points[2], points[3]);
         const tubeGeometry = new THREE.TubeGeometry(curve, 20, 0.01, 10, false);
         const tubeMesh = new THREE.Mesh(tubeGeometry, material);
         tubeMesh.position.set(0, 0, size * 0.5)
         this.add(tubeMesh);
 
-        const spotLight = new THREE.SpotLight( "#fefe7c", 3, 6, Math.PI/3, 0.5);
+        // Wall bracket
+        const bracket = new THREE.BoxGeometry(length * 0.3, size, size*0.5);
+        const bracketMesh = new THREE.Mesh( bracket, material)
+        bracketMesh.position.z = size * 0.25;
+        this.add(bracketMesh);
+
+        // Light holder
+        const bar = new THREE.BoxGeometry(length, size, size)
+        const barMesh = new THREE.Mesh( bar, material )
+        barMesh.position.z = dist + size * 0.75;
+        this.add(barMesh);
+
+        // Left spot light
+        const spotLight = new THREE.SpotLight( "#fff1cc", 3, 6, Math.PI/3, 0.5);
         spotLight.shadow.mapSize.width = 1024;
         spotLight.shadow.mapSize.height = 1024;        
         spotLight.shadow.camera.near = 0.2;
@@ -66,7 +80,8 @@ class MyPictureLight extends THREE.Object3D {
 
         this.spotLightHelper = new THREE.SpotLightHelper( spotLight );
 
-        const spotLight2 = new THREE.SpotLight( "#fefe7c", 3, 6, Math.PI/3, 0.5);
+        // Right spot light
+        const spotLight2 = new THREE.SpotLight( "#fff1cc", 3, 6, Math.PI/3, 0.5);
         spotLight2.shadow.mapSize.width = 1024;
         spotLight2.shadow.mapSize.height = 1024;        
         spotLight2.shadow.camera.near = 0.2;
@@ -86,16 +101,6 @@ class MyPictureLight extends THREE.Object3D {
         spotLight2.target = targetSpotLight2;
 
         this.spotLightHelper2 = new THREE.SpotLightHelper( spotLight2 );
-
-        const suport = new THREE.BoxGeometry(length * 0.3, size, size*0.5);
-        const suportMesh = new THREE.Mesh( suport, material)
-        suportMesh.position.z = size * 0.25;
-        this.add(suportMesh);
-
-        const bar = new THREE.BoxGeometry(length, size, size)
-        const barMesh = new THREE.Mesh( bar, material )
-        barMesh.position.z = dist + size * 0.75;
-        this.add(barMesh);
 
         this.spotLightHelper.update()
         this.spotLightHelper2.update()

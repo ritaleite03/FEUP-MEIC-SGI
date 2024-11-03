@@ -13,15 +13,19 @@ class MyPlate extends THREE.Object3D {
         this.app = app
         this.type = 'Group';
 
-        const material = new THREE.MeshPhongMaterial({ color: "#ffffff", specular: "#000000", emissive: "#000000", shininess: 90})
+        const material = new THREE.MeshPhongMaterial({ color: "#ffffff", specular: "#aaaaaa", emissive: "#000000", shininess: 90})
         
         if(slice){
-            const top = new THREE.CylinderGeometry(radius * 0.8 , radius * 0.6, 0.03, 36);
-            const topMesh = new THREE.Mesh(top, material);
-            topMesh.position.y =  - 0.015;
-            this.add( topMesh );
+            // Simple plate
+            const plate = new THREE.CylinderGeometry(radius * 0.8 , radius * 0.6, 0.03, 36);
+            const plateMesh = new THREE.Mesh(plate, material);
+            plateMesh.castShadow = true;
+            plateMesh.receiveShadow = true;
+            plateMesh.position.y =  - 0.015;
+            this.add( plateMesh );
         }
         else {
+            // Cake stand
             const top = new THREE.CylinderGeometry(radius * 1.1 , radius * 1.1, 0.01, 36);
             const topMesh = new THREE.Mesh(top, material);
             topMesh.castShadow = true;

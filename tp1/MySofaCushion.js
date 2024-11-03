@@ -4,15 +4,15 @@ import { MyApp } from './MyApp.js';
 /**
  * This class contains the representation of a newspaper
  */
-class MySofaPillow extends THREE.Object3D {
+class MySofaCushion extends THREE.Object3D {
 
     /**
      * 
      * @param {MyApp} app the application object
-     * @param {number} width pillow width
-     * @param {number} length pillow length
-     * @param {number} height pillow height
-     * @param {texture} texture pillow texture
+     * @param {number} width cushion width
+     * @param {number} length cushion length
+     * @param {number} height cushion height
+     * @param {texture} texture cushion texture
      */
     constructor(app, width, length, height, texture) {
         super();
@@ -20,7 +20,9 @@ class MySofaPillow extends THREE.Object3D {
 
         // variables
         const orderU = 3;
-        const orderV = 3;
+        const orderV = 3; 
+        const orderU2= 1;
+        const orderV2 = 3;
         this.samplesU = 8;
         this.samplesV = 8;
 
@@ -37,8 +39,10 @@ class MySofaPillow extends THREE.Object3D {
 
         const material = new THREE.MeshStandardMaterial( {map: this.texture, color: "#ffffff", side: THREE.DoubleSide } );
 
-        const arc = height * 0.4; 
+        const arc = height * 0.4;
 
+
+        // Cushion top surface
         const controlPointsTop = [
             [
                 [ 0, 0, 0, 1 ],
@@ -66,12 +70,14 @@ class MySofaPillow extends THREE.Object3D {
             ],
         ]
 
-        const topSofa = app.builder.build( controlPointsTop, orderU, orderV, this.samplesU, this.samplesV, material ) 
-        let topSofaMesh = new THREE.Mesh( topSofa, material );
-        topSofaMesh.castShadow = true;
-        topSofaMesh.receiveShadow = true;
-        this.add( topSofaMesh )
+        const topSurf = app.builder.build( controlPointsTop, orderU, orderV, this.samplesU, this.samplesV, material ) 
+        let topSurfMesh = new THREE.Mesh( topSurf, material );
+        topSurfMesh.castShadow = true;
+        topSurfMesh.receiveShadow = true;
+        this.add( topSurfMesh )
 
+
+        //Cushion botton surface
         const controlPointsBotton = [
             [
                 [ 0, height, 0, 1 ],
@@ -106,9 +112,7 @@ class MySofaPillow extends THREE.Object3D {
         this.add( bottonMesh )
 
 
-        const orderU2= 1;
-        const orderV2 = 3;
-
+        // Cushion front surface
         const controlPointsFront = [
             [
                 [ 0, 0, width, 1 ],
@@ -124,12 +128,15 @@ class MySofaPillow extends THREE.Object3D {
             ]
         ]
 
+
         const front = app.builder.build( controlPointsFront, orderU2, orderV2, this.samplesU, this.samplesV, material ) 
         let frontMesh = new THREE.Mesh( front, material );
         frontMesh.castShadow = true;
         frontMesh.receiveShadow = true;
         this.add( frontMesh )
 
+
+        // Cushion back surface
         const controlPointsBack = [
             [
                 [ 0, 0, 0, 1 ],
@@ -151,6 +158,8 @@ class MySofaPillow extends THREE.Object3D {
         backMesh.receiveShadow = true;
         this.add( backMesh )
 
+
+        // Cushion left surface
         const controlPointsLeft = [
             [
                 [ 0, 0, 0, 1 ],
@@ -172,6 +181,8 @@ class MySofaPillow extends THREE.Object3D {
         leftMesh.receiveShadow = true;
         this.add( leftMesh )
 
+
+        // Cushion right surface
         const controlPointsRight = [
             [
                 [ length, 0, 0, 1 ],
@@ -197,6 +208,6 @@ class MySofaPillow extends THREE.Object3D {
     }
 }
 
-MySofaPillow.prototype.isGroup = true;
+MySofaCushion.prototype.isGroup = true;
 
-export { MySofaPillow };
+export { MySofaCushion };

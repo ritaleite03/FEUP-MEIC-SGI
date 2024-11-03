@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { MyApp } from './MyApp.js';
-import { MySofaPillow } from './MySofaPillow.js';
+import { MySofaCushion } from './MySofaCushion.js';
 
 /**
  * This class contains the representation of a newspaper
@@ -24,15 +24,15 @@ class MySofa extends THREE.Object3D {
         
         this.texture.wrapS = THREE.MirroredRepeatWrapping;
         this.texture.wrapT = THREE.MirroredRepeatWrapping;
+        const material = new THREE.MeshLambertMaterial({ color: "#ffffff", map: this.texture });
 
-
-        const material = new THREE.MeshStandardMaterial({ color: "#ffffff", map: this.texture });
-        const shape = new THREE.Shape();
-        shape.moveTo(0, 0);
-        shape.lineTo( 0, height );
-        shape.lineTo( length, height);
-        shape.lineTo( length, 0 );
-        shape.lineTo( 0, 0 );
+        // Base shape
+        const baseShape = new THREE.Shape();
+        baseShape.moveTo(0, 0);
+        baseShape.lineTo( 0, height );
+        baseShape.lineTo( length, height);
+        baseShape.lineTo( length, 0 );
+        baseShape.lineTo( 0, 0 );
 
         const extrudeSettings = {
             steps: 10,
@@ -43,19 +43,20 @@ class MySofa extends THREE.Object3D {
             bevelSegments: 1,
         };
 
-        const geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
-        const sofaBotton = new THREE.Mesh(geometry, material);
-        sofaBotton.position.x= 0.1;
-        sofaBotton.castShadow = true;
-        sofaBotton.receiveShadow = true;
-        this.add(sofaBotton);
+        const geometry = new THREE.ExtrudeGeometry(baseShape, extrudeSettings);
+        const sofaBase = new THREE.Mesh(geometry, material);
+        sofaBase.position.x= 0.1;
+        sofaBase.castShadow = true;
+        sofaBase.receiveShadow = true;
+        this.add(sofaBase);
 
-        const shape2 = new THREE.Shape();
-        shape2.moveTo(0, 0);
-        shape2.lineTo( 0, width );
-        shape2.lineTo( height * 0.6, width);
-        shape2.lineTo( height * 0.6, 0 );
-        shape2.lineTo( 0, 0 );
+        // Sides shape
+        const sideShape = new THREE.Shape();
+        sideShape.moveTo(0, 0);
+        sideShape.lineTo( 0, width );
+        sideShape.lineTo( height * 0.6, width);
+        sideShape.lineTo( height * 0.6, 0 );
+        sideShape.lineTo( 0, 0 );
 
         const extrudeSettings2 = {
             steps: 10,
@@ -66,26 +67,29 @@ class MySofa extends THREE.Object3D {
             bevelSegments: 1,
         };
 
-        const geometry2 = new THREE.ExtrudeGeometry(shape2, extrudeSettings2);
+        const geometry2 = new THREE.ExtrudeGeometry(sideShape, extrudeSettings2);
         
+        // Left side
         const sofaLeft = new THREE.Mesh(geometry2, material);
         sofaLeft.position.set(- height * 0.6 - 0.1, 0, -height * 0.6);
         sofaLeft.castShadow = true;
         sofaLeft.receiveShadow = true;
         this.add(sofaLeft);
 
+        // Right side
         const sofaRight = new THREE.Mesh(geometry2, material);
         sofaRight.position.set(length + 0.3, 0, -height * 0.6);
         sofaRight.castShadow = true;
         sofaRight.receiveShadow = true;
         this.add(sofaRight);
 
-        const shape3 = new THREE.Shape();
-        shape3.moveTo(0, 0);
-        shape3.lineTo( 0, width + height);
-        shape3.lineTo( length, width + height);
-        shape3.lineTo( length, 0 );
-        shape3.lineTo( 0, 0 );
+        // Back shape
+        const backShape = new THREE.Shape();
+        backShape.moveTo(0, 0);
+        backShape.lineTo( 0, width + height);
+        backShape.lineTo( length, width + height);
+        backShape.lineTo( length, 0 );
+        backShape.lineTo( 0, 0 );
 
         const extrudeSettings3 = {
             steps: 10,
@@ -96,45 +100,55 @@ class MySofa extends THREE.Object3D {
             bevelSegments: 1,
         };
 
-        const geometry3 = new THREE.ExtrudeGeometry(shape3, extrudeSettings3);
+        const geometry3 = new THREE.ExtrudeGeometry(backShape, extrudeSettings3);
         
+        // Sofa back
         const sofaBack = new THREE.Mesh(geometry3, material);
         sofaBack.position.set(0.1, 0, -height * 0.6);
         sofaBack.castShadow = true;
         sofaBack.receiveShadow = true;
         this.add(sofaBack);
 
-        const pillowTop = new MySofaPillow(app, width, length, height, texture);
-        pillowTop.position.set(0.1, height + 0.1, 0.2);
-        this.add(pillowTop)
+        // Seat Cushions
+        const seatCushions = new MySofaCushion(app, width, length, height, texture);
+        seatCushions.position.set(0.1, height + 0.1, 0.2);
+        this.add(seatCushions);
 
-        const pillow = new MySofaPillow(app, width,  length - 0.2, height * 0.8, texture);
-        pillow.rotateX(-Math.PI/2);
-        pillow.rotateZ(Math.PI);
-        pillow.position.set(length, 2 * height + 0.1, 0.1);
-        this.add(pillow)
+        // Back Cushions
+        const backCushions = new MySofaCushion(app, width,  length - 0.2, height * 0.8, texture);
+        backCushions.rotateX(-Math.PI/2);
+        backCushions.rotateZ(Math.PI);
+        backCushions.position.set(length, 2 * height + 0.1, 0.1);
+        this.add(backCushions);
 
-        const material2 = new THREE.MeshStandardMaterial({ color: "#000000"});
 
+
+        const material2 = new THREE.MeshLambertMaterial({ color: "#000000"});
+
+        // Block Legs
         const down = - height* 0.1 - 0.1; 
         const desl = height * 0.3;
-        const suport = new THREE.BoxGeometry(height * 0.6, height * 0.2, height * 0.6);
-        const suportBL = new THREE.Mesh(suport, material2);
+        const leg = new THREE.BoxGeometry(height * 0.6, height * 0.2, height * 0.6);
+        
+        // Left back leg
+        const legBL = new THREE.Mesh(leg, material2);
+        legBL.position.set(-desl - 0.1, down, -desl);
+        this.add(legBL)
 
-        suportBL.position.set(-desl - 0.1, down, -desl);
-        this.add(suportBL)
+        // Right back leg
+        const legBR = new THREE.Mesh(leg, material2);
+        legBR.position.set(length + 0.3 + desl, down, -desl);
+        this.add(legBR)
 
-        const suportBR = new THREE.Mesh(suport, material2);
-        suportBR.position.set(length + 0.3 + desl, down, -desl);
-        this.add(suportBR)
+        // Left front leg
+        const legFL = new THREE.Mesh(leg, material2);
+        legFL.position.set(-desl - 0.1, down, width - desl);
+        this.add(legFL)
 
-        const suportFL = new THREE.Mesh(suport, material2);
-        suportFL.position.set(-desl - 0.1, down, width - desl);
-        this.add(suportFL)
-
-        const suportFR = new THREE.Mesh(suport, material2);
-        suportFR.position.set(length + 0.3 + desl, down, width -desl);
-        this.add(suportFR)
+        // Right front leg
+        const legFR = new THREE.Mesh(leg, material2);
+        legFR.position.set(length + 0.3 + desl, down, width -desl);
+        this.add(legFR)
 
         this.position.y = height* 0.1 + 0.1;
         this.position.x = - length * 0.5 - 0.1;

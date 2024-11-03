@@ -6,9 +6,9 @@ class MyCurtain extends THREE.Object3D {
     /**
      * 
      * @param {MyApp} app the application object
-     * @param {number} widthRoom 
-     * @param {number} lenghtRoom 
-     * @param {number} height 
+     * @param {number} widthRoom room width
+     * @param {number} lenghtRoom room lenght
+     * @param {number} height curtain height
      */ 
     constructor(app, widthRoom, lenghtRoom, height) {
         super()

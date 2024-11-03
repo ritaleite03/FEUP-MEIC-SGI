@@ -23,7 +23,7 @@ class MyWalls extends THREE.Object3D {
         let woodenTexture = new THREE.TextureLoader().load('textures/wooden_top.jpg');
         woodenTexture.wrapS = THREE.MirroredRepeatWrapping;
         woodenTexture.wrapT = THREE.MirroredRepeatWrapping;
-        const woodenMaterial = new THREE.MeshPhongMaterial({color: "#ffffff", specular: "#000000", emissive: "#000000", shininess: 0, map: woodenTexture})
+        const woodenMaterial = new THREE.MeshLambertMaterial({color: "#ffffff", map: woodenTexture})
                 
         // Right wall
 
@@ -38,12 +38,6 @@ class MyWalls extends THREE.Object3D {
         const wallRightC = new MyWall( app, widthRoom * 0.3, lengthRoom, height * 0.8, widthWall );
         wallRightC.position.z = widthRoom * 0.7 * 0.5;
         this.add( wallRightC );
-
-        //Door
-        //this.door = new MyDoor(app, widthRoom * 0.2, height * 0.8, widthWall, woodenTexture);
-        //this.door.position.z = widthRoom * 0.2 * 0.5;
-        //this.door.position.x =  lengthRoom * 0.5 +  widthWall * 0.5;
-        //this.add(this.door)
 
         // Back wall
 
