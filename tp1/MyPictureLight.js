@@ -17,13 +17,13 @@ class MyPictureLight extends THREE.Object3D {
         this.app = app
         this.type = "Group";
 
-        const dist = height * 0.20;
-        const length = width * 0.60;
+        const dist = height * 0.20; // wall distance
+        const length = width * 0.60; // Light holder lenght
         const size = 0.05;
 
         const texture = new THREE.TextureLoader().load('textures/gold-texture.jpg');
 
-        const material = new THREE.MeshPhysicalMaterial({color: "#ffffff", metalness: 0.6,  roughness: 0.1,  map:texture})
+        const material = new THREE.MeshStandardMaterial({color: "#ffffff", metalness: 0.6,  roughness: 0.1,  map:texture})
 
         const quarter = 4 / 3 * (Math.sqrt(2) - 1);
 
@@ -58,9 +58,7 @@ class MyPictureLight extends THREE.Object3D {
         this.add(barMesh);
 
         // Left spot light
-        const spotLight = new THREE.SpotLight( "#fff1cc", 3, 6, Math.PI/3, 0.5);
-        spotLight.shadow.mapSize.width = 1024;
-        spotLight.shadow.mapSize.height = 1024;        
+        const spotLight = new THREE.SpotLight( "#fff1cc", 3, 6, Math.PI/3, 0.5);      
         spotLight.shadow.camera.near = 0.2;
         spotLight.shadow.camera.far = 6;
         spotLight.shadow.camera.fov = 60;
@@ -80,9 +78,7 @@ class MyPictureLight extends THREE.Object3D {
         this.spotLightHelper = new THREE.SpotLightHelper( spotLight );
 
         // Right spot light
-        const spotLight2 = new THREE.SpotLight( "#fff1cc", 3, 6, Math.PI/3, 0.5);
-        spotLight2.shadow.mapSize.width = 1024;
-        spotLight2.shadow.mapSize.height = 1024;        
+        const spotLight2 = new THREE.SpotLight( "#fff1cc", 3, 6, Math.PI/3, 0.5);      
         spotLight2.shadow.camera.near = 0.2;
         spotLight2.shadow.camera.far = 6;
         spotLight2.shadow.camera.fov = 60;

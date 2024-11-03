@@ -17,6 +17,7 @@ class MySofaCushion extends THREE.Object3D {
     constructor(app, width, length, height, texture) {
         super();
         this.type = 'Group';
+        this.app = app;
 
         // variables
         const orderU = 3;
@@ -37,13 +38,15 @@ class MySofaCushion extends THREE.Object3D {
         let planeTextureRepeatV = planeTextureRepeatU * planeUVRate * planeTextureUVRate;
         this.texture.repeat.set( planeTextureRepeatU, planeTextureRepeatV );
 
-        const material = new THREE.MeshStandardMaterial( {map: this.texture, color: "#ffffff", side: THREE.DoubleSide } );
+        const material = new THREE.MeshLambertMaterial( {map: this.texture, color: "#ffffff"} );
+        const materialBack = new THREE.MeshLambertMaterial( {map: this.texture, color: "#ffffff", side: THREE.BackSide } );
+        
 
         const arc = height * 0.4;
 
 
-        // Cushion top surface
-        const controlPointsTop = [
+        // Cushion bottom surface
+        const controlPointsBottom = [
             [
                 [ 0, 0, 0, 1 ],
                 [ length * 0.2, 0, -arc, 1 ],
@@ -70,15 +73,14 @@ class MySofaCushion extends THREE.Object3D {
             ],
         ]
 
-        const topSurf = app.builder.build( controlPointsTop, orderU, orderV, this.samplesU, this.samplesV, material ) 
-        let topSurfMesh = new THREE.Mesh( topSurf, material );
-        topSurfMesh.castShadow = true;
-        topSurfMesh.receiveShadow = true;
-        this.add( topSurfMesh )
+        const bottom = app.builder.build( controlPointsBottom, orderU, orderV, this.samplesU, this.samplesV, material ) 
+        let bottomMesh = new THREE.Mesh( bottom, materialBack );
+        bottomMesh.castShadow = true;
+        bottomMesh.receiveShadow = true;
+        this.add( bottomMesh )
 
-
-        //Cushion botton surface
-        const controlPointsBotton = [
+        //Cushion top surface
+        const controlPointsTop = [
             [
                 [ 0, height, 0, 1 ],
                 [ length * 0.2, height, - arc, 1 ],
@@ -105,11 +107,12 @@ class MySofaCushion extends THREE.Object3D {
             ],
         ]
 
-        const botton = app.builder.build( controlPointsBotton, orderU, orderV, this.samplesU, this.samplesV, material ) 
-        let bottonMesh = new THREE.Mesh( botton, material );
-        bottonMesh.castShadow = true;
-        bottonMesh.receiveShadow = true;
-        this.add( bottonMesh )
+        const topSurf = app.builder.build( controlPointsTop, orderU, orderV, this.samplesU, this.samplesV, material ) 
+        let topSurfMesh = new THREE.Mesh( topSurf, material );
+        topSurfMesh.castShadow = true;
+        topSurfMesh.receiveShadow = true;
+        this.add( topSurfMesh )
+
 
 
         // Cushion front surface
@@ -130,7 +133,7 @@ class MySofaCushion extends THREE.Object3D {
 
 
         const front = app.builder.build( controlPointsFront, orderU2, orderV2, this.samplesU, this.samplesV, material ) 
-        let frontMesh = new THREE.Mesh( front, material );
+        let frontMesh = new THREE.Mesh( front, materialBack );
         frontMesh.castShadow = true;
         frontMesh.receiveShadow = true;
         this.add( frontMesh )
@@ -176,7 +179,7 @@ class MySofaCushion extends THREE.Object3D {
         ]
 
         const left = app.builder.build( controlPointsLeft, orderU2, orderV2, this.samplesU, this.samplesV, material ) 
-        let leftMesh = new THREE.Mesh( left, material );
+        let leftMesh = new THREE.Mesh( left, materialBack );
         leftMesh.castShadow = true;
         leftMesh.receiveShadow = true;
         this.add( leftMesh )

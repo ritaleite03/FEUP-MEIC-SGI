@@ -6,9 +6,8 @@ class MyPanorama extends THREE.Object3D {
     * @param {MyApp} app the application object
     * @param {number} lengthRoom room length
     * @param {number} widthRoom  room width
-    * @param {texture} picture picture texture
     */ 
-    constructor(app, lengthRoom, widthRoom, picture = null) {
+    constructor(app, lengthRoom, widthRoom) {
         super()
         this.app = app
         

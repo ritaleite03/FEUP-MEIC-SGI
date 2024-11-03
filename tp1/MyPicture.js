@@ -39,10 +39,10 @@ class MyPicture extends THREE.Object3D {
         const photoMesh = new THREE.Mesh(photo, pictureM);
         photoMesh.castShadow = true;
         photoMesh.receiveShadow = true;
-        photoMesh.position.z= 0.01;
+        photoMesh.position.z = frameDepth/2;
         group.add(photoMesh);
 
-        const material = new THREE.MeshPhongMaterial( { color: "#7c3a00"  } );
+        const material = new THREE.MeshBasicMaterial( { color: "#7c3a00" } );
 
         const backStruc = new THREE.PlaneGeometry(fullWidth, fullHeight);
         const backMesh = new THREE.Mesh(backStruc, material);

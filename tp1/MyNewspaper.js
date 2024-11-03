@@ -17,6 +17,7 @@ class MyNewspaper extends THREE.Object3D {
      */
     constructor(app, arcPages, numberPages, width, length, height) {
         super();
+        this.app = app;
         this.type = 'Group';
 
         // variables

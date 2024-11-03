@@ -41,9 +41,7 @@ class MyContents  {
         this.picture2 = loader.load('textures/202108699.jpg');
         this.sofaTexture = loader.load('textures/gray-sofa.jpg');
         this.carpetPattern = loader.load('textures/carpet-hexagonal.jpg');
-        //this.carpetReleve = loader.load('textures/gray-carpet.jpg');
         this.carpetPattern2 = loader.load('textures/carpet.jpg');
-        this.test = loader.load('textures/dark_wood.jpg')
         
         // material
         this.diffusePlaneColor = "#f0e6cc"
@@ -341,7 +339,7 @@ class MyContents  {
 
         // focus interior
         const focusInterior = new THREE.CylinderGeometry(radiusfocusExterior / 2, radiusfocusExterior / 2, heightfocusInterior)
-        const focusInteriorMaterial = new THREE.MeshPhongMaterial( {color: "#e3dd78", transparent: true, opacity: 0.6} )
+        const focusInteriorMaterial = new THREE.MeshPhongMaterial( {color: "#e3dd78", transparent: true, opacity: 0.6,  emissive: "#ffffff"} )
         const focusInteriorMesh = new THREE.Mesh(focusInterior, focusInteriorMaterial)
         focusInteriorMesh.position.set( this.xCeilling[number] + this.offsetX, this.heightWall - heightfocusExterior - heightfocusInterior / 2, 0 );
         this.app.scene.add(focusInteriorMesh)
@@ -460,28 +458,6 @@ class MyContents  {
         this.app.scene.add( lineObj );
 
     }
-
-    /**
-     * this method is called from init and loads the textures used
-    */
-    //loadTextures(){
-    //    const loader = new THREE.TextureLoader();
-    //    loader.load('textures/202105309.jpg', (loadedTexture) => {
-    //        this.picture1 = loadedTexture;
-    //    });
-    //    loader.load('textures/202108699.jpg', (loadedTexture) => {
-    //        this.picture2 = loadedTexture;
-    //    });
-    //    loader.load('textures/gray-sofa4.jpg', (loadedTexture) => {
-    //        this.sofaTexture = loadedTexture;
-    //    });
-    //    loader.load('textures/carpet-hexagonal.jpg', (loadedTexture) => {
-    //        this.carpetPattern = loadedTexture;
-    //    });
-    //    loader.load('textures/gray-carpet.jpg', (loadedTexture) => {
-    //        this.carpetReleve = loadedTexture;
-    //    });
-    //}
 
     /**
      * updates the contents

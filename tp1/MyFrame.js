@@ -8,7 +8,6 @@ class MyFrame extends THREE.Object3D {
 
     /**
      * 
-     * @param {MyApp} app the application object
      * @param {number} width Frame width
      * @param {number} insideLength  Painting inside length
      * @param {number} outsideLength Painting outside length

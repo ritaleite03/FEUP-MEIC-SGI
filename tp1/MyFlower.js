@@ -61,6 +61,7 @@ class MyFlower extends THREE.Object3D {
         const meshCenter = new THREE.Mesh( center, materialcenter );
         meshCenter.castShadow = true;
         meshCenter.receiveShadow = true;
+        meshCenter.scale.y = 0.5; 
         meshCenter.position.set( xCenter, yCenter, zCenter );
         this.add( meshCenter );
 

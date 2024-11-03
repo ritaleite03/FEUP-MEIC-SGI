@@ -12,9 +12,8 @@ class MyPillow extends THREE.Object3D {
      * @param {number} width cushion width
      * @param {number} length cushion length
      * @param {number} height cushion height
-     * @param {texture} texture cushion texture
      */
-    constructor(app, width, length, height, texture = null) {
+    constructor(app, width, length, height) {
         super();
         this.type = 'Group';
 
@@ -35,7 +34,7 @@ class MyPillow extends THREE.Object3D {
         let planeTextureRepeatV = planeTextureRepeatU * planeUVRate * planeTextureUVRate;
         this.texture.repeat.set( planeTextureRepeatU, planeTextureRepeatV );
 
-        const material = new THREE.MeshStandardMaterial( {map: this.texture, color: "#ffffff",  } ); //side: THREE.DoubleSide 
+        const material = new THREE.MeshStandardMaterial( {map: this.texture, color: "#ffffff",  roughness: 0.8, metalness: 0.1} );
 
         const arc = height * 0.25;
 
