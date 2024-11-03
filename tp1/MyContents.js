@@ -35,7 +35,7 @@ class MyContents  {
         this.planeTexture = new THREE.TextureLoader().load('textures/wood_floor.jpg');
         this.planeTexture.wrapS = THREE.RepeatWrapping;
         this.planeTexture.wrapT = THREE.MirroredRepeatWrapping;
-        //this.loadTextures()
+
         const loader = new THREE.TextureLoader();
         this.picture1 = loader.load('textures/202105309.jpg');
         this.picture2 = loader.load('textures/202108699.jpg');

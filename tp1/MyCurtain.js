@@ -18,7 +18,7 @@ class MyCurtain extends THREE.Object3D {
         texture.wrapS = THREE.MirroredRepeatWrapping;
         texture.wrapT = THREE.MirroredRepeatWrapping;
         texture.repeat.set(2,1)
-        const material = new THREE.MeshPhongMaterial( {color: "#ffffff", map:texture} )
+        const material = new THREE.MeshLambertMaterial( {color: "#ffffff", map:texture} )
 
         const yt = height - 1;
         const zt = widthRoom / 2  - 1.5;
@@ -46,10 +46,10 @@ class MyCurtain extends THREE.Object3D {
         poleVMesh2.position.set( -lenghtRoom / 4, yt, widthRoom / 2 - lenghtPoleV / 2 )
         this.add( poleVMesh2 )
 
-        app.drawCurtains( yt, xr - 0, 0, zt )
-        app.drawCurtains( yt, xr - 2, 0, zt )
-        app.drawCurtains( yt, xl + 0, 0, zt )
-        app.drawCurtains( yt, xl + 2, 0, zt )
+        this.app.drawCurtains( yt, xr - 0, 0, zt )
+        this.app.drawCurtains( yt, xr - 2, 0, zt )
+        this.app.drawCurtains( yt, xl + 0, 0, zt )
+        this.app.drawCurtains( yt, xl + 2, 0, zt )
     }
 
 }
