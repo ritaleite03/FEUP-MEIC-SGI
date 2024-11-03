@@ -39,4 +39,4 @@
 ----
 ## Issues/Problems
 
-- (items describing unimplemented features, bugs, problems, etc.)
+- To represent a spiral spring we used a TubeGeometry, however this geometry does not allow us to create a "covered" tube. We tried adding two circles, one for each end, to serve as caps, but since the ends have a specific inclination, we were unable to place these caps perfectly. Because of this, we chose to place the caps vertically anyway, knowing that it is visible that there is a space between the cap and the end of the tube.
