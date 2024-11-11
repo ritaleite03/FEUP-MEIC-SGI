@@ -159,72 +159,44 @@ class MyContents {
         if (parent['transforms'] !== undefined) {
 
             for(let index in parent['transforms']) {
+
+                console.log(name)
+
                 const transformation = parent['transforms'][index]
+                const x = transformation['amount']['x']
+                const y = transformation['amount']['y']
+                const z = transformation['amount']['z']
+
+                // check if they are defined
+                if (![x,y,z].every((value) => value !== undefined)) {
+                    console.error('Error in MyParser.parseNode : components are undefined');
+                    return
+                }
+                // check if they are of type number
+                if(![x,y,z].every(value => typeof value === 'number')) {
+                    console.error('Error in MyParser.parseNode : components are not numbers');
+                    return
+                }
 
                 if (transformation['type'] === 'translate') {
-                    const x = transformation['amount']['x']
-                    const y = transformation['amount']['y']
-                    const z = transformation['amount']['z']
-                    // check if they are defined
-                    if (![x,y,z].every((value) => value !== undefined)) {
-                        console.error('Error in MyParser.parseNode : components in translate are undefined');
-                        return
-                    }
-                    // check if they are of type number
-                    if(![x,y,z].every(value => typeof value === 'number')) {
-                        console.error('Error in MyParser.parseNode : components in translate are not numbers');
-                        return
-                    }
                     group.position.set(x,y,z)
                 }
 
-                if (transformation['type'] === 'rotate') {
-					const x = transformation['amount']['x']
-					const y = transformation['amount']['y']
-					const z = transformation['amount']['z']
-					// check if they are defined
-					if (![x,y,z].every((value) => value !== undefined)) {
-						console.error('Error in MyParser.parseNode : components in rotate are undefined');
-						return
-					}
-					// check if they are of type number
-					if(![x,y,z].every(value => typeof value === 'number')) {
-						console.error('Error in MyParser.parseNode : components in rotate are not numbers');
-						return
-					}
+                else if (transformation['type'] === 'rotate') {	
 					group.rotateX(x * Math.PI / 180)
                     group.rotateY(y * Math.PI / 180)
                     group.rotateZ(z * Math.PI / 180)
 				}
 
                 if (transformation['type'] === 'scale') {
-					const x = transformation['amount']['x']
-					const y = transformation['amount']['y']
-					const z = transformation['amount']['z']
-					// check if they are defined
-					if (![x,y,z].every((value) => value !== undefined)) {
-						console.error('Error in MyParser.parseNode : components in scale are undefined');
-						return
-					}
-					// check if they are of type number
-					if(![x,y,z].every(value => typeof value === 'number')) {
-						console.error('Error in MyParser.parseNode : components in scale are not numbers');
-						return
-					}
                     group.scale.set(x,y,z)
 				}
             }
         }
         if(parent['materialref'] !== undefined) {
             const material = this.parser.dataMaterials[parent['materialref']['materialId']]
-            console.log(material)
-            console.log(name)
-
             group.children.forEach((child) => {
-                console.log(child)
                 if (child.isMesh) {
-                    console.log(child)
-                    console.log(child.material)
                   child.material = material;
                 }
               });
