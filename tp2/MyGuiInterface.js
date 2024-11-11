@@ -29,6 +29,14 @@ class MyGuiInterface  {
      * Initialize the gui interface
      */
     init() {
+        const camerasNames = []
+        for(let key in this.app.cameras) {
+            camerasNames.push(key)
+        }
+
+        const cameraFolder = this.datgui.addFolder('Camera')
+        cameraFolder.add(this.app, 'activeCameraName', camerasNames).name("active camera");
+        cameraFolder.open()       
     }
 }
 
