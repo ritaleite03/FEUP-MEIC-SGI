@@ -1,261 +1,442 @@
 import * as THREE from 'three';
+import { MyNurbsBuilder } from '../MyNurbsBuilder.js';
 
 class MyParser {
 
 	/**
 	   constructs the object
 	*/
-	constructor(data) {
-		// check errors of syntax in blocks
-		if(!this.checkSyntaxBlocks(data['yasf'])) {
-			return
-		}
-		// define value of intial camera and root id
-		this.initC = data['yasf']['cameras']['initial']
-		this.rootO = data['yasf']['graph']['rootid']
-		// define other components
-		this.dataGlobals = []
-		this.dataFog = []
-		this.dataCameras = []
+	constructor(app, data) {
+		this.app = app
+		this.buider = new MyNurbsBuilder
+		this.defineGlobals(data.yasf.globals)
+		this.defineFog(data.yasf.fog)
+		this.defineCameras(data.yasf.cameras)
 		this.dataTextures = []
 		this.dataMaterials = []
-		for(let key in data['yasf']['fog']) this.getFog(key, data['yasf']['fog'][key])
-		for(let key in data['yasf']['cameras']) this.getCamera(key, data['yasf']['cameras'][key])
-		for(let key in data['yasf']['textures']) this.getTexture(key, data['yasf']['textures'][key])
-		for(let key in data['yasf']['materials']) this.getMaterial(key, data['yasf']['materials'][key])
+		for(let key in data.yasf.textures) this.getTexture(key, data.yasf.textures[key])
+		for(let key in data.yasf.materials) this.getMaterial(key, data.yasf.materials[key])
+		this.app.setActiveCamera(data.yasf.cameras.initial)
+		this.app.scene.add(this.parse(data.yasf.graph, data.yasf.graph.rootid, null))
 	}
 
-	checkSyntaxBlocks(data) {
-		// check if there are blocks missionf
-		if ([data['globals'], data['fog'], data['cameras'], data['textures'], data['materials'], data['grapf']].every((value) => value !== undefined)) {
-			console.error('Error in MyParser.checkSyntaxBlocks: missing block(s)')
-			return false
+	defineGlobals(data) {
+		if (!data.background || !data.ambient || Object.keys(data).length !== 2) {
+			console.error('Error in MyParser.defineGlobals: unexpected or missing definitions');
+			return;
+		}	
+		const background = [data.background.r, data.background.g, data.background.b];
+		const ambient = [data.ambient.r, data.ambient.g, data.ambient.b];
+		const all = [...background, ...ambient];
+		if (all.some(val => val === undefined || typeof val !== 'number')) {
+			console.error('Error in MyParser.defineGlobals: invalid or undefined values');
+			return;
+		}	
+		this.app.scene.background = new THREE.Color(...background);
+		this.app.scene.ambient = new THREE.Color(...ambient);
+	}
+	
+	defineFog(data) {
+		if (!data.color || !data.near || !data.far || Object.keys(data).length !== 3) {
+			console.error('Error in MyParser.defineFog: unexpected or missing definitions');
+			return
 		}
-		// check missing mandatory components in globals
-		if (!data['globals'].hasOwnProperty('background') || !data['globals'].hasOwnProperty('ambient')
-		) {
-			console.error('Error in MyParser.checkSyntaxBlocks: missing components in globals')
-			return false
+		const color = [data.color.r, data.color.g, data.color.b]
+		const near = data.near
+		const far = data.far
+		const all = [...color, near, far]
+		if (all.some(val => val === undefined || typeof val !== 'number')) {
+			console.error('Error in MyParser.defineFog: invalid or undefined values');
+			return
 		}
-		// check missing mandatory components in fog
-		if (!data['fog'].hasOwnProperty('color') || !data['fog'].hasOwnProperty('near') || !data['fog'].hasOwnProperty('far')) {
-			console.error('Error in MyParser.checkSyntaxBlocks: missing components in fog')
-			return false
-		}
-		// check missing mandatory components in cameras
-		if(!data['cameras'].hasOwnProperty('initial') || (Object.keys(data['cameras']).length < 2)) {
-			console.error('Error in MyParser.checkSyntaxBlocks: missing components in cameras')
-			return false
-		}
-		// check missing mandatory components in materials
-		if(Object.keys(data['materials']).length < 1) {
-			console.error('Error in MyParser.checkSyntaxBlocks: missing components in materials')
-			return false
-		}
-		// check missing mandatory components in materials
-		if(!data['graph'].hasOwnProperty('rootid')) {
-			console.error('Error in MyParser.checkSyntaxBlocks: missing components in graph')
-			return false
-		}
-		return true
+        this.app.scene.fog = new THREE.Fog( new THREE.Color(...color), near, far)
 	}
 
-	getGlobal(name, data) {
-		// variables
-		const r = data['r']
-		const g = data['g']
-		const b = data['b']
-		// check if they are defined
-		if(![r, g, b].every((value) => value !== undefined)) {
-			console.error('Error in MyParser.getGlobal : components in color are undefined');
+	defineCameras(data) {
+		let listCameras = []
+		if (!data.initial || Object.keys(data).length < 2) {
+			console.error('Error in MyParser.defineCameras: unexpected or missing definitions');
 			return
 		}
-		// check if they are of type number
-		if(![r, g, b].every(value => typeof value === 'number')) {
-			console.error('Error in MyParser.getGlobal : components in color are not numbers');
-			return
+		for(let key in data) {
+			if(key === 'initial') {
+				continue
+			}	
+			if(data[key].type === 'perspective') {
+				const position = [data[key].location.x, data[key].location.y, data[key].location.z]
+				const target = [data[key].target.x, data[key].target.y, data[key].target.z]
+				const angle = data[key].angle
+				const near = data[key].near
+				const far = data[key].far
+				const all = [...position, ...target, angle, near, far]
+				if (all.some(val => val === undefined || typeof val !== 'number')) {
+					console.error('Error in MyParser.defineCameras: invalid or undefined values');
+					return
+				}
+				const objectCamera = new THREE.PerspectiveCamera(angle, window.innerWidth / window.innerHeight, near, far)
+				objectCamera.position.set(...position)
+				objectCamera.lookAt(...target)
+				listCameras[key] = objectCamera
+				continue
+			}
+			if(data[key].type === 'orthogonal') {
+				const position = [data[key].location.x, data[key].location.y, data[key].location.z]
+				const target = [data[key].target.x, data[key].target.y, data[key].target.z]
+				const near = data[key].near
+				const far =  data[key].far
+				const left = data[key].left
+				const right = data[key].right
+				const bottom = data[key].bottom
+				const top = data[key].top
+				const all = [...position, ...target, near, far, left, right, bottom, top]
+				if (all.some(val => val === undefined || typeof val !== 'number')) {
+					console.error('Error in MyParser.defineCameras: invalid or undefined values');
+					return
+				}
+				const objectCamera = new THREE.OrthographicCamera(left, right, top, bottom, near, far)
+				objectCamera.position.set(...position)
+				objectCamera.lookAt(...target)
+				listCameras[key] = objectCamera
+				continue
+			}
+			else {
+				console.error('Error in MyParser.defineCameras : type not known');
+				return
+			}
 		}
-		// add component
-		this.dataGlobals[name] = new THREE.Color().setRGB( r, g, b );
-	}
+		this.app.cameras = listCameras
 
-	getFog(name, data) {
-		// color component
-		if(name === 'color') {
-			// variables
-			const r = data['r']
-			const g = data['g']
-			const b = data['b']
-			// check if they are defined
-			if(![r, g, b].every((value) => value !== undefined)) {
-				console.error('Error in MyParser.getFog :  components in color are undefined');
-				return
-			}
-			// check if they are of type number
-			if(![r, g, b].every(value => typeof value === 'number')) {
-				console.error('Error in MyParser.getFog : components in color are not numbers');
-				return
-			}
-			// add component
-			this.dataFog[name] = new THREE.Color().setRGB( r, g, b );
-			return
-		}
-		// near or far components
-		// check if they are of type number
-		if(typeof data !== 'number') {
-			console.error('Error in MyParser.getFog : near or far are not numbers');
-			return
-		}
-		// add component
-		this.dataFog[name] = data
-	}
-
-	getCamera(name, data) {
-		if(name === 'initial') return
-		// varibles
-		let object = null
-		// create camera according with its type
-		if(data['type'] === 'perspective') {
-			// variables
-			const angle = data['angle']
-			const near = data['near']
-			const far = data['far']
-			// check if they are defined
-			if(![angle, near, far].every((value) => value !== undefined)) {
-				console.error('Error in MyParser.getCamera : components in perspective are undefined');
-				return
-			}
-			// check if they are of type number
-			if(![angle, near, far].every(value => typeof value === 'number')) {
-				console.error('Error in MyParser.getCamera : components in perspective are not numbers');
-				return
-			}
-			// create camera object
-			object = new THREE.PerspectiveCamera(angle, window.innerWidth / window.innerHeight, near, far)
-		}
-		else if(data['type'] === 'orthogonal') {
-			// varibles
-			const near = data['near']
-			const far =  data['far']
-			const left = data['left']
-			const right = data['right']
-			const bottom = data['bottom']
-			const top = data['top']
-			// check if they are defined
-			if(![near, far, left, right, bottom, top].every((value) => value !== undefined)) {
-				console.error('Error in MyParser.getCamera : components in orthogonal are undefined');
-				return
-			}
-			// check if they are of type number
-			if(![near, far, left, right, bottom, top].every(value => typeof value === 'number')) {
-				console.error('Error in MyParser.getCamera : components in orthogonal are not numbers');
-				return
-			}
-			// create camera object
-			object = new THREE.OrthographicCamera(left, right, top, bottom, near, far)
-		}
-		else {
-			console.error('Error in MyParser.getCamera : type not known');
-			return
-		}
-		// define position and target
-		if(data['location'] === undefined || data['target'] === undefined) {
-			console.error('Error in MyParser.getCamera : location or target are undefined');
-			return
-		}
-		// variables
-		const xL = data['location']['x']
-		const yL = data['location']['y']
-		const zL = data['location']['z']
-		const xT = data['target']['x']
-		const yT = data['target']['y']
-		const zT = data['target']['z']
-		// check if they are of type number
-		if(![xL,yL,zL,xT,yT,zT].every(value => typeof value === 'number')) {
-			console.error('Error in MyParser.getCamera : components in location or target are not numbers');
-			return
-		}
-		// check if they are defined
-		if(![xL,yL,zL,xT,yT,zT].every((value) => value !== undefined)) {
-			console.error('Error in MyParser.getCamera : components in location or target are undefined');
-			return
-		}
-		// add camera
-		object.position.set(xL,yL,zL)
-		object.lookAt(xT,yT,zT)
-		this.dataCameras[name] = object
 	}
 
 	getTexture(name, data) {
-		const loader = new THREE.TextureLoader()
-		// check if filepath is defined
-		if(data['filepath'] === undefined) {
+		if(!data.filepath) {
 			console.error('Error in MyParser.getTexture : component filepath is undefined');
 			return
 		}
-		// check if filepath is of type number
-		if(typeof data['filepath'] !==  'string') {
+		if(typeof data.filepath !==  'string') {
 			console.error('Error in MyParser.getTexture : component filepath is not string');
 			return
 		}
-		// add texture
-		this.dataTextures[name] = loader.load(data['filepath']);
+		const texture = new THREE.TextureLoader().load(data.filepath);
+		texture.wrapS = THREE.RepeatWrapping
+		texture.wrapT = THREE.RepeatWrapping
+		this.dataTextures[name] = texture
 	}
 
 	getMaterial(name, data) {
 		let attributes = {}
-		// check if there are mandotory attributes missing
-		if (![data['color'], data['specular'], data['shininess'], data['emissive'], data['transparent'], data['opacity']].every((value) => value !== undefined)) {
+		if (![data.color, data.specular, data.shininess, data.emissive, data.transparent, data.opacity].every((value) => value !== undefined)) {
 			console.error('Error in MyParser.getMaterial : missing attributes');
 			return
 		}
-		// color, specular and emissive attributes
-		const rC = data['color']['r']
-		const gC = data['color']['g']
-		const bC = data['color']['b']
-		const rS = data['specular']['r']
-		const gS = data['specular']['g']
-		const bS = data['specular']['b']
-		const rE = data['emissive']['r']
-		const gE = data['emissive']['g']
-		const bE = data['emissive']['b']
-		const shininess = data['shininess']
-		const opacity = data['opacity']
-		// check if they are defined
-		if (![rC,gC,bC,rS,gS,bS,rE,gE,bE,shininess,opacity].every((value) => value !== undefined)) {
-			console.error('Error in MyParser.getMaterial : components in color, specular, emissive, shininess or opacity are undefined');
+		const color = [data.color.r, data.color.g, data.color.b]
+		const specular = [data.specular.r, data.specular.g, data.specular.b]
+		const emissive = [data.emissive.r, data.emissive.g, data.emissive.b]
+		const shininess = data.shininess
+		const opacity = data.opacity
+		const all = [...color, ...specular, ...emissive, shininess, opacity]
+		if (all.some(val => val === undefined || typeof val !== 'number')) {
+			console.error('Error in MyParser.getMaterial: invalid or undefined values');
 			return
 		}
-		// check if they are of type number
-		if(![rC,gC,bC,rS,gS,bS,rE,gE,bE,shininess,opacity].every(value => typeof value === 'number')) {
-			console.error('Error in MyParser.getMaterial : components in color, specular, emissive, shininess or opacity are not numbers');
-			return
-		}
-		// add attributes
-		attributes['color'] = new THREE.Color().setRGB( rC, gC, bC )
-		attributes['specular'] = new THREE.Color().setRGB( rS, gS, bS )
-		attributes['emissive'] = new THREE.Color().setRGB( rE, gE, bE )
+		attributes['color'] = new THREE.Color(...color)
+		attributes['specular'] = new THREE.Color(...specular)
+		attributes['emissive'] = new THREE.Color(...emissive)
 		attributes['shininess'] = shininess
 		attributes['opacity'] = opacity
-		// other attributes
-		if (data['wireframe'] !== undefined) {
-			// check if wireframe is of type boolean
-			if(typeof data['wireframe'] !== 'boolean') {
-				console.error('Error in MyParser.getMaterial : component wireframe is not boolean');
+		if (data.wireframe) {
+			if(typeof data.wireframe !== 'boolean') {
+				console.error('Error in MyParser.getMaterial : invalid or undefined values');
 				return
 			}
-			attributes['wireframe'] = data['wireframe']
+			attributes['wireframe'] = data.wireframe
 		}
-		if(data['twosided'] !== undefined) {
-			// check if twosided is of type boolean
-			if(typeof data['twosided'] !== 'boolean') {
-				console.error('Error in MyParser.getMaterial : component twosided is not boolean');
+		if(data.twosided) {
+			if(typeof data.twosided !== 'boolean') {
+				console.error('Error in MyParser.getMaterial : invalid or undefined values');
 				return
 			}
 			attributes['side'] = THREE.DoubleSide
 		}
+		if(data.textureref) {
+			const texture = this.dataTextures[data.textureref]
+			if(data.texlength_s) texture.texlength_s = data.texlength_s
+			if(data.texlength_t) texture.texlength_s = data.texlength_t
+			attributes['map'] = texture
+		}
 		this.dataMaterials[name] = new THREE.MeshPhongMaterial(attributes)
 	}
+
+	parsePointlight(prim) {
+		if (![prim.color, prim.position].every((value) => value !== undefined)) {
+			console.error('Error in MyParser.parsePointlight : missing attributes');
+			return
+		}
+		const position = [prim.position.x, prim.position.y, prim.position.z]
+		const color = [prim.color.r, prim.color.g, prim.color.b]
+		const intensity = prim.intensity ? prim.intensity : 1
+		const distance = prim.distance ? prim.distance : 2000
+		const decay = prim.decay ? prim.decay : 2
+		const shadowfar = prim.shadowfar ? prim.shadowfar : 500
+		const shadowmapsize = prim.shadowmapsize ? prim.shadowmapsize : 512
+		const castshadow = prim.castshadow ? prim.castshadow : false
+		const all = [...position, ...color, intensity, distance, decay, shadowfar, shadowmapsize]
+		if (all.some(val => val === undefined || typeof val !== 'number')) {
+			console.error('Error in MyParser.parsePointlight: invalid or undefined values');
+			return
+		}
+		const pointlight = new THREE.PointLight(new THREE.Color(...color), intensity, distance, decay)
+		pointlight.position.set(...position)
+		pointlight.castShadow = castshadow
+		pointlight.shadowfar = shadowfar
+		pointlight.shadowmapsize = shadowmapsize
+		return pointlight
+	}
+
+	parseSpotlight(prim) {
+		if (![prim.color, prim.angle, prim.position, prim.target].every((value) => value !== undefined)) {
+			console.error('Error in MyParser.parseSpotlight : missing attributes');
+			return
+		}
+		const position = [prim.position.x, prim.position.y, prim.position.z]
+		const target = [prim.target.x, prim.target.y, prim.target.z]
+		const color = [prim.color.r, prim.color.g, prim.color.b]
+		const intensity = prim.intensity ? prim.intensity : 1
+		const distance = prim.distance ? prim.distance : 2000
+		const angle = prim.angle
+		const decay = prim.decay ? prim.decay : 2
+		const penumbra = prim.penumbra ? prim.penumbra : 1
+		const shadowfar = prim.shadowfar ? prim.shadowfar : 500
+		const shadowmapsize = prim.shadowmapsize ? prim.shadowmapsize : 512
+		const castshadow = prim.castshadow ? prim.castshadow : false
+		const all = [...position, ...target, ...color, intensity, distance, angle, decay, penumbra, shadowfar, shadowmapsize]
+		if (all.some(val => val === undefined || typeof val !== 'number')) {
+			console.error('Error in MyParser.parseSpotlight: invalid or undefined values');
+			return
+		}
+		const spotlight = new THREE.SpotLight(new THREE.Color(...color), intensity, distance, angle, penumbra, decay)
+		spotlight.position.set(...position)
+		spotlight.target.position.set(...target)
+		spotlight.castShadow = castshadow
+		spotlight.shadowfar = shadowfar
+		spotlight.shadowmapsize = shadowmapsize
+		return spotlight
+	}
+
+	parseDirectionalLight(prim) {
+		if (![prim.color, prim.position].every((value) => value !== undefined)) {
+			console.error('Error in MyParser.parseSpotlight : missing attributes');
+			return
+		}
+		const position = [prim.position.x, prim.position.y, prim.position.z]
+		const color = [prim.color.r, prim.color.g, prim.color.b]
+		const intensity = prim.intensity ? prim.intensity : 1
+		const shadowleft = prim.shadowleft ? prim.shadowleft : -5
+		const shadowright = prim.shadowright ? prim.shadowright : 5
+		const shadowbottom = prim.shadowbottom ? prim.shadowbottom : -5
+		const shadowtop = prim.shadowtop ? prim.shadowtop : 5
+		const shadowfar = prim.shadowfar ? prim.shadowfar : 500
+		const shadowmapsize = prim.shadowmapsize ? prim.shadowmapsize : 512
+		const castshadow = prim.castshadow ? prim.castshadow : false
+		const all = [...position, ...color, intensity, shadowleft, shadowright, shadowbottom, shadowtop, shadowfar, shadowmapsize]
+		if (all.some(val => val === undefined || typeof val !== 'number')) {
+			console.error('Error in MyParser.parseSpotlight: invalid or undefined values');
+			return
+		}
+		const directionallight = new THREE.DirectionalLight(new THREE.Color(...color), intensity)
+		directionallight.position.set(...position)
+		directionallight.castShadow = castshadow
+		directionallight.shadowleft = shadowleft
+		directionallight.shadowright = shadowright
+		directionallight.shadowtop = shadowtop
+		directionallight.shadowbottom = shadowbottom
+		directionallight.shadowfar = shadowfar
+		directionallight.shadowmapsize = shadowmapsize
+		return directionallight
+	}
+
+    parseRectangle(prim) {
+		if (![prim.xy1, prim.xy2].every((value) => value !== undefined)) {
+			console.error('Error in MyParser.parseRectangle : missing attributes');
+			return
+		}
+		const xy1X = prim.xy1.x
+		const xy1Y = prim.xy1.y
+		const xy2X = prim.xy2.x
+		const xy2Y = prim.xy2.y
+		const all = [xy1X, xy1Y, xy2X, xy2Y]
+		if (all.some(val => val === undefined || typeof val !== 'number')) {
+			console.error('Error in MyParser.parseRectangle: invalid or undefined values');
+			return
+		}
+		const width = Math.abs(xy2X) + Math.abs(xy1X);
+		const height = Math.abs(xy2Y) + Math.abs(xy1Y);
+		const parts_x = prim.parts_x ? prim.parts_x : 1
+		const parts_y = prim.parts_y ? prim.parts_y : 1
+		return new THREE.PlaneGeometry(width,height,parts_x,parts_y)
+	}
+
+	parseTriangle(prim) {
+		if (![prim.xyz1, prim.xyz2, prim.xyz3].every((value) => value !== undefined)) {
+			console.error('Error in MyParser.parseTriangle : missing attributes');
+			return
+		}
+		const position1 = [prim.xyz1.x, prim.xyz1.y, prim.xyz1.z]
+		const position2 = [prim.xyz2.x, prim.xyz2.y, prim.xyz2.z]
+		const position3 = [prim.xyz3.x, prim.xyz3.y, prim.xyz3.z]
+		const all = [...position1, ...position2, ...position3]
+		if (all.some(val => val === undefined || typeof val !== 'number')) {
+			console.error('Error in MyParser.parseTriangle: invalid or undefined values');
+			return
+		}
+		return new THREE.Triangle(new THREE.Vector3(...position1), new THREE.Triangle(...position2), new THREE.Triangle(...position3))
+	}
+
+	parseBox(prim) {
+		if (![prim.xyz1, prim.xyz2].every((value) => value !== undefined)) {
+			console.error('Error in MyParser.parseBox : missing attributes');
+			return
+		}
+		const xyz1X = prim.xyz1.x
+		const xyz1Y = prim.xyz1.y
+		const xyz1Z = prim.xyz1.z
+		const xyz2X = prim.xyz2.x
+		const xyz2Y = prim.xyz2.y
+		const xyz2Z = prim.xyz2.z
+		const all = [xyz1X, xyz1Y, xyz1Z, xyz2X, xyz2Y, xyz2Z]
+		if (all.some(val => val === undefined || typeof val !== 'number')) {
+			console.error('Error in MyParser.parseBox: invalid or undefined values');
+			return
+		}
+		const width = Math.abs(xyz2X - xyz1X);
+		const height = Math.abs(xyz2Y - xyz1Y);
+		const depth = Math.abs(xyz2Z - xyz1Z);
+		const parts_x = prim.parts_x ? prim.parts_x : 1
+		const parts_y = prim.parts_y ? prim.parts_y : 1
+		const parts_z = prim.parts_z ? prim.parts_z : 1
+		return new THREE.BoxGeometry(width, height, depth, parts_x, parts_y, parts_z)
+	}
+
+	parseCylinder(prim) {
+		if (![prim.base, prim.top, prim.height, prim.slices, prim.stacks].every((value) => value !== undefined)) {
+			console.error('Error in MyParser.parseCylinder : missing attributes');
+			return
+		}
+		const base = prim.base
+		const top = prim.top
+		const height = prim.top
+		const slices = prim.slices
+		const stacks = prim.stacks
+		const thetaStart = prim.thetaStart ? prim.thetaStart : 0
+		const thetaLength = prim.thetaLength ? prim.thetaLength : 2 * Math.PI
+		const all = [base, top, height, slices, stacks, thetaStart, thetaLength]
+		if (all.some(val => val === undefined || typeof val !== 'number')) {
+			console.error('Error in MyParser.parseCylinder: invalid or undefined values');
+			return
+		}
+		const capsclose = prim.capsclose ? prim.capsclose : false
+		return new THREE.CylinderGeometry(top, base, height, slices, stacks, capsclose, thetaStart, thetaLength)
+	}
+
+	parseSphere(prim) {
+		if (![prim.radius, prim.slices, prim.stacks].every((value) => value !== undefined)) {
+			console.error('Error in MyParser.parseSphere : missing attributes');
+			return
+		}
+		const radius = prim.radius
+		const slices = prim.slices
+		const stacks = prim.stacks
+		const thetastart = prim.thetastart ? prim.thetastart : 0
+		const thetalength = prim.thetalength ? prim.thetalength : Math.PI
+		const phistart = prim.phistart ? prim.phistart : 0
+		const philength = prim.philength ? prim.philength : 2 * Math.PI
+		const all = [radius, slices, stacks, thetastart, thetalength, phistart, philength]
+		if (all.some(val => val === undefined || typeof val !== 'number')) {
+			console.error('Error in MyParser.parseSphere: invalid or undefined values');
+			return
+		}
+		return new THREE.SphereGeometry(radius, slices, stacks, phistart, philength, thetastart, thetalength)
+	}
+
+	parseNurbs(prim) {
+		if (![prim.degree_u, prim.degree_v, prim.parts_u, prim.parts_v, prim.controlpoints].every((value) => value !== undefined)) {
+			console.error('Error in MyParser.parseSphere : missing attributes');
+			return
+		}
+		const degree_u = prim.degree_u
+		const degree_v = prim.degree_v
+		const parts_u = prim.parts_u
+		const parts_v = prim.parts_v
+		const controlpoints = prim.controlpoints
+		const all = [degree_u, degree_v, parts_u, parts_v]
+		if (all.some(val => val === undefined || typeof val !== 'number')) {
+			console.error('Error in MyParser.parseSphere: invalid or undefined values');
+			return
+		}
+		if (controlpoints.some(innerList => !Array.isArray(innerList) || innerList.some(val => val === undefined || typeof val !== 'number'))) {
+			console.error('Error in MyParser.parseSphere: invalid or undefined values');
+			return;
+		}
+		return this.buider.build(controlpoints, degree_u, degree_v, parts_u, parts_v)
+	}
+
+
+    parse(data, name, material) {
+        const parent = data[name]
+        const children = data[name].children
+        const group = new THREE.Group();
+        if(parent.materialref) {
+			material = this.dataMaterials[parent.materialref.materialId]
+		}
+        for(let i = 0; i < Object.keys(children).length; i++) {
+			const name = Object.keys(children)[i]
+            const node = parent['children'][name]
+            if (node.type === 'noderef') {
+                group.add(this.parse(data, name, material))
+            }
+            else {
+                let object = null
+                if (node.type === 'pointlight') group.add(this.parsePointlight(node))
+				if (node.type === 'spotlight') group.add(this.parseSpotlight(node))
+				if (node.type === 'rectangle') object = this.parseRectangle(node)
+				if (node.type === 'triangle') object = this.parseTriangle(node)
+				if (node.type === 'box') object = this.parseBox(node)
+				if (node.type === 'cylinder') object = this.parseCylinder(node)
+				if (node.type === 'sphere') object = this.parseSphere(node)
+				if (node.type === 'nurbs') object = this.parseNurbs(node)
+                if(object) {
+					let objectMaterial = material ? material : new THREE.MeshPhongMaterial({color: "#ffffff", specular: "#ffffff"})
+                    const mesh = new THREE.Mesh(object, objectMaterial)
+                    group.add(mesh)
+                }
+            }
+        } 
+        if (parent.transforms) {
+            for(let i = 0; i < parent.transforms.length; i++) {
+                const transformation = parent.transforms[i]
+                const x = transformation.amount.x
+                const y = transformation.amount.y
+                const z = transformation.amount.z
+				const all = [x,y,z]
+				if (all.some(val => val === undefined || typeof val !== 'number')) {
+					console.error('Error in MyParser.parse: invalid or undefined values');
+					return
+				}
+                if (transformation.type === 'translate') {
+                    group.position.set(...all)
+                }
+                if (transformation.type === 'rotate') {	
+					group.rotateX(x * Math.PI / 180)
+                    group.rotateY(y * Math.PI / 180)
+                    group.rotateZ(z * Math.PI / 180)
+				}
+                if (transformation.type === 'scale') {
+                    group.scale.set(...all)
+				}
+            }
+        }
+        return group
+    }
 }
 
 export { MyParser };
