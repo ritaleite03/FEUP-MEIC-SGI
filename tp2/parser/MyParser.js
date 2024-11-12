@@ -139,17 +139,18 @@ class MyParser {
 			console.error('Error in MyParser.getMaterial: invalid or undefined values');
 			return
 		}
-		attributes['color'] = new THREE.Color(...color)
-		attributes['specular'] = new THREE.Color(...specular)
-		attributes['emissive'] = new THREE.Color(...emissive)
-		attributes['shininess'] = shininess
-		attributes['opacity'] = opacity
-		if (data.wireframe) {
-			if(typeof data.wireframe !== 'boolean') {
+		attributes.color = new THREE.Color().setRGB(...color)
+		attributes.specular = new THREE.Color().setRGB(...specular)
+		attributes.emissive = new THREE.Color().setRGB(...emissive)
+		attributes.shininess = shininess
+		attributes.opacity = opacity
+		attributes.wireframe = data.wireframe ? data.wireframe : false
+		if(data.shading) {
+			if(typeof data.shading !== 'boolean') {
 				console.error('Error in MyParser.getMaterial : invalid or undefined values');
 				return
 			}
-			attributes['wireframe'] = data.wireframe
+			attributes.flatShading = true
 		}
 		if(data.twosided) {
 			if(typeof data.twosided !== 'boolean') {
@@ -159,10 +160,19 @@ class MyParser {
 			attributes['side'] = THREE.DoubleSide
 		}
 		if(data.textureref) {
-			const texture = this.dataTextures[data.textureref]
-			if(data.texlength_s) texture.texlength_s = data.texlength_s
-			if(data.texlength_t) texture.texlength_s = data.texlength_t
-			attributes['map'] = texture
+			const texture = this.dataTextures[data.textureref].clone()
+			if (data.texlength_s) texture.repeat.x = data.texlength_s;
+			if (data.texlength_t) texture.repeat.y = data.texlength_t;
+			texture.wrapS = THREE.MirroredRepeatWrapping;
+			texture.wrapT = THREE.MirroredRepeatWrapping;
+			attributes.map = texture
+		}
+		if(data.bumpref) {
+			attributes.bumpMap = this.dataTextures[data.bumpref].clone()
+			attributes.bumpScale = data.bumpscale ? data.bumpscale : 1
+		}
+		if(data.specularref) {
+			attributes.specularMap = this.dataTextures[data.specularref].clone()
 		}
 		this.dataMaterials[name] = new THREE.MeshPhongMaterial(attributes)
 	}
@@ -324,11 +334,11 @@ class MyParser {
 		}
 		const base = prim.base
 		const top = prim.top
-		const height = prim.top
+		const height = prim.height
 		const slices = prim.slices
 		const stacks = prim.stacks
-		const thetaStart = prim.thetaStart ? prim.thetaStart : 0
-		const thetaLength = prim.thetaLength ? prim.thetaLength : 2 * Math.PI
+		const thetaStart = prim.thetaStart ? prim.thetaStart * Math.PI / 180 : 0
+		const thetaLength = prim.thetaLength ? prim.thetaLength * Math.PI / 180 : 2 * Math.PI
 		const all = [base, top, height, slices, stacks, thetaStart, thetaLength]
 		if (all.some(val => val === undefined || typeof val !== 'number')) {
 			console.error('Error in MyParser.parseCylinder: invalid or undefined values');
@@ -346,10 +356,10 @@ class MyParser {
 		const radius = prim.radius
 		const slices = prim.slices
 		const stacks = prim.stacks
-		const thetastart = prim.thetastart ? prim.thetastart : 0
-		const thetalength = prim.thetalength ? prim.thetalength : Math.PI
-		const phistart = prim.phistart ? prim.phistart : 0
-		const philength = prim.philength ? prim.philength : 2 * Math.PI
+		const thetastart = prim.thetastart ? prim.thetastart * Math.PI / 180 : 0
+		const thetalength = prim.thetalength ? prim.thetalength * Math.PI / 180 : Math.PI
+		const phistart = prim.phistart ? prim.phistart * Math.PI / 180 : 0
+		const philength = prim.philength ? prim.philength * Math.PI / 180 : 2 * Math.PI
 		const all = [radius, slices, stacks, thetastart, thetalength, phistart, philength]
 		if (all.some(val => val === undefined || typeof val !== 'number')) {
 			console.error('Error in MyParser.parseSphere: invalid or undefined values');

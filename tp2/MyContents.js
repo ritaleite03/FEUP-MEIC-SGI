@@ -46,7 +46,6 @@ class MyContents {
         this.parser = new MyParser(this.app, data)
         const ambientLight = new THREE.AmbientLight('#ffffff',1)
         this.app.scene.add(ambientLight)
-        // initiate gui interface
         let gui = new MyGuiInterface(this.app)
         gui.setContents(this)
         gui.init();
