@@ -8,7 +8,21 @@ class MyParser {
 	*/
 	constructor(app, data) {
 		this.app = app
-		this.buider = new MyNurbsBuilder
+		this.buider = new MyNurbsBuilder()
+		if(!data.yasf.globals || !data.yasf.fog || !data.yasf.cameras || !data.yasf.textures || !data.yasf.materials || !data.yasf.graph || Object.keys(data.yasf).length !== 6) {
+			console.error('Error in MyParser.constructor: unexpected or missing blocks');
+			return;
+		}
+		if(!data.yasf.cameras.initial || !data.yasf.graph.rootid) {
+			console.error('Error in MyParser.constructor: rootid or initial camera missing definitions');
+			return;			
+		}
+		const rootGraph = data.yasf.graph.rootid
+		const initialCamera = data.yasf.cameras.initial
+		if(!data.yasf.graph[rootGraph] || !data.yasf.cameras[initialCamera]) {
+			console.error('Error in MyParser.constructor: name of rootid or initial camera missing definitions');
+			return;
+		}
 		this.defineGlobals(data.yasf.globals)
 		this.defineFog(data.yasf.fog)
 		this.defineCameras(data.yasf.cameras)
@@ -16,8 +30,8 @@ class MyParser {
 		this.dataMaterials = []
 		for(let key in data.yasf.textures) this.getTexture(key, data.yasf.textures[key])
 		for(let key in data.yasf.materials) this.getMaterial(key, data.yasf.materials[key])
-		this.app.setActiveCamera(data.yasf.cameras.initial)
-		this.app.scene.add(this.parse(data.yasf.graph, data.yasf.graph.rootid, null))
+		this.app.setActiveCamera(initialCamera)
+		this.app.scene.add(this.parse(data.yasf.graph, rootGraph, null))
 	}
 
 	defineGlobals(data) {
@@ -395,6 +409,10 @@ class MyParser {
         const parent = data[name]
         const children = data[name].children
         const group = new THREE.Group();
+		if(parent.type !== 'node') {
+			console.error('Error in MyParser.parseSphere: invalid or undefined parent type');
+			return;
+		}
         if(parent.materialref) {
 			material = this.dataMaterials[parent.materialref.materialId]
 		}
