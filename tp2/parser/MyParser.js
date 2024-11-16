@@ -358,7 +358,9 @@ class MyParser {
 			console.error('Error in MyParser.parseCylinder: invalid or undefined values');
 			return
 		}
+
 		const capsclose = prim.capsclose ? prim.capsclose : false
+		console.log("CapsClose: ", new THREE.CylinderGeometry(top, base, height, slices, stacks, capsclose, thetaStart, thetaLength) )
 		return new THREE.CylinderGeometry(top, base, height, slices, stacks, capsclose, thetaStart, thetaLength)
 	}
 
@@ -397,11 +399,37 @@ class MyParser {
 			console.error('Error in MyParser.parseSphere: invalid or undefined values');
 			return
 		}
-		if (controlpoints.some(innerList => !Array.isArray(innerList) || innerList.some(val => val === undefined || typeof val !== 'number'))) {
-			console.error('Error in MyParser.parseSphere: invalid or undefined values');
-			return;
+		if(all.some(val => val <= 0)){
+			console.error('Error');
+			return
 		}
-		return this.buider.build(controlpoints, degree_u, degree_v, parts_u, parts_v)
+		const numberPoints = (degree_u + 1) * (degree_v + 1);
+		if(controlpoints.length !== numberPoints){
+			console.error('Error');
+			return
+		}
+
+		let points = [];
+		let row = [];
+
+		for (let i = 0; i < controlpoints.length; i++) {
+			let x = controlpoints[i].x
+			let y = controlpoints[i].y
+			let z = controlpoints[i].z
+			let positions = [x,y,z]
+			if (positions.some(val => val === undefined || typeof val !== 'number')) {
+				console.error('Error in MyParser.parseNurbs: invalid or undefined values in points coordinates');
+				return
+			}
+			row.push([x, y, z, 1]);
+    		if ((i + 1) % (degree_v + 1) === 0) { 
+        		points.push(row);
+        		row = [];
+    		}
+		}
+		console.log(points)
+		
+		return this.buider.build(points, degree_u, degree_v, parts_u, parts_v, null)
 	}
 
 
@@ -411,7 +439,7 @@ class MyParser {
         const group = new THREE.Group();
 		if(parent.type !== 'node') {
 			console.error('Error in MyParser.parseSphere: invalid or undefined parent type');
-			return;
+			return
 		}
         if(parent.materialref) {
 			material = this.dataMaterials[parent.materialref.materialId]
@@ -419,8 +447,9 @@ class MyParser {
         for(let i = 0; i < Object.keys(children).length; i++) {
 			const name = Object.keys(children)[i]
             const node = parent['children'][name]
+			console.log(name)
             if (node.type === 'noderef') {
-                group.add(this.parse(data, name, material))
+                group.add(this.parse(data, node.nodeId, material))
             }
             else {
                 let object = null
