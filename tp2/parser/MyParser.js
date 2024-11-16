@@ -9,7 +9,7 @@ class MyParser {
 	constructor(app, data) {
 		this.app = app
 		this.buider = new MyNurbsBuilder()
-		if(!data.yasf.globals || !data.yasf.fog || !data.yasf.cameras || !data.yasf.textures || !data.yasf.materials || !data.yasf.graph || Object.keys(data.yasf).length !== 6) {
+		if(!data.yasf.globals || !data.yasf.fog || !data.yasf.cameras || !data.yasf.textures || !data.yasf.materials || !data.yasf.graph || Object.keys(data.yasf).length < 6) {
 			console.error('Error in MyParser.constructor: unexpected or missing blocks');
 			return;
 		}
@@ -46,8 +46,8 @@ class MyParser {
 			console.error('Error in MyParser.defineGlobals: invalid or undefined values');
 			return;
 		}	
-		this.app.scene.background = new THREE.Color(...background);
-		this.app.scene.ambient = new THREE.Color(...ambient);
+		this.app.scene.background = new THREE.Color().setRGB(...background);
+		this.app.scene.ambient = new THREE.Color().setRGB(...ambient);
 	}
 	
 	defineFog(data) {
@@ -63,7 +63,7 @@ class MyParser {
 			console.error('Error in MyParser.defineFog: invalid or undefined values');
 			return
 		}
-        this.app.scene.fog = new THREE.Fog( new THREE.Color(...color), near, far)
+        this.app.scene.fog = new THREE.Fog( new THREE.Color().setRGB(...color), near, far)
 	}
 
 	defineCameras(data) {
@@ -177,12 +177,13 @@ class MyParser {
 			const texture = this.dataTextures[data.textureref].clone()
 			if (data.texlength_s) texture.repeat.x = data.texlength_s;
 			if (data.texlength_t) texture.repeat.y = data.texlength_t;
-			texture.wrapS = THREE.MirroredRepeatWrapping;
-			texture.wrapT = THREE.MirroredRepeatWrapping;
 			attributes.map = texture
 		}
 		if(data.bumpref) {
-			attributes.bumpMap = this.dataTextures[data.bumpref].clone()
+			const bump = this.dataTextures[data.bumpref].clone()
+			if (data.texlength_s) bump.repeat.x = data.texlength_s;
+			if (data.texlength_t) bump.repeat.y = data.texlength_t;
+			attributes.bumpMap = bump
 			attributes.bumpScale = data.bumpscale ? data.bumpscale : 1
 		}
 		if(data.specularref) {
@@ -209,7 +210,7 @@ class MyParser {
 			console.error('Error in MyParser.parsePointlight: invalid or undefined values');
 			return
 		}
-		const pointlight = new THREE.PointLight(new THREE.Color(...color), intensity, distance, decay)
+		const pointlight = new THREE.PointLight(new THREE.Color().setRGB(...color), intensity, distance, decay)
 		pointlight.position.set(...position)
 		pointlight.castShadow = castshadow
 		pointlight.shadowfar = shadowfar
@@ -238,7 +239,7 @@ class MyParser {
 			console.error('Error in MyParser.parseSpotlight: invalid or undefined values');
 			return
 		}
-		const spotlight = new THREE.SpotLight(new THREE.Color(...color), intensity, distance, angle, penumbra, decay)
+		const spotlight = new THREE.SpotLight(new THREE.Color().setRGB(...color), intensity, distance, angle, penumbra, decay)
 		spotlight.position.set(...position)
 		spotlight.target.position.set(...target)
 		spotlight.castShadow = castshadow
@@ -267,7 +268,7 @@ class MyParser {
 			console.error('Error in MyParser.parseSpotlight: invalid or undefined values');
 			return
 		}
-		const directionallight = new THREE.DirectionalLight(new THREE.Color(...color), intensity)
+		const directionallight = new THREE.DirectionalLight(new THREE.Color().setRGB(...color), intensity)
 		directionallight.position.set(...position)
 		directionallight.castShadow = castshadow
 		directionallight.shadowleft = shadowleft
@@ -406,6 +407,7 @@ class MyParser {
 
 
     parse(data, name, material) {
+		console.log(name)
         const parent = data[name]
         const children = data[name].children
         const group = new THREE.Group();
@@ -420,7 +422,7 @@ class MyParser {
 			const name = Object.keys(children)[i]
             const node = parent['children'][name]
             if (node.type === 'noderef') {
-                group.add(this.parse(data, name, material))
+                group.add(this.parse(data, node.nodeId, material))
             }
             else {
                 let object = null

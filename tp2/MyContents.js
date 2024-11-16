@@ -18,7 +18,7 @@ class MyContents {
         this.parser = null
         this.axis = null
         this.reader = new MyFileReader(this.onSceneLoaded.bind(this));
-        this.reader.open("scenes/simple.json");
+        this.reader.open("scenes/scene.json");
     }
 
     /**
