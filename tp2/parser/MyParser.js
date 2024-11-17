@@ -361,7 +361,6 @@ class MyParser {
 		}
 
 		const capsclose = prim.capsclose ? prim.capsclose : false
-		console.log("CapsClose: ", new THREE.CylinderGeometry(top, base, height, slices, stacks, capsclose, thetaStart, thetaLength) )
 		return new THREE.CylinderGeometry(top, base, height, slices, stacks, capsclose, thetaStart, thetaLength)
 	}
 
@@ -428,14 +427,12 @@ class MyParser {
         		row = [];
     		}
 		}
-		console.log(points)
 		
 		return this.buider.build(points, degree_u, degree_v, parts_u, parts_v, null)
 	}
 
 
     parse(data, name, material) {
-		console.log(name)
         const parent = data[name]
         const children = data[name].children
         const group = new THREE.Group();
@@ -448,8 +445,10 @@ class MyParser {
 		}
         for(let i = 0; i < Object.keys(children).length; i++) {
 			const name = Object.keys(children)[i]
+
             const node = parent['children'][name]
-			console.log(name)
+			if(name == 'prim') console.log(data[node.nodeId])
+
             if (node.type === 'noderef') {
                 group.add(this.parse(data, node.nodeId, material))
             }
