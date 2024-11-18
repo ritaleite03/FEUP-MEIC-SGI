@@ -9,7 +9,7 @@ class MyParser {
 	constructor(app, data) {
 		this.app = app
 		this.buider = new MyNurbsBuilder()
-		if(!data.yasf.globals || !data.yasf.fog || !data.yasf.cameras || !data.yasf.textures || !data.yasf.materials || !data.yasf.graph || Object.keys(data.yasf).length < 7) {
+		if(!data.yasf.globals || !data.yasf.cameras || !data.yasf.textures || !data.yasf.materials || !data.yasf.graph || Object.keys(data.yasf).length < 5) {
 			console.error('Error in MyParser.constructor: unexpected or missing blocks');
 			return;
 		}
@@ -24,8 +24,8 @@ class MyParser {
 			return;
 		}
 		this.defineGlobals(data.yasf.globals)
-		this.defineFog(data.yasf.fog)
-		this.defineSkybox(data.yasf.skybox)
+		this.defineFog(data.yasf.globals.fog)
+		this.defineSkybox(data.yasf.globals.skybox)
 		this.defineCameras(data.yasf.cameras)
 		this.dataTextures = []
 		this.dataMaterials = []
