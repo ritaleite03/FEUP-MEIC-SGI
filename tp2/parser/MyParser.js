@@ -9,7 +9,7 @@ class MyParser {
 	constructor(app, data) {
 		this.app = app
 		this.buider = new MyNurbsBuilder()
-		if(!data.yasf.globals || !data.yasf.fog || !data.yasf.cameras || !data.yasf.textures || !data.yasf.materials || !data.yasf.graph || Object.keys(data.yasf).length < 6) {
+		if(!data.yasf.globals || !data.yasf.fog || !data.yasf.cameras || !data.yasf.textures || !data.yasf.materials || !data.yasf.graph || Object.keys(data.yasf).length < 7) {
 			console.error('Error in MyParser.constructor: unexpected or missing blocks');
 			return;
 		}
@@ -25,6 +25,7 @@ class MyParser {
 		}
 		this.defineGlobals(data.yasf.globals)
 		this.defineFog(data.yasf.fog)
+		this.defineSkybox(data.yasf.skybox)
 		this.defineCameras(data.yasf.cameras)
 		this.dataTextures = []
 		this.dataMaterials = []
@@ -64,6 +65,42 @@ class MyParser {
 			return
 		}
         this.app.scene.fog = new THREE.Fog( new THREE.Color().setRGB(...color), near, far)
+	}
+
+	defineSkybox(data){
+		if (!data.size || !data.center || !data.emissive || !data.intensity || !data.front || !data.back || !data.up || !data.down || ! data.left || !data.right || Object.keys(data).length !== 10) {
+			console.error('Error in MyParser.defineSkybox: unexpected or missing definitions');
+			return
+		}
+
+		const width = data.size.x
+		const height = data.size.y
+		const depth = data.size.z
+		const center = [data.center.x, data.center.y, data.center.z]
+		const emissive = new THREE.Color().setRGB(data.emissive.r, data.emissive.g, data.emissive.b)
+		const intensity = data.intensity
+
+		const loader = new THREE.TextureLoader()
+
+		const texture1 = loader.load(data.front)
+		const texture2 = loader.load(data.back)
+		const texture3 = loader.load(data.up)
+		const texture4 = loader.load(data.down)
+		const texture5 = loader.load(data.left)
+		const texture6 = loader.load(data.right)
+
+		const material1 = new THREE.MeshPhongMaterial({emissive:emissive, emissiveIntensity:intensity, map:texture1, side: THREE.DoubleSide})
+		const material2 = new THREE.MeshPhongMaterial({emissive:emissive, emissiveIntensity:intensity, map:texture2, side: THREE.DoubleSide})
+		const material3 = new THREE.MeshPhongMaterial({emissive:emissive, emissiveIntensity:intensity, map:texture3, side: THREE.DoubleSide})
+		const material4 = new THREE.MeshPhongMaterial({emissive:emissive, emissiveIntensity:intensity, map:texture4, side: THREE.DoubleSide})
+		const material5 = new THREE.MeshPhongMaterial({emissive:emissive, emissiveIntensity:intensity, map:texture5, side: THREE.DoubleSide})
+		const material6 = new THREE.MeshPhongMaterial({emissive:emissive, emissiveIntensity:intensity, map:texture6, side: THREE.DoubleSide})
+		const materials = [material1, material2, material3, material4, material5, material6]
+
+		const object = new THREE.BoxGeometry(width, height, depth)
+		const mesh = new THREE.Mesh(object, materials)
+		mesh.position.set(...center)
+		this.app.scene.add(mesh)
 	}
 
 	defineCameras(data) {

@@ -21,6 +21,18 @@
             "near": 1,
             "far": 1000
         },
+        "skybox": {
+            "size": { "x": 200, "y": 100, "z": 200 },
+            "center": { "x": 0, "y": 49.99, "z": 0 },
+            "emissive": { "r": 0, "g": 0, "b": 0 },
+            "intensity": 0.1,
+            "front": "scenes/demo/textures/sky.jpg",
+            "back": "scenes/demo/textures/sky.jpg",
+            "up": "scenes/demo/textures/sky.jpg",
+            "down": "scenes/demo/textures/floor_exterior.jpg",
+            "left": "scenes/demo/textures/sky.jpg",
+            "right": "scenes/demo/textures/sky.jpg"
+        },
         "textures": {
             "texture_stage": {
                 "filepath": "scenes/demo/textures/texture_stage.jpg"
@@ -262,17 +274,17 @@
                 "opacity": 1.0
             },
             "black": {
-                "color": {"r": 0.0, "g": 0.0, "b": 0.0},
-                "emissive": {"r": 0, "g": 0, "b": 0},
-                "specular": {"r": 0.5, "g": 0.5, "b": 0.5},
+                "color": { "r": 0.0, "g": 0.0, "b": 0.0 },
+                "emissive": { "r": 0, "g": 0, "b": 0 },
+                "specular": { "r": 0.5, "g": 0.5, "b": 0.5 },
                 "shininess": 10,
                 "transparent": false,
                 "opacity": 2.5
             },
             "matte_black": {
-                "color": {"r": 0.25, "g": 0.25, "b": 0.25},
-                "emissive": {"r": 0, "g": 0, "b": 0},
-                "specular": {"r": 0.5, "g": 0.5, "b": 0.5},
+                "color": { "r": 0.25, "g": 0.25, "b": 0.25 },
+                "emissive": { "r": 0, "g": 0, "b": 0 },
+                "specular": { "r": 0.5, "g": 0.5, "b": 0.5 },
                 "shininess": 10,
                 "transparent": false,
                 "opacity": 2.5,
@@ -281,9 +293,9 @@
                 "texlength_t": 2
             },
             "chair_red_head": {
-                "color": {"r": 0.8, "g": 0.2, "b": 0.2},
-                "emissive": {"r": 0, "g": 0, "b": 0},
-                "specular": {"r": 0, "g": 0, "b": 0},
+                "color": { "r": 0.8, "g": 0.2, "b": 0.2 },
+                "emissive": { "r": 0, "g": 0, "b": 0 },
+                "specular": { "r": 0, "g": 0, "b": 0 },
                 "shininess": 0,
                 "twosided": true,
                 "transparent": false,
@@ -293,9 +305,9 @@
                 "texlength_t": 6
             },
             "chair_red_body": {
-                "color": {"r": 0.8, "g": 0.2, "b": 0.2},
-                "emissive": {"r": 0, "g": 0, "b": 0},
-                "specular": {"r": 0, "g": 0, "b": 0},
+                "color": { "r": 0.8, "g": 0.2, "b": 0.2 },
+                "emissive": { "r": 0, "g": 0, "b": 0 },
+                "specular": { "r": 0, "g": 0, "b": 0 },
                 "shininess": 0,
                 "twosided": true,
                 "transparent": false,
@@ -365,8 +377,8 @@
                         "nodeId": "stage"
                     },
                     "chairs": {
-                        "type": "noderef", 
-                        "nodeId":"chairs"
+                        "type": "noderef",
+                        "nodeId": "chairs"
                     },
                     "pointlight": {
                         "type": "pointlight",
@@ -1638,36 +1650,36 @@
                     }
                 ]
             },
-            "chair":{
+            "chair": {
                 "type": "node",
-                "materialref": {"materialId": "matte_black"},
-                "children":{
-                    "chair_head":{
-                        "type" : "noderef",
+                "materialref": { "materialId": "matte_black" },
+                "children": {
+                    "chair_head": {
+                        "type": "noderef",
                         "nodeId": "chair_head"
                     },
-                    "chair_back":{
-                        "type" : "noderef",
+                    "chair_back": {
+                        "type": "noderef",
                         "nodeId": "chair_back"
                     },
-                    "chair_seat":{
-                        "type" : "noderef",
+                    "chair_seat": {
+                        "type": "noderef",
                         "nodeId": "chair_seat"
                     },
-                    "chair_armrest":{
-                        "type" : "noderef",
+                    "chair_armrest": {
+                        "type": "noderef",
                         "nodeId": "chair_armrest"
                     },
-                    "chair_cilinder":{
-                        "type" : "noderef",
+                    "chair_cilinder": {
+                        "type": "noderef",
                         "nodeId": "chair_cilinder"
                     },
-                    "chair_support_left":{
-                        "type" : "noderef",
+                    "chair_support_left": {
+                        "type": "noderef",
                         "nodeId": "chair_support_left"
                     },
-                    "chair_support_right":{
-                        "type" : "noderef",
+                    "chair_support_right": {
+                        "type": "noderef",
                         "nodeId": "chair_support_right"
                     }
                 }
@@ -1695,18 +1707,18 @@
                 "children": {
                     "chair_struct": {
                         "type": "box",
-                        "xyz1": {"x": -1.5, "y": -0.05, "z": -1.0},
-                        "xyz2": {"x": 1.5, "y": 0.05, "z": 1.0}
+                        "xyz1": { "x": -1.5, "y": -0.05, "z": -1.0 },
+                        "xyz2": { "x": 1.5, "y": 0.05, "z": 1.0 }
                     },
-                    "chair_seat_filling":{
-                        "type" : "noderef",
+                    "chair_seat_filling": {
+                        "type": "noderef",
                         "nodeId": "chair_seat_filling"
                     }
                 }
             },
-            "chair_seat_filling":{
+            "chair_seat_filling": {
                 "type": "node",
-                "materialref": {"materialId": "chair_red_head"},
+                "materialref": { "materialId": "chair_red_head" },
                 "transforms": [
                     {
                         "type": "translate",
@@ -1717,7 +1729,7 @@
                         }
                     }
                 ],
-                "children":{
+                "children": {
                     "nurbsPrim": {
                         "type": "nurbs",
                         "degree_u": 3,
@@ -1725,30 +1737,30 @@
                         "parts_u": 8,
                         "parts_v": 8,
                         "controlpoints": [
-                            {"x": -1.5, "y": 0.0, "z": -1.0},
-                            {"x": -1.5, "y": 0.0, "z": -1.0},
-                            {"x": 1.5, "y": 0.0, "z": -1.0},
-                            {"x": 1.5, "y": 0.0, "z": -1.0},
+                            { "x": -1.5, "y": 0.0, "z": -1.0 },
+                            { "x": -1.5, "y": 0.0, "z": -1.0 },
+                            { "x": 1.5, "y": 0.0, "z": -1.0 },
+                            { "x": 1.5, "y": 0.0, "z": -1.0 },
 
-                            {"x": -1.5, "y": 0.0, "z": -1.0},
-                            {"x": -1.5, "y": 0.75, "z": -2.0},
-                            {"x": 1.5, "y": 0.75, "z": -2.0},
-                            {"x": 1.5, "y": 0.0, "z": -1.0},
+                            { "x": -1.5, "y": 0.0, "z": -1.0 },
+                            { "x": -1.5, "y": 0.75, "z": -2.0 },
+                            { "x": 1.5, "y": 0.75, "z": -2.0 },
+                            { "x": 1.5, "y": 0.0, "z": -1.0 },
 
-                            {"x": -1.5, "y": 0.0, "z": 1.0},
-                            {"x": -1.5, "y": 0.75, "z": 2.0},
-                            {"x": 1.5, "y": 0.75, "z": 2.0},
-                            {"x": 1.5, "y": 0.0, "z": 1.0},
+                            { "x": -1.5, "y": 0.0, "z": 1.0 },
+                            { "x": -1.5, "y": 0.75, "z": 2.0 },
+                            { "x": 1.5, "y": 0.75, "z": 2.0 },
+                            { "x": 1.5, "y": 0.0, "z": 1.0 },
 
-                            {"x": -1.5, "y": 0.0, "z": 1.0},
-                            {"x": -1.5, "y": 0.0, "z": 1.0},
-                            {"x": 1.5, "y": 0.0, "z": 1.0},
-                            {"x": 1.5, "y": 0.0, "z": 1.0}
+                            { "x": -1.5, "y": 0.0, "z": 1.0 },
+                            { "x": -1.5, "y": 0.0, "z": 1.0 },
+                            { "x": 1.5, "y": 0.0, "z": 1.0 },
+                            { "x": 1.5, "y": 0.0, "z": 1.0 }
                         ]
                     }
                 }
             },
-            "chair_head":{
+            "chair_head": {
                 "type": "node",
                 "transforms": [
                     {
@@ -1763,16 +1775,16 @@
                 "children": {
                     "chair_head_struct": {
                         "type": "box",
-                        "xyz1": {"x": -1.5, "y": -0.75, "z": -0.125},
-                        "xyz2": {"x": 1.5, "y": 0.75, "z": 0.125}
+                        "xyz1": { "x": -1.5, "y": -0.75, "z": -0.125 },
+                        "xyz2": { "x": 1.5, "y": 0.75, "z": 0.125 }
                     },
-                    "chair_head_filling":{
-                        "type" : "noderef",
+                    "chair_head_filling": {
+                        "type": "noderef",
                         "nodeId": "chair_head_filling"
                     }
                 }
             },
-            "chair_head_filling":{
+            "chair_head_filling": {
                 "type": "node",
                 "transforms": [
                     {
@@ -1784,8 +1796,8 @@
                         }
                     }
                 ],
-                "materialref": {"materialId": "chair_red_head"},
-                "children":{
+                "materialref": { "materialId": "chair_red_head" },
+                "children": {
                     "nurbsPrim2": {
                         "type": "nurbs",
                         "degree_u": 4,
@@ -1793,35 +1805,35 @@
                         "parts_u": 10,
                         "parts_v": 10,
                         "controlpoints": [
-                            {"x": -1.5, "y": -0.8, "z": 0.0},
-                            {"x": -1.5, "y": -0.75, "z": 0.0},
-                            {"x": 0.0, "y": -0.75, "z": 0.0},
-                            {"x": 1.5, "y": -0.75, "z": 0.0},
-                            {"x": 1.5, "y": -0.75, "z": 0.0},
+                            { "x": -1.5, "y": -0.8, "z": 0.0 },
+                            { "x": -1.5, "y": -0.75, "z": 0.0 },
+                            { "x": 0.0, "y": -0.75, "z": 0.0 },
+                            { "x": 1.5, "y": -0.75, "z": 0.0 },
+                            { "x": 1.5, "y": -0.75, "z": 0.0 },
 
-                            {"x": -1.5, "y": -0.75, "z": 0.0},
-                            {"x": -2.0, "y": -1.25, "z": 0.5},
-                            {"x": 0.0, "y": -1.25, "z": 0.5},
-                            {"x": 2.0, "y": -1.25, "z": 0.5},
-                            {"x": 1.5, "y": -0.75, "z": 0.0},
+                            { "x": -1.5, "y": -0.75, "z": 0.0 },
+                            { "x": -2.0, "y": -1.25, "z": 0.5 },
+                            { "x": 0.0, "y": -1.25, "z": 0.5 },
+                            { "x": 2.0, "y": -1.25, "z": 0.5 },
+                            { "x": 1.5, "y": -0.75, "z": 0.0 },
 
-                            {"x": -1.5, "y": 0.0, "z": 0.0},
-                            {"x": -2.0, "y": 0.0, "z": 0.5},
-                            {"x": 0.0, "y": 0.0, "z": 0.5},
-                            {"x": 2.0, "y": 0.0, "z": 0.5},
-                            {"x": 1.5, "y": 0.0, "z": 0.0},
+                            { "x": -1.5, "y": 0.0, "z": 0.0 },
+                            { "x": -2.0, "y": 0.0, "z": 0.5 },
+                            { "x": 0.0, "y": 0.0, "z": 0.5 },
+                            { "x": 2.0, "y": 0.0, "z": 0.5 },
+                            { "x": 1.5, "y": 0.0, "z": 0.0 },
 
-                            {"x": -1.5, "y": 0.75, "z": 0.0},
-                            {"x": -2.0, "y": 1.25, "z": 0.5},
-                            {"x": 0.0, "y": 1.25, "z": 0.5},
-                            {"x": 2.0, "y": 1.25, "z": 0.5},
-                            {"x": 1.5, "y": 0.75, "z": 0.0},
+                            { "x": -1.5, "y": 0.75, "z": 0.0 },
+                            { "x": -2.0, "y": 1.25, "z": 0.5 },
+                            { "x": 0.0, "y": 1.25, "z": 0.5 },
+                            { "x": 2.0, "y": 1.25, "z": 0.5 },
+                            { "x": 1.5, "y": 0.75, "z": 0.0 },
 
-                            {"x": -1.5, "y": 0.75, "z": 0.0},
-                            {"x": -1.5, "y": 0.75, "z": 0.0},
-                            {"x": 0.0, "y": 0.75, "z": 0.0},
-                            {"x": 1.5, "y": 0.75, "z": 0.0},
-                            {"x": 1.5, "y": 0.75, "z": 0.0}
+                            { "x": -1.5, "y": 0.75, "z": 0.0 },
+                            { "x": -1.5, "y": 0.75, "z": 0.0 },
+                            { "x": 0.0, "y": 0.75, "z": 0.0 },
+                            { "x": 1.5, "y": 0.75, "z": 0.0 },
+                            { "x": 1.5, "y": 0.75, "z": 0.0 }
                         ]
                     }
                 }
@@ -1849,18 +1861,17 @@
                 "children": {
                     "chair_struct2": {
                         "type": "box",
-                        "xyz1": {"x": -1.5, "y": -1.55, "z": -0.125},
-                        "xyz2": {"x": 1.5, "y": 1.55, "z": 0.125}
+                        "xyz1": { "x": -1.5, "y": -1.55, "z": -0.125 },
+                        "xyz2": { "x": 1.5, "y": 1.55, "z": 0.125 }
                     },
-                    "char_back_filling":{
-                        "type" : "noderef",
+                    "char_back_filling": {
+                        "type": "noderef",
                         "nodeId": "char_back_filling"
                     }
-
                 }
             },
-            "char_back_filling":{
-                "type":"node",
+            "char_back_filling": {
+                "type": "node",
                 "transforms": [
                     {
                         "type": "translate",
@@ -1872,21 +1883,21 @@
                     }
                 ],
                 "children": {
-                    "char_left_filling":{
-                        "type" : "noderef",
+                    "char_left_filling": {
+                        "type": "noderef",
                         "nodeId": "chair_left_filling"
                     },
-                    "char_centre_filling":{
-                        "type" : "noderef",
+                    "char_centre_filling": {
+                        "type": "noderef",
                         "nodeId": "chair_centre_filling"
                     },
-                    "char_right_filling":{
-                        "type" : "noderef",
+                    "char_right_filling": {
+                        "type": "noderef",
                         "nodeId": "chair_right_filling"
                     }
                 }
             },
-            "chair_left_filling":{
+            "chair_left_filling": {
                 "type": "node",
                 "transforms": [
                     {
@@ -1898,18 +1909,20 @@
                         }
                     }
                 ],
-                "children":{
-                    "chair_side_filling1":{
-                            "type" : "noderef",
-                            "nodeId": "chair_side_filling"
+                "children": {
+                    "chair_side_filling1": {
+                        "type": "noderef",
+                        "nodeId": "chair_side_filling"
                     }
                 }
-
             },
-            "chair_right_filling":{
+            "chair_right_filling": {
                 "type": "node",
                 "transforms": [
-                    {"type": "rotate", "amount": { "x": 0, "y": 0, "z": 180 }},
+                    {
+                        "type": "rotate",
+                        "amount": { "x": 0, "y": 0, "z": 180 }
+                    },
                     {
                         "type": "translate",
                         "amount": {
@@ -1919,18 +1932,17 @@
                         }
                     }
                 ],
-                "children":{
-                    "chair_side_filling2":{
-                            "type" : "noderef",
-                            "nodeId": "chair_side_filling"
+                "children": {
+                    "chair_side_filling2": {
+                        "type": "noderef",
+                        "nodeId": "chair_side_filling"
                     }
                 }
-
             },
-            "chair_side_filling":{
+            "chair_side_filling": {
                 "type": "node",
-                "materialref": {"materialId": "chair_red_body"},
-                "children":{
+                "materialref": { "materialId": "chair_red_body" },
+                "children": {
                     "nurbsSide": {
                         "type": "nurbs",
                         "degree_u": 3,
@@ -1938,30 +1950,30 @@
                         "parts_u": 8,
                         "parts_v": 8,
                         "controlpoints": [
-                            {"x": -0.5, "y": -1.5, "z": 0.0},
-                            {"x": -0.167, "y": -1.5, "z": 0.0},
-                            {"x": 0.167, "y": -1.5, "z": 0.0},
-                            {"x": 0.5, "y": -1.5, "z": 0.0},
+                            { "x": -0.5, "y": -1.5, "z": 0.0 },
+                            { "x": -0.167, "y": -1.5, "z": 0.0 },
+                            { "x": 0.167, "y": -1.5, "z": 0.0 },
+                            { "x": 0.5, "y": -1.5, "z": 0.0 },
 
-                            {"x": -0.5, "y": -1.0, "z": 0.0},
-                            {"x": -0.667, "y": -1.0, "z": 0.75},
-                            {"x": 0.167, "y": -1.0, "z": 0.25},
-                            {"x": 0.5, "y": -1.0, "z": 0.0},
+                            { "x": -0.5, "y": -1.0, "z": 0.0 },
+                            { "x": -0.667, "y": -1.0, "z": 0.75 },
+                            { "x": 0.167, "y": -1.0, "z": 0.25 },
+                            { "x": 0.5, "y": -1.0, "z": 0.0 },
 
-                            {"x": -0.5, "y": 1.0, "z": 0.0},
-                            {"x": -0.667, "y": 1.0, "z": 0.75},
-                            {"x": 0.167, "y": 1.0, "z": 0.25},
-                            {"x": 0.5, "y": 1.0, "z": 0.0},
+                            { "x": -0.5, "y": 1.0, "z": 0.0 },
+                            { "x": -0.667, "y": 1.0, "z": 0.75 },
+                            { "x": 0.167, "y": 1.0, "z": 0.25 },
+                            { "x": 0.5, "y": 1.0, "z": 0.0 },
 
-                            {"x": -0.5, "y": 1.5, "z": 0.0},
-                            {"x": -0.167, "y": 1.5, "z": 0.0},
-                            {"x": 0.167, "y": 1.5, "z": 0.0},
-                            {"x": 0.5, "y": 1.5, "z": 0.0}
+                            { "x": -0.5, "y": 1.5, "z": 0.0 },
+                            { "x": -0.167, "y": 1.5, "z": 0.0 },
+                            { "x": 0.167, "y": 1.5, "z": 0.0 },
+                            { "x": 0.5, "y": 1.5, "z": 0.0 }
                         ]
                     }
                 }
             },
-            "chair_centre_filling":{
+            "chair_centre_filling": {
                 "type": "node",
                 "transforms": [
                     {
@@ -1973,8 +1985,8 @@
                         }
                     }
                 ],
-                "materialref": {"materialId": "chair_red_body"},
-                "children":{
+                "materialref": { "materialId": "chair_red_body" },
+                "children": {
                     "nurbsCenter": {
                         "type": "nurbs",
                         "degree_u": 3,
@@ -1982,31 +1994,31 @@
                         "parts_u": 8,
                         "parts_v": 8,
                         "controlpoints": [
-                            {"x": -0.5, "y": -1.5, "z": 0.0},
-                            {"x": -0.167, "y": -1.5, "z": 0.0},
-                            {"x": 0.167, "y": -1.5, "z": 0.0},
-                            {"x": 0.5, "y": -1.5, "z": 0.0},
+                            { "x": -0.5, "y": -1.5, "z": 0.0 },
+                            { "x": -0.167, "y": -1.5, "z": 0.0 },
+                            { "x": 0.167, "y": -1.5, "z": 0.0 },
+                            { "x": 0.5, "y": -1.5, "z": 0.0 },
 
-                            {"x": -0.5, "y": -1.0, "z": 0.0},
-                            {"x": -0.167, "y": -1.0, "z": 0.25},
-                            {"x": 0.167, "y": -1.0, "z": 0.25},
-                            {"x": 0.5, "y": -1.0, "z": 0.0},
+                            { "x": -0.5, "y": -1.0, "z": 0.0 },
+                            { "x": -0.167, "y": -1.0, "z": 0.25 },
+                            { "x": 0.167, "y": -1.0, "z": 0.25 },
+                            { "x": 0.5, "y": -1.0, "z": 0.0 },
 
-                            {"x": -0.5, "y": 1.0, "z": 0.0},
-                            {"x": -0.167, "y": 1.0, "z": 0.25},
-                            {"x": 0.167, "y": 1.0, "z": 0.25},
-                            {"x": 0.5, "y": 1.0, "z": 0.0},
+                            { "x": -0.5, "y": 1.0, "z": 0.0 },
+                            { "x": -0.167, "y": 1.0, "z": 0.25 },
+                            { "x": 0.167, "y": 1.0, "z": 0.25 },
+                            { "x": 0.5, "y": 1.0, "z": 0.0 },
 
-                            {"x": -0.5, "y": 1.5, "z": 0.0},
-                            {"x": -0.167, "y": 1.5, "z": 0.0},
-                            {"x": 0.167, "y": 1.5, "z": 0.0},
-                            {"x": 0.5, "y": 1.5, "z": 0.0}
+                            { "x": -0.5, "y": 1.5, "z": 0.0 },
+                            { "x": -0.167, "y": 1.5, "z": 0.0 },
+                            { "x": 0.167, "y": 1.5, "z": 0.0 },
+                            { "x": 0.5, "y": 1.5, "z": 0.0 }
                         ]
                     }
                 }
             },
-            "chair_cilinder":{
-                "type" : "node",
+            "chair_cilinder": {
+                "type": "node",
                 "transforms": [
                     {
                         "type": "rotate",
@@ -2025,7 +2037,7 @@
                         }
                     }
                 ],
-                "children":{
+                "children": {
                     "cylinderPrim1": {
                         "type": "cylinder",
                         "base": 0.3,
@@ -2036,32 +2048,32 @@
                     }
                 }
             },
-            "chair_armrest":{
-                "type" : "node",
+            "chair_armrest": {
+                "type": "node",
                 "transforms": [
                     {
                         "type": "translate",
                         "amount": {
                             "x": -1.75,
                             "y": 0,
-                            "z": 0.90
+                            "z": 0.9
                         }
                     }
                 ],
-                "children":{
+                "children": {
                     "chair_struct": {
                         "type": "box",
-                        "xyz1": {"x": -0.25, "y": -0.125, "z": -1.0},
-                        "xyz2": {"x": 0.25, "y": 0.125, "z": 1.0}
-                    },  
-                    "chair_armrest_filling":{
+                        "xyz1": { "x": -0.25, "y": -0.125, "z": -1.0 },
+                        "xyz2": { "x": 0.25, "y": 0.125, "z": 1.0 }
+                    },
+                    "chair_armrest_filling": {
                         "type": "noderef",
                         "nodeId": "chair_armrest_filling"
                     }
                 }
             },
-            "chair_armrest_filling":{
-                "type" : "node",
+            "chair_armrest_filling": {
+                "type": "node",
                 "transforms": [
                     {
                         "type": "translate",
@@ -2072,8 +2084,8 @@
                         }
                     }
                 ],
-                "materialref": {"materialId": "chair_red_body"},
-                "children":{
+                "materialref": { "materialId": "chair_red_body" },
+                "children": {
                     "nurbsPrim": {
                         "type": "nurbs",
                         "degree_u": 3,
@@ -2081,31 +2093,31 @@
                         "parts_u": 8,
                         "parts_v": 8,
                         "controlpoints": [
-                            {"x": -0.25, "y": 0.0, "z": -1.0},
-                            {"x": -0.25, "y": 0.0, "z": -1.0},
-                            {"x": 0.25, "y": 0.0, "z": -1.0},
-                            {"x": 0.25, "y": 0.0, "z": -1.0},
+                            { "x": -0.25, "y": 0.0, "z": -1.0 },
+                            { "x": -0.25, "y": 0.0, "z": -1.0 },
+                            { "x": 0.25, "y": 0.0, "z": -1.0 },
+                            { "x": 0.25, "y": 0.0, "z": -1.0 },
 
-                            {"x": -0.25, "y": 0.0, "z": -1.0},
-                            {"x": -0.25, "y": 0.25, "z": -1.25},
-                            {"x": 0.25, "y": 0.25, "z": -1.25},
-                            {"x": 0.25, "y": 0.0, "z": -1.0},
+                            { "x": -0.25, "y": 0.0, "z": -1.0 },
+                            { "x": -0.25, "y": 0.25, "z": -1.25 },
+                            { "x": 0.25, "y": 0.25, "z": -1.25 },
+                            { "x": 0.25, "y": 0.0, "z": -1.0 },
 
-                            {"x": -0.25, "y": 0.0, "z": 1.0},
-                            {"x": -0.25, "y": 0.25, "z": 1.25},
-                            {"x": 0.25, "y": 0.25, "z": 1.25},
-                            {"x": 0.25, "y": 0.0, "z": 1.0},
+                            { "x": -0.25, "y": 0.0, "z": 1.0 },
+                            { "x": -0.25, "y": 0.25, "z": 1.25 },
+                            { "x": 0.25, "y": 0.25, "z": 1.25 },
+                            { "x": 0.25, "y": 0.0, "z": 1.0 },
 
-                            {"x": -0.25, "y": 0.0, "z": 1.0},
-                            {"x": -0.25, "y": 0.0, "z": 1.0},
-                            {"x": 0.25, "y": 0.0, "z": 1.0},
-                            {"x": 0.25, "y": 0.0, "z": 1.0}
+                            { "x": -0.25, "y": 0.0, "z": 1.0 },
+                            { "x": -0.25, "y": 0.0, "z": 1.0 },
+                            { "x": 0.25, "y": 0.0, "z": 1.0 },
+                            { "x": 0.25, "y": 0.0, "z": 1.0 }
                         ]
                     }
                 }
             },
-            "chair_support":{
-                "type" : "node",
+            "chair_support": {
+                "type": "node",
                 "transforms": [
                     {
                         "type": "translate",
@@ -2116,25 +2128,25 @@
                         }
                     }
                 ],
-                "materialref": {"materialId": "black"},
-                "children":{
+                "materialref": { "materialId": "black" },
+                "children": {
                     "chair_struct": {
                         "type": "box",
-                        "xyz1": {"x": -0.1, "y": -0.9, "z": -0.75},
-                        "xyz2": {"x": 0.1, "y": 0.9, "z": 0.75}
-                    }, 
-                    "chair_support_top":{
+                        "xyz1": { "x": -0.1, "y": -0.9, "z": -0.75 },
+                        "xyz2": { "x": 0.1, "y": 0.9, "z": 0.75 }
+                    },
+                    "chair_support_top": {
                         "type": "noderef",
                         "nodeId": "chair_support_top"
                     },
-                    "chair_support_floor":{
+                    "chair_support_floor": {
                         "type": "noderef",
                         "nodeId": "chair_support_floor"
                     }
                 }
             },
-            "chair_support_top":{
-                "type" : "node",
+            "chair_support_top": {
+                "type": "node",
                 "transforms": [
                     {
                         "type": "translate",
@@ -2145,17 +2157,16 @@
                         }
                     }
                 ],
-                "children":{
+                "children": {
                     "chair_struct": {
                         "type": "box",
-                        "xyz1": {"x": -0.1, "y": -0.4, "z": -0.20},
-                        "xyz2": {"x": 0.1, "y": 0.4, "z": 0.20}
+                        "xyz1": { "x": -0.1, "y": -0.4, "z": -0.2 },
+                        "xyz2": { "x": 0.1, "y": 0.4, "z": 0.2 }
                     }
-                    
                 }
             },
-            "chair_support_floor":{
-                "type" : "node",
+            "chair_support_floor": {
+                "type": "node",
                 "transforms": [
                     {
                         "type": "translate",
@@ -2166,16 +2177,16 @@
                         }
                     }
                 ],
-                "children":{
+                "children": {
                     "chair_struct": {
                         "type": "box",
-                        "xyz1": {"x": -0.15, "y": -0.05, "z": -0.75},
-                        "xyz2": {"x": 0.15, "y": 0.05, "z": 0.75}
+                        "xyz1": { "x": -0.15, "y": -0.05, "z": -0.75 },
+                        "xyz2": { "x": 0.15, "y": 0.05, "z": 0.75 }
                     }
                 }
             },
-            "chair_support_left":{
-                "type" : "node",
+            "chair_support_left": {
+                "type": "node",
                 "transforms": [
                     {
                         "type": "translate",
@@ -2186,15 +2197,15 @@
                         }
                     }
                 ],
-                "children":{
-                    "chair_support":{
+                "children": {
+                    "chair_support": {
                         "type": "noderef",
                         "nodeId": "chair_support"
                     }
                 }
             },
-            "chair_support_right":{
-                "type" : "node",
+            "chair_support_right": {
+                "type": "node",
                 "transforms": [
                     {
                         "type": "translate",
@@ -2205,15 +2216,15 @@
                         }
                     }
                 ],
-                "children":{
-                    "chair_support":{
+                "children": {
+                    "chair_support": {
                         "type": "noderef",
                         "nodeId": "chair_support"
                     }
                 }
             },
-            "chair1":{
-                "type" : "node",
+            "chair1": {
+                "type": "node",
                 "transforms": [
                     {
                         "type": "translate",
@@ -2224,15 +2235,15 @@
                         }
                     }
                 ],
-                "children":{
-                    "chair":{
+                "children": {
+                    "chair": {
                         "type": "noderef",
                         "nodeId": "chair"
                     }
                 }
             },
-            "chair2":{
-                "type" : "node",
+            "chair2": {
+                "type": "node",
                 "transforms": [
                     {
                         "type": "translate",
@@ -2243,15 +2254,15 @@
                         }
                     }
                 ],
-                "children":{
-                    "chair":{
+                "children": {
+                    "chair": {
                         "type": "noderef",
                         "nodeId": "chair"
                     }
                 }
             },
-            "chair3":{
-                "type" : "node",
+            "chair3": {
+                "type": "node",
                 "transforms": [
                     {
                         "type": "translate",
@@ -2262,15 +2273,15 @@
                         }
                     }
                 ],
-                "children":{
-                    "chair":{
+                "children": {
+                    "chair": {
                         "type": "noderef",
                         "nodeId": "chair"
                     }
                 }
             },
-            "chair4":{
-                "type" : "node",
+            "chair4": {
+                "type": "node",
                 "transforms": [
                     {
                         "type": "translate",
@@ -2281,15 +2292,15 @@
                         }
                     }
                 ],
-                "children":{
-                    "chair":{
+                "children": {
+                    "chair": {
                         "type": "noderef",
                         "nodeId": "chair"
                     }
                 }
             },
-            "chair5":{
-                "type" : "node",
+            "chair5": {
+                "type": "node",
                 "transforms": [
                     {
                         "type": "translate",
@@ -2300,15 +2311,15 @@
                         }
                     }
                 ],
-                "children":{
-                    "chair":{
+                "children": {
+                    "chair": {
                         "type": "noderef",
                         "nodeId": "chair"
                     }
                 }
             },
-            "chair6":{
-                "type" : "node",
+            "chair6": {
+                "type": "node",
                 "transforms": [
                     {
                         "type": "translate",
@@ -2319,97 +2330,97 @@
                         }
                     }
                 ],
-                "children":{
-                    "chair":{
+                "children": {
+                    "chair": {
                         "type": "noderef",
                         "nodeId": "chair"
                     }
                 }
             },
-            "chairs_row":{
-                "type" : "node",
-                "children":{
-                    "chair1":{
+            "chairs_row": {
+                "type": "node",
+                "children": {
+                    "chair1": {
                         "type": "noderef",
                         "nodeId": "chair1"
                     },
-                    "chair2":{
+                    "chair2": {
                         "type": "noderef",
                         "nodeId": "chair2"
                     },
-                    "chair3":{
+                    "chair3": {
                         "type": "noderef",
                         "nodeId": "chair3"
                     },
-                    "chair4":{
+                    "chair4": {
                         "type": "noderef",
                         "nodeId": "chair4"
                     },
-                    "chair5":{
+                    "chair5": {
                         "type": "noderef",
                         "nodeId": "chair5"
                     },
-                    "chair6":{
+                    "chair6": {
                         "type": "noderef",
                         "nodeId": "chair6"
                     }
                 }
             },
-            "chairs_block":{
-                "type" : "node",
-                "children":{
-                    "chairs_row1":{
+            "chairs_block": {
+                "type": "node",
+                "children": {
+                    "chairs_row1": {
                         "type": "noderef",
                         "nodeId": "chairs_row1"
                     },
-                    "chairs_row2":{
+                    "chairs_row2": {
                         "type": "noderef",
                         "nodeId": "chairs_row2"
                     },
-                    "chairs_row3":{
+                    "chairs_row3": {
                         "type": "noderef",
                         "nodeId": "chairs_row3"
                     },
-                    "chairs_row4":{
+                    "chairs_row4": {
                         "type": "noderef",
                         "nodeId": "chairs_row4"
                     },
-                    "chairs_row5":{
+                    "chairs_row5": {
                         "type": "noderef",
                         "nodeId": "chairs_row5"
                     },
-                    "chairs_row6":{
+                    "chairs_row6": {
                         "type": "noderef",
                         "nodeId": "chairs_row6"
                     },
-                    "chairs_row7":{
+                    "chairs_row7": {
                         "type": "noderef",
                         "nodeId": "chairs_row7"
                     },
-                    "chairs_row8":{
+                    "chairs_row8": {
                         "type": "noderef",
                         "nodeId": "chairs_row8"
                     },
-                    "chairs_row9":{
+                    "chairs_row9": {
                         "type": "noderef",
                         "nodeId": "chairs_row9"
                     },
-                    "chairs_row10":{
+                    "chairs_row10": {
                         "type": "noderef",
                         "nodeId": "chairs_row10"
                     },
-                    "chairs_row11":{
+                    "chairs_row11": {
                         "type": "noderef",
                         "nodeId": "chairs_row11"
                     },
-                    "chairs_row12":{
+                    "chairs_row12": {
                         "type": "noderef",
                         "nodeId": "chairs_row12"
                     }
                 }
             },
-            "chairs_row1":{
-                "type" : "node",
+            "chairs_row1": {
+                "type": "node",
                 "transforms": [
                     {
                         "type": "translate",
@@ -2420,15 +2431,15 @@
                         }
                     }
                 ],
-                "children":{
-                    "chairs":{
+                "children": {
+                    "chairs": {
                         "type": "noderef",
                         "nodeId": "chairs_row"
                     }
                 }
             },
-            "chairs_row2":{
-                "type" : "node",
+            "chairs_row2": {
+                "type": "node",
                 "transforms": [
                     {
                         "type": "translate",
@@ -2439,15 +2450,15 @@
                         }
                     }
                 ],
-                "children":{
-                    "chairs":{
+                "children": {
+                    "chairs": {
                         "type": "noderef",
                         "nodeId": "chairs_row"
                     }
                 }
             },
-            "chairs_row3":{
-                "type" : "node",
+            "chairs_row3": {
+                "type": "node",
                 "transforms": [
                     {
                         "type": "translate",
@@ -2458,15 +2469,15 @@
                         }
                     }
                 ],
-                "children":{
-                    "chairs":{
+                "children": {
+                    "chairs": {
                         "type": "noderef",
                         "nodeId": "chairs_row"
                     }
                 }
             },
-            "chairs_row4":{
-                "type" : "node",
+            "chairs_row4": {
+                "type": "node",
                 "transforms": [
                     {
                         "type": "translate",
@@ -2477,15 +2488,15 @@
                         }
                     }
                 ],
-                "children":{
-                    "chairs":{
+                "children": {
+                    "chairs": {
                         "type": "noderef",
                         "nodeId": "chairs_row"
                     }
                 }
             },
-            "chairs_row5":{
-                "type" : "node",
+            "chairs_row5": {
+                "type": "node",
                 "transforms": [
                     {
                         "type": "translate",
@@ -2496,15 +2507,15 @@
                         }
                     }
                 ],
-                "children":{
-                    "chairs":{
+                "children": {
+                    "chairs": {
                         "type": "noderef",
                         "nodeId": "chairs_row"
                     }
                 }
             },
-            "chairs_row6":{
-                "type" : "node",
+            "chairs_row6": {
+                "type": "node",
                 "transforms": [
                     {
                         "type": "translate",
@@ -2515,24 +2526,24 @@
                         }
                     }
                 ],
-                "children":{
-                    "chairs":{
+                "children": {
+                    "chairs": {
                         "type": "noderef",
                         "nodeId": "chairs_row"
                     }
                 }
             },
-            "chairs_row7":{
-                "type" : "node",
-                "children":{
-                    "chairs":{
+            "chairs_row7": {
+                "type": "node",
+                "children": {
+                    "chairs": {
                         "type": "noderef",
                         "nodeId": "chairs_row"
                     }
                 }
             },
-            "chairs_row8":{
-                "type" : "node",
+            "chairs_row8": {
+                "type": "node",
                 "transforms": [
                     {
                         "type": "translate",
@@ -2543,15 +2554,15 @@
                         }
                     }
                 ],
-                "children":{
-                    "chairs":{
+                "children": {
+                    "chairs": {
                         "type": "noderef",
                         "nodeId": "chairs_row"
                     }
                 }
             },
-            "chairs_row9":{
-                "type" : "node",
+            "chairs_row9": {
+                "type": "node",
                 "transforms": [
                     {
                         "type": "translate",
@@ -2562,15 +2573,15 @@
                         }
                     }
                 ],
-                "children":{
-                    "chairs":{
+                "children": {
+                    "chairs": {
                         "type": "noderef",
                         "nodeId": "chairs_row"
                     }
                 }
             },
-            "chairs_row10":{
-                "type" : "node",
+            "chairs_row10": {
+                "type": "node",
                 "transforms": [
                     {
                         "type": "translate",
@@ -2581,15 +2592,15 @@
                         }
                     }
                 ],
-                "children":{
-                    "chairs":{
+                "children": {
+                    "chairs": {
                         "type": "noderef",
                         "nodeId": "chairs_row"
                     }
                 }
             },
-            "chairs_row11":{
-                "type" : "node",
+            "chairs_row11": {
+                "type": "node",
                 "transforms": [
                     {
                         "type": "translate",
@@ -2600,15 +2611,15 @@
                         }
                     }
                 ],
-                "children":{
-                    "chairs":{
+                "children": {
+                    "chairs": {
                         "type": "noderef",
                         "nodeId": "chairs_row"
                     }
                 }
             },
-            "chairs_row12":{
-                "type" : "node",
+            "chairs_row12": {
+                "type": "node",
                 "transforms": [
                     {
                         "type": "translate",
@@ -2619,15 +2630,15 @@
                         }
                     }
                 ],
-                "children":{
-                    "chairs":{
+                "children": {
+                    "chairs": {
                         "type": "noderef",
                         "nodeId": "chairs_row"
                     }
                 }
             },
-            "chairs":{
-                "type" : "node",
+            "chairs": {
+                "type": "node",
                 "transforms": [
                     {
                         "type": "rotate",
@@ -2654,19 +2665,19 @@
                         }
                     }
                 ],
-                "children":{
-                    "chairs_block_left":{
+                "children": {
+                    "chairs_block_left": {
                         "type": "noderef",
                         "nodeId": "chairs_block_left"
                     },
-                    "chairs_block_right":{
+                    "chairs_block_right": {
                         "type": "noderef",
                         "nodeId": "chairs_block_right"
                     }
                 }
             },
-            "chairs_block_left":{
-                "type" : "node",
+            "chairs_block_left": {
+                "type": "node",
                 "transforms": [
                     {
                         "type": "translate",
@@ -2677,15 +2688,15 @@
                         }
                     }
                 ],
-                "children":{
-                    "chairs_block":{
+                "children": {
+                    "chairs_block": {
                         "type": "noderef",
                         "nodeId": "chairs_block"
                     }
                 }
             },
-            "chairs_block_right":{
-                "type" : "node",
+            "chairs_block_right": {
+                "type": "node",
                 "transforms": [
                     {
                         "type": "translate",
@@ -2696,8 +2707,8 @@
                         }
                     }
                 ],
-                "children":{
-                    "chairs_block":{
+                "children": {
+                    "chairs_block": {
                         "type": "noderef",
                         "nodeId": "chairs_block"
                     }
