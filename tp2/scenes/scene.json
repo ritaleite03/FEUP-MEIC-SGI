@@ -50,10 +50,10 @@
                 "filepath": "scenes/demo/textures/texture_curtains.jpg"
             },
             "red_leather": {
-                "filepath": "scenes/textures/red_leather.jpg"
+                "filepath": "scenes/demo/textures/red_leather.jpg"
             },
             "matte_black": {
-                "filepath": "scenes/textures/matte_black.jpg"
+                "filepath": "scenes/demo/textures/matte_black.jpg"
             }
         },
         "materials": {
