@@ -10,28 +10,28 @@
                 "r": 0.0,
                 "g": 0.0,
                 "b": 0.0
-            }
-        },
-        "fog": {
-            "color": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0
             },
-            "near": 1,
-            "far": 1000
-        },
-        "skybox": {
-            "size": { "x": 200, "y": 100, "z": 200 },
-            "center": { "x": 0, "y": 49.99, "z": 0 },
-            "emissive": { "r": 0, "g": 0, "b": 0 },
-            "intensity": 0.1,
-            "front": "scenes/demo/textures/sky.jpg",
-            "back": "scenes/demo/textures/sky.jpg",
-            "up": "scenes/demo/textures/sky.jpg",
-            "down": "scenes/demo/textures/floor_exterior.jpg",
-            "left": "scenes/demo/textures/sky.jpg",
-            "right": "scenes/demo/textures/sky.jpg"
+            "fog": {
+                "color": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                },
+                "near": 1,
+                "far": 1000
+            },
+            "skybox": {
+                "size": { "x": 200, "y": 100, "z": 200 },
+                "center": { "x": 0, "y": 49.99, "z": 0 },
+                "emissive": { "r": 0, "g": 0, "b": 0 },
+                "intensity": 0.1,
+                "front": "scenes/demo/textures/sky.jpg",
+                "back": "scenes/demo/textures/sky.jpg",
+                "up": "scenes/demo/textures/sky.jpg",
+                "down": "scenes/demo/textures/floor_exterior.jpg",
+                "left": "scenes/demo/textures/sky.jpg",
+                "right": "scenes/demo/textures/sky.jpg"
+            }
         },
         "textures": {
             "texture_stage": {
