@@ -315,6 +315,15 @@
                 "textureref": "red_leather",
                 "texlength_s": 3,
                 "texlength_t": 1
+            },
+            "lamp": {
+                "color": { "r": 0.0, "g": 0.0, "b": 0.0 },
+                "emissive": { "r": 1.0, "g": 0.9, "b": 0.8 },
+                "specular": { "r": 0, "g": 0, "b": 0 },
+                "shininess": 0,
+                "twosided": true,
+                "transparent": false,
+                "opacity": 2.5
             }
         },
         "cameras": {
@@ -637,9 +646,13 @@
                         "type": "noderef",
                         "nodeId": "stage_stairs"
                     },
-                    "stage_floor_spotlight": {
+                    "stage_ceiling_spotlights": {
                         "type": "noderef",
-                        "nodeId": "stage_floor_spotlight"
+                        "nodeId": "stage_ceiling_spotlights"
+                    },
+                    "stage_floor_spotlights": {
+                        "type": "noderef",
+                        "nodeId": "stage_floor_spotlights"
                     },
                     "curtains": {
                         "type": "noderef",
@@ -1459,6 +1472,86 @@
                     }
                 }
             },
+            "stage_floor_spotlights":{
+                "type":"node",
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": {
+                            "x": 15,
+                            "y": 3.2,
+                            "z": 0
+                        }
+                    }
+                ],
+                "children": {
+                    "stage_floor_spotlight_left": {
+                        "type": "noderef",
+                        "nodeId": "stage_floor_spotlight_left"
+                    },
+                    "stage_floor_spotlight_right": {
+                        "type": "noderef",
+                        "nodeId": "stage_floor_spotlight_right"
+                    }
+                }
+
+            },
+            "stage_floor_spotlight_left":{
+                "type":"node",
+                "transforms": [
+                    {
+                        "type": "rotate",
+                        "amount": {
+                            "x": 0,
+                            "y": -45,
+                            "z": 0
+                        }
+                    },
+                    {
+                        "type": "translate",
+                        "amount": {
+                            "x": 0,
+                            "y": 0,
+                            "z": -12
+                        }
+                    }
+                ],
+                "children": {
+                    "stage_floor_spotlight": {
+                        "type": "noderef",
+                        "nodeId": "stage_floor_spotlight"
+                    }
+                }
+
+            },
+            "stage_floor_spotlight_right":{
+                "type":"node",
+                "transforms": [
+                    {
+                        "type": "rotate",
+                        "amount": {
+                            "x": 0,
+                            "y": 45,
+                            "z": 0
+                        }
+                    },
+                    {
+                        "type": "translate",
+                        "amount": {
+                            "x": 0,
+                            "y": 0,
+                            "z": 12
+                        }
+                    }
+                ],
+                "children": {
+                    "stage_floor_spotlight": {
+                        "type": "noderef",
+                        "nodeId": "stage_floor_spotlight"
+                    }
+                }
+
+            },
             "stage_floor_spotlight": {
                 "type": "node",
                 "materialref": {
@@ -1649,6 +1742,229 @@
                         }
                     }
                 ]
+            },
+            "stage_ceiling_spotlights": {
+                "type": "node",
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": {
+                            "x": 26.5,
+                            "y": 13.75,
+                            "z": 0
+                        }
+                    }
+                ],
+                "materialref": {
+                    "materialId": "black"
+                },
+                "children": {
+                    "stage_ceiling_spotlight_left": {
+                        "type":"noderef",
+                        "nodeId" : "stage_ceiling_spotlight_left"
+                    },
+                    "stage_ceiling_spotlight_center": {
+                        "type":"noderef",
+                        "nodeId" : "stage_ceiling_spotlight_center"
+                    },
+                    "stage_ceiling_spotlight_right": {
+                        "type":"noderef",
+                        "nodeId" : "stage_ceiling_spotlight_right"
+                    }
+                }
+            },
+            "stage_ceiling_spotlight_left": {
+                "type": "node",
+                "transforms": [
+                    {
+                        "type": "rotate",
+                        "amount": {
+                            "x": 45,
+                            "y": 180,
+                            "z": 0
+                        }
+                    },
+                    {
+                        "type": "translate",
+                        "amount": {
+                            "x": 0,
+                            "y": 0,
+                            "z": -13
+                        }
+                    }
+                ],
+                "children": {
+                    "stage_floor_spotlight": {
+                        "type":"noderef",
+                        "nodeId" : "stage_ceiling_spotlight"
+                    }
+                }
+            },
+            "stage_ceiling_spotlight_right": {
+                "type": "node",
+                "transforms": [
+                    {
+                        "type": "rotate",
+                        "amount": {
+                            "x": -45,
+                            "y": 0,
+                            "z": 0
+                        }
+                    },
+                    {
+                        "type": "translate",
+                        "amount": {
+                            "x": 0,
+                            "y": 0,
+                            "z": 13
+                        }
+                    }
+                ],
+                "children": {
+                    "stage_floor_spotlight": {
+                        "type":"noderef",
+                        "nodeId" : "stage_ceiling_spotlight"
+                    }
+                }
+            },
+            "stage_ceiling_spotlight_center": {
+                "type": "node",
+                "transforms": [
+                    {
+                        "type": "rotate",
+                        "amount": {
+                            "x": -90,
+                            "y": 0,
+                            "z": 0
+                        }
+                    }
+                ],
+                "children": {
+                    "stage_floor_spotlight": {
+                        "type":"noderef",
+                        "nodeId" : "stage_ceiling_spotlight"
+                    }
+                }
+            },
+            "stage_ceiling_spotlight": {
+                "type": "node",
+                "materialref": {
+                    "materialId": "black"
+                },
+                "children": {
+                    "stage_floor_spotlight_body": {
+                        "type":"noderef",
+                        "nodeId" : "stage_ceiling_spotlight_body"
+                    },
+                    "stage_floor_spotlight_back": {
+                        "type":"noderef",
+                        "nodeId" : "stage_ceiling_spotlight_back"
+                    },
+                    "stage_floor_spotlight_lamp": {
+                        "type":"noderef",
+                        "nodeId" : "stage_ceiling_spotlight_lamp"
+                    },
+                    "spotlight": {
+                        "type": "spotlight",
+                        "color": {"r": 1, "g": 1, "b": 1},
+                        "intensity": 100,        
+                        "distance": 30,     
+                        "angle": 20,
+                        "decay": 2.0,  
+                        "penumbra": 1.0,         
+                        "position": {"x": 0, "y": 0, "z": 0},
+                        "target": {"x": 26, "y": 3, "z": 0}
+                    }
+                }
+            },
+            "stage_ceiling_spotlight_body": {
+                "type": "node",
+                "transforms": [
+                    {
+                        "type": "rotate",
+                        "amount": {
+                            "x": 90,
+                            "y": 0,
+                            "z": 0
+                        }
+                    }
+                ],
+                "children": {
+                    "stage_ceiling_spotlight_cylinder": {
+                        "type": "cylinder",
+                        "base": 0.5,
+                        "top": 0.5,
+                        "height": 1.0,
+                        "slices": 16,
+                        "stacks": 2
+                    }
+                }
+            },
+            "stage_ceiling_spotlight_back": {
+                "type": "node",
+                "transforms": [
+                    {
+                        "type": "rotate",
+                        "amount": {
+                            "x": 0,
+                            "y": 0,
+                            "z": 180
+                        }
+                    },
+                    {
+                        "type": "translate",
+                        "amount": {
+                            "x": 0,
+                            "y": 0,
+                            "z": 0.5
+                        }
+                    }
+                ],
+                "children": {
+                    "stage_ceiling_spotlight_sphere": {
+                        "type": "sphere",
+                        "radius": 0.5,
+                        "slices": 10,
+                        "stacks": 10,
+                        "phistart": 0,          
+                        "philength": 180 
+                    }
+                }
+            },
+            "stage_ceiling_spotlight_lamp": {
+                "type": "node",
+                "transforms": [
+                    {
+                        "type": "rotate",
+                        "amount": {
+                            "x": 90,
+                            "y": 0,
+                            "z": 0
+                        }
+                    },
+                    {
+                        "type": "translate",
+                        "amount": {
+                            "x": 0,
+                            "y": 0,
+                            "z": -0.55
+                        }
+                    }
+
+                ],
+                "materialref": {
+                    "materialId": "lamp"
+                },
+                "children": {
+                    "stage_ceiling_spotlight_cylinder": {
+                        "type": "cylinder",
+                        "base": 0.5,
+                        "top": 0.5,
+                        "height": 0.1,
+                        "slices": 16,
+                        "stacks": 1
+                    }
+                }
             },
             "chair": {
                 "type": "node",
