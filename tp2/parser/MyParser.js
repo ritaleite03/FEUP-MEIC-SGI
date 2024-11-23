@@ -17,92 +17,86 @@ class MyParser {
 			console.error('Error in MyParser.constructor: rootid or initial camera missing definitions');
 			return;			
 		}
-		const rootGraph = data.yasf.graph.rootid
-		const initialCamera = data.yasf.cameras.initial
-		if(!data.yasf.graph[rootGraph] || !data.yasf.cameras[initialCamera]) {
+		if(!data.yasf.graph[data.yasf.graph.rootid] || !data.yasf.cameras[data.yasf.cameras.initial]) {
 			console.error('Error in MyParser.constructor: name of rootid or initial camera missing definitions');
 			return;
 		}
 		this.defineGlobals(data.yasf.globals)
-		this.defineFog(data.yasf.globals.fog)
-		this.defineSkybox(data.yasf.globals.skybox)
 		this.defineCameras(data.yasf.cameras)
 		this.dataTextures = []
 		this.dataMaterials = []
+		this.dataNodes = []
+		this.dataLights = []
 		for(let key in data.yasf.textures) this.getTexture(key, data.yasf.textures[key])
 		for(let key in data.yasf.materials) this.getMaterial(key, data.yasf.materials[key])
-		this.app.setActiveCamera(initialCamera)
-		this.app.scene.add(this.parse(data.yasf.graph, rootGraph, null))
+		this.app.setActiveCamera(data.yasf.cameras.initial)
+		this.app.scene.add(this.parse(data.yasf.graph, data.yasf.graph.rootid, null, false, false))
+		for(const light of this.dataLights) {
+			if (light instanceof THREE.SpotLight) {
+				const helper = new THREE.SpotLightHelper(light)
+				helper.visible = false
+				this.app.scene.add(helper)
+			}
+			if (light instanceof THREE.PointLight) {
+				const helper = new THREE.PointLightHelper(light)
+				helper.visible = false
+				this.app.scene.add(helper)
+			}
+		}
 	}
 
 	defineGlobals(data) {
-		if (!data.background || !data.ambient || Object.keys(data).length !== 2) {
+		if (!data.background || !data.ambient || !data.fog || !data.skybox || Object.keys(data).length !== 4) {
 			console.error('Error in MyParser.defineGlobals: unexpected or missing definitions');
 			return;
-		}	
-		const background = [data.background.r, data.background.g, data.background.b];
-		const ambient = [data.ambient.r, data.ambient.g, data.ambient.b];
-		const all = [...background, ...ambient];
-		if (all.some(val => val === undefined || typeof val !== 'number')) {
-			console.error('Error in MyParser.defineGlobals: invalid or undefined values');
-			return;
-		}	
-		this.app.scene.background = new THREE.Color().setRGB(...background);
-		this.app.scene.ambient = new THREE.Color().setRGB(...ambient);
-	}
-	
-	defineFog(data) {
-		if (!data.color || !data.near || !data.far || Object.keys(data).length !== 3) {
-			console.error('Error in MyParser.defineFog: unexpected or missing definitions');
-			return
 		}
-		const color = [data.color.r, data.color.g, data.color.b]
-		const near = data.near
-		const far = data.far
-		const all = [...color, near, far]
-		if (all.some(val => val === undefined || typeof val !== 'number')) {
-			console.error('Error in MyParser.defineFog: invalid or undefined values');
-			return
-		}
-        this.app.scene.fog = new THREE.Fog( new THREE.Color().setRGB(...color), near, far)
-	}
-
-	defineSkybox(data){
-		if (!data.size || !data.center || !data.emissive || !data.intensity || !data.front || !data.back || !data.up || !data.down || ! data.left || !data.right || Object.keys(data).length !== 10) {
+		if (!data.skybox.size || !data.skybox.center || !data.skybox.emissive || !data.skybox.front || !data.skybox.back || !data.skybox.up || !data.skybox.down || ! data.skybox.left || !data.skybox.right || Object.keys(data.skybox).length !== 10) {
 			console.error('Error in MyParser.defineSkybox: unexpected or missing definitions');
 			return
 		}
-
-		const width = data.size.x
-		const height = data.size.y
-		const depth = data.size.z
-		const center = [data.center.x, data.center.y, data.center.z]
-		const emissive = new THREE.Color().setRGB(data.emissive.r, data.emissive.g, data.emissive.b)
-		const intensity = data.intensity
-
+		const app_background = [data.background.r, data.background.g, data.background.b];
+		if ([...app_background].some(val => val === undefined || typeof val !== 'number')) {
+			console.error('Error in MyParser.defineGlobals: invalid or undefined values in background');
+			return;
+		}	
+		this.app.scene.background = new THREE.Color().setRGB(...app_background);
+		const app_ambient = [data.ambient.r, data.ambient.g, data.ambient.b];
+		if ([...app_ambient].some(val => val === undefined || typeof val !== 'number')) {
+			console.error('Error in MyParser.defineGlobals: invalid or undefined values in ambient');
+			return;
+		}
+		this.app.scene.ambient = new THREE.Color().setRGB(...app_ambient);
+		const fog_color = [data.fog.color.r, data.fog.color.g, data.fog.color.b]
+		const fog_near = data.fog.near
+		const fog_far = data.fog.far
+		if ([...fog_color, fog_near, fog_far].some(val => val === undefined || typeof val !== 'number')) {
+			console.error('Error in MyParser.defineGlobals: invalid or undefined values in fog');
+			return;
+		}
+        this.app.scene.fog = new THREE.Fog(new THREE.Color().setRGB(...fog_color), fog_near, fog_far)
+		const sky_dimensions = [data.skybox.size.x, data.skybox.size.y, data.skybox.size.z]
+		const sky_center = [data.skybox.center.x, data.skybox.center.y, data.skybox.center.z]
+		const sky_emissive = [data.skybox.emissive.r, data.skybox.emissive.g, data.skybox.emissive.b]
+		const sky_intensity = data.skybox.intensity	
+		if ([...sky_dimensions, ...sky_center, ...sky_emissive, sky_intensity].some(val => val === undefined || typeof val !== 'number')) {
+			console.error('Error in MyParser.defineGlobals: invalid or undefined skybox');
+			return;
+		}	
 		const loader = new THREE.TextureLoader()
-
-		const texture1 = loader.load(data.front)
-		const texture2 = loader.load(data.back)
-		const texture3 = loader.load(data.up)
-		const texture4 = loader.load(data.down)
-		const texture5 = loader.load(data.left)
-		const texture6 = loader.load(data.right)
-
-		const material1 = new THREE.MeshPhongMaterial({emissive:emissive, emissiveIntensity:intensity, map:texture1, side: THREE.DoubleSide})
-		const material2 = new THREE.MeshPhongMaterial({emissive:emissive, emissiveIntensity:intensity, map:texture2, side: THREE.DoubleSide})
-		const material3 = new THREE.MeshPhongMaterial({emissive:emissive, emissiveIntensity:intensity, map:texture3, side: THREE.DoubleSide})
-		const material4 = new THREE.MeshPhongMaterial({emissive:emissive, emissiveIntensity:intensity, map:texture4, side: THREE.DoubleSide})
-		const material5 = new THREE.MeshPhongMaterial({emissive:emissive, emissiveIntensity:intensity, map:texture5, side: THREE.DoubleSide})
-		const material6 = new THREE.MeshPhongMaterial({emissive:emissive, emissiveIntensity:intensity, map:texture6, side: THREE.DoubleSide})
+		const sky_color = new THREE.Color().setRGB(...sky_emissive);
+		const material1 = new THREE.MeshPhongMaterial({emissive:sky_color, emissiveIntensity:sky_intensity, map:loader.load(data.skybox.front), side: THREE.DoubleSide})
+		const material2 = new THREE.MeshPhongMaterial({emissive:sky_color, emissiveIntensity:sky_intensity, map:loader.load(data.skybox.back), side: THREE.DoubleSide})
+		const material3 = new THREE.MeshPhongMaterial({emissive:sky_color, emissiveIntensity:sky_intensity, map:loader.load(data.skybox.up), side: THREE.DoubleSide})
+		const material4 = new THREE.MeshPhongMaterial({emissive:sky_color, emissiveIntensity:sky_intensity, map:loader.load(data.skybox.down), side: THREE.DoubleSide})
+		const material5 = new THREE.MeshPhongMaterial({emissive:sky_color, emissiveIntensity:sky_intensity, map:loader.load(data.skybox.left), side: THREE.DoubleSide})
+		const material6 = new THREE.MeshPhongMaterial({emissive:sky_color, emissiveIntensity:sky_intensity, map:loader.load(data.skybox.right), side: THREE.DoubleSide})
 		const materials = [material1, material2, material3, material4, material5, material6]
-
-		const object = new THREE.BoxGeometry(width, height, depth)
+		const object = new THREE.BoxGeometry(...sky_dimensions)
 		const mesh = new THREE.Mesh(object, materials)
-		mesh.position.set(...center)
+		mesh.position.set(...sky_center)
 		this.app.scene.add(mesh)
 	}
-
+	
 	defineCameras(data) {
 		let listCameras = []
 		if (!data.initial || Object.keys(data).length < 2) {
@@ -119,8 +113,7 @@ class MyParser {
 				const angle = data[key].angle
 				const near = data[key].near
 				const far = data[key].far
-				const all = [...position, ...target, angle, near, far]
-				if (all.some(val => val === undefined || typeof val !== 'number')) {
+				if ([...position, ...target, angle, near, far].some(val => val === undefined || typeof val !== 'number')) {
 					console.error('Error in MyParser.defineCameras: invalid or undefined values');
 					return
 				}
@@ -139,8 +132,7 @@ class MyParser {
 				const right = data[key].right
 				const bottom = data[key].bottom
 				const top = data[key].top
-				const all = [...position, ...target, near, far, left, right, bottom, top]
-				if (all.some(val => val === undefined || typeof val !== 'number')) {
+				if ([...position, ...target, near, far, left, right, bottom, top].some(val => val === undefined || typeof val !== 'number')) {
 					console.error('Error in MyParser.defineCameras: invalid or undefined values');
 					return
 				}
@@ -156,7 +148,6 @@ class MyParser {
 			}
 		}
 		this.app.cameras = listCameras
-
 	}
 
 	getTexture(name, data) {
@@ -185,7 +176,7 @@ class MyParser {
 		const emissive = [data.emissive.r, data.emissive.g, data.emissive.b]
 		const shininess = data.shininess
 		const opacity = data.opacity
-		const all = [...color, ...specular, ...emissive, shininess, opacity]
+		const all = [...color, ...specular, ...emissive]
 		if (all.some(val => val === undefined || typeof val !== 'number')) {
 			console.error('Error in MyParser.getMaterial: invalid or undefined values');
 			return
@@ -252,6 +243,7 @@ class MyParser {
 		pointlight.castShadow = castshadow
 		pointlight.shadowfar = shadowfar
 		pointlight.shadowmapsize = shadowmapsize
+		this.dataLights.push(pointlight)
 		return pointlight
 	}
 
@@ -265,7 +257,7 @@ class MyParser {
 		const color = [prim.color.r, prim.color.g, prim.color.b]
 		const intensity = prim.intensity ? prim.intensity : 1
 		const distance = prim.distance ? prim.distance : 2000
-		const angle = prim.angle
+		const angle = prim.angle * Math.PI / 180
 		const decay = prim.decay ? prim.decay : 2
 		const penumbra = prim.penumbra ? prim.penumbra : 1
 		const shadowfar = prim.shadowfar ? prim.shadowfar : 500
@@ -282,6 +274,7 @@ class MyParser {
 		spotlight.castShadow = castshadow
 		spotlight.shadowfar = shadowfar
 		spotlight.shadowmapsize = shadowmapsize
+		this.dataLights.push(spotlight)
 		return spotlight
 	}
 
@@ -317,28 +310,26 @@ class MyParser {
 		return directionallight
 	}
 
-    parseRectangle(prim) {
+    parseRectangle(prim, material) {
 		if (![prim.xy1, prim.xy2].every((value) => value !== undefined)) {
 			console.error('Error in MyParser.parseRectangle : missing attributes');
 			return
 		}
-		const xy1X = prim.xy1.x
-		const xy1Y = prim.xy1.y
-		const xy2X = prim.xy2.x
-		const xy2Y = prim.xy2.y
-		const all = [xy1X, xy1Y, xy2X, xy2Y]
-		if (all.some(val => val === undefined || typeof val !== 'number')) {
+		if ([prim.xy1.x, prim.xy1.y, prim.xy2.x, prim.xy2.y].some(val => val === undefined || typeof val !== 'number')) {
 			console.error('Error in MyParser.parseRectangle: invalid or undefined values');
 			return
 		}
-		const width = Math.abs(xy2X) + Math.abs(xy1X);
-		const height = Math.abs(xy2Y) + Math.abs(xy1Y);
+		const width = Math.abs(prim.xy2.x) + Math.abs(prim.xy1.x);
+		const height = Math.abs(prim.xy2.y) + Math.abs(prim.xy1.y);
 		const parts_x = prim.parts_x ? prim.parts_x : 1
 		const parts_y = prim.parts_y ? prim.parts_y : 1
-		return new THREE.PlaneGeometry(width,height,parts_x,parts_y)
+		const object = new THREE.PlaneGeometry(width, height, parts_x, parts_y)
+		const mesh =  new THREE.Mesh(object, material)
+		mesh.position.set((prim.xy1.x + prim.xy2.x) / 2, (prim.xy1.y + prim.xy2.y) / 2, 0)
+		return mesh
 	}
 
-	parseTriangle(prim) {
+	parseTriangle(prim, material) {
 		if (![prim.xyz1, prim.xyz2, prim.xyz3].every((value) => value !== undefined)) {
 			console.error('Error in MyParser.parseTriangle : missing attributes');
 			return
@@ -346,179 +337,183 @@ class MyParser {
 		const position1 = [prim.xyz1.x, prim.xyz1.y, prim.xyz1.z]
 		const position2 = [prim.xyz2.x, prim.xyz2.y, prim.xyz2.z]
 		const position3 = [prim.xyz3.x, prim.xyz3.y, prim.xyz3.z]
-		const all = [...position1, ...position2, ...position3]
-		if (all.some(val => val === undefined || typeof val !== 'number')) {
+		if ([...position1, ...position2, ...position3].some(val => val === undefined || typeof val !== 'number')) {
 			console.error('Error in MyParser.parseTriangle: invalid or undefined values');
 			return
 		}
-		return new THREE.Triangle(new THREE.Vector3(...position1), new THREE.Triangle(...position2), new THREE.Triangle(...position3))
+		const object =  new THREE.Triangle(new THREE.Vector3(...position1), new THREE.Triangle(...position2), new THREE.Triangle(...position3))
+		const mesh = new THREE.Mesh(object, material)
+		mesh.position.set((prim.xyz1.x + prim.xyz2.x + prim.xyz3.x) / 3, (prim.xyz1.y + prim.xyz2.y + prim.xyz3.y) / 3, 0)
+		return mesh
 	}
 
-	parseBox(prim) {
+	parseBox(prim, material) {
 		if (![prim.xyz1, prim.xyz2].every((value) => value !== undefined)) {
 			console.error('Error in MyParser.parseBox : missing attributes');
 			return
 		}
-		const xyz1X = prim.xyz1.x
-		const xyz1Y = prim.xyz1.y
-		const xyz1Z = prim.xyz1.z
-		const xyz2X = prim.xyz2.x
-		const xyz2Y = prim.xyz2.y
-		const xyz2Z = prim.xyz2.z
-		const all = [xyz1X, xyz1Y, xyz1Z, xyz2X, xyz2Y, xyz2Z]
-		if (all.some(val => val === undefined || typeof val !== 'number')) {
+		if ([prim.xyz1.x, prim.xyz1.y, prim.xyz1.z, prim.xyz2.x, prim.xyz2.y, prim.xyz2.z].some(val => val === undefined || typeof val !== 'number')) {
 			console.error('Error in MyParser.parseBox: invalid or undefined values');
 			return
 		}
-		const width = Math.abs(xyz2X - xyz1X);
-		const height = Math.abs(xyz2Y - xyz1Y);
-		const depth = Math.abs(xyz2Z - xyz1Z);
+		const width = Math.abs(prim.xyz2.x) + Math.abs(prim.xyz1.x);
+		const height = Math.abs(prim.xyz2.y) + Math.abs(prim.xyz1.y);
+		const depth = Math.abs(prim.xyz2.z) + Math.abs(prim.xyz1.z);
 		const parts_x = prim.parts_x ? prim.parts_x : 1
 		const parts_y = prim.parts_y ? prim.parts_y : 1
 		const parts_z = prim.parts_z ? prim.parts_z : 1
-		return new THREE.BoxGeometry(width, height, depth, parts_x, parts_y, parts_z)
+		const object = new THREE.BoxGeometry(width, height, depth, parts_x, parts_y, parts_z)
+		const mesh = new THREE.Mesh(object, material)
+		mesh.position.set((prim.xyz1.x + prim.xyz2.x) / 2, (prim.xyz1.y + prim.xyz2.y) / 2, (prim.xyz1.z + prim.xyz2.z) / 2)
+		return mesh
 	}
 
-	parseCylinder(prim) {
+	parseCylinder(prim, material) {
 		if (![prim.base, prim.top, prim.height, prim.slices, prim.stacks].every((value) => value !== undefined)) {
 			console.error('Error in MyParser.parseCylinder : missing attributes');
 			return
 		}
-		const base = prim.base
-		const top = prim.top
-		const height = prim.height
-		const slices = prim.slices
-		const stacks = prim.stacks
-		const thetaStart = prim.thetaStart ? prim.thetaStart * Math.PI / 180 : 0
-		const thetaLength = prim.thetaLength ? prim.thetaLength * Math.PI / 180 : 2 * Math.PI
-		const all = [base, top, height, slices, stacks, thetaStart, thetaLength]
-		if (all.some(val => val === undefined || typeof val !== 'number')) {
+		const thetastart = prim.thetastart ? prim.thetastart * Math.PI / 180 : 0
+		const thetalength = prim.thetalength ? prim.thetalength * Math.PI / 180 : 2 * Math.PI
+		const capsclose = prim.capsclose ? prim.capsclose : false
+		if ([thetastart, thetalength].some(val => val === undefined || typeof val !== 'number')) {
 			console.error('Error in MyParser.parseCylinder: invalid or undefined values');
 			return
 		}
-
-		const capsclose = prim.capsclose ? prim.capsclose : false
-		return new THREE.CylinderGeometry(top, base, height, slices, stacks, capsclose, thetaStart, thetaLength)
+		const object = new THREE.CylinderGeometry(prim.top, prim.base, prim.height, prim.slices, prim.stacks, capsclose, thetastart, thetalength)
+		return new THREE.Mesh(object, material)
 	}
 
-	parseSphere(prim) {
+	parseSphere(prim, material) {
 		if (![prim.radius, prim.slices, prim.stacks].every((value) => value !== undefined)) {
 			console.error('Error in MyParser.parseSphere : missing attributes');
 			return
 		}
-		const radius = prim.radius
-		const slices = prim.slices
-		const stacks = prim.stacks
 		const thetastart = prim.thetastart ? prim.thetastart * Math.PI / 180 : 0
 		const thetalength = prim.thetalength ? prim.thetalength * Math.PI / 180 : Math.PI
 		const phistart = prim.phistart ? prim.phistart * Math.PI / 180 : 0
 		const philength = prim.philength ? prim.philength * Math.PI / 180 : 2 * Math.PI
-		const all = [radius, slices, stacks, thetastart, thetalength, phistart, philength]
-		if (all.some(val => val === undefined || typeof val !== 'number')) {
+		if ([thetastart, thetalength, phistart, philength].some(val => val === undefined || typeof val !== 'number')) {
 			console.error('Error in MyParser.parseSphere: invalid or undefined values');
 			return
 		}
-		return new THREE.SphereGeometry(radius, slices, stacks, phistart, philength, thetastart, thetalength)
+		const object = new THREE.SphereGeometry(prim.radius, prim.slices, prim.stacks, phistart, philength, thetastart, thetalength)
+		return new THREE.Mesh(object, material)
 	}
 
-	parseNurbs(prim) {
-		if (![prim.degree_u, prim.degree_v, prim.parts_u, prim.parts_v, prim.controlpoints].every((value) => value !== undefined)) {
-			console.error('Error in MyParser.parseSphere : missing attributes');
+	parseNurbs(prim, material) {
+		if (![prim.degree_u, prim.degree_v, prim.parts_u, prim.parts_v, ...prim.controlpoints].every((value) => value !== undefined)) {
+			console.error('Error in MyParser.parseNurbs : missing attributes');
 			return
 		}
-		const degree_u = prim.degree_u
-		const degree_v = prim.degree_v
-		const parts_u = prim.parts_u
-		const parts_v = prim.parts_v
-		const controlpoints = prim.controlpoints
-		const all = [degree_u, degree_v, parts_u, parts_v]
-		if (all.some(val => val === undefined || typeof val !== 'number')) {
-			console.error('Error in MyParser.parseSphere: invalid or undefined values');
+		if(![prim.degree_u, prim.degree_v, prim.parts_u, prim.parts_v].every((value) => value > 0)){
+			console.error('Error in MyParser.parseNurbs : attributes are not positives');
 			return
 		}
-		if(all.some(val => val <= 0)){
-			console.error('Error');
+		if(prim.controlpoints.length !== (prim.degree_u + 1) * (prim.degree_v + 1)){
+			console.error('Error in MyParser.parseNurbs : number of controlpoints are incorrect');
 			return
 		}
-		const numberPoints = (degree_u + 1) * (degree_v + 1);
-		if(controlpoints.length !== numberPoints){
-			console.error('Error');
-			return
-		}
-
 		let points = [];
 		let row = [];
-
-		for (let i = 0; i < controlpoints.length; i++) {
-			let x = controlpoints[i].x
-			let y = controlpoints[i].y
-			let z = controlpoints[i].z
+		for (let i = 0; i < prim.controlpoints.length; i++) {
+			let x = prim.controlpoints[i].x
+			let y = prim.controlpoints[i].y
+			let z = prim.controlpoints[i].z
 			let positions = [x,y,z]
 			if (positions.some(val => val === undefined || typeof val !== 'number')) {
 				console.error('Error in MyParser.parseNurbs: invalid or undefined values in points coordinates');
 				return
 			}
 			row.push([x, y, z, 1]);
-    		if ((i + 1) % (degree_v + 1) === 0) { 
+    		if ((i + 1) % (prim.degree_v + 1) === 0) { 
         		points.push(row);
         		row = [];
     		}
 		}
-		
-		return this.buider.build(points, degree_u, degree_v, parts_u, parts_v, null)
+		const object = this.buider.build(points, prim.degree_u, prim.degree_v, prim.parts_u, prim.parts_v, null)
+		return new THREE.Mesh(object, material)
 	}
 
 
-    parse(data, name, material) {
+    parse(data, name, material, castshadows, receiveshadows) {
         const parent = data[name]
-        const children = data[name].children
-        const group = new THREE.Group();
+		const parent_material = parent.materialref ? this.dataMaterials[parent.materialref.materialId] : material
+		const parent_castshadows = parent.castshadows ? parent.castshadows : castshadows
+		const parent_receiveshadows = parent.parent_receiveshadows ? parent.parent_receiveshadows : receiveshadows
+        const list_children = data[name].children ? data[name].children : {}
 		if(parent.type !== 'node') {
-			console.error('Error in MyParser.parseSphere: invalid or undefined parent type');
+			console.error('Error in MyParser.parse: invalid or undefined parent type');
 			return
 		}
-        if(parent.materialref) {
-			material = this.dataMaterials[parent.materialref.materialId]
+		if(name !== name.toLowerCase()) {
+			console.error('Error in MyParser.parse: node name is not in lowercase');
+			return	
 		}
-        for(let i = 0; i < Object.keys(children).length; i++) {
-			const name = Object.keys(children)[i]
-
-            const node = parent['children'][name]
-			if(name == 'prim') console.log(data[node.nodeId])
-
-            if (node.type === 'noderef') {
-                group.add(this.parse(data, node.nodeId, material))
-            }
-            else {
-                let object = null
-                if (node.type === 'pointlight') group.add(this.parsePointlight(node))
-				if (node.type === 'spotlight') group.add(this.parseSpotlight(node))
-				if (node.type === 'rectangle') object = this.parseRectangle(node)
-				if (node.type === 'triangle') object = this.parseTriangle(node)
-				if (node.type === 'box') object = this.parseBox(node)
-				if (node.type === 'cylinder') object = this.parseCylinder(node)
-				if (node.type === 'sphere') object = this.parseSphere(node)
-				if (node.type === 'nurbs') object = this.parseNurbs(node)
-                if(object) {
-					let objectMaterial = material ? material : new THREE.MeshPhongMaterial({color: "#ffffff", specular: "#ffffff"})
-                    const mesh = new THREE.Mesh(object, objectMaterial)
-                    group.add(mesh)
-                }
-            }
-        } 
+		if(list_children.length > 1) {
+			console.error('Error in MyParser.parse: more than one primitive in the node');
+			return
+		}
+        let  group = new THREE.Group();
+		if(this.dataNodes[name]) {
+			group = this.dataNodes[name].clone()
+			group.name = name
+			group.children.forEach((child) => {
+				this.changeMaterialShadows(data, child, parent_material, parent_castshadows, parent_receiveshadows)
+			  });
+		}
+		else {
+        	for(let i = 0; i < Object.keys(list_children).length; i++) {
+				const child_name = Object.keys(list_children)[i]
+        	    const child_node = parent['children'][child_name]
+				const child_material = parent_material ? parent_material : new THREE.MeshPhongMaterial({color: "#ffffff", specular: "#ffffff"})
+				if(child_name === 'nodesList') {
+					for(const node of child_node) {
+						const group_node = this.parse(data, node, parent_material, parent_castshadows, parent_receiveshadows)
+						group_node.name = node
+						group.add(group_node)
+					}
+					continue
+				}
+				if (child_node.type === 'pointlight') {
+					const light = this.parsePointlight(child_node)
+					light.name = child_name
+					group.add(light)
+					continue
+				}
+				if (child_node.type === 'spotlight') {
+					const light = this.parseSpotlight(child_node)
+					light.name = child_name
+					group.add(light)
+					continue
+				}
+				let mesh = null
+				if (child_node.type === 'rectangle') mesh = this.parseRectangle(child_node, child_material)
+				if (child_node.type === 'triangle') mesh = this.parseTriangle(child_node, child_material)
+				if (child_node.type === 'box') mesh = this.parseBox(child_node, child_material)
+				if (child_node.type === 'cylinder') mesh = this.parseCylinder(child_node, child_material)
+				if (child_node.type === 'sphere') mesh = this.parseSphere(child_node, child_material)
+				if (child_node.type === 'nurbs') mesh = this.parseNurbs(child_node, child_material)
+				mesh.name = child_name
+				mesh.castShadow = parent_castshadows
+				mesh.receiveShadow = parent_receiveshadows
+				group.add(mesh)
+        	}
+			group.name = name
+			this.dataNodes[name] = group
+		}
         if (parent.transforms) {
             for(let i = 0; i < parent.transforms.length; i++) {
                 const transformation = parent.transforms[i]
                 const x = transformation.amount.x
                 const y = transformation.amount.y
                 const z = transformation.amount.z
-				const all = [x,y,z]
-				if (all.some(val => val === undefined || typeof val !== 'number')) {
+				if ([x, y, z].some(val => val === undefined || typeof val !== 'number')) {
 					console.error('Error in MyParser.parse: invalid or undefined values');
 					return
 				}
                 if (transformation.type === 'translate') {
-                    group.position.set(...all)
+                    group.position.set(x, y, z)
                 }
                 if (transformation.type === 'rotate') {	
 					group.rotateX(x * Math.PI / 180)
@@ -526,12 +521,57 @@ class MyParser {
                     group.rotateZ(z * Math.PI / 180)
 				}
                 if (transformation.type === 'scale') {
-                    group.scale.set(...all)
+                    group.scale.set(x, y, z)
 				}
             }
         }
         return group
     }
+
+	changeMaterialShadows(data, node, material, castshadows, receiveshadows) {
+		if (node.isGroup) {
+			if(data[node.name]['materialref']) {
+				node.children.forEach((child) => {
+					this.changeShadows(data, child, castshadows, receiveshadows)
+				})
+			}
+			else {
+				node.children.forEach((child) => {
+					this.changeMaterialShadows(data, child, material, castshadows, receiveshadows)
+				})
+			}
+		} else {
+			console.log(node)
+			node.material = material
+			node.material.needsUpdate = true
+			node.castShadow = castshadows
+			node.receiveshadows = receiveshadows
+			if (node instanceof THREE.SpotLight) {
+				this.dataLights.push(node)
+			}
+			if (node instanceof THREE.PointLight) {
+				this.dataLights.push(node)
+			}
+		}	
+	}
+
+	changeShadows(data, node, castshadows, receiveshadows) {
+		if (node.isGroup) {
+			node.children.forEach((child) => {
+				this.changeShadows(data, child, castshadows, receiveshadows)
+			})
+		} else {
+			console.log(node)
+			node.castShadow = castshadows
+			node.receiveshadows = receiveshadows
+			if (node instanceof THREE.SpotLight) {
+				this.dataLights.push(node)
+			}
+			if (node instanceof THREE.PointLight) {
+				this.dataLights.push(node)
+			}
+		}	
+	}
 }
 
 export { MyParser };
