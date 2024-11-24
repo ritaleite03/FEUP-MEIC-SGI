@@ -7,8 +7,17 @@ class MyParser {
 	   constructs the object
 	*/
 	constructor(app, data) {
+		
+		// variables
 		this.app = app
+		this.dataCameras = []
+		this.dataTextures = []
+		this.dataMaterials = []
+		this.dataNodes = []
+		this.dataLights = []
 		this.buider = new MyNurbsBuilder()
+		
+		// check for errors
 		if(!data.yasf.globals || !data.yasf.cameras || !data.yasf.textures || !data.yasf.materials || !data.yasf.graph || Object.keys(data.yasf).length < 5) {
 			console.error('Error in MyParser.constructor: unexpected or missing blocks');
 			return;
@@ -21,31 +30,38 @@ class MyParser {
 			console.error('Error in MyParser.constructor: name of rootid or initial camera missing definitions');
 			return;
 		}
-		this.defineGlobals(data.yasf.globals)
-		this.defineCameras(data.yasf.cameras)
-		this.dataTextures = []
-		this.dataMaterials = []
-		this.dataNodes = []
-		this.dataLights = []
+		
+		// define texture and material
 		for(let key in data.yasf.textures) this.getTexture(key, data.yasf.textures[key])
 		for(let key in data.yasf.materials) this.getMaterial(key, data.yasf.materials[key])
+		
+		// define globals and cameras
+		this.defineGlobals(data.yasf.globals)
+		this.defineCameras(data.yasf.cameras)	
 		this.app.setActiveCamera(data.yasf.cameras.initial)
+		this.app.cameras = this.dataCameras
+		
+		// define scene
 		this.app.scene.add(this.parse(data.yasf.graph, data.yasf.graph.rootid, null, false, false))
+		
+		// add lights' helpers
 		for(const light of this.dataLights) {
-			if (light instanceof THREE.SpotLight) {
-				const helper = new THREE.SpotLightHelper(light)
-				helper.visible = false
-				this.app.scene.add(helper)
-			}
-			if (light instanceof THREE.PointLight) {
-				const helper = new THREE.PointLightHelper(light)
-				helper.visible = false
-				this.app.scene.add(helper)
-			}
+			let helper = null
+			if (light instanceof THREE.SpotLight) helper = new THREE.SpotLightHelper(light)
+			if (light instanceof THREE.PointLight) helper = new THREE.PointLightHelper(light)
 		}
+	
 	}
 
+	/**
+	 * 
+	 * @param {Object} data object corresponding to globals block
+	 * @returns 
+	 */
 	defineGlobals(data) {
+
+		console.log(typeof data)
+		// check for errors
 		if (!data.background || !data.ambient || !data.fog || !data.skybox || Object.keys(data).length !== 4) {
 			console.error('Error in MyParser.defineGlobals: unexpected or missing definitions');
 			return;
@@ -59,6 +75,8 @@ class MyParser {
 			console.error('Error in MyParser.defineGlobals: invalid or undefined values in background');
 			return;
 		}	
+
+		// define background
 		this.app.scene.background = new THREE.Color().setRGB(...app_background);
 		const app_ambient = [data.ambient.r, data.ambient.g, data.ambient.b];
 		if ([...app_ambient].some(val => val === undefined || typeof val !== 'number')) {
@@ -66,6 +84,8 @@ class MyParser {
 			return;
 		}
 		this.app.scene.ambient = new THREE.Color().setRGB(...app_ambient);
+
+		// define ambient
 		const fog_color = [data.fog.color.r, data.fog.color.g, data.fog.color.b]
 		const fog_near = data.fog.near
 		const fog_far = data.fog.far
@@ -74,6 +94,8 @@ class MyParser {
 			return;
 		}
         this.app.scene.fog = new THREE.Fog(new THREE.Color().setRGB(...fog_color), fog_near, fog_far)
+
+		// define skybox
 		const sky_dimensions = [data.skybox.size.x, data.skybox.size.y, data.skybox.size.z]
 		const sky_center = [data.skybox.center.x, data.skybox.center.y, data.skybox.center.z]
 		const sky_emissive = [data.skybox.emissive.r, data.skybox.emissive.g, data.skybox.emissive.b]
@@ -84,29 +106,35 @@ class MyParser {
 		}	
 		const loader = new THREE.TextureLoader()
 		const sky_color = new THREE.Color().setRGB(...sky_emissive);
-		const material1 = new THREE.MeshPhongMaterial({emissive:sky_color, emissiveIntensity:sky_intensity, map:loader.load(data.skybox.front), side: THREE.DoubleSide})
-		const material2 = new THREE.MeshPhongMaterial({emissive:sky_color, emissiveIntensity:sky_intensity, map:loader.load(data.skybox.back), side: THREE.DoubleSide})
-		const material3 = new THREE.MeshPhongMaterial({emissive:sky_color, emissiveIntensity:sky_intensity, map:loader.load(data.skybox.up), side: THREE.DoubleSide})
-		const material4 = new THREE.MeshPhongMaterial({emissive:sky_color, emissiveIntensity:sky_intensity, map:loader.load(data.skybox.down), side: THREE.DoubleSide})
-		const material5 = new THREE.MeshPhongMaterial({emissive:sky_color, emissiveIntensity:sky_intensity, map:loader.load(data.skybox.left), side: THREE.DoubleSide})
-		const material6 = new THREE.MeshPhongMaterial({emissive:sky_color, emissiveIntensity:sky_intensity, map:loader.load(data.skybox.right), side: THREE.DoubleSide})
-		const materials = [material1, material2, material3, material4, material5, material6]
+		const material_right = new THREE.MeshPhongMaterial({emissive:sky_color, emissiveIntensity:sky_intensity, map:loader.load(data.skybox.right), side: THREE.DoubleSide})
+		const material_left = new THREE.MeshPhongMaterial({emissive:sky_color, emissiveIntensity:sky_intensity, map:loader.load(data.skybox.left), side: THREE.DoubleSide})
+		const material_up = new THREE.MeshPhongMaterial({emissive:sky_color, emissiveIntensity:sky_intensity, map:loader.load(data.skybox.up), side: THREE.DoubleSide})
+		const material_down = new THREE.MeshPhongMaterial({emissive:sky_color, emissiveIntensity:sky_intensity, map:loader.load(data.skybox.down), side: THREE.DoubleSide})
+		const material_back = new THREE.MeshPhongMaterial({emissive:sky_color, emissiveIntensity:sky_intensity, map:loader.load(data.skybox.back), side: THREE.DoubleSide})
+		const material_front = new THREE.MeshPhongMaterial({emissive:sky_color, emissiveIntensity:sky_intensity, map:loader.load(data.skybox.front), side: THREE.DoubleSide})
 		const object = new THREE.BoxGeometry(...sky_dimensions)
-		const mesh = new THREE.Mesh(object, materials)
+		const mesh = new THREE.Mesh(object, [material_right, material_left, material_up, material_down, material_back, material_front])
 		mesh.position.set(...sky_center)
 		this.app.scene.add(mesh)
+
 	}
 	
+	/**
+	 * 
+	 * @param {Object} data object corresponding to cameras block
+	 * @returns 
+	 */
 	defineCameras(data) {
-		let listCameras = []
+
+		// check for errors
 		if (!data.initial || Object.keys(data).length < 2) {
 			console.error('Error in MyParser.defineCameras: unexpected or missing definitions');
 			return
 		}
+
+		// define cameras
 		for(let key in data) {
-			if(key === 'initial') {
-				continue
-			}	
+			if(key === 'initial') continue
 			if(data[key].type === 'perspective') {
 				const position = [data[key].location.x, data[key].location.y, data[key].location.z]
 				const target = [data[key].target.x, data[key].target.y, data[key].target.z]
@@ -120,7 +148,7 @@ class MyParser {
 				const objectCamera = new THREE.PerspectiveCamera(angle, window.innerWidth / window.innerHeight, near, far)
 				objectCamera.position.set(...position)
 				objectCamera.lookAt(...target)
-				listCameras[key] = objectCamera
+				this.dataCameras[key] = objectCamera
 				continue
 			}
 			if(data[key].type === 'orthogonal') {
@@ -139,7 +167,7 @@ class MyParser {
 				const objectCamera = new THREE.OrthographicCamera(left, right, top, bottom, near, far)
 				objectCamera.position.set(...position)
 				objectCamera.lookAt(...target)
-				listCameras[key] = objectCamera
+				this.dataCameras[key] = objectCamera
 				continue
 			}
 			else {
@@ -147,9 +175,15 @@ class MyParser {
 				return
 			}
 		}
-		this.app.cameras = listCameras
+
 	}
 
+	/**
+	 * 
+	 * @param {String} name name of texture
+	 * @param {Object} data object corresponding to the texture block
+	 * @returns 
+	 */
 	getTexture(name, data) {
 		if(!data.filepath) {
 			console.error('Error in MyParser.getTexture : component filepath is undefined');
@@ -165,28 +199,40 @@ class MyParser {
 		this.dataTextures[name] = texture
 	}
 
+	/**
+	 * 
+	 * @param {String} name name of the material
+	 * @param {Object} data object corresponding to the material block
+	 * @returns 
+	 */
 	getMaterial(name, data) {
-		let attributes = {}
+
+		// check for errors
 		if (![data.color, data.specular, data.shininess, data.emissive, data.transparent, data.opacity].every((value) => value !== undefined)) {
 			console.error('Error in MyParser.getMaterial : missing attributes');
 			return
 		}
+
+		// define attributes
+		let attributes = {}
 		const color = [data.color.r, data.color.g, data.color.b]
 		const specular = [data.specular.r, data.specular.g, data.specular.b]
 		const emissive = [data.emissive.r, data.emissive.g, data.emissive.b]
-		const shininess = data.shininess
-		const opacity = data.opacity
-		const all = [...color, ...specular, ...emissive]
-		if (all.some(val => val === undefined || typeof val !== 'number')) {
+
+		// check for errors
+		if ([...color, ...specular, ...emissive].some(val => val === undefined || typeof val !== 'number')) {
 			console.error('Error in MyParser.getMaterial: invalid or undefined values');
 			return
 		}
+
+		// define attributes
 		attributes.color = new THREE.Color().setRGB(...color)
 		attributes.specular = new THREE.Color().setRGB(...specular)
 		attributes.emissive = new THREE.Color().setRGB(...emissive)
-		attributes.shininess = shininess
-		attributes.opacity = opacity
+		attributes.shininess = data.shininess
+		attributes.opacity = data.opacity
 		attributes.wireframe = data.wireframe ? data.wireframe : false
+		attributes.bumpScale = data.bumpscale ? data.bumpscale : 1
 		if(data.shading) {
 			if(typeof data.shading !== 'boolean') {
 				console.error('Error in MyParser.getMaterial : invalid or undefined values');
@@ -201,30 +247,185 @@ class MyParser {
 			}
 			attributes['side'] = THREE.DoubleSide
 		}
-		if(data.textureref) {
-			const texture = this.dataTextures[data.textureref].clone()
-			if (data.texlength_s) texture.repeat.x = data.texlength_s;
-			if (data.texlength_t) texture.repeat.y = data.texlength_t;
-			attributes.map = texture
-		}
-		if(data.bumpref) {
-			const bump = this.dataTextures[data.bumpref].clone()
-			if (data.texlength_s) bump.repeat.x = data.texlength_s;
-			if (data.texlength_t) bump.repeat.y = data.texlength_t;
-			attributes.bumpMap = bump
-			attributes.bumpScale = data.bumpscale ? data.bumpscale : 1
-		}
-		if(data.specularref) {
-			attributes.specularMap = this.dataTextures[data.specularref].clone()
-		}
-		this.dataMaterials[name] = new THREE.MeshPhongMaterial(attributes)
+		const texlength_s = data.texlength_s ? data.texlength_s : 1
+		const texlength_t = data.texlength_t ? data.texlength_t : 1
+		const textureref = data.textureref ? data.textureref : null		
+		const bumpref = data.bumpref ? data.bumpref : null		
+		const specularref = data.specularref ? data.specularref : null
+		this.dataMaterials[name] = {"attributes": attributes, "texlength_s": texlength_s, "texlength_t": texlength_t, "textureref" : textureref, "bumpref": bumpref, "specularref": specularref}
+	
 	}
 
+	/**
+	 * 
+	 * @param {Object} material object with the attributes of the material  
+	 * @param {Number} width width of the rectangle
+	 * @param {Number} height height of the rectangle
+	 * @returns material of type MeshPhongMaterial
+	 */
+	getMaterialRectangle(material, width, height) {
+		let material_attributes = material.attributes
+		if(material.textureref) {
+			const texture = this.dataTextures[material.textureref].clone()
+			texture.repeat.set(width / material.texlength_s, height / material.texlength_t)
+			material_attributes.map = texture
+		}
+		if(material.bumpref) {
+			const texture = this.dataTextures[material.bumpref].clone()
+			texture.repeat.set(width / material.texlength_s, height / material.texlength_t)
+			material_attributes.bumpMap = texture
+		}
+		if(material.specularref) {
+			const texture = this.dataTextures[material.specularref].clone()
+			texture.repeat.set(width / material.texlength_s, height / material.texlength_t)
+			material_attributes.specularMap = texture
+		}
+		return new THREE.MeshPhongMaterial(material_attributes)
+	}
+
+	/**
+	 * 
+	 * @param {Object} material object with the attributes of the material 
+	 * @param {Number} width width of the box
+	 * @param {Number} height height of the box
+	 * @param {Number} depth depth of the box
+	 * @returns material of type MeshPhongMaterial
+	 */
+	getMaterialBox(material, width, height, depth) {
+		let material_attributes_x = material.attributes
+		let material_attributes_y = material.attributes
+		let material_attributes_z = material.attributes
+		if(material.textureref) {
+			const texture_x = this.dataTextures[material.textureref].clone()
+			const texture_y = this.dataTextures[material.textureref].clone()
+			const texture_z = this.dataTextures[material.textureref].clone()
+			texture_x.repeat.set(depth / material.texlength_s, height / material.texlength_t)
+			texture_y.repeat.set(width / material.texlength_s, depth / material.texlength_t)
+			texture_z.repeat.set(width / material.texlength_s, height / material.texlength_t)
+			material_attributes_x.map = texture_x
+			material_attributes_y.map = texture_y
+			material_attributes_z.map = texture_z
+		}
+		if(material.bumpref) {
+			const texture_x = this.dataTextures[material.bumpref].clone()
+			const texture_y = this.dataTextures[material.bumpref].clone()
+			const texture_z = this.dataTextures[material.bumpref].clone()
+			texture_x.repeat.set(depth / material.texlength_s, height / material.texlength_t)
+			texture_y.repeat.set(width / material.texlength_s, depth / material.texlength_t)
+			texture_z.repeat.set(width / material.texlength_s, height / material.texlength_t)
+			material_attributes_x.bumpMap = texture_x
+			material_attributes_y.bumpMap = texture_y
+			material_attributes_z.bumpMap = texture_z
+		}
+		if(material.specularref) {
+			const texture_x = this.dataTextures[material.specularref].clone()
+			const texture_y = this.dataTextures[material.specularref].clone()
+			const texture_z = this.dataTextures[material.specularref].clone()
+			texture_x.repeat.set(depth / material.texlength_s, height / material.texlength_t)
+			texture_y.repeat.set(width / material.texlength_s, depth / material.texlength_t)
+			texture_z.repeat.set(width / material.texlength_s, height / material.texlength_t)
+			material_attributes_x.specularMap = texture_x
+			material_attributes_y.specularMap = texture_y
+			material_attributes_z.specularMap = texture_z
+		}
+		const material_mesh_x = new THREE.MeshPhongMaterial(material_attributes_x)
+		const material_mesh_y = new THREE.MeshPhongMaterial(material_attributes_y)
+		const material_mesh_z = new THREE.MeshPhongMaterial(material_attributes_z)
+		return [material_mesh_x, material_mesh_x, material_mesh_y, material_mesh_y, material_mesh_z, material_mesh_z]
+	}
+
+	/**
+	 * 
+	 * @param {Object} material object with the attributes of the material 
+	 * @param {Number} base radius of the base of the cylinder 
+	 * @param {Number} top radius of the top base of the cylinder
+	 * @param {Number} height height of the cylinder
+	 * @returns material of type MeshPhongMaterial
+	 */
+	getMaterialCylinder(material, base, top, height) {
+		let material_attributes_base = material.attributes
+		let material_attributes_top = material.attributes
+		let material_attributes_height = material.attributes
+		const radius_origin = base + (top - base) * 2
+		if(material.textureref) {
+			const texture_base = this.dataTextures[material.textureref].clone()
+			const texture_top = this.dataTextures[material.textureref].clone()
+			const texture_height = this.dataTextures[material.textureref].clone()
+			texture_base.repeat.set(base * 2 / material.texlength_s, base * 2 / material.texlength_t)
+			texture_top.repeat.set(top * 2 / material.texlength_s, top * 2 / material.texlength_t)
+			texture_height.repeat.set(2 * Math.PI * radius_origin / material.texlength_s, height / material.texlength_t)
+			material_attributes_base.map = texture_base
+			material_attributes_top.map = texture_top
+			material_attributes_height.map = texture_height
+		}
+		if(material.bumpref) {
+			const texture_base = this.dataTextures[material.bumpref].clone()
+			const texture_top = this.dataTextures[material.bumpref].clone()
+			const texture_height = this.dataTextures[material.bumpref].clone()
+			texture_base.repeat.set(base * 2 / material.texlength_s, base * 2 / material.texlength_t)
+			texture_top.repeat.set(top * 2 / material.texlength_s, top * 2 / material.texlength_t)
+			texture_height.repeat.set(2 * Math.PI * radius_origin / material.texlength_s, height / material.texlength_t)
+			material_attributes_base.bumpMap = texture_base
+			material_attributes_top.bumpMap = texture_top
+			material_attributes_height.bumpMap = texture_base
+		}
+		if(material.specularref) {
+			const texture_base = this.dataTextures[material.specularref].clone()
+			const texture_top = this.dataTextures[material.specularref].clone()
+			const texture_height = this.dataTextures[material.specularref].clone()
+			texture_base.repeat.set(base * 2 / material.texlength_s, base * 2 / material.texlength_t)
+			texture_top.repeat.set(top * 2  / material.texlength_s, top * 2  / material.texlength_t)
+			texture_height.repeat.set(2 * Math.PI * radius_origin / material.texlength_s, height / material.texlength_t)
+			material_attributes_base.specularMap = texture_base
+			material_attributes_top.specularMap = texture_top
+			material_attributes_height.specularMap = texture_height
+		}
+		const material_mesh_base = new THREE.MeshPhongMaterial(material_attributes_base)
+		const material_mesh_top = new THREE.MeshPhongMaterial(material_attributes_top)
+		const material_mesh_height = new THREE.MeshPhongMaterial(material_attributes_height)
+		return [material_mesh_height, material_mesh_top, material_mesh_base]
+	}
+
+	/**
+	 * 
+	 * @param {Object} material object with the attributes of the material 
+	 * @param {Number} radius radius of the sphere
+	 * @returns material of type MeshPhongMaterial
+	 */
+	getMaterialSphere(material, radius) {
+		let material_attributes = material.attributes
+		if(material.textureref) {
+			const texture = this.dataTextures[material.textureref].clone()
+			texture.repeat.set(radius * 2 / material.texlength_s, radius * 2 / material.texlength_t)
+			material_attributes.map = texture
+		}
+		if(material.bumpref) {
+			const texture = this.dataTextures[material.bumpref].clone()
+			texture.repeat.set(radius * 2 / material.texlength_s, radius * 2 / material.texlength_t)
+			material_attributes.bumpMap = texture
+		}
+		if(material.specularref) {
+			const texture = this.dataTextures[material.specularref].clone()
+			texture.repeat.set(radius * 2 / material.texlength_s, radius * 2 / material.texlength_t)
+			material_attributes.specularMap = texture
+		}
+		return new THREE.MeshPhongMaterial(material_attributes)
+	}
+
+	/**
+	 * 
+	 * @param {Object} prim object corresponding to the primitive block
+	 * @returns object of type PointLight or nothing if error
+	 */
 	parsePointlight(prim) {
+
+		// check for errors
 		if (![prim.color, prim.position].every((value) => value !== undefined)) {
 			console.error('Error in MyParser.parsePointlight : missing attributes');
 			return
 		}
+
+		// define attributes
 		const position = [prim.position.x, prim.position.y, prim.position.z]
 		const color = [prim.color.r, prim.color.g, prim.color.b]
 		const intensity = prim.intensity ? prim.intensity : 1
@@ -233,25 +434,36 @@ class MyParser {
 		const shadowfar = prim.shadowfar ? prim.shadowfar : 500
 		const shadowmapsize = prim.shadowmapsize ? prim.shadowmapsize : 512
 		const castshadow = prim.castshadow ? prim.castshadow : false
-		const all = [...position, ...color, intensity, distance, decay, shadowfar, shadowmapsize]
-		if (all.some(val => val === undefined || typeof val !== 'number')) {
+		if ([...position, ...color, intensity, distance, decay, shadowfar, shadowmapsize].some(val => val === undefined || typeof val !== 'number')) {
 			console.error('Error in MyParser.parsePointlight: invalid or undefined values');
 			return
 		}
-		const pointlight = new THREE.PointLight(new THREE.Color().setRGB(...color), intensity, distance, decay)
-		pointlight.position.set(...position)
-		pointlight.castShadow = castshadow
-		pointlight.shadowfar = shadowfar
-		pointlight.shadowmapsize = shadowmapsize
-		this.dataLights.push(pointlight)
-		return pointlight
+
+		// construct light
+		const light = new THREE.PointLight(new THREE.Color().setRGB(...color), intensity, distance, decay)
+		light.position.set(...position)
+		light.castShadow = castshadow
+		light.shadowfar = shadowfar
+		light.shadowmapsize = shadowmapsize
+		this.dataLights.push(light)
+		return light
+
 	}
 
+	/**
+	 * 
+	 * @param {Object} prim object corresponding to the primitive block
+	 * @returns object of type SpotLight or nothing if error
+	 */
 	parseSpotlight(prim) {
+
+		// check for errors
 		if (![prim.color, prim.angle, prim.position, prim.target].every((value) => value !== undefined)) {
 			console.error('Error in MyParser.parseSpotlight : missing attributes');
 			return
 		}
+
+		// define attributes
 		const position = [prim.position.x, prim.position.y, prim.position.z]
 		const target = [prim.target.x, prim.target.y, prim.target.z]
 		const color = [prim.color.r, prim.color.g, prim.color.b]
@@ -268,21 +480,33 @@ class MyParser {
 			console.error('Error in MyParser.parseSpotlight: invalid or undefined values');
 			return
 		}
-		const spotlight = new THREE.SpotLight(new THREE.Color().setRGB(...color), intensity, distance, angle, penumbra, decay)
-		spotlight.position.set(...position)
-		spotlight.target.position.set(...target)
-		spotlight.castShadow = castshadow
-		spotlight.shadowfar = shadowfar
-		spotlight.shadowmapsize = shadowmapsize
-		this.dataLights.push(spotlight)
-		return spotlight
+
+		// construct light
+		const light = new THREE.SpotLight(new THREE.Color().setRGB(...color), intensity, distance, angle, penumbra, decay)
+		light.position.set(...position)
+		light.target.position.set(...target)
+		light.castShadow = castshadow
+		light.shadowfar = shadowfar
+		light.shadowmapsize = shadowmapsize
+		this.dataLights.push(light)
+		return light
+
 	}
 
+	/**
+	 * 
+	 * @param {Object} prim object corresponding to the primitive block
+	 * @returns object of type DirectionalLight or nothing if error
+	 */
 	parseDirectionalLight(prim) {
+
+		// check for errors
 		if (![prim.color, prim.position].every((value) => value !== undefined)) {
 			console.error('Error in MyParser.parseSpotlight : missing attributes');
 			return
 		}
+
+		// define attributes
 		const position = [prim.position.x, prim.position.y, prim.position.z]
 		const color = [prim.color.r, prim.color.g, prim.color.b]
 		const intensity = prim.intensity ? prim.intensity : 1
@@ -298,19 +522,30 @@ class MyParser {
 			console.error('Error in MyParser.parseSpotlight: invalid or undefined values');
 			return
 		}
-		const directionallight = new THREE.DirectionalLight(new THREE.Color().setRGB(...color), intensity)
-		directionallight.position.set(...position)
-		directionallight.castShadow = castshadow
-		directionallight.shadowleft = shadowleft
-		directionallight.shadowright = shadowright
-		directionallight.shadowtop = shadowtop
-		directionallight.shadowbottom = shadowbottom
-		directionallight.shadowfar = shadowfar
-		directionallight.shadowmapsize = shadowmapsize
-		return directionallight
+
+		// construct light
+		const light = new THREE.DirectionalLight(new THREE.Color().setRGB(...color), intensity)
+		light.position.set(...position)
+		light.castShadow = castshadow
+		light.shadowleft = shadowleft
+		light.shadowright = shadowright
+		light.shadowtop = shadowtop
+		light.shadowbottom = shadowbottom
+		light.shadowfar = shadowfar
+		light.shadowmapsize = shadowmapsize
+		return light
+
 	}
 
+	/**
+	 * 
+	 * @param {Object} prim object corresponding to the primitive block
+	 * @param {object} material object with the attributes of the material 
+	 * @returns object of type PlaneGeometry or nothing if error
+	 */
     parseRectangle(prim, material) {
+
+		// check for errors
 		if (![prim.xy1, prim.xy2].every((value) => value !== undefined)) {
 			console.error('Error in MyParser.parseRectangle : missing attributes');
 			return
@@ -319,21 +554,36 @@ class MyParser {
 			console.error('Error in MyParser.parseRectangle: invalid or undefined values');
 			return
 		}
+
+		// define attributes
 		const width = Math.abs(prim.xy2.x) + Math.abs(prim.xy1.x);
 		const height = Math.abs(prim.xy2.y) + Math.abs(prim.xy1.y);
 		const parts_x = prim.parts_x ? prim.parts_x : 1
 		const parts_y = prim.parts_y ? prim.parts_y : 1
+
+		// construct object and mesh
 		const object = new THREE.PlaneGeometry(width, height, parts_x, parts_y)
-		const mesh =  new THREE.Mesh(object, material)
+		const mesh =  new THREE.Mesh(object, this.getMaterialRectangle(material, width, height))
 		mesh.position.set((prim.xy1.x + prim.xy2.x) / 2, (prim.xy1.y + prim.xy2.y) / 2, 0)
 		return mesh
+
 	}
 
+	/**
+	 * 
+	 * @param {Object} prim object corresponding to the primitive block
+	 * @param {object} material object with the attributes of the material 
+	 * @returns object of type Triangle or nothing if error
+	 */
 	parseTriangle(prim, material) {
+		
+		// check for errors
 		if (![prim.xyz1, prim.xyz2, prim.xyz3].every((value) => value !== undefined)) {
 			console.error('Error in MyParser.parseTriangle : missing attributes');
 			return
 		}
+
+		// define attributes
 		const position1 = [prim.xyz1.x, prim.xyz1.y, prim.xyz1.z]
 		const position2 = [prim.xyz2.x, prim.xyz2.y, prim.xyz2.z]
 		const position3 = [prim.xyz3.x, prim.xyz3.y, prim.xyz3.z]
@@ -341,13 +591,24 @@ class MyParser {
 			console.error('Error in MyParser.parseTriangle: invalid or undefined values');
 			return
 		}
-		const object =  new THREE.Triangle(new THREE.Vector3(...position1), new THREE.Triangle(...position2), new THREE.Triangle(...position3))
+
+		// construct object and mesh
+		const object = new THREE.Triangle(new THREE.Vector3(...position1), new THREE.Triangle(...position2), new THREE.Triangle(...position3))
 		const mesh = new THREE.Mesh(object, material)
 		mesh.position.set((prim.xyz1.x + prim.xyz2.x + prim.xyz3.x) / 3, (prim.xyz1.y + prim.xyz2.y + prim.xyz3.y) / 3, 0)
 		return mesh
+
 	}
 
+	/**
+	 * 
+	 * @param {Object} prim object corresponding to the primitive block
+	 * @param {object} material object with the attributes of the material 
+	 * @returns object of type BoxGeometry or nothing if error
+	 */
 	parseBox(prim, material) {
+
+		// check for errors
 		if (![prim.xyz1, prim.xyz2].every((value) => value !== undefined)) {
 			console.error('Error in MyParser.parseBox : missing attributes');
 			return
@@ -356,23 +617,37 @@ class MyParser {
 			console.error('Error in MyParser.parseBox: invalid or undefined values');
 			return
 		}
+
+		// define attributes
 		const width = Math.abs(prim.xyz2.x) + Math.abs(prim.xyz1.x);
 		const height = Math.abs(prim.xyz2.y) + Math.abs(prim.xyz1.y);
 		const depth = Math.abs(prim.xyz2.z) + Math.abs(prim.xyz1.z);
 		const parts_x = prim.parts_x ? prim.parts_x : 1
 		const parts_y = prim.parts_y ? prim.parts_y : 1
 		const parts_z = prim.parts_z ? prim.parts_z : 1
+
+		// construct object and mesh
 		const object = new THREE.BoxGeometry(width, height, depth, parts_x, parts_y, parts_z)
-		const mesh = new THREE.Mesh(object, material)
+		const mesh = new THREE.Mesh(object, this.getMaterialBox(material, width, height, depth))
 		mesh.position.set((prim.xyz1.x + prim.xyz2.x) / 2, (prim.xyz1.y + prim.xyz2.y) / 2, (prim.xyz1.z + prim.xyz2.z) / 2)
 		return mesh
 	}
 
+	/**
+	 * 
+	 * @param {Object} prim object corresponding to the primitive block
+	 * @param {object} material object with the attributes of the material 
+	 * @returns object of type CylinderGeometry or nothing if error
+	 */
 	parseCylinder(prim, material) {
+		
+		// check for errors
 		if (![prim.base, prim.top, prim.height, prim.slices, prim.stacks].every((value) => value !== undefined)) {
 			console.error('Error in MyParser.parseCylinder : missing attributes');
 			return
 		}
+
+		// define attributes
 		const thetastart = prim.thetastart ? prim.thetastart * Math.PI / 180 : 0
 		const thetalength = prim.thetalength ? prim.thetalength * Math.PI / 180 : 2 * Math.PI
 		const capsclose = prim.capsclose ? prim.capsclose : false
@@ -380,15 +655,27 @@ class MyParser {
 			console.error('Error in MyParser.parseCylinder: invalid or undefined values');
 			return
 		}
+
+		// construct object and mesh
 		const object = new THREE.CylinderGeometry(prim.top, prim.base, prim.height, prim.slices, prim.stacks, capsclose, thetastart, thetalength)
-		return new THREE.Mesh(object, material)
+		return new THREE.Mesh(object, this.getMaterialCylinder(material, prim.base, prim.top, prim.height))
 	}
 
+	/**
+	 * 
+	 * @param {Object} prim object corresponding to the primitive block
+	 * @param {object} material object with the attributes of the material 
+	 * @returns object of type SphereGeometry or nothing if error
+	 */
 	parseSphere(prim, material) {
+
+		// check for errors
 		if (![prim.radius, prim.slices, prim.stacks].every((value) => value !== undefined)) {
 			console.error('Error in MyParser.parseSphere : missing attributes');
 			return
 		}
+
+		// define attributes
 		const thetastart = prim.thetastart ? prim.thetastart * Math.PI / 180 : 0
 		const thetalength = prim.thetalength ? prim.thetalength * Math.PI / 180 : Math.PI
 		const phistart = prim.phistart ? prim.phistart * Math.PI / 180 : 0
@@ -397,11 +684,21 @@ class MyParser {
 			console.error('Error in MyParser.parseSphere: invalid or undefined values');
 			return
 		}
+
+		// construct object and mesh
 		const object = new THREE.SphereGeometry(prim.radius, prim.slices, prim.stacks, phistart, philength, thetastart, thetalength)
-		return new THREE.Mesh(object, material)
+		return new THREE.Mesh(object, this.getMaterialSphere(material, prim.radius))
 	}
 
+	/**
+	 * 
+	 * @param {Object} prim object corresponding to the primitive block
+	 * @param {object} material object with the attributes of the material 
+	 * @returns object of type Nurbs or nothing if error
+	 */
 	parseNurbs(prim, material) {
+		
+		// check for errors
 		if (![prim.degree_u, prim.degree_v, prim.parts_u, prim.parts_v, ...prim.controlpoints].every((value) => value !== undefined)) {
 			console.error('Error in MyParser.parseNurbs : missing attributes');
 			return
@@ -414,6 +711,8 @@ class MyParser {
 			console.error('Error in MyParser.parseNurbs : number of controlpoints are incorrect');
 			return
 		}
+
+		// construct object and mesh
 		let points = [];
 		let row = [];
 		for (let i = 0; i < prim.controlpoints.length; i++) {
@@ -436,12 +735,25 @@ class MyParser {
 	}
 
 
+	/**
+	 * 
+	 * @param {Object} data object corresponding to the graph block
+	 * @param {String} name name of the node
+	 * @param {Object} material object with the attributes of the material 
+	 * @param {Boolean} castshadows true if object casts shadows and false if not
+	 * @param {Boolean} receiveshadows true if object receives shadows and false if not
+	 * @returns 
+	 */
     parse(data, name, material, castshadows, receiveshadows) {
+		
+		// variables 
         const parent = data[name]
 		const parent_material = parent.materialref ? this.dataMaterials[parent.materialref.materialId] : material
 		const parent_castshadows = parent.castshadows ? parent.castshadows : castshadows
 		const parent_receiveshadows = parent.parent_receiveshadows ? parent.parent_receiveshadows : receiveshadows
         const list_children = data[name].children ? data[name].children : {}
+		
+		// check for errors
 		if(parent.type !== 'node') {
 			console.error('Error in MyParser.parse: invalid or undefined parent type');
 			return
@@ -450,23 +762,25 @@ class MyParser {
 			console.error('Error in MyParser.parse: node name is not in lowercase');
 			return	
 		}
-		if(list_children.length > 1) {
-			console.error('Error in MyParser.parse: more than one primitive in the node');
-			return
-		}
+
+		// parse tree
         let  group = new THREE.Group();
+
+		// if node was already parsed
 		if(this.dataNodes[name]) {
 			group = this.dataNodes[name].clone()
 			group.name = name
-			group.children.forEach((child) => {
-				this.changeMaterialShadows(data, child, parent_material, parent_castshadows, parent_receiveshadows)
-			  });
+			group.children.forEach((child) => {this.changeMaterialShadows(data, child, parent_material, parent_castshadows, parent_receiveshadows)});
 		}
+
+		// if node was not parsed
 		else {
         	for(let i = 0; i < Object.keys(list_children).length; i++) {
 				const child_name = Object.keys(list_children)[i]
         	    const child_node = parent['children'][child_name]
 				const child_material = parent_material ? parent_material : new THREE.MeshPhongMaterial({color: "#ffffff", specular: "#ffffff"})
+				
+				// if node is of a list of nodes
 				if(child_name === 'nodesList') {
 					for(const node of child_node) {
 						const group_node = this.parse(data, node, parent_material, parent_castshadows, parent_receiveshadows)
@@ -475,6 +789,8 @@ class MyParser {
 					}
 					continue
 				}
+				
+				// if node is of type light
 				if (child_node.type === 'pointlight') {
 					const light = this.parsePointlight(child_node)
 					light.name = child_name
@@ -487,6 +803,8 @@ class MyParser {
 					group.add(light)
 					continue
 				}
+				
+				// if node is a primitive
 				let mesh = null
 				if (child_node.type === 'rectangle') mesh = this.parseRectangle(child_node, child_material)
 				if (child_node.type === 'triangle') mesh = this.parseTriangle(child_node, child_material)
@@ -498,11 +816,16 @@ class MyParser {
 				mesh.castShadow = parent_castshadows
 				mesh.receiveShadow = parent_receiveshadows
 				group.add(mesh)
-        	}
+        	
+			}
+
 			group.name = name
 			this.dataNodes[name] = group
+		
 		}
-        if (parent.transforms) {
+        
+		// apply the transformations
+		if (parent.transforms) {
             for(let i = 0; i < parent.transforms.length; i++) {
                 const transformation = parent.transforms[i]
                 const x = transformation.amount.x
@@ -525,33 +848,40 @@ class MyParser {
 				}
             }
         }
+		
         return group
+
     }
 
+	/**
+	 * 
+	 * @param {*} data 
+	 * @param {*} node 
+	 * @param {*} material 
+	 * @param {*} castshadows 
+	 * @param {*} receiveshadows 
+	 */
 	changeMaterialShadows(data, node, material, castshadows, receiveshadows) {
 		if (node.isGroup) {
 			if(data[node.name]['materialref']) {
-				node.children.forEach((child) => {
-					this.changeShadows(data, child, castshadows, receiveshadows)
-				})
+				node.children.forEach((child) => { this.changeShadows(data, child, castshadows, receiveshadows)})
 			}
 			else {
-				node.children.forEach((child) => {
-					this.changeMaterialShadows(data, child, material, castshadows, receiveshadows)
-				})
+				node.children.forEach((child) => { this.changeMaterialShadows(data, child, material, castshadows, receiveshadows) })
 			}
 		} else {
-			console.log(node)
-			node.material = material
-			node.material.needsUpdate = true
-			node.castShadow = castshadows
-			node.receiveshadows = receiveshadows
-			if (node instanceof THREE.SpotLight) {
-				this.dataLights.push(node)
+			if(node instanceof THREE.Mesh) {
+				const parameters = node.geometry.parameters
+				if (node.geometry instanceof THREE.PlaneGeometry) node.material = this.getMaterialRectangle(material, parameters.width, parameters.height)
+				if (node.geometry instanceof THREE.BoxGeometry) node.material = this.getMaterialRectangle(material, parameters.width, parameters.height, parameters.depth)
+				if (node.geometry instanceof THREE.CylinderGeometry) node.material = this.getMaterialCylinder(material, parameters.radiusTop, parameters.radiusBottom, parameters.height)
+				if(node.getMaterial instanceof THREE.SphereGeometry) node.material = this.getMaterialSphere(material, parameters.radius)
+				node.material.needsUpdate = true
+				node.castShadow = castshadows
+				node.receiveshadows = receiveshadows
 			}
-			if (node instanceof THREE.PointLight) {
-				this.dataLights.push(node)
-			}
+			if (node instanceof THREE.SpotLight) this.dataLights.push(node)
+			if (node instanceof THREE.PointLight) this.dataLights.push(node)
 		}	
 	}
 
@@ -561,15 +891,10 @@ class MyParser {
 				this.changeShadows(data, child, castshadows, receiveshadows)
 			})
 		} else {
-			console.log(node)
 			node.castShadow = castshadows
 			node.receiveshadows = receiveshadows
-			if (node instanceof THREE.SpotLight) {
-				this.dataLights.push(node)
-			}
-			if (node instanceof THREE.PointLight) {
-				this.dataLights.push(node)
-			}
+			if (node instanceof THREE.SpotLight) this.dataLights.push(node)
+			if (node instanceof THREE.PointLight) this.dataLights.push(node)
 		}	
 	}
 }
