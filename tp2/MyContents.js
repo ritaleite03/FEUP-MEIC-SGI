@@ -19,6 +19,11 @@ class MyContents {
         this.axis = null
         this.reader = new MyFileReader(this.onSceneLoaded.bind(this));
         this.reader.open("scenes/scene.json");
+        
+        this.dataLights = []
+        this.dataLightsHelpers = []
+        this.lightHelpers = false
+        this.ambientLight = null
     }
 
     /**
@@ -44,11 +49,29 @@ class MyContents {
 
     onAfterSceneLoadedAndBeforeRender(data) {
         this.parser = new MyParser(this.app, data)
-        const ambientLight = new THREE.AmbientLight('#ffffff',1)
-        this.app.scene.add(ambientLight)
+        this.dataLights = this.parser.dataLights
+        this.dataLightsHelpers = this.parser.dataLightsHelpers
+        this.ambientLight = this.parser.ambientLight
+
         let gui = new MyGuiInterface(this.app)
         gui.setContents(this)
         gui.init();
+
+        this.app.scene.add(this.parser.graph)
+    }
+
+    updateHelpers(value) {
+        this.lightHelpers = value
+
+        for(let key in this.dataLightsHelpers) {
+            const helper = this.dataLightsHelpers[key].helper
+            if (value) {
+                this.app.scene.add(helper)
+            }
+            else {
+                this.app.scene.remove(helper)
+            }
+        }
     }
 
     update() {

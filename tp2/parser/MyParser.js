@@ -15,6 +15,9 @@ class MyParser {
 		this.dataMaterials = []
 		this.dataNodes = []
 		this.dataLights = []
+		this.dataLightsHelpers = []
+		this.ambientLight = null
+		this.graph = null
 		this.buider = new MyNurbsBuilder()
 		
 		// check for errors
@@ -42,15 +45,14 @@ class MyParser {
 		this.app.cameras = this.dataCameras
 		
 		// define scene
-		this.app.scene.add(this.parse(data.yasf.graph, data.yasf.graph.rootid, null, false, false))
+		this.graph = this.parse(data.yasf.graph, data.yasf.graph.rootid, null, false, false)
+		this.graph.name = "root_graph"
 		
 		// add lights' helpers
 		for(const light of this.dataLights) {
-			let helper = null
-			if (light instanceof THREE.SpotLight) helper = new THREE.SpotLightHelper(light)
-			if (light instanceof THREE.PointLight) helper = new THREE.PointLightHelper(light)
+			if (light instanceof THREE.SpotLight) this.dataLightsHelpers.push({"light" : light, "helper" : new THREE.SpotLightHelper(light)})
+			if (light instanceof THREE.PointLight) this.dataLightsHelpers.push({"light" : light, "helper" : new THREE.PointLightHelper(light)})
 		}
-	
 	}
 
 	/**
@@ -60,7 +62,6 @@ class MyParser {
 	 */
 	defineGlobals(data) {
 
-		console.log(typeof data)
 		// check for errors
 		if (!data.background || !data.ambient || !data.fog || !data.skybox || Object.keys(data).length !== 4) {
 			console.error('Error in MyParser.defineGlobals: unexpected or missing definitions');
@@ -83,7 +84,11 @@ class MyParser {
 			console.error('Error in MyParser.defineGlobals: invalid or undefined values in ambient');
 			return;
 		}
-		this.app.scene.ambient = new THREE.Color().setRGB(...app_ambient);
+
+		const ambient_color = new THREE.Color().setRGB(...app_ambient)
+		const ambient_intesity = data.ambient.intensity
+		this.ambientLight =new THREE.AmbientLight(ambient_color, ambient_intesity) 
+		this.app.scene.add(this.ambientLight)
 
 		// define ambient
 		const fog_color = [data.fog.color.r, data.fog.color.g, data.fog.color.b]
@@ -754,6 +759,9 @@ class MyParser {
 		let angleInterval = (2 * Math.PI) / prim.slices;
 		let radiusInterval = prim.radius / prim.stacks;
 	
+		const color_c = new THREE.Color().setRGB(prim.color_c.r, prim.color_c.g, prim.color_c.b)
+		const color_p = new THREE.Color().setRGB(prim.color_p.r, prim.color_p.g, prim.color_p.b)
+
 		// Create vertices
 		for (let i = 0; i <= prim.slices; i++) {
 			let angle = i * angleInterval;
@@ -762,12 +770,9 @@ class MyParser {
 				const x = radius * Math.cos(angle);
 				const y = radius * Math.sin(angle);	
 				vertices.push(x, y, 0);
-				normals.push(0, 0, 1);	
-				const t = radius / prim.radius; // Normalized distance from center
-				const r = prim.color_c.r * (1 - t) + prim.color_p.r * t;
-				const g = prim.color_c.g * (1 - t) + prim.color_p.g * t;
-				const b = prim.color_c.b * (1 - t) + prim.color_p.b * t;
-				colors.push(r, g, b);
+				normals.push(0, 0, 1);
+				const color = new THREE.Color().lerpColors(color_c, color_p, j / prim.stacks )
+				colors.push(color.r, color.g, color.b);
 			}
 		}
 	
@@ -879,7 +884,6 @@ class MyParser {
 				if (child_node.type === 'sphere') mesh = this.parseSphere(child_node, child_material)
 				if (child_node.type === 'nurbs') mesh = this.parseNurbs(child_node, child_material)
 				if (child_node.type === 'polygon') mesh = this.parsePolygon(child_node, child_material)
-				if(child_node.type === 'polygon') console.log(mesh)
 				mesh.name = child_name
 				mesh.castShadow = parent_castshadows
 				mesh.receiveShadow = parent_receiveshadows
