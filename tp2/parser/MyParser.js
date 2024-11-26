@@ -734,6 +734,72 @@ class MyParser {
 		return new THREE.Mesh(object, material)
 	}
 
+	parsePolygon(prim, material) {
+		// Check for errors
+		if (![prim.radius, prim.stacks, prim.slices, prim.color_c, prim.color_p].every((value) => value !== undefined)) {
+			console.error('Error in MyParser.parsePolygon: missing attributes');
+			return;
+		}
+	
+		let vertices = [];
+		let indices = [];
+		let normals = [];
+		let colors = [];
+	
+		// Add center vertex
+		vertices.push(0, 0, 0);
+		normals.push(0, 0, 1);
+		colors.push(prim.color_c.r, prim.color_c.g, prim.color_c.b);
+	
+		let angleInterval = (2 * Math.PI) / prim.slices;
+		let radiusInterval = prim.radius / prim.stacks;
+	
+		// Create vertices
+		for (let i = 0; i <= prim.slices; i++) {
+			let angle = i * angleInterval;
+			for (let j = 1; j <= prim.stacks; j++) {
+				let radius = j * radiusInterval;
+				const x = radius * Math.cos(angle);
+				const y = radius * Math.sin(angle);	
+				vertices.push(x, y, 0);
+				normals.push(0, 0, 1);	
+				const t = radius / prim.radius; // Normalized distance from center
+				const r = prim.color_c.r * (1 - t) + prim.color_p.r * t;
+				const g = prim.color_c.g * (1 - t) + prim.color_p.g * t;
+				const b = prim.color_c.b * (1 - t) + prim.color_p.b * t;
+				colors.push(r, g, b);
+			}
+		}
+	
+		// triangles in the center
+		for (let i = 0; i < prim.slices; i++) {
+			const vertice1Index = 1 + i * prim.stacks;
+			const vertice2Index = 1 + ((i + 1) % prim.slices) * prim.stacks;
+			indices.push(0, vertice1Index, vertice2Index);
+		}
+	
+		// triangles between stacks
+		for (let i = 0; i < prim.slices; i++) {
+			for (let j = 0; j < prim.stacks - 1; j++) {
+				const current = 1 + i * prim.stacks + j;
+				const next = 1 + ((i + 1) % prim.slices) * prim.stacks + j;	
+				indices.push(current, current + 1, next + 1);	
+				indices.push(current, next + 1, next);
+			}
+		}
+	
+		const material_polygon = new THREE.MeshBasicMaterial({vertexColors: true,side: THREE.DoubleSide,});
+		const geometry = new THREE.BufferGeometry();
+		geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+		geometry.setAttribute('normal', new THREE.Float32BufferAttribute(normals, 3));
+		geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+		geometry.setIndex(indices);	
+		const mesh = new THREE.Mesh(geometry, material_polygon);
+
+		return mesh;
+	}
+	
+
 
 	/**
 	 * 
@@ -812,6 +878,8 @@ class MyParser {
 				if (child_node.type === 'cylinder') mesh = this.parseCylinder(child_node, child_material)
 				if (child_node.type === 'sphere') mesh = this.parseSphere(child_node, child_material)
 				if (child_node.type === 'nurbs') mesh = this.parseNurbs(child_node, child_material)
+				if (child_node.type === 'polygon') mesh = this.parsePolygon(child_node, child_material)
+				if(child_node.type === 'polygon') console.log(mesh)
 				mesh.name = child_name
 				mesh.castShadow = parent_castshadows
 				mesh.receiveShadow = parent_receiveshadows

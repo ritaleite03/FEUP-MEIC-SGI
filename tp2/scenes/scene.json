@@ -222,9 +222,30 @@
                         "floor",
                         "ceilling",
                         "stage",
-                        "chairs"
+                        "chairs",
+                        "temp"
                     ]
                 }
+            },
+            "temp": {
+                "type": "node",
+                "materialref": { "materialId": "ceilling" },
+                "children": {
+                    "prim": {
+                        "type": "polygon",
+                        "radius": 1,
+                        "stacks": 5,
+                        "slices": 5,
+                        "color_c": { "r": 1, "g": 0, "b": 0 },
+                        "color_p": { "r": 0, "g": 1, "b": 0 }
+                    }
+                },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 0, "y": 10, "z": 0 }
+                    }
+                ]
             },
             "ceilling": {
                 "type": "node",
