@@ -735,8 +735,51 @@ class MyParser {
         		row = [];
     		}
 		}
+		const mat = this.getMaterialRectangle(material, material.texlength_s, material.texlength_t)
+		
 		const object = this.buider.build(points, prim.degree_u, prim.degree_v, prim.parts_u, prim.parts_v, null)
-		return new THREE.Mesh(object, material)
+		return new THREE.Mesh(object, mat)
+	}
+
+	parseLod(data, name, parent_material, parent_castshadows, parent_receiveshadows){
+		const lod = data[name]
+
+		if(lod === undefined){
+			console.error(`Error in MyParser.parseLod: lod "${name}" don't exist`);
+			return
+		}
+
+		if(lod.type !== 'lod') {
+			console.error('Error in MyParser.parseLod: invalid or undefined type');
+			return
+		}
+		const lodNodes = lod.lodNodes
+		if(lodNodes.length <= 1) {
+			console.error('Error in MyParser.parseLod: declare less that one descendents (representations)');
+		}
+
+		const lodStruct = new THREE.LOD();
+
+		const distSet = new Set();
+
+		for(let i = 0; i < lodNodes.length; i ++){
+			const nodeId = lodNodes[i].nodeId
+
+			const mindist = lodNodes[i].mindist
+
+			if (mindist === undefined || typeof mindist !== 'number' || distSet.has(mindist)) {
+				console.error('Error in MyParser.parseLod: invalid, undefined or repeted mindist values');
+				return
+			}
+			const node = this.parse(data, nodeId, parent_material, parent_castshadows, parent_receiveshadows)
+
+			if (node === undefined) return
+
+			lodStruct.addLevel(node, mindist)
+
+			distSet.add(mindist)
+		}
+		return lodStruct
 	}
 
 	parsePolygon(prim, material) {
@@ -857,6 +900,17 @@ class MyParser {
 						const group_node = this.parse(data, node, parent_material, parent_castshadows, parent_receiveshadows)
 						group_node.name = node
 						group.add(group_node)
+					}
+					continue
+				}
+
+				// if node is of a list of lods
+				if(child_name === 'lodsList') {
+					for(const lod of child_node) {
+						console.log(parent_material, parent_castshadows, parent_receiveshadows)
+						const group_lod = this.parseLod(data, lod, parent_material, parent_castshadows, parent_receiveshadows)
+						group_lod.name = lod
+						group.add(group_lod)
 					}
 					continue
 				}

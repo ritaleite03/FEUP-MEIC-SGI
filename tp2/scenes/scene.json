@@ -28,7 +28,8 @@
             "t_curtains": { "filepath": "scenes/demo/textures/t_curtains.jpg" },
             "t_chair": { "filepath": "scenes/demo/textures/t_chair.jpg" },
             "t_black": { "filepath": "scenes/demo/textures/t_black.jpg" },
-            "b_wall": { "filepath": "scenes/demo/textures/b_wall.jpg" }
+            "b_wall": { "filepath": "scenes/demo/textures/b_wall.jpg" },
+            "t_exit": { "filepath": "scenes/demo/textures/exit_signal.jpg" }
         },
         "materials": {
             "ceilling": {
@@ -181,6 +182,39 @@
                 "twosided": true,
                 "transparent": false,
                 "opacity": 2.5
+            },
+            "emergency_exit": {
+                "color": { "r": 1.0, "g": 1.0, "b": 1.0 },
+                "emissive": { "r": 0.4, "g": 0.6, "b": 0.4 },
+                "specular": { "r": 0, "g": 0, "b": 0 },
+                "shininess": 0,
+                "transparent": false,
+                "twosided": true,
+                "opacity": 2.5,
+                "textureref": "t_exit",
+                "texlength_s": 1.5,
+                "texlength_t": 0.5
+            },
+            "emergency_exit_2": {
+                "color": { "r": 1.0, "g": 1.0, "b": 1.0 },
+                "emissive": { "r": 0.4, "g": 0.6, "b": 0.4 },
+                "specular": { "r": 0, "g": 0, "b": 0 },
+                "shininess": 0,
+                "transparent": false,
+                "twosided": true,
+                "opacity": 2.5,
+                "textureref": "t_exit",
+                "texlength_s": 1.5,
+                "texlength_t": 0.5
+            },
+            "white": {
+                "color": { "r": 1.0, "g": 1.0, "b": 1.0 },
+                "emissive": { "r": 0.0, "g": 0.0, "b": 0.0 },
+                "specular": { "r": 0, "g": 0, "b": 0 },
+                "shininess": 0,
+                "twosided": false,
+                "transparent": false,
+                "opacity": 2.5
             }
         },
         "cameras": {
@@ -223,7 +257,8 @@
                         "ceilling",
                         "stage",
                         "chairs",
-                        "temp"
+                        "temp",
+                        "door"
                     ]
                 }
             },
@@ -264,7 +299,7 @@
                     },
                     {
                         "type": "translate",
-                        "amount": { "x": 0, "y": 14, "z": 0 }
+                        "amount": { "x": 0, "y": 18, "z": 0 }
                     }
                 ]
             },
@@ -307,7 +342,7 @@
                     },
                     {
                         "type": "translate",
-                        "amount": { "x": -30, "y": 7, "z": 0 }
+                        "amount": { "x": -30, "y": 9, "z": 0 }
                     }
                 ]
             },
@@ -322,7 +357,7 @@
                     },
                     {
                         "type": "translate",
-                        "amount": { "x": 30, "y": 7, "z": 0 }
+                        "amount": { "x": 30, "y": 9, "z": 0 }
                     }
                 ]
             },
@@ -332,7 +367,7 @@
                 "transforms": [
                     {
                         "type": "translate",
-                        "amount": { "x": 0, "y": 7, "z": -20 }
+                        "amount": { "x": 0, "y": 9, "z": -20 }
                     }
                 ]
             },
@@ -342,7 +377,7 @@
                 "transforms": [
                     {
                         "type": "translate",
-                        "amount": { "x": 0, "y": 7, "z": 20 }
+                        "amount": { "x": 0, "y": 9, "z": 20 }
                     }
                 ]
             },
@@ -351,8 +386,8 @@
                 "children": {
                     "prim": {
                         "type": "box",
-                        "xyz1": { "x": -20, "y": -7, "z": -0.05 },
-                        "xyz2": { "x": 20, "y": 7, "z": 0.05 }
+                        "xyz1": { "x": -20, "y": -9, "z": -0.05 },
+                        "xyz2": { "x": 20, "y": 9, "z": 0.05 }
                     }
                 }
             },
@@ -361,8 +396,8 @@
                 "children": {
                     "prim": {
                         "type": "box",
-                        "xyz1": { "x": -30, "y": -7, "z": -0.05 },
-                        "xyz2": { "x": 30, "y": 7, "z": 0.05 }
+                        "xyz1": { "x": -30, "y": -9, "z": -0.05 },
+                        "xyz2": { "x": 30, "y": 9, "z": 0.05 }
                     }
                 }
             },
@@ -1166,7 +1201,7 @@
                         "chair_back",
                         "chair_seat",
                         "chair_armrest",
-                        "chair_cilinder",
+                        "chair_cylinder",
                         "chair_support_left",
                         "chair_support_right"
                     ]
@@ -1422,7 +1457,7 @@
                     }
                 ]
             },
-            "chair_cilinder": {
+            "chair_cylinder": {
                 "type": "node",
                 "children": {
                     "cylinderPrim1": {
@@ -1837,6 +1872,124 @@
                         "xyz2": { "x": 26.65, "y": 0.5, "z": 3.25 }
                     }
                 }
+            },
+            "door": {
+                "type": "node",
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": -29.95, "y": 15.0, "z": 0.0 }
+                    }
+                ],
+                "children": {
+                    "lodsList": ["emergency_exit"]
+                }
+            },
+            "emergency_exit_plane": {
+                "type": "node",
+                "transforms": [
+                    {
+                        "type": "rotate",
+                        "amount": { "x": 0.0, "y": 90.0, "z": 0.0 }
+                    },
+                    {
+                        "type": "translate",
+                        "amount": { "x": 0.01, "y": 0.0, "z": 0.0 }
+                    }
+                ],
+                "materialref": { "materialId": "emergency_exit" },
+                "children": {
+                    "plane": {
+                        "type": "rectangle",
+                        "xy1": {
+                            "x": -0.75,
+                            "y": -0.25
+                        },
+                        "xy2": {
+                            "x": 0.75,
+                            "y": 0.25
+                        }
+                    }
+                }
+            },
+            "emergency_exit_struct": {
+                "type": "node",
+                "transforms": [
+                    {
+                        "type": "rotate",
+                        "amount": { "x": 0, "y": 90, "z": 0 }
+                    },
+                    {
+                        "type": "translate",
+                        "amount": { "x": 0.1, "y": 0.0, "z": 0.0 }
+                    }
+                ],
+                "materialref": { "materialId": "white" },
+                "children": {
+                    "base": {
+                        "type": "box",
+                        "xyz1": {
+                            "x": -0.75,
+                            "y": -0.25,
+                            "z": -0.05
+                        },
+                        "xyz2": {
+                            "x": 0.75,
+                            "y": 0.25,
+                            "z": 0.05
+                        }
+                    },
+                    "nodesList": ["emergency_light_top"]
+                }
+            },
+            "emergency_light_top": {
+                "type": "node",
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 0.0, "y": 0, "z": 0.06 }
+                    }
+                ],
+                "materialref": { "materialId": "emergency_exit" },
+                "children": {
+                    "nurbsCenter": {
+                        "type": "nurbs",
+                        "degree_u": 3,
+                        "degree_v": 2,
+                        "parts_u": 8,
+                        "parts_v": 8,
+                        "controlpoints": [
+                            { "x": -0.75, "y": -0.25, "z": 0.0 },
+                            { "x": -0.75, "y": 0.0, "z": 0.0 },
+                            { "x": -0.75, "y": 0.25, "z": 0.0 },
+
+                            { "x": -0.25, "y": -0.25, "z": 0.0 },
+                            { "x": -0.25, "y": 0.0, "z": 0.25 },
+                            { "x": -0.25, "y": 0.25, "z": 0.0 },
+
+                            { "x": 0.25, "y": -0.25, "z": 0.0 },
+                            { "x": 0.25, "y": 0.0, "z": 0.25 },
+                            { "x": 0.25, "y": 0.25, "z": 0.0 },
+
+                            { "x": 0.75, "y": -0.25, "z": 0.0 },
+                            { "x": 0.75, "y": 0.0, "z": 0.0 },
+                            { "x": 0.75, "y": 0.25, "z": 0.0 }
+                        ]
+                    }
+                }
+            },
+            "emergency_exit": {
+                "type": "lod",
+                "lodNodes": [
+                    {
+                        "nodeId": "emergency_exit_struct",
+                        "mindist": 0.0
+                    },
+                    {
+                        "nodeId": "emergency_exit_plane",
+                        "mindist": 20.0
+                    }
+                ]
             }
         }
     }
