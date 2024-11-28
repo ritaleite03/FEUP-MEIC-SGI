@@ -32,13 +32,13 @@
             "t_exit": { "filepath": "scenes/demo/textures/exit_signal.jpg" },
             "t_back_wall": {
                 "filepath": "scenes/demo/textures/caravaggio.jpg",
-                "mipmap0": "scenes/demo/textures/caravaggio8.jpg",
-                "mipmap1": "scenes/demo/textures/caravaggio8.jpg",
-                "mipmap2": "scenes/demo/textures/caravaggio8.jpg",
-                "mipmap3": "scenes/demo/textures/caravaggio8.jpg",
-                "mipmap4": "scenes/demo/textures/caravaggio8.jpg",
-                "mipmap5": "scenes/demo/textures/caravaggio8.jpg",
-                "mipmap6": "scenes/demo/textures/caravaggio8.jpg",
+                "mipmap0": "scenes/demo/textures/caravaggio1024.jpg",
+                "mipmap1": "scenes/demo/textures/caravaggio512.jpg",
+                "mipmap2": "scenes/demo/textures/caravaggio256.jpg",
+                "mipmap3": "scenes/demo/textures/caravaggio128.jpg",
+                "mipmap4": "scenes/demo/textures/caravaggio64.jpg",
+                "mipmap5": "scenes/demo/textures/caravaggio32.jpg",
+                "mipmap6": "scenes/demo/textures/caravaggio16.jpg",
                 "mipmap7": "scenes/demo/textures/caravaggio8.jpg"
             }
         },
@@ -81,6 +81,9 @@
                 "specular": { "r": 0, "g": 0, "b": 0 },
                 "shininess": 1,
                 "transparent": false,
+                "textureref": "t_back_wall",
+                "texlength_s": 40,
+                "texlength_t": 18,
                 "opacity": 1.0
             },
             "floor_stage": {
@@ -748,7 +751,7 @@
                     },
                     {
                         "type": "translate",
-                        "amount": { "x": 27, "y": 13.75, "z": 0 }
+                        "amount": { "x": 27, "y": 17.75, "z": 0 }
                     }
                 ]
             },
@@ -849,15 +852,15 @@
                         "parts_v": 20,
                         "controlpoints": [
                             { "x": 0.0, "y": 0, "z": 0.0 },
-                            { "x": 0.0, "y": 11, "z": 0.0 },
+                            { "x": 0.0, "y": 15, "z": 0.0 },
                             { "x": 0.5, "y": 0, "z": 0.5 },
-                            { "x": 0.5, "y": 11, "z": 0.5 },
+                            { "x": 0.5, "y": 15, "z": 0.5 },
                             { "x": 1.0, "y": 0, "z": 0.0 },
-                            { "x": 1.0, "y": 11, "z": 0.0 },
+                            { "x": 1.0, "y": 15, "z": 0.0 },
                             { "x": 1.5, "y": 0, "z": -0.5 },
-                            { "x": 1.5, "y": 11, "z": -0.5 },
+                            { "x": 1.5, "y": 15, "z": -0.5 },
                             { "x": 2.0, "y": 0, "z": 0.0 },
-                            { "x": 2.0, "y": 11, "z": 0.0 }
+                            { "x": 2.0, "y": 15, "z": 0.0 }
                         ]
                     }
                 }
@@ -1076,7 +1079,7 @@
                 "transforms": [
                     {
                         "type": "translate",
-                        "amount": { "x": 26.5, "y": 12.75, "z": 0 }
+                        "amount": { "x": 26.5, "y": 16.75, "z": 0 }
                     }
                 ]
             },

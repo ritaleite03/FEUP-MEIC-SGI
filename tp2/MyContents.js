@@ -54,20 +54,7 @@ class MyContents {
     }
 
     onAfterSceneLoadedAndBeforeRender(data) {
-        this.parser = new MyParser(this.app, data)
-        this.dataLights = this.parser.dataLights
-        this.dataLightsHelpers = this.parser.dataLightsHelpers
-        this.ambientLight = this.parser.ambientLight
-
-        let gui = new MyGuiInterface(this.app)
-        gui.setContents(this)
-        gui.init();
-
-        this.graphDefault = this.parser.graph
-        this.grahYesWireframe = this.cloneGroupWithWireframe(this.parser.graph, true);
-        this.grahNoWireframe = this.cloneGroupWithWireframe(this.parser.graph, false);
-        this.graphDic = {"Default" : this.graphDefault, 'With Wireframe': this.grahYesWireframe, 'Without Wireframe' : this.grahNoWireframe}
-        this.app.scene.add(this.graphDefault)
+        this.parser = new MyParser(this, this.app, data)
     }
 
     cloneGroupWithWireframe(group, isWireframe) {
