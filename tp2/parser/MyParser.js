@@ -1,20 +1,26 @@
 import * as THREE from 'three';
 import { MyNurbsBuilder } from '../MyNurbsBuilder.js';
+import { MyGuiInterface } from '../MyGuiInterface.js';
 
 class MyParser {
 
 	/**
 	   constructs the object
 	*/
-	constructor(app, data) {
+	constructor(contents, app, data) {
 		
 		// variables
+		this.contents = contents
 		this.app = app
+		this.data = data
 		this.dataCameras = []
 		this.dataTextures = []
 		this.dataMaterials = []
 		this.dataNodes = []
 		this.dataLights = []
+		this.dataLightsHelpers = []
+		this.ambientLight = null
+		this.graph = null
 		this.buider = new MyNurbsBuilder()
 		
 		// check for errors
@@ -31,36 +37,55 @@ class MyParser {
 			return;
 		}
 		
-		// define texture and material
-		for(let key in data.yasf.textures) this.getTexture(key, data.yasf.textures[key])
-		for(let key in data.yasf.materials) this.getMaterial(key, data.yasf.materials[key])
+		this.getAllTextures().then(() => {
+			
+			for(let key in data.yasf.materials) this.getMaterial(key, data.yasf.materials[key])
 		
-		// define globals and cameras
-		this.defineGlobals(data.yasf.globals)
-		this.defineCameras(data.yasf.cameras)	
-		this.app.setActiveCamera(data.yasf.cameras.initial)
-		this.app.cameras = this.dataCameras
-		
-		// define scene
-		this.app.scene.add(this.parse(data.yasf.graph, data.yasf.graph.rootid, null, false, false))
-		
-		// add lights' helpers
-		for(const light of this.dataLights) {
-			let helper = null
-			if (light instanceof THREE.SpotLight) helper = new THREE.SpotLightHelper(light)
-			if (light instanceof THREE.PointLight) helper = new THREE.PointLightHelper(light)
-		}
+			// define globals and cameras
+			this.defineGlobals(data.yasf.globals)
+			this.defineCameras(data.yasf.cameras)	
+			this.app.setActiveCamera(data.yasf.cameras.initial)
+			this.app.cameras = this.dataCameras
+			
+			// define scene
+			this.graph = this.parse(data.yasf.graph, data.yasf.graph.rootid, null, false, false)
+			this.graph.name = "root_graph"
+			
+			// add lights' helpers
+			for(const light of this.dataLights) {
+				if (light instanceof THREE.SpotLight) this.dataLightsHelpers.push({"light" : light, "helper" : new THREE.SpotLightHelper(light)})
+				if (light instanceof THREE.PointLight) this.dataLightsHelpers.push({"light" : light, "helper" : new THREE.PointLightHelper(light)})
+				if (light instanceof THREE.DirectionalLight) this.dataLightsHelpers.push({"light" : light, "helper" : new THREE.DirectionalLightHelper(light)})
+			}
+
+			this.contents.dataLights = this.dataLights
+			this.contents.dataLightsHelpers = this.dataLightsHelpers
+			this.contents.ambientLight = this.ambientLight
 	
+			let gui = new MyGuiInterface(this.app)
+			gui.setContents(this.contents)
+			gui.init();
+	
+			this.contents.graphDefault = this.graph
+			this.contents.grahYesWireframe = this.contents.cloneGroupWithWireframe(this.graph, true);
+			this.contents.grahNoWireframe = this.contents.cloneGroupWithWireframe(this.graph, false);
+			this.contents.graphDic = {"Default" : this.contents.graphDefault, 'With Wireframe': this.contents.grahYesWireframe, 'Without Wireframe' : this.contents.grahNoWireframe}
+			this.app.scene.add(this.contents.graphDefault)
+		})
+
 	}
 
+
 	/**
+	 * 
+	 * Parses information from globals block.
+	 * Defines the background, the ambient light, the skybox and the fog.
 	 * 
 	 * @param {Object} data object corresponding to globals block
 	 * @returns 
 	 */
 	defineGlobals(data) {
 
-		console.log(typeof data)
 		// check for errors
 		if (!data.background || !data.ambient || !data.fog || !data.skybox || Object.keys(data).length !== 4) {
 			console.error('Error in MyParser.defineGlobals: unexpected or missing definitions');
@@ -83,7 +108,11 @@ class MyParser {
 			console.error('Error in MyParser.defineGlobals: invalid or undefined values in ambient');
 			return;
 		}
-		this.app.scene.ambient = new THREE.Color().setRGB(...app_ambient);
+
+		const ambient_color = new THREE.Color().setRGB(...app_ambient)
+		const ambient_intesity = data.ambient.intensity
+		this.ambientLight =new THREE.AmbientLight(ambient_color, ambient_intesity) 
+		this.app.scene.add(this.ambientLight)
 
 		// define ambient
 		const fog_color = [data.fog.color.r, data.fog.color.g, data.fog.color.b]
@@ -116,10 +145,13 @@ class MyParser {
 		const mesh = new THREE.Mesh(object, [material_right, material_left, material_up, material_down, material_back, material_front])
 		mesh.position.set(...sky_center)
 		this.app.scene.add(mesh)
-
 	}
 	
+
 	/**
+	 * 
+	 * Parses information from cameras block.
+	 * Creates the cameras and saves them in dataCameras.
 	 * 
 	 * @param {Object} data object corresponding to cameras block
 	 * @returns 
@@ -178,28 +210,55 @@ class MyParser {
 
 	}
 
+
 	/**
+	 * Creates all textures
+	 */
+	async getAllTextures() {
+		for(let key in this.data.yasf.textures) await this.getTexture(key, this.data.yasf.textures[key])
+	}
+
+
+	/**
+	 * 
+	 * Creates texture and saves it in dataTextures
 	 * 
 	 * @param {String} name name of texture
 	 * @param {Object} data object corresponding to the texture block
 	 * @returns 
 	 */
-	getTexture(name, data) {
-		if(!data.filepath) {
-			console.error('Error in MyParser.getTexture : component filepath is undefined');
-			return
+	async getTexture(name, data) {
+		
+		if (!data.filepath) {
+			console.error("Error in MyParser.getTexture : component filepath is undefined");
+			return;
 		}
-		if(typeof data.filepath !==  'string') {
-			console.error('Error in MyParser.getTexture : component filepath is not string');
-			return
+		if (typeof data.filepath !== "string") {
+			console.error("Error in MyParser.getTexture : component filepath is not string");
+			return;
 		}
+	
 		const texture = new THREE.TextureLoader().load(data.filepath);
-		texture.wrapS = THREE.RepeatWrapping
-		texture.wrapT = THREE.RepeatWrapping
-		this.dataTextures[name] = texture
+		texture.wrapS = THREE.RepeatWrapping;
+		texture.wrapT = THREE.RepeatWrapping;
+	
+		if (data["mipmap0"]) {
+			texture.generateMipmaps = false;
+			for (let i = 0; i < 8; i++) {
+				if (!data["mipmap" + i]) break;	
+				await this.loadMipmap(texture, i, data["mipmap" + i]);
+			}
+			texture.needsUpdate = true;
+		}
+		this.dataTextures[name] = texture;
 	}
+	
 
 	/**
+	 * 
+	 * Parse the materials block, saving the information in an dictionary. 
+	 * The key is the name of the material and value is another dictionary.
+	 * The value's the keys are the attributes, texlength_s, texlength_t, textureref, specularref.
 	 * 
 	 * @param {String} name name of the material
 	 * @param {Object} data object corresponding to the material block
@@ -256,7 +315,10 @@ class MyParser {
 	
 	}
 
+
 	/**
+	 * 
+	 * Creates material for mesh of object of type rectangle, acording with specific texlength_s and texlength_t of the material.
 	 * 
 	 * @param {Object} material object with the attributes of the material  
 	 * @param {Number} width width of the rectangle
@@ -283,7 +345,10 @@ class MyParser {
 		return new THREE.MeshPhongMaterial(material_attributes)
 	}
 
+
 	/**
+	 * 
+	 * Creates material for mesh of object of type box, acording with specific texlength_s and texlength_t of the material.
 	 * 
 	 * @param {Object} material object with the attributes of the material 
 	 * @param {Number} width width of the box
@@ -296,9 +361,16 @@ class MyParser {
 		let material_attributes_y = material.attributes
 		let material_attributes_z = material.attributes
 		if(material.textureref) {
+
+			if (material.textureref === 't_back_wall') {
+				console.log(this.dataTextures[material.textureref])
+				console.log(this.dataTextures[material.textureref].mipmaps)
+			}
+
 			const texture_x = this.dataTextures[material.textureref].clone()
 			const texture_y = this.dataTextures[material.textureref].clone()
 			const texture_z = this.dataTextures[material.textureref].clone()
+			
 			texture_x.repeat.set(depth / material.texlength_s, height / material.texlength_t)
 			texture_y.repeat.set(width / material.texlength_s, depth / material.texlength_t)
 			texture_z.repeat.set(width / material.texlength_s, height / material.texlength_t)
@@ -334,7 +406,10 @@ class MyParser {
 		return [material_mesh_x, material_mesh_x, material_mesh_y, material_mesh_y, material_mesh_z, material_mesh_z]
 	}
 
+
 	/**
+	 * 
+	 * Creates material for mesh of object of type cylinder, acording with specific texlength_s and texlength_t of the material.
 	 * 
 	 * @param {Object} material object with the attributes of the material 
 	 * @param {Number} base radius of the base of the cylinder 
@@ -386,7 +461,10 @@ class MyParser {
 		return [material_mesh_height, material_mesh_top, material_mesh_base]
 	}
 
+
 	/**
+	 * 
+	 * Creates material for mesh of object of type sphere, acording with specific texlength_s and texlength_t of the material.
 	 * 
 	 * @param {Object} material object with the attributes of the material 
 	 * @param {Number} radius radius of the sphere
@@ -412,7 +490,10 @@ class MyParser {
 		return new THREE.MeshPhongMaterial(material_attributes)
 	}
 
+
 	/**
+	 * 
+	 * Creates a light of type PointLight.
 	 * 
 	 * @param {Object} prim object corresponding to the primitive block
 	 * @returns object of type PointLight or nothing if error
@@ -450,7 +531,10 @@ class MyParser {
 
 	}
 
+
 	/**
+	 * 
+	 * Creates a light of type SpotLight.
 	 * 
 	 * @param {Object} prim object corresponding to the primitive block
 	 * @returns object of type SpotLight or nothing if error
@@ -493,7 +577,10 @@ class MyParser {
 
 	}
 
+
 	/**
+	 * 
+	 * Creates a light of type DirectionalLight.
 	 * 
 	 * @param {Object} prim object corresponding to the primitive block
 	 * @returns object of type DirectionalLight or nothing if error
@@ -533,11 +620,14 @@ class MyParser {
 		light.shadowbottom = shadowbottom
 		light.shadowfar = shadowfar
 		light.shadowmapsize = shadowmapsize
+		this.dataLights.push(light)
 		return light
-
 	}
 
+
 	/**
+	 * 
+	 * Creates a mesh with an object of type rectangle.
 	 * 
 	 * @param {Object} prim object corresponding to the primitive block
 	 * @param {object} material object with the attributes of the material 
@@ -566,10 +656,12 @@ class MyParser {
 		const mesh =  new THREE.Mesh(object, this.getMaterialRectangle(material, width, height))
 		mesh.position.set((prim.xy1.x + prim.xy2.x) / 2, (prim.xy1.y + prim.xy2.y) / 2, 0)
 		return mesh
-
 	}
 
+
 	/**
+	 * 
+	 * Creates a mesh with an object of type triangle.
 	 * 
 	 * @param {Object} prim object corresponding to the primitive block
 	 * @param {object} material object with the attributes of the material 
@@ -600,7 +692,10 @@ class MyParser {
 
 	}
 
+
 	/**
+	 * 
+	 * Creates a mesh with an object of type box.
 	 * 
 	 * @param {Object} prim object corresponding to the primitive block
 	 * @param {object} material object with the attributes of the material 
@@ -633,7 +728,10 @@ class MyParser {
 		return mesh
 	}
 
+
 	/**
+	 * 
+	 * Creates a mesh with an object of type cylinder.
 	 * 
 	 * @param {Object} prim object corresponding to the primitive block
 	 * @param {object} material object with the attributes of the material 
@@ -661,7 +759,10 @@ class MyParser {
 		return new THREE.Mesh(object, this.getMaterialCylinder(material, prim.base, prim.top, prim.height))
 	}
 
+
 	/**
+	 * 
+	 * Creates a mesh with an object of type sphere.
 	 * 
 	 * @param {Object} prim object corresponding to the primitive block
 	 * @param {object} material object with the attributes of the material 
@@ -690,7 +791,10 @@ class MyParser {
 		return new THREE.Mesh(object, this.getMaterialSphere(material, prim.radius))
 	}
 
+
 	/**
+	 * 
+	 * Creates a mesh with an object of type nurbs.
 	 * 
 	 * @param {Object} prim object corresponding to the primitive block
 	 * @param {object} material object with the attributes of the material 
@@ -736,6 +840,16 @@ class MyParser {
 		return new THREE.Mesh(object, mat)
 	}
 
+
+	/**
+	 * 
+	 * @param {*} data 
+	 * @param {*} name 
+	 * @param {*} parent_material 
+	 * @param {*} parent_castshadows 
+	 * @param {*} parent_receiveshadows 
+	 * @returns 
+	 */
 	parseLod(data, name, parent_material, parent_castshadows, parent_receiveshadows){
 		const lod = data[name]
 
@@ -780,6 +894,83 @@ class MyParser {
 
 	/**
 	 * 
+	 * Creates a mesh with an object of type polygon.
+	 * 
+	 * @param {*} prim object corresponding to the primitive block
+	 * @param {*} material object with the attributes of the material 
+	 * @returns object of type BufferGeometry or nothing if error
+	 */
+	parsePolygon(prim, material) {
+		// Check for errors
+		if (![prim.radius, prim.stacks, prim.slices, prim.color_c, prim.color_p].every((value) => value !== undefined)) {
+			console.error('Error in MyParser.parsePolygon: missing attributes');
+			return;
+		}
+	
+		let vertices = [];
+		let indices = [];
+		let normals = [];
+		let colors = [];
+	
+		// Add center vertex
+		vertices.push(0, 0, 0);
+		normals.push(0, 0, 1);
+		colors.push(prim.color_c.r, prim.color_c.g, prim.color_c.b);
+	
+		let angleInterval = (2 * Math.PI) / prim.slices;
+		let radiusInterval = prim.radius / prim.stacks;
+	
+		const color_c = new THREE.Color().setRGB(prim.color_c.r, prim.color_c.g, prim.color_c.b)
+		const color_p = new THREE.Color().setRGB(prim.color_p.r, prim.color_p.g, prim.color_p.b)
+
+		// Create vertices
+		for (let i = 0; i <= prim.slices; i++) {
+			let angle = i * angleInterval;
+			for (let j = 1; j <= prim.stacks; j++) {
+				let radius = j * radiusInterval;
+				const x = radius * Math.cos(angle);
+				const y = radius * Math.sin(angle);	
+				vertices.push(x, y, 0);
+				normals.push(0, 0, 1);
+				const color = new THREE.Color().lerpColors(color_c, color_p, j / prim.stacks )
+				colors.push(color.r, color.g, color.b);
+			}
+		}
+	
+		// triangles in the center
+		for (let i = 0; i < prim.slices; i++) {
+			const vertice1Index = 1 + i * prim.stacks;
+			const vertice2Index = 1 + ((i + 1) % prim.slices) * prim.stacks;
+			indices.push(0, vertice1Index, vertice2Index);
+		}
+	
+		// triangles between stacks
+		for (let i = 0; i < prim.slices; i++) {
+			for (let j = 0; j < prim.stacks - 1; j++) {
+				const current = 1 + i * prim.stacks + j;
+				const next = 1 + ((i + 1) % prim.slices) * prim.stacks + j;	
+				indices.push(current, current + 1, next + 1);	
+				indices.push(current, next + 1, next);
+			}
+		}
+	
+		const material_polygon = new THREE.MeshBasicMaterial({vertexColors: true,side: THREE.DoubleSide,});
+		const geometry = new THREE.BufferGeometry();
+		geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+		geometry.setAttribute('normal', new THREE.Float32BufferAttribute(normals, 3));
+		geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+		geometry.setIndex(indices);	
+		const mesh = new THREE.Mesh(geometry, material_polygon);
+
+		return mesh;
+	}
+	
+
+
+	/**
+	 * 
+	 * Parse the tree nodes, creating a "graph" composed of groups of nodes.
+	 * 
 	 * @param {Object} data object corresponding to the graph block
 	 * @param {String} name name of the node
 	 * @param {Object} material object with the attributes of the material 
@@ -789,11 +980,13 @@ class MyParser {
 	 */
     parse(data, name, material, castshadows, receiveshadows) {
 		
+
 		// variables 
         const parent = data[name]
-		const parent_material = parent.materialref ? this.dataMaterials[parent.materialref.materialId] : material
+		const parent_material = parent.materialref ? this.dataMaterials[parent.materialref.materialId] : material	
+
 		const parent_castshadows = parent.castshadows ? parent.castshadows : castshadows
-		const parent_receiveshadows = parent.parent_receiveshadows ? parent.parent_receiveshadows : receiveshadows
+		const parent_receiveshadows = parent.receiveshadows ? parent.receiveshadows : receiveshadows
         const list_children = data[name].children ? data[name].children : {}
 		
 		// check for errors
@@ -811,6 +1004,9 @@ class MyParser {
 
 		// if node was already parsed
 		if(this.dataNodes[name]) {
+
+			if(name == "wall_right_left")  console.log("aquiii", parent_material)
+			
 			group = this.dataNodes[name].clone()
 			group.name = name
 			group.children.forEach((child) => {this.changeMaterialShadows(data, child, parent_material, parent_castshadows, parent_receiveshadows)});
@@ -836,7 +1032,6 @@ class MyParser {
 				// if node is of a list of lods
 				if(child_name === 'lodsList') {
 					for(const lod of child_node) {
-						console.log(parent_material, parent_castshadows, parent_receiveshadows)
 						const group_lod = this.parseLod(data, lod, parent_material, parent_castshadows, parent_receiveshadows)
 						group_lod.name = lod
 						group.add(group_lod)
@@ -857,6 +1052,12 @@ class MyParser {
 					group.add(light)
 					continue
 				}
+				if (child_node.type === 'directionallight') {
+					const light = this.parseDirectionalLight(child_node)
+					light.name = child_name
+					group.add(light)
+					continue
+				}
 				
 				// if node is a primitive
 				let mesh = null
@@ -866,11 +1067,11 @@ class MyParser {
 				if (child_node.type === 'cylinder') mesh = this.parseCylinder(child_node, child_material)
 				if (child_node.type === 'sphere') mesh = this.parseSphere(child_node, child_material)
 				if (child_node.type === 'nurbs') mesh = this.parseNurbs(child_node, child_material)
+				if (child_node.type === 'polygon') mesh = this.parsePolygon(child_node, child_material)
 				mesh.name = child_name
 				mesh.castShadow = parent_castshadows
 				mesh.receiveShadow = parent_receiveshadows
-				group.add(mesh)
-        	
+				group.add(mesh)        	
 			}
 
 			group.name = name
@@ -907,13 +1108,17 @@ class MyParser {
 
     }
 
+
 	/**
 	 * 
-	 * @param {*} data 
-	 * @param {*} node 
-	 * @param {*} material 
-	 * @param {*} castshadows 
-	 * @param {*} receiveshadows 
+	 * Changes the proprieties material, castshadows and receiveshadows of the node.
+	 * Used after cloning a node, because this proporties may have to change.
+	 * 
+	 * @param {Object} data object corresponding to the graph block
+	 * @param {Object} node node that is being changed
+	 * @param {Object} material object with the attributes of the material 
+	 * @param {Boolean} castshadows true if object casts shadows and false if not
+	 * @param {Boolean} receiveshadows true if object receives shadows and false if not
 	 */
 	changeMaterialShadows(data, node, material, castshadows, receiveshadows) {
 		if (node.isGroup) {
@@ -927,7 +1132,7 @@ class MyParser {
 			if(node instanceof THREE.Mesh) {
 				const parameters = node.geometry.parameters
 				if (node.geometry instanceof THREE.PlaneGeometry) node.material = this.getMaterialRectangle(material, parameters.width, parameters.height)
-				if (node.geometry instanceof THREE.BoxGeometry) node.material = this.getMaterialRectangle(material, parameters.width, parameters.height, parameters.depth)
+				if (node.geometry instanceof THREE.BoxGeometry) node.material = this.getMaterialBox(material, parameters.width, parameters.height, parameters.depth)
 				if (node.geometry instanceof THREE.CylinderGeometry) node.material = this.getMaterialCylinder(material, parameters.radiusTop, parameters.radiusBottom, parameters.height)
 				if(node.getMaterial instanceof THREE.SphereGeometry) node.material = this.getMaterialSphere(material, parameters.radius)
 				node.material.needsUpdate = true
@@ -939,6 +1144,17 @@ class MyParser {
 		}	
 	}
 
+
+	/**
+	 * 
+	 * Changes the proprieties castshadows and receiveshadows of the node.
+	 * Used after cloning a node, because this proporties may have to change.
+	 * 
+	 * @param {Object} data object corresponding to the graph block
+	 * @param {Object} node node that is being changed
+	 * @param {Boolean} castshadows true if object casts shadows and false if not
+	 * @param {Boolean} receiveshadows true if object receives shadows and false if not
+	 */
 	changeShadows(data, node, castshadows, receiveshadows) {
 		if (node.isGroup) {
 			node.children.forEach((child) => {
@@ -951,6 +1167,41 @@ class MyParser {
 			if (node instanceof THREE.PointLight) this.dataLights.push(node)
 		}	
 	}
+
+
+	/**
+     * Load an image and create a mipmap to be added to a texture at the defined level.
+     * In between, add the image some text and control squares. These items become part of the picture.
+     * 
+     * @param {*} parentTexture the texture to which the mipmap is added
+     * @param {*} level the level of the mipmap
+     * @param {*} path the path for the mipmap image
+    // * @param {*} size if size not null inscribe the value in the mipmap. null by default
+    // * @param {*} color a color to be used for demo
+     */
+	loadMipmap(parentTexture, level, path) {
+		return new Promise((resolve, reject) => {
+			new THREE.TextureLoader().load(
+				path,
+				(mipmapTexture) => {
+					const canvas = document.createElement("canvas");
+					const ctx = canvas.getContext("2d");
+					const img = mipmapTexture.image;
+					canvas.width = img.width;
+					canvas.height = img.height;	
+					ctx.drawImage(img, 0, 0);
+					parentTexture.mipmaps[level] = canvas;
+					resolve();
+				},
+				undefined,
+				(err) => {
+					console.error("Unable to load the image " + path + " as mipmap level " + level + ".", err);
+					reject(err);
+				}
+			);
+		});
+	}
+	
 }
 
 export { MyParser };

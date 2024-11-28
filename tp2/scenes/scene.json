@@ -2,7 +2,7 @@
     "yasf": {
         "globals": {
             "background": { "r": 0.0, "g": 0.0, "b": 0.0 },
-            "ambient": { "r": 0.0, "g": 0.0, "b": 0.0 },
+            "ambient": { "r": 1.0, "g": 1.0, "b": 1.0, "intensity": 1 },
             "fog": {
                 "color": { "r": 1.0, "g": 1.0, "b": 1.0 },
                 "near": 1,
@@ -31,7 +31,18 @@
             "b_wall": { "filepath": "scenes/demo/textures/b_wall.jpg" },
             "t_exit": { "filepath": "scenes/demo/textures/exit_signal.jpg" },
             "t_door": { "filepath": "scenes/demo/textures/t_door.jpg" },
-            "door": { "filepath": "scenes/demo/textures/door.jpg" }
+            "door": { "filepath": "scenes/demo/textures/door.jpg" },
+            "t_back_wall": {
+                "filepath": "scenes/demo/textures/caravaggio.jpg",
+                "mipmap0": "scenes/demo/textures/caravaggio1024.jpg",
+                "mipmap1": "scenes/demo/textures/caravaggio512.jpg",
+                "mipmap2": "scenes/demo/textures/caravaggio256.jpg",
+                "mipmap3": "scenes/demo/textures/caravaggio128.jpg",
+                "mipmap4": "scenes/demo/textures/caravaggio64.jpg",
+                "mipmap5": "scenes/demo/textures/caravaggio32.jpg",
+                "mipmap6": "scenes/demo/textures/caravaggio16.jpg",
+                "mipmap7": "scenes/demo/textures/caravaggio8.jpg"
+            }
         },
         "materials": {
             "ceilling": {
@@ -72,6 +83,9 @@
                 "specular": { "r": 0, "g": 0, "b": 0 },
                 "shininess": 1,
                 "transparent": false,
+                "textureref": "t_back_wall",
+                "texlength_s": 40,
+                "texlength_t": 18,
                 "opacity": 1.0
             },
             "floor_stage": {
@@ -263,13 +277,16 @@
             "rootid": "scene",
             "scene": {
                 "type": "node",
+                "castshadows": true,
+                "receiveshadows": true,
                 "children": {
                     "pointlight": {
                         "type": "pointlight",
                         "enabled": true,
                         "color": { "r": 1, "g": 1, "b": 1 },
                         "intensity": 100,
-                        "position": { "x": 0, "y": 8, "z": 0 }
+                        "position": { "x": 0, "y": 10, "z": 0 },
+                        "castshadow": true
                     },
                     "nodesList": [
                         "walls",
@@ -278,9 +295,30 @@
                         "stage",
                         "chairs", 
                         "doors",
-                        "door_exit"
+                        "door_exit",
+                        "temp"
                     ]
                 }
+            },
+            "temp": {
+                "type": "node",
+                "materialref": { "materialId": "ceilling" },
+                "children": {
+                    "prim": {
+                        "type": "polygon",
+                        "radius": 1,
+                        "stacks": 5,
+                        "slices": 5,
+                        "color_c": { "r": 1, "g": 0, "b": 0 },
+                        "color_p": { "r": 0, "g": 1, "b": 0 }
+                    }
+                },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 0, "y": 10, "z": 0 }
+                    }
+                ]
             },
             "ceilling": {
                 "type": "node",
@@ -736,7 +774,7 @@
                     },
                     {
                         "type": "translate",
-                        "amount": { "x": 27, "y": 13.75, "z": 0 }
+                        "amount": { "x": 27, "y": 17.75, "z": 0 }
                     }
                 ]
             },
@@ -837,15 +875,15 @@
                         "parts_v": 20,
                         "controlpoints": [
                             { "x": 0.0, "y": 0, "z": 0.0 },
-                            { "x": 0.0, "y": 11, "z": 0.0 },
+                            { "x": 0.0, "y": 15, "z": 0.0 },
                             { "x": 0.5, "y": 0, "z": 0.5 },
-                            { "x": 0.5, "y": 11, "z": 0.5 },
+                            { "x": 0.5, "y": 15, "z": 0.5 },
                             { "x": 1.0, "y": 0, "z": 0.0 },
-                            { "x": 1.0, "y": 11, "z": 0.0 },
+                            { "x": 1.0, "y": 15, "z": 0.0 },
                             { "x": 1.5, "y": 0, "z": -0.5 },
-                            { "x": 1.5, "y": 11, "z": -0.5 },
+                            { "x": 1.5, "y": 15, "z": -0.5 },
                             { "x": 2.0, "y": 0, "z": 0.0 },
-                            { "x": 2.0, "y": 11, "z": 0.0 }
+                            { "x": 2.0, "y": 15, "z": 0.0 }
                         ]
                     }
                 }
@@ -1064,7 +1102,7 @@
                 "transforms": [
                     {
                         "type": "translate",
-                        "amount": { "x": 26.5, "y": 12.75, "z": 0 }
+                        "amount": { "x": 26.5, "y": 16.75, "z": 0 }
                     }
                 ]
             },
@@ -1884,11 +1922,11 @@
                     }
                 ],
                 "children": {
-                    "lodsList" : ["emergency_exit"]
+                    "lodsList": ["emergency_exit"]
                 }
             },
-            "emergency_exit_plane":{
-                "type":"node",
+            "emergency_exit_plane": {
+                "type": "node",
                 "transforms": [
                     {
                         "type": "rotate",
@@ -1912,11 +1950,10 @@
                             "y": 0.25
                         }
                     }
-                    
                 }
             },
-            "emergency_exit_struct":{
-                "type":"node",
+            "emergency_exit_struct": {
+                "type": "node",
                 "transforms": [
                     {
                         "type": "rotate",
@@ -1942,11 +1979,11 @@
                             "z": 0.05
                         }
                     },
-                    "nodesList": ["emergency_light_top"] 
+                    "nodesList": ["emergency_light_top"]
                 }
             },
-            "emergency_light_top":{
-                "type":"node",
+            "emergency_light_top": {
+                "type": "node",
                 "transforms": [
                     {
                         "type": "translate",
@@ -1977,7 +2014,6 @@
                             { "x": 0.75, "y": -0.25, "z": 0.0 },
                             { "x": 0.75, "y": 0.0, "z": 0.0 },
                             { "x": 0.75, "y": 0.25, "z": 0.0 }
-                            
                         ]
                     }
                 }
@@ -1993,7 +2029,6 @@
                         "nodeId": "emergency_exit_plane",
                         "mindist": 20.0
                     }
-                   
                 ]
             },
             "doors":{
@@ -2244,7 +2279,6 @@
                     "nodesList" : ["right_frame"]
                 }
             }
-
         }
     }
 }
