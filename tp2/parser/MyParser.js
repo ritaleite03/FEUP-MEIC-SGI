@@ -52,6 +52,7 @@ class MyParser {
 		for(const light of this.dataLights) {
 			if (light instanceof THREE.SpotLight) this.dataLightsHelpers.push({"light" : light, "helper" : new THREE.SpotLightHelper(light)})
 			if (light instanceof THREE.PointLight) this.dataLightsHelpers.push({"light" : light, "helper" : new THREE.PointLightHelper(light)})
+			if (light instanceof THREE.DirectionalLight) this.dataLightsHelpers.push({"light" : light, "helper" : new THREE.DirectionalLightHelper(light)})
 		}
 	}
 
@@ -538,8 +539,8 @@ class MyParser {
 		light.shadowbottom = shadowbottom
 		light.shadowfar = shadowfar
 		light.shadowmapsize = shadowmapsize
+		this.dataLights.push(light)
 		return light
-
 	}
 
 	/**
@@ -571,7 +572,6 @@ class MyParser {
 		const mesh =  new THREE.Mesh(object, this.getMaterialRectangle(material, width, height))
 		mesh.position.set((prim.xy1.x + prim.xy2.x) / 2, (prim.xy1.y + prim.xy2.y) / 2, 0)
 		return mesh
-
 	}
 
 	/**
@@ -860,11 +860,12 @@ class MyParser {
 	 */
     parse(data, name, material, castshadows, receiveshadows) {
 		
+
 		// variables 
         const parent = data[name]
-		const parent_material = parent.materialref ? this.dataMaterials[parent.materialref.materialId] : material
+		const parent_material = parent.materialref ? this.dataMaterials[parent.materialref.materialId] : material	
 		const parent_castshadows = parent.castshadows ? parent.castshadows : castshadows
-		const parent_receiveshadows = parent.parent_receiveshadows ? parent.parent_receiveshadows : receiveshadows
+		const parent_receiveshadows = parent.receiveshadows ? parent.receiveshadows : receiveshadows
         const list_children = data[name].children ? data[name].children : {}
 		
 		// check for errors
@@ -907,7 +908,6 @@ class MyParser {
 				// if node is of a list of lods
 				if(child_name === 'lodsList') {
 					for(const lod of child_node) {
-						console.log(parent_material, parent_castshadows, parent_receiveshadows)
 						const group_lod = this.parseLod(data, lod, parent_material, parent_castshadows, parent_receiveshadows)
 						group_lod.name = lod
 						group.add(group_lod)
@@ -928,6 +928,12 @@ class MyParser {
 					group.add(light)
 					continue
 				}
+				if (child_node.type === 'directionallight') {
+					const light = this.parseDirectionalLight(child_node)
+					light.name = child_name
+					group.add(light)
+					continue
+				}
 				
 				// if node is a primitive
 				let mesh = null
@@ -941,8 +947,7 @@ class MyParser {
 				mesh.name = child_name
 				mesh.castShadow = parent_castshadows
 				mesh.receiveShadow = parent_receiveshadows
-				group.add(mesh)
-        	
+				group.add(mesh)        	
 			}
 
 			group.name = name

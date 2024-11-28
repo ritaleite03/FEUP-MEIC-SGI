@@ -29,7 +29,18 @@
             "t_chair": { "filepath": "scenes/demo/textures/t_chair.jpg" },
             "t_black": { "filepath": "scenes/demo/textures/t_black.jpg" },
             "b_wall": { "filepath": "scenes/demo/textures/b_wall.jpg" },
-            "t_exit": { "filepath": "scenes/demo/textures/exit_signal.jpg" }
+            "t_exit": { "filepath": "scenes/demo/textures/exit_signal.jpg" },
+            "t_back_wall": {
+                "filepath": "scenes/demo/textures/caravaggio.jpg",
+                "mipmap0": "scenes/demo/textures/caravaggio8.jpg",
+                "mipmap1": "scenes/demo/textures/caravaggio8.jpg",
+                "mipmap2": "scenes/demo/textures/caravaggio8.jpg",
+                "mipmap3": "scenes/demo/textures/caravaggio8.jpg",
+                "mipmap4": "scenes/demo/textures/caravaggio8.jpg",
+                "mipmap5": "scenes/demo/textures/caravaggio8.jpg",
+                "mipmap6": "scenes/demo/textures/caravaggio8.jpg",
+                "mipmap7": "scenes/demo/textures/caravaggio8.jpg"
+            }
         },
         "materials": {
             "ceilling": {
@@ -243,13 +254,16 @@
             "rootid": "scene",
             "scene": {
                 "type": "node",
+                "castshadows": true,
+                "receiveshadows": true,
                 "children": {
                     "pointlight": {
                         "type": "pointlight",
                         "enabled": true,
                         "color": { "r": 1, "g": 1, "b": 1 },
                         "intensity": 100,
-                        "position": { "x": 0, "y": 8, "z": 0 }
+                        "position": { "x": 0, "y": 10, "z": 0 },
+                        "castshadow": true
                     },
                     "nodesList": [
                         "walls",

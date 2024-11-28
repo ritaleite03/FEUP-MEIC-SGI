@@ -113,7 +113,6 @@ class MyContents {
     }
 
     updateGraph(value) {
-        console.log(this.graphDic[this.graphActive])
         for(let key in this.app.scene.children) {
             if  (this.app.scene.children[key].name === 'root_graph') {
                 this.app.scene.remove(this.app.scene.children[key])

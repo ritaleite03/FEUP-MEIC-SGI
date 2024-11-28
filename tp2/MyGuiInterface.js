@@ -38,10 +38,6 @@ class MyGuiInterface  {
         cameraFolder.add(this.app, 'activeCameraName', camerasNames).name("active camera");
         cameraFolder.open()
 
-        for(let name in camerasNames) {
-            console.log(camerasNames[name])
-        }
-        
         const ambientBackgroundFolder = this.datgui.addFolder( 'Ambient and Background' )
         ambientBackgroundFolder.add(this.contents.ambientLight, 'intensity', 0, 10).name("Ambient\'s Intensity").onChange((value) => {this.contents.ambientLight.intensity = value});
         ambientBackgroundFolder.addColor( this.contents.ambientLight, 'color' ).name('Ambient\'s Color').onChange( (value) => { this.contents.ambientLight.color = value} );
