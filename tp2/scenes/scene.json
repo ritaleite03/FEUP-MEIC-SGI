@@ -32,6 +32,7 @@
             "t_exit": { "filepath": "scenes/demo/textures/exit_signal.jpg" },
             "t_door": { "filepath": "scenes/demo/textures/t_door.jpg" },
             "door": { "filepath": "scenes/demo/textures/door.jpg" },
+            "micro": { "filepath": "scenes/demo/textures/b_micro.jpg" },
             "t_back_wall": {
                 "filepath": "scenes/demo/textures/caravaggio.jpg",
                 "mipmap0": "scenes/demo/textures/caravaggio1024.jpg",
@@ -166,6 +167,18 @@
                 "transparent": false,
                 "opacity": 2.5
             },
+            "micro": {
+                "color": { "r": 0.0, "g": 0.0, "b": 0.0 },
+                "emissive": { "r": 0, "g": 0, "b": 0 },
+                "specular": { "r": 0.5, "g": 0.5, "b": 0.5 },
+                "shininess": 5,
+                "transparent": false,
+                "opacity": 1,
+                "bumpref": "micro",
+                "bumpscale": 0.025,
+                "texlength_s": 0.5,
+                "texlength_t": 0.5
+            },
             "t_black": {
                 "color": { "r": 0.25, "g": 0.25, "b": 0.25 },
                 "emissive": { "r": 0, "g": 0, "b": 0 },
@@ -296,8 +309,6 @@
             "rootid": "scene",
             "scene": {
                 "type": "node",
-                "castshadows": true,
-                "receiveshadows": true,
                 "children": {
                     "pointlight": {
                         "type": "pointlight",
@@ -313,9 +324,7 @@
                         "ceilling",
                         "stage",
                         "painting_polygon",
-
                         "painting",
-
                         "chairs",
                         "doors",
                         "door_exit",
@@ -334,7 +343,7 @@
                 "children": {
                     "prim": {
                         "type": "polygon",
-                        "radius": 2,
+                        "radius": 1,
                         "stacks": 5,
                         "slices": 5,
                         "color_c": { "r": 0.9, "g": 0, "b": 0 },
@@ -414,7 +423,7 @@
             },
             "wall_right": {
                 "type": "node",
-                "materialref": { "materialId": "wall_stage" },
+                "materialref": { "materialId": "ceilling" },
                 "children": { "nodesList": ["wall_right_left"] },
                 "transforms": [
                     {
@@ -471,6 +480,8 @@
             },
             "stage": {
                 "type": "node",
+                "castshadows": true,
+                "receiveshadows": true,
                 "children": {
                     "nodesList": [
                         "stage_floor",
@@ -478,7 +489,8 @@
                         "stage_ceiling_spotlights",
                         "stage_floor_spotlights",
                         "curtains",
-                        "stage_floor_top"
+                        "stage_floor_top",
+                        "micro"
                     ]
                 }
             },
@@ -1017,13 +1029,14 @@
                 "children": {
                     "prim": {
                         "type": "spotlight",
+                        "castshadow": true,
                         "color": { "r": 1, "g": 1, "b": 1 },
-                        "intensity": 500,
-                        "distance": 25,
-                        "angle": 25,
+                        "intensity": 100,
+                        "distance": 0,
+                        "angle": 50,
                         "decay": 2.0,
                         "penumbra": 1.0,
-                        "position": { "x": 0, "y": 0, "z": 0 },
+                        "position": { "x": 0, "y": 1, "z": 0 },
                         "target": { "x": 30, "y": 10, "z": 0 }
                     }
                 }
@@ -1178,13 +1191,14 @@
                 "children": {
                     "spotlight": {
                         "type": "spotlight",
+                        "castshadow": true,
                         "color": { "r": 1, "g": 1, "b": 1 },
                         "intensity": 100,
-                        "distance": 30,
+                        "distance": 0,
                         "angle": 20,
                         "decay": 2.0,
                         "penumbra": 1.0,
-                        "position": { "x": 0, "y": 0, "z": 0 },
+                        "position": { "x": 0, "y": 0, "z": -1 },
                         "target": { "x": 20, "y": 3, "z": 0 }
                     },
                     "nodesList": [
@@ -2592,6 +2606,101 @@
                         "xyz2": { "x": 0.05, "y": 0.6, "z": 0.4 }
                     }
                 }
+            },
+            "micro": {
+                "type": "node",
+                "materialref": { "materialId": "black" },
+                "children": {
+                    "nodesList": ["micro_base", "micro_stick", "micro_handler"]
+                },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 22, "y": 3, "z": 0 }
+                    }
+                ]
+            },
+            "micro_base": {
+                "type": "node",
+                "children": {
+                    "prim": {
+                        "type": "cylinder",
+                        "base": 0.8,
+                        "top": 0.1,
+                        "height": 0.5,
+                        "stacks": 10,
+                        "slices": 10
+                    }
+                },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 0, "y": 0.25, "z": 0 }
+                    }
+                ]
+            },
+            "micro_stick": {
+                "type": "node",
+                "children": {
+                    "prim": {
+                        "type": "cylinder",
+                        "base": 0.1,
+                        "top": 0.1,
+                        "height": 5,
+                        "stacks": 10,
+                        "slices": 10
+                    }
+                },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 0, "y": 3, "z": 0 }
+                    }
+                ]
+            },
+            "micro_handler": {
+                "type": "node",
+                "children": {
+                    "prim": {
+                        "type": "cylinder",
+                        "base": 0.1,
+                        "top": 0.2,
+                        "height": 1,
+                        "stacks": 10,
+                        "slices": 10
+                    },
+                    "nodesList": ["micro_head"]
+                },
+                "transforms": [
+                    {
+                        "type": "rotate",
+                        "amount": { "x": 0, "y": 0, "z": -60 }
+                    },
+                    {
+                        "type": "translate",
+                        "amount": { "x": 0, "y": 5.5, "z": 0 }
+                    }
+                ]
+            },
+            "micro_head": {
+                "type": "node",
+                "materialref": { "materialId": "micro" },
+                "children": {
+                    "prim": {
+                        "type": "sphere",
+                        "radius": 0.2,
+                        "slices": 10,
+                        "stacks": 10,
+                        "thetastart": 0,
+                        "thetalength": 90
+                    }
+                },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 0, "y": 0.5, "z": 0 }
+                    }
+                ]
             }
         }
     }

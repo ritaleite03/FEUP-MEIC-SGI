@@ -523,8 +523,9 @@ class MyParser {
 		const light = new THREE.PointLight(new THREE.Color().setRGB(...color), intensity, distance, decay)
 		light.position.set(...position)
 		light.castShadow = castshadow
-		light.shadowfar = shadowfar
-		light.shadowmapsize = shadowmapsize
+		light.shadow.camera.far = shadowfar
+		light.shadow.mapSize.width = shadowmapsize
+		light.shadow.mapSize.height = shadowmapsize
 		this.dataLights.push(light)
 		return light
 
@@ -569,8 +570,9 @@ class MyParser {
 		light.position.set(...position)
 		light.target.position.set(...target)
 		light.castShadow = castshadow
-		light.shadowfar = shadowfar
-		light.shadowmapsize = shadowmapsize
+		light.shadow.camera.far = shadowfar
+		light.shadow.mapSize.width = shadowmapsize
+		light.shadow.mapSize.height = shadowmapsize
 		this.dataLights.push(light)
 		return light
 
@@ -613,12 +615,13 @@ class MyParser {
 		const light = new THREE.DirectionalLight(new THREE.Color().setRGB(...color), intensity)
 		light.position.set(...position)
 		light.castShadow = castshadow
-		light.shadowleft = shadowleft
-		light.shadowright = shadowright
-		light.shadowtop = shadowtop
-		light.shadowbottom = shadowbottom
-		light.shadowfar = shadowfar
-		light.shadowmapsize = shadowmapsize
+		light.shadow.camera.left = shadowleft
+		light.shadow.camera.right = shadowright
+		light.shadow.camera.top = shadowtop
+		light.shadow.camera.bottom = shadowbottom
+		light.shadow.camera.far = shadowfar
+		light.shadow.mapSize.width = shadowmapsize
+		light.shadow.mapSize.height = shadowmapsize
 		this.dataLights.push(light)
 		return light
 	}
