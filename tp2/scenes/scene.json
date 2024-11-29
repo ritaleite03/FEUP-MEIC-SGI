@@ -75,6 +75,17 @@
                 "texlength_s": 5,
                 "texlength_t": 5
             },
+            "painting_picture": {
+                "color": { "r": 1, "g": 1, "b": 1 },
+                "emissive": { "r": 0, "g": 0, "b": 0 },
+                "specular": { "r": 0, "g": 0, "b": 0 },
+                "shininess": 1,
+                "transparent": false,
+                "textureref": "t_back_wall",
+                "texlength_s": 7.4,
+                "texlength_t": 4,
+                "opacity": 1.0
+            },
             "wall_stage": {
                 "color": { "r": 1, "g": 1, "b": 1 },
                 "emissive": { "r": 0, "g": 0, "b": 0 },
@@ -275,7 +286,8 @@
                         "stage",
                         "chairs",
                         "temp",
-                        "door"
+                        "door",
+                        "painting"
                     ]
                 }
             },
@@ -2007,6 +2019,90 @@
                         "mindist": 20.0
                     }
                 ]
+            },
+            "painting": {
+                "type": "node",
+                "materialref": { "materialId": "ceilling" },
+                "children": {
+                    "nodesList": [
+                        "painting_frame_left",
+                        "painting_frame_right",
+                        "painting_frame_up",
+                        "painting_frame_down",
+                        "painting_picture"
+                    ]
+                },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 10, "y": 10, "z": -19.85 }
+                    }
+                ]
+            },
+            "painting_picture": {
+                "type": "node",
+                "materialref": { "materialId": "painting_picture" },
+                "children": {
+                    "prim": {
+                        "type": "rectangle",
+                        "xy1": { "x": -3.7, "y": -2 },
+                        "xy2": { "x": 3.7, "y": 2 }
+                    }
+                },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 3.85, "y": 0, "z": 0 }
+                    }
+                ]
+            },
+            "painting_frame_down": {
+                "type": "node",
+                "children": { "nodesList": ["painting_frame_prim"] },
+                "transforms": [
+                    { "type": "scale", "amount": { "x": 1, "y": 2, "z": 1 } },
+                    { "type": "rotate", "amount": { "x": 0, "y": 0, "z": 90 } },
+                    {
+                        "type": "translate",
+                        "amount": { "x": 3.85, "y": -2.15, "z": 0 }
+                    }
+                ]
+            },
+            "painting_frame_up": {
+                "type": "node",
+                "children": { "nodesList": ["painting_frame_prim"] },
+                "transforms": [
+                    { "type": "scale", "amount": { "x": 1, "y": 2, "z": 1 } },
+                    { "type": "rotate", "amount": { "x": 0, "y": 0, "z": 90 } },
+                    {
+                        "type": "translate",
+                        "amount": { "x": 3.85, "y": 2.15, "z": 0 }
+                    }
+                ]
+            },
+            "painting_frame_right": {
+                "type": "node",
+                "children": { "nodesList": ["painting_frame_prim"] },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 7.7, "y": 0, "z": 0 }
+                    }
+                ]
+            },
+            "painting_frame_left": {
+                "type": "node",
+                "children": { "nodesList": ["painting_frame_prim"] }
+            },
+            "painting_frame_prim": {
+                "type": "node",
+                "children": {
+                    "prim": {
+                        "type": "box",
+                        "xyz1": { "x": -0.15, "y": -2, "z": -0.15 },
+                        "xyz2": { "x": 0.15, "y": 2, "z": 0.15 }
+                    }
+                }
             }
         }
     }

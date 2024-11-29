@@ -249,8 +249,13 @@ class MyParser {
 				await this.loadMipmap(texture, i, data["mipmap" + i]);
 			}
 			texture.needsUpdate = true;
+			this.dataTextures[name] = texture;
+
 		}
-		this.dataTextures[name] = texture;
+		else {
+			texture.generateMipmaps = true;
+			this.dataTextures[name] = texture;
+		}
 	}
 	
 
