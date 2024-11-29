@@ -293,6 +293,7 @@ class MyParser {
 		attributes.color = new THREE.Color().setRGB(...color)
 		attributes.specular = new THREE.Color().setRGB(...specular)
 		attributes.emissive = new THREE.Color().setRGB(...emissive)
+		attributes.transparent =  data.transparent
 		attributes.shininess = data.shininess
 		attributes.opacity = data.opacity
 		attributes.wireframe = data.wireframe ? data.wireframe : false
@@ -366,16 +367,9 @@ class MyParser {
 		let material_attributes_y = material.attributes
 		let material_attributes_z = material.attributes
 		if(material.textureref) {
-
-			if (material.textureref === 't_back_wall') {
-				console.log(this.dataTextures[material.textureref])
-				console.log(this.dataTextures[material.textureref].mipmaps)
-			}
-
 			const texture_x = this.dataTextures[material.textureref].clone()
 			const texture_y = this.dataTextures[material.textureref].clone()
-			const texture_z = this.dataTextures[material.textureref].clone()
-			
+			const texture_z = this.dataTextures[material.textureref].clone()	
 			texture_x.repeat.set(depth / material.texlength_s, height / material.texlength_t)
 			texture_y.repeat.set(width / material.texlength_s, depth / material.texlength_t)
 			texture_z.repeat.set(width / material.texlength_s, height / material.texlength_t)
@@ -1008,11 +1002,12 @@ class MyParser {
         let  group = new THREE.Group();
 
 		// if node was already parsed
-		if(this.dataNodes[name]) {
+		if(this.dataNodes[name]) {		
 
-			if(name == "wall_right_left")  console.log("aquiii", parent_material)
-			
+			this.dataNodes[name].updateMatrix();
 			group = this.dataNodes[name].clone()
+			group.matrix = this.dataNodes[name].matrix.clone();
+			group.matrixAutoUpdate = false;
 			group.name = name
 			group.children.forEach((child) => {this.changeMaterialShadows(data, child, parent_material, parent_castshadows, parent_receiveshadows)});
 		}
@@ -1080,8 +1075,6 @@ class MyParser {
 			}
 
 			group.name = name
-			this.dataNodes[name] = group
-		
 		}
         
 		// apply the transformations
@@ -1108,7 +1101,8 @@ class MyParser {
 				}
             }
         }
-		
+		this.dataNodes[name] = group
+		if(name === 'painting_frame_up') console.log(group)
         return group
 
     }
