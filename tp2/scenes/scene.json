@@ -337,6 +337,17 @@
                     ]
                 }
             },
+            "triangle_prim": {
+                "type": "node",
+                "children": {
+                    "prim": {
+                        "type": "triangle",
+                        "xyz1": { "x": -1, "y": -1, "z": 0 },
+                        "xyz2": { "x": 0, "y": 1, "z": 0 },
+                        "xyz3": { "x": 1, "y": -1, "z": 0 }
+                    }
+                }
+            },
             "polygon_prim": {
                 "type": "node",
                 "materialref": { "materialId": "ceilling" },
@@ -2073,7 +2084,25 @@
                     }
                 ]
             },
+
             "painting_polygon": {
+                "type": "node",
+                "materialref": { "materialId": "ceilling" },
+                "children": {
+                    "nodesList": [
+                        "painting_polygon_frame",
+                        "painting_picture_triangle",
+                        "painting_picture_triangle_1"
+                    ]
+                },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 10, "y": 10, "z": 19.85 }
+                    }
+                ]
+            },
+            "painting_polygon_frame": {
                 "type": "node",
                 "materialref": { "materialId": "ceilling" },
                 "children": {
@@ -2087,12 +2116,37 @@
                 },
                 "transforms": [
                     {
+                        "type": "rotate",
+                        "amount": { "x": 180, "y": 0, "z": 0 }
+                    }
+                ]
+            },
+            "painting_picture_triangle_1": {
+                "type": "node",
+                "children": {
+                    "nodesList": ["painting_picture_triangle"]
+                },
+                "transforms": [
+                    {
                         "type": "translate",
-                        "amount": { "x": 10, "y": 10, "z": 19.85 }
+                        "amount": { "x": 4, "y": 0, "z": 0 }
                     },
                     {
                         "type": "rotate",
-                        "amount": { "x": 180, "y": 0, "z": 0 }
+                        "amount": { "x": 0, "y": 0, "z": 30 }
+                    }
+                ]
+            },
+            "painting_picture_triangle": {
+                "type": "node",
+                "materialref": { "materialId": "floor" },
+                "children": {
+                    "nodesList": ["triangle_prim"]
+                },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 1.5, "y": 0, "z": -0.1 }
                     }
                 ]
             },

@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { MyNurbsBuilder } from '../MyNurbsBuilder.js';
 import { MyGuiInterface } from '../MyGuiInterface.js';
+import { MyTriangle } from './MyTriangle.js';
 
 class MyParser {
 
@@ -174,7 +175,7 @@ class MyParser {
 				const near = data[key].near
 				const far = data[key].far
 				if ([...position, ...target, angle, near, far].some(val => val === undefined || typeof val !== 'number')) {
-					console.error('Error in MyParser.defineCameras: invalid or undefined values');
+					console.error('Error in MyParser.defineCameras: invalid or undefined values in camera ' + key);
 					return
 				}
 				const objectCamera = new THREE.PerspectiveCamera(angle, window.innerWidth / window.innerHeight, near, far)
@@ -193,7 +194,7 @@ class MyParser {
 				const bottom = data[key].bottom
 				const top = data[key].top
 				if ([...position, ...target, near, far, left, right, bottom, top].some(val => val === undefined || typeof val !== 'number')) {
-					console.error('Error in MyParser.defineCameras: invalid or undefined values');
+					console.error('Error in MyParser.defineCameras: invalid or undefined values in camera ' + key);
 					return
 				}
 				const objectCamera = new THREE.OrthographicCamera(left, right, top, bottom, near, far)
@@ -230,11 +231,11 @@ class MyParser {
 	async getTexture(name, data) {
 		
 		if (!data.filepath) {
-			console.error("Error in MyParser.getTexture : component filepath is undefined");
+			console.error("Error in MyParser.getTexture : component filepath is undefined in texture " + name);
 			return;
 		}
 		if (typeof data.filepath !== "string") {
-			console.error("Error in MyParser.getTexture : component filepath is not string");
+			console.error("Error in MyParser.getTexture : component filepath is not string in texture " + name);
 			return;
 		}
 	
@@ -273,7 +274,7 @@ class MyParser {
 
 		// check for errors
 		if (![data.color, data.specular, data.shininess, data.emissive, data.transparent, data.opacity].every((value) => value !== undefined)) {
-			console.error('Error in MyParser.getMaterial : missing attributes');
+			console.error('Error in MyParser.getMaterial : missing attributes in material ' + name);
 			return
 		}
 
@@ -285,7 +286,7 @@ class MyParser {
 
 		// check for errors
 		if ([...color, ...specular, ...emissive].some(val => val === undefined || typeof val !== 'number')) {
-			console.error('Error in MyParser.getMaterial: invalid or undefined values');
+			console.error('Error in MyParser.getMaterial: invalid or undefined values in material ' + name);
 			return
 		}
 
@@ -300,14 +301,14 @@ class MyParser {
 		attributes.bumpScale = data.bumpscale ? data.bumpscale : 1
 		if(data.shading) {
 			if(typeof data.shading !== 'boolean') {
-				console.error('Error in MyParser.getMaterial : invalid or undefined values');
+				console.error('Error in MyParser.getMaterial : invalid or undefined values in material ' + name);
 				return
 			}
 			attributes.flatShading = true
 		}
 		if(data.twosided) {
 			if(typeof data.twosided !== 'boolean') {
-				console.error('Error in MyParser.getMaterial : invalid or undefined values');
+				console.error('Error in MyParser.getMaterial : invalid or undefined values in material ' + name);
 				return
 			}
 			attributes['side'] = THREE.DoubleSide
@@ -428,7 +429,7 @@ class MyParser {
 			texture_base.repeat.set(base * 2 / material.texlength_s, base * 2 / material.texlength_t)
 			texture_top.repeat.set(top * 2 / material.texlength_s, top * 2 / material.texlength_t)
 			texture_height.repeat.set(2 * Math.PI * radius_origin / material.texlength_s, height / material.texlength_t)
-			material_attributes_base.map = texture_base
+            material_attributes_base.map = texture_base
 			material_attributes_top.map = texture_top
 			material_attributes_height.map = texture_height
 		}
@@ -638,6 +639,10 @@ class MyParser {
     parseRectangle(prim, material) {
 
 		// check for errors
+		if (material === null) {
+			console.error('Error in MyParser.parseRectangle: undefined material');
+			return
+		}
 		if (![prim.xy1, prim.xy2].every((value) => value !== undefined)) {
 			console.error('Error in MyParser.parseRectangle : missing attributes');
 			return
@@ -672,6 +677,10 @@ class MyParser {
 	parseTriangle(prim, material) {
 		
 		// check for errors
+		if (material === null) {
+			console.error('Error in MyParser.parseTriangle: undefined material');
+			return
+		}
 		if (![prim.xyz1, prim.xyz2, prim.xyz3].every((value) => value !== undefined)) {
 			console.error('Error in MyParser.parseTriangle : missing attributes');
 			return
@@ -687,8 +696,14 @@ class MyParser {
 		}
 
 		// construct object and mesh
-		const object = new THREE.Triangle(new THREE.Vector3(...position1), new THREE.Triangle(...position2), new THREE.Triangle(...position3))
-		const mesh = new THREE.Mesh(object, material)
+		const material_attributes = material.attributes
+		if (material.textureref) material_attributes.map = this.dataTextures[material.textureref].clone()
+		if (material.bumpref) material_attributes.bumpMap = this.dataTextures[material.bumpref].clone()
+		if (material.specularMap)	material_attributes.specularMap = this.dataTextures[material.specularref].clone()
+		
+		const object_material = new THREE.MeshPhongMaterial(material_attributes)
+		const object = new MyTriangle(...position1, ...position2, ...position3, material.texlength_s, material.texlength_t)
+		const mesh = new THREE.Mesh(object, object_material)
 		mesh.position.set((prim.xyz1.x + prim.xyz2.x + prim.xyz3.x) / 3, (prim.xyz1.y + prim.xyz2.y + prim.xyz3.y) / 3, 0)
 		return mesh
 
@@ -706,6 +721,10 @@ class MyParser {
 	parseBox(prim, material) {
 
 		// check for errors
+		if (material === null) {
+			console.error('Error in MyParser.parseBox: undefined material');
+			return
+		}
 		if (![prim.xyz1, prim.xyz2].every((value) => value !== undefined)) {
 			console.error('Error in MyParser.parseBox : missing attributes');
 			return
@@ -742,6 +761,10 @@ class MyParser {
 	parseCylinder(prim, material) {
 		
 		// check for errors
+		if (material === null) {
+			console.error('Error in MyParser.parseCylinder: undefined material');
+			return
+		}
 		if (![prim.base, prim.top, prim.height, prim.slices, prim.stacks].every((value) => value !== undefined)) {
 			console.error('Error in MyParser.parseCylinder : missing attributes');
 			return
@@ -773,6 +796,10 @@ class MyParser {
 	parseSphere(prim, material) {
 
 		// check for errors
+		if (material === null) {
+			console.error('Error in MyParser.parseSphere: undefined material');
+			return
+		}
 		if (![prim.radius, prim.slices, prim.stacks].every((value) => value !== undefined)) {
 			console.error('Error in MyParser.parseSphere : missing attributes');
 			return
@@ -805,6 +832,10 @@ class MyParser {
 	parseNurbs(prim, material) {
 		
 		// check for errors
+		if (material === null) {
+			console.error('Error in MyParser.parseNurbs: undefined material');
+			return
+		}
 		if (![prim.degree_u, prim.degree_v, prim.parts_u, prim.parts_v, ...prim.controlpoints].every((value) => value !== undefined)) {
 			console.error('Error in MyParser.parseNurbs : missing attributes');
 			return
@@ -903,6 +934,7 @@ class MyParser {
 	 * @returns object of type BufferGeometry or nothing if error
 	 */
 	parsePolygon(prim, material) {
+		
 		// Check for errors
 		if (![prim.radius, prim.stacks, prim.slices, prim.color_c, prim.color_p].every((value) => value !== undefined)) {
 			console.error('Error in MyParser.parsePolygon: missing attributes');
@@ -993,11 +1025,11 @@ class MyParser {
 		
 		// check for errors
 		if(parent.type !== 'node') {
-			console.error('Error in MyParser.parse: invalid or undefined parent type');
+			console.error('Error in MyParser.parse: invalid or undefined parent type in node ' + name);
 			return
 		}
 		if(name !== name.toLowerCase()) {
-			console.error('Error in MyParser.parse: node name is not in lowercase');
+			console.error('Error in MyParser.parse: node name is not in lowercase in node ' + name);
 			return	
 		}
 
@@ -1065,7 +1097,7 @@ class MyParser {
 				// if node is a primitive
 				let mesh = null
 				if (child_node.type === 'rectangle') mesh = this.parseRectangle(child_node, child_material)
-				if (child_node.type === 'triangle') mesh = this.parseTriangle(child_node, child_material)
+				if (child_node.type === 'triangle'){ mesh = this.parseTriangle(child_node, child_material), console.log(mesh)}
 				if (child_node.type === 'box') mesh = this.parseBox(child_node, child_material)
 				if (child_node.type === 'cylinder') mesh = this.parseCylinder(child_node, child_material)
 				if (child_node.type === 'sphere') mesh = this.parseSphere(child_node, child_material)
@@ -1088,7 +1120,7 @@ class MyParser {
                 const y = transformation.amount.y
                 const z = transformation.amount.z
 				if ([x, y, z].some(val => val === undefined || typeof val !== 'number')) {
-					console.error('Error in MyParser.parse: invalid or undefined values');
+					console.error('Error in MyParser.parse: invalid or undefined values in node ' + name);
 					return
 				}
                 if (transformation.type === 'translate') {
@@ -1105,7 +1137,6 @@ class MyParser {
             }
         }
 		this.dataNodes[name] = group
-		if(name === 'painting_frame_up') console.log(group)
         return group
 
     }
@@ -1136,7 +1167,8 @@ class MyParser {
 				if (node.geometry instanceof THREE.PlaneGeometry) node.material = this.getMaterialRectangle(material, parameters.width, parameters.height)
 				if (node.geometry instanceof THREE.BoxGeometry) node.material = this.getMaterialBox(material, parameters.width, parameters.height, parameters.depth)
 				if (node.geometry instanceof THREE.CylinderGeometry) node.material = this.getMaterialCylinder(material, parameters.radiusTop, parameters.radiusBottom, parameters.height)
-				if(node.getMaterial instanceof THREE.SphereGeometry) node.material = this.getMaterialSphere(material, parameters.radius)
+				if (node.geometry instanceof THREE.SphereGeometry) node.material = this.getMaterialSphere(material, parameters.radius)		
+				if (node.geometry instanceof MyTriangle) node.geometry.update_uv(material.texlength_s, material.texlength_t)
 				node.material.needsUpdate = true
 				node.castShadow = castshadows
 				node.receiveshadows = receiveshadows
