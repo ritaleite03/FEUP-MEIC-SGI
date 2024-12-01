@@ -46,3 +46,5 @@ We didn't had any problems or issues.
 ![Texto alternativo](screenshots/audience_2.png)
 
 ![Texto alternativo](screenshots/decoration_1.png)
+
+![Texto alternativo](screenshots/stage_1.jpg)
