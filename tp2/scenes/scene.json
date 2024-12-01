@@ -22,14 +22,38 @@
             }
         },
         "textures": {
-            "t_stage": { "filepath": "scenes/demo/textures/t_stage.jpg", "isVideo": false },
-            "t_floor": { "filepath": "scenes/demo/textures/t_floor.jpg", "isVideo": false },
-            "t_wall": { "filepath": "scenes/demo/textures/t_wall.jpg", "isVideo": false },
-            "t_curtains": { "filepath": "scenes/demo/textures/t_curtains.jpg", "isVideo": false },
-            "t_chair": { "filepath": "scenes/demo/textures/t_chair.jpg", "isVideo": false },
-            "b_wall": { "filepath": "scenes/demo/textures/b_wall.jpg", "isVideo": false },
-            "t_exit": { "filepath": "scenes/demo/textures/exit_signal.jpg", "isVideo": false },
-            "t_door": { "filepath": "scenes/demo/textures/t_door.jpg", "isVideo": false },
+            "t_stage": {
+                "filepath": "scenes/demo/textures/t_stage.jpg",
+                "isVideo": false
+            },
+            "t_floor": {
+                "filepath": "scenes/demo/textures/t_floor.jpg",
+                "isVideo": false
+            },
+            "t_wall": {
+                "filepath": "scenes/demo/textures/t_wall.jpg",
+                "isVideo": false
+            },
+            "t_curtains": {
+                "filepath": "scenes/demo/textures/t_curtains.jpg",
+                "isVideo": false
+            },
+            "t_chair": {
+                "filepath": "scenes/demo/textures/t_chair.jpg",
+                "isVideo": false
+            },
+            "b_wall": {
+                "filepath": "scenes/demo/textures/b_wall.jpg",
+                "isVideo": false
+            },
+            "t_exit": {
+                "filepath": "scenes/demo/textures/exit_signal.jpg",
+                "isVideo": false
+            },
+            "t_door": {
+                "filepath": "scenes/demo/textures/t_door.jpg",
+                "isVideo": false
+            },
             "door": { "filepath": "scenes/demo/textures/door.jpg" },
             "micro": { "filepath": "scenes/demo/textures/b_micro.jpg" },
             "t_back_wall": {
@@ -45,12 +69,17 @@
                 "mipmap7": "scenes/demo/textures/caravaggio8.jpg"
             },
             "t_starry_night": {
-                "filepath": "scenes/demo/textures/starry_night1200.jpg","isVideo": false},
+                "filepath": "scenes/demo/textures/starry_night1200.jpg",
+                "isVideo": false
+            },
             "b_starry_night":{
                 "filepath": "scenes/demo/textures/b_starry_night1200.jpg",
                 "isVideo": false
             },
-            "nebulosa":{ "filepath": "scenes/demo/videos/nebulosa.mp4", "isVideo": true }
+            "nebulosa": {
+                "filepath": "scenes/demo/videos/nebulosa.mp4",
+                "isVideo": true
+            }
         },
         "materials": {
             "ceilling": {
@@ -278,7 +307,7 @@
                 "transparent": true,
                 "opacity": 0.95
             },
-            "nebulosa":{
+            "nebulosa": {
                 "color": { "r": 1.0, "g": 1.0, "b": 1.0 },
                 "emissive": { "r": 0.0, "g": 0.0, "b": 0.0 },
                 "specular": { "r": 0.0, "g": 0.0, "b": 0.0 },
@@ -291,8 +320,8 @@
             }
         },
         "cameras": {
-            "initial": "cam1",
-            "cam1": {
+            "initial": "perspective",
+            "perspective": {
                 "type": "perspective",
                 "angle": 60,
                 "near": 0.1,
@@ -300,12 +329,56 @@
                 "location": { "x": 15, "y": 15, "z": 15 },
                 "target": { "x": 0, "y": 0, "z": 0 }
             },
-            "cam2": {
+            "top": {
                 "type": "orthogonal",
                 "near": 0.1,
                 "far": 1000,
                 "location": { "x": 0, "y": 8, "z": 0 },
-                "target": { "x": 15, "y": 8, "z": 0 },
+                "target": { "x": 0, "y": 0, "z": 0 },
+                "left": -20,
+                "right": 20,
+                "bottom": -8,
+                "top": 8
+            },
+            "back": {
+                "type": "orthogonal",
+                "near": 0.1,
+                "far": 1000,
+                "location": { "x": 0, "y": 5, "z": -20 },
+                "target": { "x": 0, "y": 5, "z": 0 },
+                "left": -20,
+                "right": 20,
+                "bottom": -8,
+                "top": 8
+            },
+            "front": {
+                "type": "orthogonal",
+                "near": 0.1,
+                "far": 1000,
+                "location": { "x": 0, "y": 5, "z": 20 },
+                "target": { "x": 0, "y": 5, "z": 0 },
+                "left": -20,
+                "right": 20,
+                "bottom": -8,
+                "top": 8
+            },
+            "right": {
+                "type": "orthogonal",
+                "near": 0.1,
+                "far": 1000,
+                "location": { "x": 25, "y": 5, "z": 0 },
+                "target": { "x": 0, "y": 5, "z": 0 },
+                "left": -20,
+                "right": 20,
+                "bottom": -8,
+                "top": 8
+            },
+            "left": {
+                "type": "orthogonal",
+                "near": 0.1,
+                "far": 1000,
+                "location": { "x": -25, "y": 5, "z": 0 },
+                "target": { "x": 0, "y": 5, "z": 0 },
                 "left": -20,
                 "right": 20,
                 "bottom": -8,
@@ -378,7 +451,7 @@
                     }
                 ]
             },
-            "video_wall":{
+            "video_wall": {
                 "type": "node",
                 "transforms": [
                     {
@@ -953,8 +1026,8 @@
                         "type": "nurbs",
                         "degree_u": 4,
                         "degree_v": 1,
-                        "parts_u": 8,
-                        "parts_v": 8,
+                        "parts_u": 10,
+                        "parts_v": 10,
                         "controlpoints": [
                             { "x": 0.0, "y": 0, "z": 0.0 },
                             { "x": 0.0, "y": 15, "z": 0.0 },
@@ -1343,7 +1416,7 @@
                         "xyz1": { "x": -1.5, "y": -0.05, "z": -1.0 },
                         "xyz2": { "x": 1.5, "y": 0.05, "z": 1.0 }
                     },
-                    "lodsList":["lod_chair_seat_filling"]
+                    "lodsList": ["lod_chair_seat_filling"]
                 },
                 "transforms": [
                     {
@@ -1356,8 +1429,8 @@
                     }
                 ]
             },
-            "lod_chair_seat_filling":{
-                "type":"lod",
+            "lod_chair_seat_filling": {
+                "type": "lod",
                 "lodNodes": [
                     {
                         "nodeId": "chair_seat_filling",
@@ -1451,8 +1524,8 @@
                 "type": "node",
                 "materialref": { "materialId": "chair_red" },
                 "children": {
-                    "plane":{
-                        "type":"rectangle",
+                    "plane": {
+                        "type": "rectangle",
                         "xy1": {
                             "x": -1.5,
                             "y": -1.0
@@ -1491,8 +1564,8 @@
                     }
                 ]
             },
-            "lod_chair_head_filling":{
-                "type":"lod",
+            "lod_chair_head_filling": {
+                "type": "lod",
                 "lodNodes": [
                     {
                         "nodeId": "chair_head_filling",
@@ -1600,7 +1673,7 @@
                 "transforms": [
                     {
                         "type": "translate",
-                        "amount": { "x": 0, "y":  0.005, "z": 0.126 }
+                        "amount": { "x": 0, "y": 0.005, "z": 0.126 }
                     }
                 ]
             },
@@ -1609,13 +1682,13 @@
                 "transforms": [
                     {
                         "type": "translate",
-                        "amount": { "x": 0, "y":  0.005, "z": 0.1265}
+                        "amount": { "x": 0, "y": 0.005, "z": 0.1265 }
                     }
                 ],
                 "materialref": { "materialId": "chair_red" },
                 "children": {
-                    "plane":{
-                        "type":"rectangle",
+                    "plane": {
+                        "type": "rectangle",
                         "xy1": {
                             "x": -1.5,
                             "y": -0.75
@@ -1647,11 +1720,8 @@
             "char_back_filling": {
                 "type": "node",
                 "children": {
-                    "nodesList": [
-                        "chair_left_filling",
-                        "chair_right_filling"
-                    ],
-                    "lodsList":["lod_chair_center_filling"]
+                    "nodesList": ["chair_left_filling", "chair_right_filling"],
+                    "lodsList": ["lod_chair_center_filling"]
                 },
                 "transforms": [
                     {
@@ -1662,8 +1732,8 @@
             },
             "chair_left_filling": {
                 "type": "node",
-                "children": { 
-                    "lodsList": ["lod_chair_side_filling"] 
+                "children": {
+                    "lodsList": ["lod_chair_side_filling"]
                 },
                 "transforms": [
                     {
@@ -1674,8 +1744,8 @@
             },
             "chair_right_filling": {
                 "type": "node",
-                "children": { 
-                    "lodsList": ["lod_chair_side_filling"] 
+                "children": {
+                    "lodsList": ["lod_chair_side_filling"]
                 },
                 "transforms": [
                     {
@@ -1688,8 +1758,8 @@
                     }
                 ]
             },
-            "lod_chair_side_filling":{
-                "type":"lod",
+            "lod_chair_side_filling": {
+                "type": "lod",
                 "lodNodes": [
                     {
                         "nodeId": "chair_side_filling",
@@ -1777,9 +1847,9 @@
                 ],
                 "materialref": { "materialId": "chair_red" },
                 "children": {
-                    "plane":{
-                        "type":"rectangle",
-                        "xy1": { 
+                    "plane": {
+                        "type": "rectangle",
+                        "xy1": {
                             "x": -0.5,
                             "y": -1.5
                         },
@@ -1790,8 +1860,8 @@
                     }
                 }
             },
-            "lod_chair_center_filling":{
-                "type":"lod",
+            "lod_chair_center_filling": {
+                "type": "lod",
                 "lodNodes": [
                     {
                         "nodeId": "chair_center_filling",
@@ -1873,9 +1943,9 @@
                 "type": "node",
                 "materialref": { "materialId": "chair_red" },
                 "children": {
-                    "centerBox":{
-                        "type":"rectangle",
-                        "xy1": { 
+                    "centerBox": {
+                        "type": "rectangle",
+                        "xy1": {
                             "x": -0.5,
                             "y": -1.5
                         },
@@ -1926,8 +1996,8 @@
                     }
                 ]
             },
-            "lod_chair_armrest_filling":{
-                "type":"lod",
+            "lod_chair_armrest_filling": {
+                "type": "lod",
                 "lodNodes": [
                     {
                         "nodeId": "chair_armrest_filling",
@@ -2355,12 +2425,11 @@
                     }
                 }
             },
-            "doors_exit":{
-                "type":"node",
+            "doors_exit": {
+                "type": "node",
                 "children": {
                     "nodesList": ["door_exit_left", "door_exit_right"]
                 }
-
             },
             "door_exit_left": {
                 "type": "node",
@@ -2374,8 +2443,8 @@
                     "lodsList": ["emergency_exit"]
                 }
             },
-            "door_exit_right":{
-                "type":"node",
+            "door_exit_right": {
+                "type": "node",
                 "transforms": [
                     {
                         "type": "translate",
@@ -2730,10 +2799,10 @@
                 "children": { "nodesList": ["painting_frame_prim"] }
             },
 
-            "doors":{
-                "type":"node",
+            "doors": {
+                "type": "node",
                 "children": {
-                    "nodesList" : ["doors_left", "doors_right"]
+                    "nodesList": ["doors_left", "doors_right"]
                 }
             },
             "doors_left": {
@@ -2748,8 +2817,8 @@
                     "lodsList": ["door_lod"]
                 }
             },
-            "doors_right":{
-                "type":"node",
+            "doors_right": {
+                "type": "node",
                 "transforms": [
                     {
                         "type": "translate",
@@ -2757,7 +2826,7 @@
                     }
                 ],
                 "children": {
-                    "lodsList" : ["door_lod"]
+                    "lodsList": ["door_lod"]
                 }
             },
             "door_lod": {
@@ -3107,7 +3176,7 @@
                         "type": "pointlight",
                         "color": { "r": 1, "g": 1, "b": 1 },
                         "position": { "x": 0.35, "y": 0, "z": 0 },
-                        "intensity": 5, 
+                        "intensity": 5,
                         "castshadow": true
                     }
                 }
