@@ -624,7 +624,7 @@ class MyParser {
 
 		// check for errors
 		if (![prim.color, prim.position].every((value) => value !== undefined)) {
-			console.error('Error in MyParser.parseSpotlight : missing attributes');
+			console.error('Error in MyParser.parseDirectionalLight : missing attributes');
 			return
 		}
 
@@ -686,8 +686,8 @@ class MyParser {
 		}
 
 		// define attributes
-		const width = Math.abs(prim.xy2.x) + Math.abs(prim.xy1.x);
-		const height = Math.abs(prim.xy2.y) + Math.abs(prim.xy1.y);
+		const width = Math.abs(prim.xy2.x - prim.xy1.x);
+		const height = Math.abs(prim.xy2.y - prim.xy1.y);
 		const parts_x = prim.parts_x ? prim.parts_x : 1
 		const parts_y = prim.parts_y ? prim.parts_y : 1
 
@@ -737,7 +737,7 @@ class MyParser {
 		const object_material = new THREE.MeshPhongMaterial(material_attributes)
 		const object = new MyTriangle(...position1, ...position2, ...position3, material.texlength_s, material.texlength_t)
 		const mesh = new THREE.Mesh(object, object_material)
-		mesh.position.set((prim.xyz1.x + prim.xyz2.x + prim.xyz3.x) / 3, (prim.xyz1.y + prim.xyz2.y + prim.xyz3.y) / 3, 0)
+		//mesh.position.set((prim.xyz1.x + prim.xyz2.x + prim.xyz3.x) / 3, (prim.xyz1.y + prim.xyz2.y + prim.xyz3.y) / 3, 0)
 		return mesh
 
 	}
@@ -768,9 +768,9 @@ class MyParser {
 		}
 
 		// define attributes
-		const width = Math.abs(prim.xyz2.x) + Math.abs(prim.xyz1.x);
-		const height = Math.abs(prim.xyz2.y) + Math.abs(prim.xyz1.y);
-		const depth = Math.abs(prim.xyz2.z) + Math.abs(prim.xyz1.z);
+		const width = Math.abs(prim.xyz2.x - prim.xyz1.x);
+		const height = Math.abs(prim.xyz2.y - prim.xyz1.y);
+		const depth = Math.abs(prim.xyz2.z - prim.xyz1.z);
 		const parts_x = prim.parts_x ? prim.parts_x : 1
 		const parts_y = prim.parts_y ? prim.parts_y : 1
 		const parts_z = prim.parts_z ? prim.parts_z : 1
@@ -813,7 +813,7 @@ class MyParser {
 		}
 
 		// construct object and mesh
-		const object = new THREE.CylinderGeometry(prim.top, prim.base, prim.height, prim.slices, prim.stacks, capsclose, thetastart, thetalength)
+		const object = new THREE.CylinderGeometry(prim.top, prim.base, prim.height, prim.slices, prim.stacks, !capsclose, thetastart, thetalength)
 		return new THREE.Mesh(object, this.getMaterialCylinder(material, prim.base, prim.top, prim.height))
 	}
 
@@ -925,12 +925,12 @@ class MyParser {
 		}
 
 		if(lod.type !== 'lod') {
-			console.error('Error in MyParser.parseLod: invalid or undefined type');
+			console.error(`Error in MyParser.parseLod at lod "${name}": invalid or undefined type`);
 			return
 		}
 		const lodNodes = lod.lodNodes
 		if(lodNodes.length <= 1) {
-			console.error('Error in MyParser.parseLod: declare less that one descendents (representations)');
+			console.error(`Error in MyParser.parseLod at lod "${name}": declare less that one descendents (representations)`);
 		}
 
 		const lodStruct = new THREE.LOD();
@@ -943,7 +943,7 @@ class MyParser {
 			const mindist = lodNodes[i].mindist
 
 			if (mindist === undefined || typeof mindist !== 'number' || distSet.has(mindist)) {
-				console.error('Error in MyParser.parseLod: invalid, undefined or repeted mindist values');
+				console.error(`Error in MyParser.parseLod at lod "${name}": invalid, undefined or repeted mindist values`);
 				return
 			}
 			const node = this.parse(data, nodeId, parent_material, parent_castshadows, parent_receiveshadows)
