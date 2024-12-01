@@ -40,3 +40,9 @@ Click [here](scenes/scene.json) to go to our scene file.
 We didn't had any problems or issues.
 
 ## Screenshots
+
+![Texto alternativo](screenshots/audience_1.png)
+
+![Texto alternativo](screenshots/audience_2.png)
+
+![Texto alternativo](screenshots/decoration_1.png)
