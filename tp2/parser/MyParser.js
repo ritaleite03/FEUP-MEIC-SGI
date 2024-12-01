@@ -269,6 +269,11 @@ class MyParser {
 			return;
 		}
 
+		if (data.isVideo === undefined) {
+			console.error("Error in MyParser.getTexture : component isVideo is undefined in texture " + name);
+			return;
+		}
+
 		if(data.isVideo){
 			this.getVideoTexture(name, data)
 			return;

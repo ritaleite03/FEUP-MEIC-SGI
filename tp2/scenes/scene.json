@@ -54,8 +54,14 @@
                 "filepath": "scenes/demo/textures/t_door.jpg",
                 "isVideo": false
             },
-            "door": { "filepath": "scenes/demo/textures/door.jpg" },
-            "micro": { "filepath": "scenes/demo/textures/b_micro.jpg" },
+            "door": { 
+                "filepath": "scenes/demo/textures/door.jpg", 
+                "isVideo": false
+            },
+            "micro": { 
+                "filepath": "scenes/demo/textures/b_micro.jpg",
+                "isVideo": false
+            },
             "t_back_wall": {
                 "filepath": "scenes/demo/textures/caravaggio.jpg",
                 "isVideo": false,
@@ -455,12 +461,12 @@
                 "type": "node",
                 "transforms": [
                     {
-                        "type": "rotate",
-                        "amount": { "x": 0, "y": -90, "z": 0 }
-                    },
-                    {
                         "type": "translate",
                         "amount": { "x": 26.44, "y": 10.6, "z": 0 }
+                    },
+                    {
+                        "type": "rotate",
+                        "amount": { "x": 0, "y": -90, "z": 0 }
                     }
                 ],
                 "materialref": { "materialId": "nebulosa" },
@@ -484,12 +490,12 @@
                 },
                 "transforms": [
                     {
-                        "type": "rotate",
-                        "amount": { "x": -270, "y": 0, "z": 0 }
-                    },
-                    {
                         "type": "translate",
                         "amount": { "x": 0, "y": 18, "z": 0 }
+                    },
+                    {
+                        "type": "rotate",
+                        "amount": { "x": -270, "y": 0, "z": 0 }
                     }
                 ]
             },
@@ -527,12 +533,12 @@
                 "children": { "nodesList": ["wall_right_left"] },
                 "transforms": [
                     {
-                        "type": "rotate",
-                        "amount": { "x": 0, "y": 90, "z": 0 }
-                    },
-                    {
                         "type": "translate",
                         "amount": { "x": -26.5, "y": 9, "z": 0 }
+                    },
+                    {
+                        "type": "rotate",
+                        "amount": { "x": 0, "y": 90, "z": 0 }
                     }
                 ]
             },
@@ -542,12 +548,12 @@
                 "children": { "nodesList": ["wall_right_left"] },
                 "transforms": [
                     {
-                        "type": "rotate",
-                        "amount": { "x": 0, "y": 90, "z": 0 }
-                    },
-                    {
                         "type": "translate",
                         "amount": { "x": 26.5, "y": 9, "z": 0 }
+                    },
+                    {
+                        "type": "rotate",
+                        "amount": { "x": 0, "y": 90, "z": 0 }
                     }
                 ]
             },
@@ -638,16 +644,16 @@
                 },
                 "transforms": [
                     {
-                        "type": "scale",
-                        "amount": { "x": 0.5, "y": 1, "z": 1 }
+                        "type": "translate",
+                        "amount": { "x": 15.5, "y": 3.1, "z": 0 }
                     },
                     {
                         "type": "rotate",
                         "amount": { "x": 0, "y": 180, "z": 0 }
                     },
                     {
-                        "type": "translate",
-                        "amount": { "x": 15.5, "y": 3.1, "z": 0 }
+                        "type": "scale",
+                        "amount": { "x": 0.5, "y": 1, "z": 1 }
                     }
                 ]
             },
@@ -662,12 +668,12 @@
                 },
                 "transforms": [
                     {
-                        "type": "rotate",
-                        "amount": { "x": 0, "y": 90, "z": 0 }
-                    },
-                    {
                         "type": "translate",
                         "amount": { "x": 18, "y": 3.1, "z": 0 }
+                    },
+                    {
+                        "type": "rotate",
+                        "amount": { "x": 0, "y": 90, "z": 0 }
                     }
                 ]
             },
@@ -682,12 +688,12 @@
                 },
                 "transforms": [
                     {
-                        "type": "rotate",
-                        "amount": { "x": 0, "y": 90, "z": 0 }
-                    },
-                    {
                         "type": "translate",
                         "amount": { "x": 23.5, "y": 3.1, "z": 0 }
+                    },
+                    {
+                        "type": "rotate",
+                        "amount": { "x": 0, "y": 90, "z": 0 }
                     }
                 ]
             },
@@ -719,16 +725,16 @@
                 },
                 "transforms": [
                     {
-                        "type": "scale",
-                        "amount": { "x": 0.5, "y": 1, "z": 1 }
+                        "type": "translate",
+                        "amount": { "x": 15.5, "y": 1.5, "z": 0 }
                     },
                     {
                         "type": "rotate",
                         "amount": { "x": 0, "y": 180, "z": 0 }
                     },
                     {
-                        "type": "translate",
-                        "amount": { "x": 15.5, "y": 1.5, "z": 0 }
+                        "type": "scale",
+                        "amount": { "x": 0.5, "y": 1, "z": 1 }
                     }
                 ]
             },
@@ -737,12 +743,12 @@
                 "materialref": { "materialId": "stage_rectangle2" },
                 "transforms": [
                     {
-                        "type": "rotate",
-                        "amount": { "x": 0, "y": 90, "z": 0 }
-                    },
-                    {
                         "type": "translate",
                         "amount": { "x": 18.0, "y": 1.5, "z": 0 }
+                    },
+                    {
+                        "type": "rotate",
+                        "amount": { "x": 0, "y": 90, "z": 0 }
                     }
                 ],
                 "children": {
@@ -765,12 +771,12 @@
                 },
                 "transforms": [
                     {
-                        "type": "rotate",
-                        "amount": { "x": 0, "y": 90, "z": 0 }
-                    },
-                    {
                         "type": "translate",
                         "amount": { "x": 23.5, "y": 1.5, "z": 0 }
+                    },
+                    {
+                        "type": "rotate",
+                        "amount": { "x": 0, "y": 90, "z": 0 }
                     }
                 ]
             },
@@ -786,12 +792,12 @@
                 "children": { "nodesList": ["stage_stairs_prim"] },
                 "transforms": [
                     {
-                        "type": "rotate",
-                        "amount": { "x": 0, "y": -90, "z": 0 }
-                    },
-                    {
                         "type": "translate",
                         "amount": { "x": 18.0, "y": 0, "z": 18.5 }
+                    },
+                    {
+                        "type": "rotate",
+                        "amount": { "x": 0, "y": -90, "z": 0 }
                     }
                 ]
             },
@@ -800,12 +806,12 @@
                 "children": { "nodesList": ["stage_stairs_prim"] },
                 "transforms": [
                     {
-                        "type": "rotate",
-                        "amount": { "x": 0, "y": -90, "z": 0 }
-                    },
-                    {
                         "type": "translate",
                         "amount": { "x": 18.0, "y": 0, "z": -18.5 }
+                    },
+                    {
+                        "type": "rotate",
+                        "amount": { "x": 0, "y": -90, "z": 0 }
                     }
                 ]
             },
@@ -832,12 +838,12 @@
                 "children": { "nodesList": ["stage_step_prim"] },
                 "transforms": [
                     {
-                        "type": "scale",
-                        "amount": { "x": 1, "y": 5, "z": 1 }
-                    },
-                    {
                         "type": "translate",
                         "amount": { "x": 0, "y": 1.25, "z": -4 }
+                    },
+                    {
+                        "type": "scale",
+                        "amount": { "x": 1, "y": 5, "z": 1 }
                     }
                 ]
             },
@@ -846,12 +852,12 @@
                 "children": { "nodesList": ["stage_step_prim"] },
                 "transforms": [
                     {
-                        "type": "scale",
-                        "amount": { "x": 1, "y": 4, "z": 1 }
-                    },
-                    {
                         "type": "translate",
                         "amount": { "x": 0, "y": 1, "z": -3 }
+                    },
+                    {
+                        "type": "scale",
+                        "amount": { "x": 1, "y": 4, "z": 1 }
                     }
                 ]
             },
@@ -860,12 +866,12 @@
                 "children": { "nodesList": ["stage_step_prim"] },
                 "transforms": [
                     {
-                        "type": "scale",
-                        "amount": { "x": 1, "y": 3, "z": 1 }
-                    },
-                    {
                         "type": "translate",
                         "amount": { "x": 0, "y": 0.75, "z": -2 }
+                    },
+                    {
+                        "type": "scale",
+                        "amount": { "x": 1, "y": 3, "z": 1 }
                     }
                 ]
             },
@@ -874,12 +880,12 @@
                 "children": { "nodesList": ["stage_step_prim"] },
                 "transforms": [
                     {
-                        "type": "scale",
-                        "amount": { "x": 1, "y": 2, "z": 1 }
-                    },
-                    {
                         "type": "translate",
                         "amount": { "x": 0, "y": 0.5, "z": -1 }
+                    },
+                    {
+                        "type": "scale",
+                        "amount": { "x": 1, "y": 2, "z": 1 }
                     }
                 ]
             },
@@ -925,12 +931,12 @@
                 },
                 "transforms": [
                     {
-                        "type": "rotate",
-                        "amount": { "x": 0, "y": 90, "z": 0 }
-                    },
-                    {
                         "type": "translate",
                         "amount": { "x": 23.5, "y": 17.75, "z": 0 }
+                    },
+                    {
+                        "type": "rotate",
+                        "amount": { "x": 0, "y": 90, "z": 0 }
                     }
                 ]
             },
@@ -939,12 +945,12 @@
                 "children": { "nodesList": ["curtains_fabric"] },
                 "transforms": [
                     {
-                        "type": "rotate",
-                        "amount": { "x": 0, "y": 90, "z": 0 }
-                    },
-                    {
                         "type": "translate",
                         "amount": { "x": 24.5, "y": 3, "z": 16 }
+                    },
+                    {
+                        "type": "rotate",
+                        "amount": { "x": 0, "y": 90, "z": 0 }
                     }
                 ]
             },
@@ -953,12 +959,12 @@
                 "children": { "nodesList": ["curtains_fabric"] },
                 "transforms": [
                     {
-                        "type": "rotate",
-                        "amount": { "x": 0, "y": 90, "z": 0 }
-                    },
-                    {
                         "type": "translate",
                         "amount": { "x": 24.5, "y": 3, "z": -16 }
+                    },
+                    {
+                        "type": "rotate",
+                        "amount": { "x": 0, "y": 90, "z": 0 }
                     }
                 ]
             },
@@ -1064,12 +1070,12 @@
                 "children": { "nodesList": ["stage_floor_spotlight"] },
                 "transforms": [
                     {
-                        "type": "rotate",
-                        "amount": { "x": 0, "y": -45, "z": 0 }
-                    },
-                    {
                         "type": "translate",
                         "amount": { "x": 0, "y": 0, "z": -12 }
+                    },
+                    {
+                        "type": "rotate",
+                        "amount": { "x": 0, "y": -45, "z": 0 }
                     }
                 ]
             },
@@ -1078,12 +1084,12 @@
                 "children": { "nodesList": ["stage_floor_spotlight"] },
                 "transforms": [
                     {
-                        "type": "rotate",
-                        "amount": { "x": 0, "y": 45, "z": 0 }
-                    },
-                    {
                         "type": "translate",
                         "amount": { "x": 0, "y": 0, "z": 12 }
+                    },
+                    {
+                        "type": "rotate",
+                        "amount": { "x": 0, "y": 45, "z": 0 }
                     }
                 ]
             },
@@ -1270,12 +1276,12 @@
                 "children": { "nodesList": ["stage_ceiling_spotlight"] },
                 "transforms": [
                     {
-                        "type": "rotate",
-                        "amount": { "x": 45, "y": 140, "z": 0 }
-                    },
-                    {
                         "type": "translate",
                         "amount": { "x": 0, "y": 0, "z": -13 }
+                    },
+                    {
+                        "type": "rotate",
+                        "amount": { "x": 45, "y": 140, "z": 0 }
                     }
                 ]
             },
@@ -1284,12 +1290,12 @@
                 "children": { "nodesList": ["stage_ceiling_spotlight"] },
                 "transforms": [
                     {
-                        "type": "rotate",
-                        "amount": { "x": -45, "y": 40, "z": 0 }
-                    },
-                    {
                         "type": "translate",
                         "amount": { "x": 0, "y": 0, "z": 13 }
+                    },
+                    {
+                        "type": "rotate",
+                        "amount": { "x": -45, "y": 40, "z": 0 }
                     }
                 ]
             },
@@ -1360,12 +1366,12 @@
                 },
                 "transforms": [
                     {
-                        "type": "rotate",
-                        "amount": { "x": 0, "y": 0, "z": 180 }
-                    },
-                    {
                         "type": "translate",
                         "amount": { "x": 0, "y": 0, "z": 0.5 }
+                    },
+                    {
+                        "type": "rotate",
+                        "amount": { "x": 0, "y": 0, "z": 180 }
                     }
                 ]
             },
@@ -1385,12 +1391,12 @@
                 },
                 "transforms": [
                     {
-                        "type": "rotate",
-                        "amount": { "x": 90, "y": 0, "z": 0 }
-                    },
-                    {
                         "type": "translate",
                         "amount": { "x": 0, "y": 0, "z": -0.55 }
+                    },
+                    {
+                        "type": "rotate",
+                        "amount": { "x": 90, "y": 0, "z": 0 }
                     }
                 ]
             },
@@ -1421,12 +1427,12 @@
                 },
                 "transforms": [
                     {
-                        "type": "rotate",
-                        "amount": { "x": -80, "y": 0, "z": 0 }
-                    },
-                    {
                         "type": "translate",
                         "amount": { "x": 0.0, "y": -0.5, "z": 0.7 }
+                    },
+                    {
+                        "type": "rotate",
+                        "amount": { "x": -80, "y": 0, "z": 0 }
                     }
                 ]
             },
@@ -1539,12 +1545,12 @@
                 },
                 "transforms": [
                     {
-                        "type": "rotate",
-                        "amount": { "x": -90, "y": 0.0, "z": 0 }
-                    },
-                    {
                         "type": "translate",
                         "amount": { "x": 0, "y": 0.06, "z": 0 }
+                    },
+                    {
+                        "type": "rotate",
+                        "amount": { "x": -90, "y": 0.0, "z": 0 }
                     }
                 ]
             },
@@ -1750,12 +1756,12 @@
                 },
                 "transforms": [
                     {
-                        "type": "rotate",
-                        "amount": { "x": 0, "y": 0, "z": 180 }
-                    },
-                    {
                         "type": "translate",
                         "amount": { "x": 1.0, "y": 0.0, "z": 0.0 }
+                    },
+                    {
+                        "type": "rotate",
+                        "amount": { "x": 0, "y": 0, "z": 180 }
                     }
                 ]
             },
@@ -1971,12 +1977,12 @@
                 },
                 "transforms": [
                     {
-                        "type": "rotate",
-                        "amount": { "x": 0, "y": 0, "z": -90 }
-                    },
-                    {
                         "type": "translate",
                         "amount": { "x": 0.0, "y": -1.75, "z": 0.4 }
+                    },
+                    {
+                        "type": "rotate",
+                        "amount": { "x": 0, "y": 0, "z": -90 }
                     }
                 ]
             },
@@ -2100,12 +2106,12 @@
                 },
                 "transforms": [
                     {
-                        "type": "rotate",
-                        "amount": { "x": -90.0, "y": 0.0, "z": 0 }
-                    },
-                    {
                         "type": "translate",
                         "amount": { "x": 0.0, "y": 0.126, "z": 0 }
+                    },
+                    {
+                        "type": "rotate",
+                        "amount": { "x": -90.0, "y": 0.0, "z": 0 }
                     }
                 ]
             },
@@ -2395,16 +2401,16 @@
                 "type": "node",
                 "transforms": [
                     {
+                        "type": "translate",
+                        "amount": { "x": -14.4, "y": 2.12, "z": 0.0 }
+                    },
+                    {
                         "type": "rotate",
                         "amount": { "x": 0.0, "y": 90, "z": 0.0 }
                     },
                     {
                         "type": "scale",
                         "amount": { "x": 0.75, "y": 0.75, "z": 0.75 }
-                    },
-                    {
-                        "type": "translate",
-                        "amount": { "x": -14.4, "y": 2.12, "z": 0.0 }
                     }
                 ],
                 "children": { "nodesList": ["chairs_block"] }
@@ -2677,24 +2683,24 @@
                 "type": "node",
                 "children": { "nodesList": ["painting_frame_prim"] },
                 "transforms": [
-                    { "type": "scale", "amount": { "x": 1, "y": 2, "z": 1 } },
-                    { "type": "rotate", "amount": { "x": 0, "y": 0, "z": 90 } },
                     {
                         "type": "translate",
                         "amount": { "x": 3.85, "y": -2.15, "z": 0 }
-                    }
+                    },
+                    { "type": "rotate", "amount": { "x": 0, "y": 0, "z": 90 } },
+                    { "type": "scale", "amount": { "x": 1, "y": 2, "z": 1 } }
                 ]
             },
             "painting_frame_up": {
                 "type": "node",
                 "children": { "nodesList": ["painting_frame_prim"] },
                 "transforms": [
-                    { "type": "scale", "amount": { "x": 1, "y": 2, "z": 1 } },
-                    { "type": "rotate", "amount": { "x": 0, "y": 0, "z": 90 } },
                     {
                         "type": "translate",
                         "amount": { "x": 3.85, "y": 2.15, "z": 0 }
-                    }
+                    },
+                    { "type": "rotate", "amount": { "x": 0, "y": 0, "z": 90 } },
+                    { "type": "scale", "amount": { "x": 1, "y": 2, "z": 1 } }
                 ]
             },
             "painting_frame_right": {
@@ -2735,12 +2741,12 @@
                 },
                 "transforms": [
                     {
-                        "type": "rotate",
-                        "amount": { "x": 0.0, "y": 90, "z": 0.0 }
-                    },
-                    {
                         "type": "translate",
                         "amount": { "x": -26.29, "y": 14, "z": 0.0 }
+                    },
+                    {
+                        "type": "rotate",
+                        "amount": { "x": 0.0, "y": 90, "z": 0.0 }
                     }
                 ]
             },
@@ -2759,24 +2765,24 @@
                 "type": "node",
                 "children": { "nodesList": ["painting_frame_prim"] },
                 "transforms": [
-                    { "type": "scale", "amount": { "x": 1, "y": 1.4, "z": 1 } },
-                    { "type": "rotate", "amount": { "x": 0, "y": 0, "z": 90 } },
                     {
                         "type": "translate",
                         "amount": { "x": 0.0, "y": -2.15, "z": 0.0 }
-                    }
+                    },
+                    { "type": "rotate", "amount": { "x": 0, "y": 0, "z": 90 } },
+                    { "type": "scale", "amount": { "x": 1, "y": 1.4, "z": 1 } }
                 ]
             },
             "starry_night_frame_up": {
                 "type": "node",
                 "children": { "nodesList": ["painting_frame_prim"] },
                 "transforms": [
-                    { "type": "scale", "amount": { "x": 1, "y": 1.4, "z": 1 } },
-                    { "type": "rotate", "amount": { "x": 0, "y": 0, "z": 90 } },
                     {
                         "type": "translate",
                         "amount": { "x": 0.0, "y": 2.15, "z": 0.0 }
-                    }
+                    },
+                    { "type": "rotate", "amount": { "x": 0, "y": 0, "z": 90 } },
+                    { "type": "scale", "amount": { "x": 1, "y": 1.4, "z": 1 } }
                 ]
             },
             "starry_night_frame_right": {
@@ -2847,12 +2853,12 @@
                 "type": "node",
                 "transforms": [
                     {
-                        "type": "rotate",
-                        "amount": { "x": 0.0, "y": 90.0, "z": 0.0 }
-                    },
-                    {
                         "type": "translate",
                         "amount": { "x": 0.06, "y": 3.85, "z": 0.0 }
+                    },
+                    {
+                        "type": "rotate",
+                        "amount": { "x": 0.0, "y": 90.0, "z": 0.0 }
                     }
                 ],
                 "materialref": { "materialId": "door" },
@@ -2918,12 +2924,12 @@
                 "type": "node",
                 "transforms": [
                     {
-                        "type": "rotate",
-                        "amount": { "x": 0.0, "y": 0.0, "z": 90 }
-                    },
-                    {
                         "type": "translate",
                         "amount": { "x": 0.0, "y": 1.9, "z": 0.0 }
+                    },
+                    {
+                        "type": "rotate",
+                        "amount": { "x": 0.0, "y": 0.0, "z": 90 }
                     }
                 ],
                 "children": {
@@ -2980,12 +2986,12 @@
                 "type": "node",
                 "transforms": [
                     {
-                        "type": "rotate",
-                        "amount": { "x": 0.0, "y": 0.0, "z": 90 }
-                    },
-                    {
                         "type": "translate",
                         "amount": { "x": -0.095, "y": 0.0, "z": 0 }
+                    },
+                    {
+                        "type": "rotate",
+                        "amount": { "x": 0.0, "y": 0.0, "z": 90 }
                     }
                 ],
                 "materialref": { "materialId": "black" },
@@ -3204,12 +3210,12 @@
                 "children": { "nodesList": ["wall_focus_lateral_prim"] },
                 "transforms": [
                     {
-                        "type": "rotate",
-                        "amount": { "x": 0, "y": 90, "z": 0 }
-                    },
-                    {
                         "type": "translate",
                         "amount": { "x": 0.35, "y": 0, "z": -0.45 }
+                    },
+                    {
+                        "type": "rotate",
+                        "amount": { "x": 0, "y": 90, "z": 0 }
                     }
                 ]
             },
@@ -3218,12 +3224,12 @@
                 "children": { "nodesList": ["wall_focus_lateral_prim"] },
                 "transforms": [
                     {
-                        "type": "rotate",
-                        "amount": { "x": 0, "y": 90, "z": 0 }
-                    },
-                    {
                         "type": "translate",
                         "amount": { "x": 0.35, "y": 0, "z": 0.45 }
+                    },
+                    {
+                        "type": "rotate",
+                        "amount": { "x": 0, "y": 90, "z": 0 }
                     }
                 ]
             },
@@ -3320,12 +3326,12 @@
                 },
                 "transforms": [
                     {
-                        "type": "rotate",
-                        "amount": { "x": 0, "y": 0, "z": -60 }
-                    },
-                    {
                         "type": "translate",
                         "amount": { "x": 0, "y": 5.5, "z": 0 }
+                    },
+                    {
+                        "type": "rotate",
+                        "amount": { "x": 0, "y": 0, "z": -60 }
                     }
                 ]
             },
