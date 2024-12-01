@@ -1071,7 +1071,6 @@ class MyParser {
 
 		// if node was already parsed
 		if(this.dataNodes[name]) {		
-
 			this.dataNodes[name].updateMatrix();
 			group = this.dataNodes[name].clone()
 			group.matrix = this.dataNodes[name].matrix.clone();
