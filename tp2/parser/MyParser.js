@@ -219,6 +219,35 @@ class MyParser {
 		for(let key in this.data.yasf.textures) await this.getTexture(key, this.data.yasf.textures[key])
 	}
 
+	/**
+	 * 
+	 * Creates video texture and saves it in dataTextures
+	 * 
+	 * @param {String} name name of texture
+	 * @param {Object} data object corresponding to the texture block
+	 * @returns 
+	 */
+	getVideoTexture(name, data) {
+		const video = document.createElement('video')
+		video.style.display = 'none'
+        video.id = name 
+        video.muted = true
+        video.preload = 'auto'
+		video.setAttribute("loop", true)
+		video.setAttribute("autoplay", true)
+
+		const source = document.createElement('source')
+        source.src = data.filepath
+        source.type = 'video/mp4'
+
+		video.appendChild(source);
+        document.body.appendChild(video);
+
+        const texture = new THREE.VideoTexture( video );
+        texture.colorSpace = THREE.SRGBColorSpace;
+
+		this.dataTextures[name] = texture;
+	}
 
 	/**
 	 * 
@@ -236,6 +265,11 @@ class MyParser {
 		}
 		if (typeof data.filepath !== "string") {
 			console.error("Error in MyParser.getTexture : component filepath is not string in texture " + name);
+			return;
+		}
+
+		if(data.isVideo){
+			this.getVideoTexture(name, data)
 			return;
 		}
 	
@@ -258,7 +292,6 @@ class MyParser {
 			this.dataTextures[name] = texture;
 		}
 	}
-	
 
 	/**
 	 * 
