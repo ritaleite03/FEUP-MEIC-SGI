@@ -9,8 +9,8 @@
                 "far": 1000
             },
             "skybox": {
-                "size": { "x": 200, "y": 100, "z": 200 },
-                "center": { "x": 0, "y": 49.99, "z": 0 },
+                "size": { "x": 100, "y": 50, "z": 100 },
+                "center": { "x": 0, "y": 24.99, "z": 0 },
                 "emissive": { "r": 0, "g": 0, "b": 0 },
                 "intensity": 0.1,
                 "front": "scenes/demo/textures/sky.jpg",
@@ -27,7 +27,6 @@
             "t_wall": { "filepath": "scenes/demo/textures/t_wall.jpg", "isVideo": false },
             "t_curtains": { "filepath": "scenes/demo/textures/t_curtains.jpg", "isVideo": false },
             "t_chair": { "filepath": "scenes/demo/textures/t_chair.jpg", "isVideo": false },
-            "t_black": { "filepath": "scenes/demo/textures/t_black.jpg", "isVideo": false },
             "b_wall": { "filepath": "scenes/demo/textures/b_wall.jpg", "isVideo": false },
             "t_exit": { "filepath": "scenes/demo/textures/exit_signal.jpg", "isVideo": false },
             "t_door": { "filepath": "scenes/demo/textures/t_door.jpg", "isVideo": false },
@@ -46,16 +45,7 @@
                 "mipmap7": "scenes/demo/textures/caravaggio8.jpg"
             },
             "t_starry_night": {
-                "filepath": "scenes/demo/textures/starry_night1200.jpg",
-                "isVideo": false,
-                "mipmap0": "scenes/demo/textures/starry_night1200.jpg",
-                "mipmap1": "scenes/demo/textures/starry_night600.jpg",
-                "mipmap2": "scenes/demo/textures/starry_night300.jpg",
-                "mipmap3": "scenes/demo/textures/starry_night150.jpg",
-                "mipmap4": "scenes/demo/textures/starry_night75.jpg",
-                "mipmap5": "scenes/demo/textures/starry_night38.jpg",
-                "mipmap6": "scenes/demo/textures/starry_night19.jpg"
-            },
+                "filepath": "scenes/demo/textures/starry_night1200.jpg","isVideo": false},
             "b_starry_night":{
                 "filepath": "scenes/demo/textures/b_starry_night1200.jpg",
                 "isVideo": false
@@ -113,6 +103,8 @@
                 "shininess": 1,
                 "transparent": false,
                 "textureref": "t_starry_night",
+                "bumpref": "b_starry_night",
+                "bumpscale": 0.1,
                 "texlength_s": 5,
                 "texlength_t": 4,
                 "opacity": 1.0
@@ -207,27 +199,7 @@
                 "texlength_s": 0.5,
                 "texlength_t": 0.5
             },
-            "t_black": {
-                "color": { "r": 0.25, "g": 0.25, "b": 0.25 },
-                "emissive": { "r": 0, "g": 0, "b": 0 },
-                "specular": { "r": 0.5, "g": 0.5, "b": 0.5 },
-                "shininess": 10,
-                "transparent": false,
-                "opacity": 2.5,
-                "textureref": "t_black",
-                "texlength_s": 2,
-                "texlength_t": 2
-            },
-            "chair_red_head": {
-                "color": { "r": 0.8, "g": 0.2, "b": 0.2 },
-                "emissive": { "r": 0, "g": 0, "b": 0 },
-                "specular": { "r": 0, "g": 0, "b": 0 },
-                "shininess": 0,
-                "transparent": false,
-                "opacity": 2.5,
-                "textureref": "t_chair"
-            },
-            "chair_red_body": {
+            "chair_red": {
                 "color": { "r": 0.8, "g": 0.2, "b": 0.2 },
                 "emissive": { "r": 0, "g": 0, "b": 0 },
                 "specular": { "r": 0, "g": 0, "b": 0 },
@@ -314,8 +286,8 @@
                 "transparent": false,
                 "opacity": 2.5,
                 "textureref": "nebulosa",
-                "texlength_s": 26.0,
-                "texlength_t": 14.8
+                "texlength_s": 14.0,
+                "texlength_t": 7.4
             }
         },
         "cameras": {
@@ -422,8 +394,8 @@
                 "children": {
                     "prim": {
                         "type": "rectangle",
-                        "xy1": { "x": -13, "y": -7.4 },
-                        "xy2": { "x": 13, "y": 7.4 }
+                        "xy1": { "x": -7, "y": -3.7 },
+                        "xy2": { "x": 7, "y": 3.7 }
                     }
                 }
             },
@@ -1350,7 +1322,7 @@
             },
             "chair": {
                 "type": "node",
-                "materialref": { "materialId": "t_black" },
+                "materialref": { "materialId": "chair_red" },
                 "children": {
                     "nodesList": [
                         "chair_head",
@@ -1403,7 +1375,7 @@
             },
             "chair_seat_filling": {
                 "type": "node",
-                "materialref": { "materialId": "chair_red_head" },
+                "materialref": { "materialId": "chair_red" },
                 "children": {
                     "nurbsPrim": {
                         "type": "nurbs",
@@ -1440,7 +1412,7 @@
             },
             "chair_seat_filling_2": {
                 "type": "node",
-                "materialref": { "materialId": "chair_red_head" },
+                "materialref": { "materialId": "chair_red" },
                 "children": {
                     "nurbsPrim": {
                         "type": "nurbs",
@@ -1477,7 +1449,7 @@
             },
             "chair_seat_filling_3": {
                 "type": "node",
-                "materialref": { "materialId": "chair_red_head" },
+                "materialref": { "materialId": "chair_red" },
                 "children": {
                     "plane":{
                         "type":"rectangle",
@@ -1538,7 +1510,7 @@
             },
             "chair_head_filling": {
                 "type": "node",
-                "materialref": { "materialId": "chair_red_head" },
+                "materialref": { "materialId": "chair_red" },
                 "children": {
                     "nurbsPrim2": {
                         "type": "nurbs",
@@ -1584,7 +1556,7 @@
             },
             "chair_head_filling_2": {
                 "type": "node",
-                "materialref": { "materialId": "chair_red_head" },
+                "materialref": { "materialId": "chair_red" },
                 "children": {
                     "nurbsPrim2": {
                         "type": "nurbs",
@@ -1640,7 +1612,7 @@
                         "amount": { "x": 0, "y":  0.005, "z": 0.1265}
                     }
                 ],
-                "materialref": { "materialId": "chair_red_head" },
+                "materialref": { "materialId": "chair_red" },
                 "children": {
                     "plane":{
                         "type":"rectangle",
@@ -1735,7 +1707,7 @@
             },
             "chair_side_filling": {
                 "type": "node",
-                "materialref": { "materialId": "chair_red_body" },
+                "materialref": { "materialId": "chair_red" },
                 "children": {
                     "nurbsSide": {
                         "type": "nurbs",
@@ -1766,7 +1738,7 @@
             },
             "chair_side_filling_2": {
                 "type": "node",
-                "materialref": { "materialId": "chair_red_body" },
+                "materialref": { "materialId": "chair_red" },
                 "children": {
                     "nurbsSide": {
                         "type": "nurbs",
@@ -1803,7 +1775,7 @@
                         "amount": { "x": 0.0, "y": 0.0, "z": 0.01 }
                     }
                 ],
-                "materialref": { "materialId": "chair_red_body" },
+                "materialref": { "materialId": "chair_red" },
                 "children": {
                     "plane":{
                         "type":"rectangle",
@@ -1837,7 +1809,7 @@
             },
             "chair_center_filling": {
                 "type": "node",
-                "materialref": { "materialId": "chair_red_body" },
+                "materialref": { "materialId": "chair_red" },
                 "children": {
                     "nurbsCenter": {
                         "type": "nurbs",
@@ -1868,7 +1840,7 @@
             },
             "chair_center_filling_2": {
                 "type": "node",
-                "materialref": { "materialId": "chair_red_body" },
+                "materialref": { "materialId": "chair_red" },
                 "children": {
                     "nurbsCenter": {
                         "type": "nurbs",
@@ -1899,7 +1871,7 @@
             },
             "chair_center_filling_3": {
                 "type": "node",
-                "materialref": { "materialId": "chair_red_body" },
+                "materialref": { "materialId": "chair_red" },
                 "children": {
                     "centerBox":{
                         "type":"rectangle",
@@ -1973,7 +1945,7 @@
             },
             "chair_armrest_filling": {
                 "type": "node",
-                "materialref": { "materialId": "chair_red_body" },
+                "materialref": { "materialId": "chair_red" },
                 "children": {
                     "nurbsPrim": {
                         "type": "nurbs",
@@ -2010,7 +1982,7 @@
             },
             "chair_armrest_filling_2": {
                 "type": "node",
-                "materialref": { "materialId": "chair_red_body" },
+                "materialref": { "materialId": "chair_red" },
                 "children": {
                     "nurbsPrim": {
                         "type": "nurbs",
@@ -2047,7 +2019,7 @@
             },
             "chair_armrest_filling_3": {
                 "type": "node",
-                "materialref": { "materialId": "chair_red_body" },
+                "materialref": { "materialId": "chair_red" },
                 "children": {
                     "chair_struct": {
                         "type": "rectangle",
@@ -2235,6 +2207,8 @@
                 "type": "node",
                 "children": {
                     "nodesList": [
+                        "chairs_row1",
+                        "chairs_row2",
                         "chairs_row3",
                         "chairs_row4",
                         "chairs_row5",
@@ -2242,33 +2216,11 @@
                         "chairs_row7",
                         "chairs_row8",
                         "chairs_row9",
-                        "chairs_row10",
-                        "chairs_row11",
-                        "chairs_row12"
+                        "chairs_row10"
                     ]
                 }
             },
-            "chairs_row1": {
-                "type": "node",
-                "transforms": [
-                    {
-                        "type": "translate",
-                        "amount": { "x": 0.0, "y": 11.0, "z": -23.4 }
-                    }
-                ],
-                "children": { "nodesList": ["chairs_row", "block_floor_chair"] }
-            },
-            "chairs_row2": {
-                "type": "node",
-                "transforms": [
-                    {
-                        "type": "translate",
-                        "amount": { "x": 0.0, "y": 10.0, "z": -19.5 }
-                    }
-                ],
-                "children": { "nodesList": ["chairs_row", "block_floor_chair"] }
-            },
-            "chairs_row3": {
+            "chairs_row10": {
                 "type": "node",
                 "transforms": [
                     {
@@ -2276,9 +2228,9 @@
                         "amount": { "x": 0.0, "y": 9.0, "z": -15.6 }
                     }
                 ],
-                "children": { "nodesList": ["chairs_row", "block_floor_chair"] }
+                "children": { "nodesList": ["block_floor_chair"] }
             },
-            "chairs_row4": {
+            "chairs_row9": {
                 "type": "node",
                 "transforms": [
                     {
@@ -2288,7 +2240,7 @@
                 ],
                 "children": { "nodesList": ["chairs_row", "block_floor_chair"] }
             },
-            "chairs_row5": {
+            "chairs_row8": {
                 "type": "node",
                 "transforms": [
                     {
@@ -2298,7 +2250,7 @@
                 ],
                 "children": { "nodesList": ["chairs_row", "block_floor_chair"] }
             },
-            "chairs_row6": {
+            "chairs_row7": {
                 "type": "node",
                 "transforms": [
                     {
@@ -2308,7 +2260,7 @@
                 ],
                 "children": { "nodesList": ["chairs_row", "block_floor_chair"] }
             },
-            "chairs_row7": {
+            "chairs_row6": {
                 "type": "node",
                 "transforms": [
                     {
@@ -2318,7 +2270,7 @@
                 ],
                 "children": { "nodesList": ["chairs_row", "block_floor_chair"] }
             },
-            "chairs_row8": {
+            "chairs_row5": {
                 "type": "node",
                 "transforms": [
                     {
@@ -2328,7 +2280,7 @@
                 ],
                 "children": { "nodesList": ["chairs_row", "block_floor_chair"] }
             },
-            "chairs_row9": {
+            "chairs_row4": {
                 "type": "node",
                 "transforms": [
                     {
@@ -2338,7 +2290,7 @@
                 ],
                 "children": { "nodesList": ["chairs_row", "block_floor_chair"] }
             },
-            "chairs_row10": {
+            "chairs_row3": {
                 "type": "node",
                 "transforms": [
                     {
@@ -2348,7 +2300,7 @@
                 ],
                 "children": { "nodesList": ["chairs_row", "block_floor_chair"] }
             },
-            "chairs_row11": {
+            "chairs_row2": {
                 "type": "node",
                 "transforms": [
                     {
@@ -2358,7 +2310,7 @@
                 ],
                 "children": { "nodesList": ["chairs_row", "block_floor_chair"] }
             },
-            "chairs_row12": {
+            "chairs_row1": {
                 "type": "node",
                 "transforms": [
                     {
