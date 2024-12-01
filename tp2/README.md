@@ -1,23 +1,42 @@
-# sgi-tp2-base
-The starting point of the second assignment of SGI.
+# SGI 2024/2025 - TP1
 
-# Getting started
+## Group: T04G08
 
-Considering a code block (for instance class A.js), to load an JSON file (in the defined structure) call:
+| Name          | Number    | E-Mail            |
+| ------------- | --------- | ----------------- |
+| Rita Leite    | 202105309 | up202105309@up.pt |
+| Tiago Azevedo | 202108699 | up202108699@up.pt |
 
-    let reader = new MyFileReader(app, this, *this.onSceneLoaded*);
-    reader.open("<path to JSON file>");	
+---
 
-The last argument in the MyFileReader object call is the name of the method that is to be called when the JSON file is loaded and parsed.
+## Project information
 
-Hence, In the same code block (for instance class A.js) add a function method with the following signature: 
+### Strong points
 
-    onSceneLoaded(data) {
-        // do something with the data object
-    }
+-   Our scene is composed of several objects with different geometries, with one example for each of the geometries that can be represented in our language.
 
-This method is called once the JSON file is loaded and parsed successfully. This method single input argument, *data*, is an object containing the entire scene data object.
+-   Our application respects the hierarchy of materials and shadows.
 
-# Version
+-   Our application uses the node cloning method, if they have already been created.
 
-20241105v1
+### Scene description
+
+-   The scene represents a theater hall.
+
+It consists of two sections, the stage and the audience.
+
+-   In the stage area, there is a raised platform, with stairs on its sides, a pair of curtains and a microphone. To illuminate this area, there are two spotlights on the floor and three on the ceiling.
+
+-   In the audience area, there are several rows of chairs placed on platforms at different heights. To illuminate this area, there are several wall lamps.
+
+-   As decorative elements, there are 3 paintings. The painting with an image of flowers uses the mipmap technique. The painting with three geometric figures demonstrates the use of polygons and triangles.
+
+### Relative link to the scene
+
+Click [here](scenes/scene.json) to go to our scene file.
+
+## Issues/Problems
+
+We didn't had any problems or issues.
+
+## Screenshots
