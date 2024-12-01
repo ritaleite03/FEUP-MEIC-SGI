@@ -367,17 +367,17 @@ class MyParser {
 	 */
 	getMaterialRectangle(material, width, height) {
 		let material_attributes = material.attributes
-		if(material.textureref) {
+		if(material.textureref && material.textureref !== 'null' ) {
 			const texture = this.dataTextures[material.textureref].clone()
 			texture.repeat.set(width / material.texlength_s, height / material.texlength_t)
 			material_attributes.map = texture
 		}
-		if(material.bumpref) {
+		if(material.bumpref && material.bumpref !== 'null') {
 			const texture = this.dataTextures[material.bumpref].clone()
 			texture.repeat.set(width / material.texlength_s, height / material.texlength_t)
 			material_attributes.bumpMap = texture
 		}
-		if(material.specularref) {
+		if(material.specularref && material.specularref !== 'null') {
 			const texture = this.dataTextures[material.specularref].clone()
 			texture.repeat.set(width / material.texlength_s, height / material.texlength_t)
 			material_attributes.specularMap = texture
@@ -400,7 +400,7 @@ class MyParser {
 		let material_attributes_x = material.attributes
 		let material_attributes_y = material.attributes
 		let material_attributes_z = material.attributes
-		if(material.textureref) {
+		if(material.textureref && material.textureref !== 'null') {
 			const texture_x = this.dataTextures[material.textureref].clone()
 			const texture_y = this.dataTextures[material.textureref].clone()
 			const texture_z = this.dataTextures[material.textureref].clone()	
@@ -411,7 +411,7 @@ class MyParser {
 			material_attributes_y.map = texture_y
 			material_attributes_z.map = texture_z
 		}
-		if(material.bumpref) {
+		if(material.bumpref && material.bumpref !== 'null') {
 			const texture_x = this.dataTextures[material.bumpref].clone()
 			const texture_y = this.dataTextures[material.bumpref].clone()
 			const texture_z = this.dataTextures[material.bumpref].clone()
@@ -422,7 +422,7 @@ class MyParser {
 			material_attributes_y.bumpMap = texture_y
 			material_attributes_z.bumpMap = texture_z
 		}
-		if(material.specularref) {
+		if(material.specularref && material.specularref !== 'null') {
 			const texture_x = this.dataTextures[material.specularref].clone()
 			const texture_y = this.dataTextures[material.specularref].clone()
 			const texture_z = this.dataTextures[material.specularref].clone()
@@ -455,7 +455,7 @@ class MyParser {
 		let material_attributes_top = material.attributes
 		let material_attributes_height = material.attributes
 		const radius_origin = base + (top - base) * 2
-		if(material.textureref) {
+		if(material.textureref && material.textureref !== 'null') {
 			const texture_base = this.dataTextures[material.textureref].clone()
 			const texture_top = this.dataTextures[material.textureref].clone()
 			const texture_height = this.dataTextures[material.textureref].clone()
@@ -466,7 +466,7 @@ class MyParser {
 			material_attributes_top.map = texture_top
 			material_attributes_height.map = texture_height
 		}
-		if(material.bumpref) {
+		if(material.bumpref && material.bumpref !== 'null') {
 			const texture_base = this.dataTextures[material.bumpref].clone()
 			const texture_top = this.dataTextures[material.bumpref].clone()
 			const texture_height = this.dataTextures[material.bumpref].clone()
@@ -477,7 +477,7 @@ class MyParser {
 			material_attributes_top.bumpMap = texture_top
 			material_attributes_height.bumpMap = texture_base
 		}
-		if(material.specularref) {
+		if(material.specularref && material.specularref !== 'null') {
 			const texture_base = this.dataTextures[material.specularref].clone()
 			const texture_top = this.dataTextures[material.specularref].clone()
 			const texture_height = this.dataTextures[material.specularref].clone()
@@ -505,17 +505,17 @@ class MyParser {
 	 */
 	getMaterialSphere(material, radius) {
 		let material_attributes = material.attributes
-		if(material.textureref) {
+		if(material.textureref && material.textureref !== 'null') {
 			const texture = this.dataTextures[material.textureref].clone()
 			texture.repeat.set(radius * 2 / material.texlength_s, radius * 2 / material.texlength_t)
 			material_attributes.map = texture
 		}
-		if(material.bumpref) {
+		if(material.bumpref && material.bumpref !== 'null') {
 			const texture = this.dataTextures[material.bumpref].clone()
 			texture.repeat.set(radius * 2 / material.texlength_s, radius * 2 / material.texlength_t)
 			material_attributes.bumpMap = texture
 		}
-		if(material.specularref) {
+		if(material.specularref && material.specularref !== 'null') {
 			const texture = this.dataTextures[material.specularref].clone()
 			texture.repeat.set(radius * 2 / material.texlength_s, radius * 2 / material.texlength_t)
 			material_attributes.specularMap = texture
@@ -730,9 +730,9 @@ class MyParser {
 
 		// construct object and mesh
 		const material_attributes = material.attributes
-		if (material.textureref) material_attributes.map = this.dataTextures[material.textureref].clone()
-		if (material.bumpref) material_attributes.bumpMap = this.dataTextures[material.bumpref].clone()
-		if (material.specularMap)	material_attributes.specularMap = this.dataTextures[material.specularref].clone()
+		if (material.textureref && material.textureref !== 'null') material_attributes.map = this.dataTextures[material.textureref].clone()
+		if (material.bumpref && material.bumpref !== 'null') material_attributes.bumpMap = this.dataTextures[material.bumpref].clone()
+		if (material.specularMap && material.specularref !== 'null')	material_attributes.specularMap = this.dataTextures[material.specularref].clone()
 		
 		const object_material = new THREE.MeshPhongMaterial(material_attributes)
 		const object = new MyTriangle(...position1, ...position2, ...position3, material.texlength_s, material.texlength_t)
