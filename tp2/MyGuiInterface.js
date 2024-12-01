@@ -43,7 +43,7 @@ class MyGuiInterface  {
         ambientBackgroundFolder.addColor( this.contents.ambientLight, 'color' ).name('Ambient\'s Color').onChange( (value) => { this.contents.ambientLight.color = value} );
         ambientBackgroundFolder.addColor( this.app.scene, 'background' ).name('Background\'s Color').onChange( (value) => { this.app.scene.background = value } );
         
-        const objectFolder = this.datgui.addFolder('Camera')
+        const objectFolder = this.datgui.addFolder('Wireframe')
         objectFolder.add(this.contents, 'graphActive', ['Default', 'With Wireframe', 'Without Wireframe']).name("Wireframe").onChange((value) => {this.contents.updateGraph(value)});;
         objectFolder.open()
 

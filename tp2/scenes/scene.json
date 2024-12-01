@@ -605,7 +605,8 @@
                         "stage_floor_spotlights",
                         "curtains",
                         "stage_floor_top",
-                        "micro"
+                        "micro",
+                        "bench"
                     ]
                 }
             },
@@ -3345,6 +3346,99 @@
                     {
                         "type": "translate",
                         "amount": { "x": 0, "y": 0.5, "z": 0 }
+                    }
+                ]
+            },
+            "bench":{
+                "type": "node",
+                "materialref": { "materialId": "wood_door" },
+                "children":{
+                    "nodesList":["bench_top", "bench_leg_back_left", "bench_leg_back_right", "bench_leg_front_left", "bench_leg_front_right"]
+                },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 20.5, "y": 3.1, "z": 0 }
+                    }
+                ]
+            },
+            "bench_top":{
+                "type": "node",
+                "children": {
+                    "benchBox": {
+                        "type": "box",
+                        "xyz1": { "x": -0.75, "y": -0.2, "z": -0.75 },
+                        "xyz2": { "x": 0.75, "y": 0.2, "z": 0.75 }
+                    }
+                },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 0, "y": 2.7, "z": 0 }
+                    }
+                ]
+            },
+            "bench_leg":{
+                "type": "node",
+                "children": {
+                    "benchBox": {
+                        "type": "box",
+                        "xyz1": { "x": -0.15, "y": -1.25, "z": -0.15 },
+                        "xyz2": { "x": 0.15, "y": 1.25, "z": 0.15 }
+                    }
+                },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 0, "y": 1.25, "z": 0 }
+                    }
+                ]
+            },
+            "bench_leg_back_left":{
+                "type": "node",
+                "children": {
+                    "nodesList":["bench_leg"]
+                },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": -0.60, "y": 0.0, "z": -0.60 }
+                    }
+                ]
+            },
+            "bench_leg_back_right":{
+                "type": "node",
+                "children": {
+                    "nodesList":["bench_leg"]
+                },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 0.60, "y": 0.0, "z": -0.60 }
+                    }
+                ]
+            },
+            "bench_leg_front_left":{
+                "type": "node",
+                "children": {
+                    "nodesList":["bench_leg"]
+                },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": -0.60, "y": 0.0, "z": 0.60 }
+                    }
+                ]
+            },
+            "bench_leg_front_right":{
+                "type": "node",
+                "children": {
+                    "nodesList":["bench_leg"]
+                },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 0.60, "y": 0.0, "z": 0.60 }
                     }
                 ]
             }
