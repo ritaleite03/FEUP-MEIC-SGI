@@ -85,7 +85,7 @@ class MyGuiInterface {
 
         const trackFolder = this.datgui.addFolder("Track");
         trackFolder
-            .add(this.contents.track, "segments", 10, 200)
+            .add(this.contents.track, "segments", 10, 500)
             .step(50)
             .onChange((value) => this.contents.track.updateCurve(value));
         trackFolder

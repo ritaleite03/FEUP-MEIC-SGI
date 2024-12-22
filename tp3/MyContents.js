@@ -4,8 +4,9 @@ import { MyFileReader } from "./parser/MyFileReader.js";
 import { MyParser } from "./parser/MyParser.js";
 import { MyGuiInterface } from "./MyGuiInterface.js";
 import { MyPowerUp } from "./object/MyPowerUp.js";
-import { MyBallon } from "./object/MyBalloon.js";
+import { MyBallon } from "./object/MyBallon.js";
 import { MyTrack } from "./object/MyTrack .js";
+import { MyPark } from "./object/MyPark.js";
 
 /**
  *  This class contains the contents of out application
@@ -35,21 +36,34 @@ class MyContents {
         this.grahYesWireframe = null;
 
         this.track = null;
+
+        // picker
+        this.raycaster = new THREE.Raycaster();
+        this.raycaster.near = 1;
+        this.raycaster.far = 200;
+        this.pointer = new THREE.Vector2();
+        this.intersectedObj = null;
+        this.pickingColor = "0x00ff00";
+
+        this.availableLayers = ["none", "player", "oponent"];
+        this.selectedLayer = this.availableLayers[1];
+        document.addEventListener(
+            // "pointermove",
+            // "mousemove",
+            "pointerdown",
+            // list of events: https://developer.mozilla.org/en-US/docs/Web/API/Element
+            this.onPointerMove.bind(this)
+        );
     }
 
     /**
      * initializes the contents
      */
     init() {
-        // create once
         if (this.axis === null) {
-            // create and attach the axis to the scene
             this.axis = new MyAxis(this);
             this.app.scene.add(this.axis);
         }
-
-        const powerUp = new MyBallon();
-        this.app.scene.add(powerUp);
     }
 
     /**
@@ -69,6 +83,7 @@ class MyContents {
                 const graph = this.parser.graph;
                 this.track = this.parser.track;
                 this.app.scene.add(this.track.object);
+                this.app.scene.add(new MyPark(this.app, "player"));
 
                 // build graphs
                 this.graphDefault = this.parser.graph;
@@ -93,9 +108,6 @@ class MyContents {
                 let gui = new MyGuiInterface(this.app);
                 gui.setContents(this);
                 gui.init();
-
-                // Configure graphs
-                console.log(this.track.object);
             })
             .catch((error) => {});
     }
@@ -153,6 +165,100 @@ class MyContents {
     }
 
     update() {}
+
+    /*
+     * Change the color of the first intersected object
+     *
+     */
+    changeColorOfFirstPickedObj(obj) {
+        if (this.lastPickedObj != obj) {
+            if (this.lastPickedObj)
+                this.lastPickedObj.material.color.setHex(
+                    this.lastPickedObj.currentHex
+                );
+            this.lastPickedObj = obj;
+            this.lastPickedObj.currentHex =
+                this.lastPickedObj.material.color.getHex();
+            this.lastPickedObj.material.color.setHex(this.pickingColor);
+        }
+    }
+
+    /*
+     * Restore the original color of the intersected object
+     *
+     */
+    restoreColorOfFirstPickedObj() {
+        if (this.lastPickedObj)
+            this.lastPickedObj.material.color.setHex(
+                this.lastPickedObj.currentHex
+            );
+        this.lastPickedObj = null;
+    }
+
+    pickingHelper(intersects) {
+        const possible = [
+            this.selectedLayer + "_1",
+            this.selectedLayer + "_2",
+            this.selectedLayer + "_3",
+            this.selectedLayer + "_4",
+        ];
+        if (intersects.length > 0) {
+            console.log(intersects);
+            const obj = intersects[0].object;
+            console.log(obj);
+            if (!possible.includes(obj.name)) {
+                this.restoreColorOfFirstPickedObj();
+                console.log("Object cannot be picked !");
+            } else {
+                console.log("Object was picked !");
+                this.changeColorOfFirstPickedObj(obj);
+            }
+        } else {
+            this.restoreColorOfFirstPickedObj();
+        }
+    }
+
+    onPointerMove(event) {
+        // calculate pointer position in normalized device coordinates
+        // (-1 to +1) for both components
+
+        //of the screen is the origin
+        this.pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
+        this.pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+        //console.log("Position x: " + this.pointer.x + " y: " + this.pointer.y);
+
+        //2. set the picking ray from the camera position and mouse coordinates
+        this.raycaster.setFromCamera(this.pointer, this.app.getActiveCamera());
+
+        //3. compute intersections
+        var intersects = this.raycaster.intersectObjects(
+            this.app.scene.children
+        );
+
+        this.pickingHelper(intersects);
+
+        this.transverseRaycastProperties(intersects);
+    }
+
+    /**
+     * Print to console information about the intersected objects
+     */
+    transverseRaycastProperties(intersects) {
+        for (var i = 0; i < intersects.length; i++) {
+            console.log(intersects[i]);
+
+            /*
+                An intersection has the following properties :
+                    - object : intersected object (THREE.Mesh)
+                    - distance : distance from camera to intersection (number)
+                    - face : intersected face (THREE.Face3)
+                    - faceIndex : intersected face index (number)
+                    - point : intersection point (THREE.Vector3)
+                    - uv : intersection point in the object's UV coordinates (THREE.Vector2)
+                */
+        }
+    }
 }
 
 export { MyContents };

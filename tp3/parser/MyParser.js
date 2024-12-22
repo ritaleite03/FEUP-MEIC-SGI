@@ -1641,7 +1641,6 @@ class MyParser {
             );
             return;
         }
-        console.log(name);
 
         // parse tree
         let group = new THREE.Group();

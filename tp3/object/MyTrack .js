@@ -10,9 +10,10 @@ class MyTrack extends THREE.Object3D {
         // define attributes
         super();
         this.app = app;
-        this.segments = 100;
+        this.points = points;
+        this.segments = 300;
         this.width = 1;
-        this.textureRepeat = 1;
+        this.textureRepeat = 50;
         this.showWireframe = false;
         this.showMesh = true;
         this.showLine = true;
@@ -27,7 +28,7 @@ class MyTrack extends THREE.Object3D {
 
         // define material
         this.material = new THREE.MeshBasicMaterial({ map: texture });
-        this.material.map.repeat.set(3, 3);
+        this.material.map.repeat.set(this.textureRepeat, 3);
         this.material.map.wrapS = THREE.RepeatWrapping;
         this.material.map.wrapT = THREE.RepeatWrapping;
         this.lineMaterial = new THREE.LineBasicMaterial({ color: 0xff0000 });
