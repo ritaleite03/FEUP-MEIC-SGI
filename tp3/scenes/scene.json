@@ -7,6 +7,18 @@
                 "color": { "r": 1.0, "g": 1.0, "b": 1.0 },
                 "near": 1,
                 "far": 1000
+            },
+            "skybox": {
+                "size": { "x": 500, "y": 500, "z": 500 },
+                "center": { "x": 0, "y": 24.99, "z": 0 },
+                "emissive": { "r": 0, "g": 0, "b": 0 },
+                "intensity": 0.1,
+                "front": "scenes/textures/sky.jpg",
+                "back": "scenes/textures/sky.jpg",
+                "up": "scenes/textures/sky.jpg",
+                "down": "scenes/textures/sky.jpg",
+                "left": "scenes/textures/sky.jpg",
+                "right": "scenes/textures/sky.jpg"
             }
         },
         "textures": {},
@@ -44,8 +56,26 @@
                         "intensity": 100,
                         "position": { "x": 0, "y": 10, "z": 0 },
                         "castshadow": true
-                    }
+                    },
+                    "nodesList": ["floor"]
                 }
+            },
+            "floor": {
+                "type": "node",
+                "materialref": { "materialId": "white" },
+                "children": {
+                    "prim": {
+                        "type": "rectangle",
+                        "xy1": { "x": -250, "y": -250 },
+                        "xy2": { "x": 250, "y": 250 }
+                    }
+                },
+                "transforms": [
+                    {
+                        "type": "rotate",
+                        "amount": { "x": -90, "y": 0, "z": 0 }
+                    }
+                ]
             }
         },
         "track": {

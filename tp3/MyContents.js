@@ -127,8 +127,8 @@ class MyContents {
         this.app.scene.add(this.graphDefault);
         this.app.scene.add(this.billboard);
 
-        this.parkPlayer.position.set(-10, 0, 50);
-        this.parkOponent.position.set(-10, 0, -50);
+        this.parkPlayer.position.set(-20, 0, 50);
+        this.parkOponent.position.set(-20, 0, -50);
 
         this.app.scene.add(this.parkPlayer);
         this.app.scene.add(this.parkOponent);
@@ -312,7 +312,6 @@ class MyContents {
      */
     transverseRaycastProperties(intersects) {
         for (var i = 0; i < intersects.length; i++) {
-            console.log(intersects[i]);
             /*
             An intersection has the following properties :
                 - object : intersected object (THREE.Mesh)

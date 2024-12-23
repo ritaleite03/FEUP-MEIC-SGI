@@ -124,17 +124,31 @@ class MyParser {
             !data.background ||
             !data.ambient ||
             !data.fog ||
-            Object.keys(data).length !== 3
+            !data.skybox ||
+            Object.keys(data).length !== 4
         ) {
             console.error(
                 "Error in MyParser.defineGlobals: unexpected or missing definitions"
             );
             return;
         }
-        // if (!data.skybox.size || !data.skybox.center || !data.skybox.emissive || !data.skybox.front || !data.skybox.back || !data.skybox.up || !data.skybox.down || ! data.skybox.left || !data.skybox.right || Object.keys(data.skybox).length !== 10) {
-        // 	console.error('Error in MyParser.defineSkybox: unexpected or missing definitions');
-        // 	return
-        // }
+        if (
+            !data.skybox.size ||
+            !data.skybox.center ||
+            !data.skybox.emissive ||
+            !data.skybox.front ||
+            !data.skybox.back ||
+            !data.skybox.up ||
+            !data.skybox.down ||
+            !data.skybox.left ||
+            !data.skybox.right ||
+            Object.keys(data.skybox).length !== 10
+        ) {
+            console.error(
+                "Error in MyParser.defineSkybox: unexpected or missing definitions"
+            );
+            return;
+        }
         const app_background = [
             data.background.r,
             data.background.g,
@@ -198,26 +212,84 @@ class MyParser {
         );
 
         // define skybox
-        // const sky_dimensions = [data.skybox.size.x, data.skybox.size.y, data.skybox.size.z]
-        // const sky_center = [data.skybox.center.x, data.skybox.center.y, data.skybox.center.z]
-        // const sky_emissive = [data.skybox.emissive.r, data.skybox.emissive.g, data.skybox.emissive.b]
-        // const sky_intensity = data.skybox.intensity
-        // if ([...sky_dimensions, ...sky_center, ...sky_emissive, sky_intensity].some(val => val === undefined || typeof val !== 'number')) {
-        // 	console.error('Error in MyParser.defineGlobals: invalid or undefined skybox');
-        // 	return;
-        // }
-        // const loader = new THREE.TextureLoader()
-        // const sky_color = new THREE.Color().setRGB(...sky_emissive);
-        // const material_right = new THREE.MeshPhongMaterial({emissive:sky_color, emissiveIntensity:sky_intensity, map:loader.load(data.skybox.right), side: THREE.DoubleSide})
-        // const material_left = new THREE.MeshPhongMaterial({emissive:sky_color, emissiveIntensity:sky_intensity, map:loader.load(data.skybox.left), side: THREE.DoubleSide})
-        // const material_up = new THREE.MeshPhongMaterial({emissive:sky_color, emissiveIntensity:sky_intensity, map:loader.load(data.skybox.up), side: THREE.DoubleSide})
-        // const material_down = new THREE.MeshPhongMaterial({emissive:sky_color, emissiveIntensity:sky_intensity, map:loader.load(data.skybox.down), side: THREE.DoubleSide})
-        // const material_back = new THREE.MeshPhongMaterial({emissive:sky_color, emissiveIntensity:sky_intensity, map:loader.load(data.skybox.back), side: THREE.DoubleSide})
-        // const material_front = new THREE.MeshPhongMaterial({emissive:sky_color, emissiveIntensity:sky_intensity, map:loader.load(data.skybox.front), side: THREE.DoubleSide})
-        // const object = new THREE.BoxGeometry(...sky_dimensions)
-        // const mesh = new THREE.Mesh(object, [material_right, material_left, material_up, material_down, material_back, material_front])
-        // mesh.position.set(...sky_center)
-        // this.app.scene.add(mesh)
+        const sky_dimensions = [
+            data.skybox.size.x,
+            data.skybox.size.y,
+            data.skybox.size.z,
+        ];
+        const sky_center = [
+            data.skybox.center.x,
+            data.skybox.center.y,
+            data.skybox.center.z,
+        ];
+        const sky_emissive = [
+            data.skybox.emissive.r,
+            data.skybox.emissive.g,
+            data.skybox.emissive.b,
+        ];
+        const sky_intensity = data.skybox.intensity;
+        if (
+            [
+                ...sky_dimensions,
+                ...sky_center,
+                ...sky_emissive,
+                sky_intensity,
+            ].some((val) => val === undefined || typeof val !== "number")
+        ) {
+            console.error(
+                "Error in MyParser.defineGlobals: invalid or undefined skybox"
+            );
+            return;
+        }
+        const loader = new THREE.TextureLoader();
+        const sky_color = new THREE.Color().setRGB(...sky_emissive);
+        const material_right = new THREE.MeshPhongMaterial({
+            emissive: sky_color,
+            emissiveIntensity: sky_intensity,
+            map: loader.load(data.skybox.right),
+            side: THREE.DoubleSide,
+        });
+        const material_left = new THREE.MeshPhongMaterial({
+            emissive: sky_color,
+            emissiveIntensity: sky_intensity,
+            map: loader.load(data.skybox.left),
+            side: THREE.DoubleSide,
+        });
+        const material_up = new THREE.MeshPhongMaterial({
+            emissive: sky_color,
+            emissiveIntensity: sky_intensity,
+            map: loader.load(data.skybox.up),
+            side: THREE.DoubleSide,
+        });
+        const material_down = new THREE.MeshPhongMaterial({
+            emissive: sky_color,
+            emissiveIntensity: sky_intensity,
+            map: loader.load(data.skybox.down),
+            side: THREE.DoubleSide,
+        });
+        const material_back = new THREE.MeshPhongMaterial({
+            emissive: sky_color,
+            emissiveIntensity: sky_intensity,
+            map: loader.load(data.skybox.back),
+            side: THREE.DoubleSide,
+        });
+        const material_front = new THREE.MeshPhongMaterial({
+            emissive: sky_color,
+            emissiveIntensity: sky_intensity,
+            map: loader.load(data.skybox.front),
+            side: THREE.DoubleSide,
+        });
+        const object = new THREE.BoxGeometry(...sky_dimensions);
+        const mesh = new THREE.Mesh(object, [
+            material_right,
+            material_left,
+            material_up,
+            material_down,
+            material_back,
+            material_front,
+        ]);
+        mesh.position.set(...sky_center);
+        this.app.scene.add(mesh);
     }
 
     /**
