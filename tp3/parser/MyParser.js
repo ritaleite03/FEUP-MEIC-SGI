@@ -79,9 +79,6 @@ class MyParser {
         this.defineCameras(this.data.yasf.cameras);
         this.defineTrack(this.data.yasf.track);
 
-        this.app.setActiveCamera(this.data.yasf.cameras.initial);
-        this.app.cameras = this.dataCameras;
-
         // Parse the scene graph
         this.graph = this.parse(
             this.data.yasf.graph,

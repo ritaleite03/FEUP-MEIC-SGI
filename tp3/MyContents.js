@@ -3,10 +3,9 @@ import { MyAxis } from "./MyAxis.js";
 import { MyFileReader } from "./parser/MyFileReader.js";
 import { MyParser } from "./parser/MyParser.js";
 import { MyGuiInterface } from "./MyGuiInterface.js";
-import { MyPowerUp } from "./object/MyPowerUp.js";
-import { MyBallon } from "./object/MyBallon.js";
-import { MyTrack } from "./object/MyTrack .js";
-import { MyPark } from "./object/MyPark.js";
+import { MyFont } from "./parser/MyFont.js";
+import { MyMenuStart } from "./object/MyMenuStart.js";
+import { MyBillboard } from "./object/MyBillboard.js";
 
 /**
  *  This class contains the contents of out application
@@ -17,25 +16,30 @@ class MyContents {
        @param {MyApp} app The application object
     */
     constructor(app) {
+        // objects
         this.app = app;
         this.parser = null;
         this.axis = null;
+        this.track = null;
+        this.ballonPlayer = null;
+        this.ballonOponnent = null;
 
+        // reader
         this.reader = new MyFileReader(this.onSceneLoaded.bind(this));
         this.reader.open("scenes/scene.json");
 
+        // lights
         this.dataLights = [];
         this.dataLightsHelpers = [];
         this.lightHelpers = false;
         this.ambientLight = null;
 
+        // graph
         this.graphDic = {};
         this.graphActive = "Default";
         this.graphDefault = null;
         this.grahNoWireframe = null;
         this.grahYesWireframe = null;
-
-        this.track = null;
 
         // picker
         this.raycaster = new THREE.Raycaster();
@@ -54,6 +58,9 @@ class MyContents {
             // list of events: https://developer.mozilla.org/en-US/docs/Web/API/Element
             this.onPointerMove.bind(this)
         );
+
+        // menu
+        this.billboard = new MyBillboard(app);
     }
 
     /**
@@ -75,43 +82,68 @@ class MyContents {
         this.onAfterSceneLoadedAndBeforeRender(data);
     }
 
+    /**
+     *
+     * @param {*} data
+     */
     onAfterSceneLoadedAndBeforeRender(data) {
         this.parser = new MyParser(this, this.app, data);
         this.parser
             .initialize()
             .then(() => {
-                const graph = this.parser.graph;
-                this.track = this.parser.track;
-                this.app.scene.add(this.track.object);
-                this.app.scene.add(new MyPark(this.app, "player"));
+                this.app.setActiveCamera(this.parser.data.yasf.cameras.initial);
+                this.app.cameras = this.parser.dataCameras;
 
-                // build graphs
-                this.graphDefault = this.parser.graph;
-                this.grahYesWireframe = this.groupWireframe(graph, true);
-                this.grahNoWireframe = this.groupWireframe(graph, false);
-
-                // build dict
-                this.graphDic = {
-                    Default: this.graphDefault,
-                    "With Wireframe": this.grahYesWireframe,
-                    "Without Wireframe": this.grahNoWireframe,
-                };
-
-                this.track = this.parser.track;
-                this.app.scene.add(this.graphDefault);
-
-                // Configure GUI and scene contents
-                this.dataLights = this.parser.dataLights;
-                this.dataLightsHelpers = this.parser.dataLightsHelpers;
-                this.ambientLight = this.parser.ambientLight;
-
-                let gui = new MyGuiInterface(this.app);
-                gui.setContents(this);
-                gui.init();
+                this.buildObjects();
+                this.buildScene();
+                this.buildGuiInterface();
             })
             .catch((error) => {});
     }
 
+    buildObjects() {
+        // build graphs
+        const graph = this.parser.graph;
+        this.graphDefault = this.parser.graph;
+        this.grahYesWireframe = this.groupWireframe(graph, true);
+        this.grahNoWireframe = this.groupWireframe(graph, false);
+
+        // build dict
+        this.graphDic = {
+            Default: this.graphDefault,
+            "With Wireframe": this.grahYesWireframe,
+            "Without Wireframe": this.grahNoWireframe,
+        };
+
+        // build track
+        this.track = this.parser.track;
+
+        // build lights
+        this.dataLights = this.parser.dataLights;
+        this.dataLightsHelpers = this.parser.dataLightsHelpers;
+        this.ambientLight = this.parser.ambientLight;
+    }
+
+    buildScene() {
+        this.app.scene.add(this.track.object);
+        //this.app.scene.add(new MyPark(this.app, "player"));
+        this.app.scene.add(this.graphDefault);
+        this.app.scene.add(this.billboard);
+    }
+
+    buildGuiInterface() {
+        // Configure GUI and scene contents
+        let gui = new MyGuiInterface(this.app);
+        gui.setContents(this);
+        gui.init();
+    }
+
+    /**
+     *
+     * @param {*} group
+     * @param {*} isWireframe
+     * @returns
+     */
     groupWireframe(group, isWireframe) {
         const clonedGroup = group.clone();
         clonedGroup.traverse((object) => {
@@ -128,6 +160,7 @@ class MyContents {
                         material.wireframe = isWireframe;
                     });
                 }
+
                 // if its just one
                 else {
                     if (object.material.clone) {
@@ -137,10 +170,13 @@ class MyContents {
                 }
             }
         });
-
         return clonedGroup;
     }
 
+    /**
+     *
+     * @param {*} value
+     */
     updateHelpers(value) {
         this.lightHelpers = value;
 
@@ -154,6 +190,10 @@ class MyContents {
         }
     }
 
+    /**
+     *
+     * @param {*} value
+     */
     updateGraph(value) {
         for (let key in this.app.scene.children) {
             if (this.app.scene.children[key].name === "root_graph") {
@@ -202,18 +242,26 @@ class MyContents {
             this.selectedLayer + "_3",
             this.selectedLayer + "_4",
         ];
+
+        // objects were intersected
         if (intersects.length > 0) {
-            console.log(intersects);
             const obj = intersects[0].object;
-            console.log(obj);
+
+            // object selected is not a choice
             if (!possible.includes(obj.name)) {
                 this.restoreColorOfFirstPickedObj();
                 console.log("Object cannot be picked !");
-            } else {
+            }
+
+            // object selected is a choice
+            else {
                 console.log("Object was picked !");
                 this.changeColorOfFirstPickedObj(obj);
             }
-        } else {
+        }
+
+        // no objects were intersected
+        else {
             this.restoreColorOfFirstPickedObj();
         }
     }
@@ -221,42 +269,36 @@ class MyContents {
     onPointerMove(event) {
         // calculate pointer position in normalized device coordinates
         // (-1 to +1) for both components
-
         //of the screen is the origin
         this.pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
         this.pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
-
         //console.log("Position x: " + this.pointer.x + " y: " + this.pointer.y);
-
         //2. set the picking ray from the camera position and mouse coordinates
         this.raycaster.setFromCamera(this.pointer, this.app.getActiveCamera());
-
         //3. compute intersections
         var intersects = this.raycaster.intersectObjects(
             this.app.scene.children
         );
-
         this.pickingHelper(intersects);
-
         this.transverseRaycastProperties(intersects);
     }
 
     /**
      * Print to console information about the intersected objects
+     * @param {*} intersects
      */
     transverseRaycastProperties(intersects) {
         for (var i = 0; i < intersects.length; i++) {
             console.log(intersects[i]);
-
             /*
-                An intersection has the following properties :
-                    - object : intersected object (THREE.Mesh)
-                    - distance : distance from camera to intersection (number)
-                    - face : intersected face (THREE.Face3)
-                    - faceIndex : intersected face index (number)
-                    - point : intersection point (THREE.Vector3)
-                    - uv : intersection point in the object's UV coordinates (THREE.Vector2)
-                */
+            An intersection has the following properties :
+                - object : intersected object (THREE.Mesh)
+                - distance : distance from camera to intersection (number)
+                - face : intersected face (THREE.Face3)
+                - faceIndex : intersected face index (number)
+                - point : intersection point (THREE.Vector3)
+                - uv : intersection point in the object's UV coordinates (THREE.Vector2)
+            */
         }
     }
 }
