@@ -69,7 +69,7 @@ class MyTrack extends THREE.Object3D {
         this.object.add(this.wireframe);
         this.object.add(this.line);
         this.object.rotateZ(Math.PI);
-        this.object.scale.set(5, 0.2, 5);
+        this.object.scale.set(10, 0.2, 10);
     }
 
     /**

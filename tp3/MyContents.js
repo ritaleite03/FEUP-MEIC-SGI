@@ -3,9 +3,8 @@ import { MyAxis } from "./MyAxis.js";
 import { MyFileReader } from "./parser/MyFileReader.js";
 import { MyParser } from "./parser/MyParser.js";
 import { MyGuiInterface } from "./MyGuiInterface.js";
-import { MyFont } from "./parser/MyFont.js";
-import { MyMenuStart } from "./object/MyMenuStart.js";
 import { MyBillboard } from "./object/MyBillboard.js";
+import { MyPark } from "./object/MyPark.js";
 
 /**
  *  This class contains the contents of out application
@@ -21,8 +20,11 @@ class MyContents {
         this.parser = null;
         this.axis = null;
         this.track = null;
+        this.parkPlayer = new MyPark(this.app, "player");
+        this.parkOponent = new MyPark(this.app, "oponent");
         this.ballonPlayer = null;
         this.ballonOponnent = null;
+        this.billboard = new MyBillboard(app);
 
         // reader
         this.reader = new MyFileReader(this.onSceneLoaded.bind(this));
@@ -50,7 +52,6 @@ class MyContents {
         this.pickingColor = "0x00ff00";
 
         this.availableLayers = ["none", "player", "oponent"];
-        this.selectedLayer = this.availableLayers[1];
         document.addEventListener(
             // "pointermove",
             // "mousemove",
@@ -58,9 +59,6 @@ class MyContents {
             // list of events: https://developer.mozilla.org/en-US/docs/Web/API/Element
             this.onPointerMove.bind(this)
         );
-
-        // menu
-        this.billboard = new MyBillboard(app);
     }
 
     /**
@@ -126,9 +124,14 @@ class MyContents {
 
     buildScene() {
         this.app.scene.add(this.track.object);
-        //this.app.scene.add(new MyPark(this.app, "player"));
         this.app.scene.add(this.graphDefault);
         this.app.scene.add(this.billboard);
+
+        this.parkPlayer.position.set(-10, 0, 50);
+        this.parkOponent.position.set(-10, 0, -50);
+
+        this.app.scene.add(this.parkPlayer);
+        this.app.scene.add(this.parkOponent);
     }
 
     buildGuiInterface() {
@@ -210,16 +213,30 @@ class MyContents {
      * Change the color of the first intersected object
      *
      */
-    changeColorOfFirstPickedObj(obj) {
-        if (this.lastPickedObj != obj) {
-            if (this.lastPickedObj)
-                this.lastPickedObj.material.color.setHex(
-                    this.lastPickedObj.currentHex
-                );
-            this.lastPickedObj = obj;
-            this.lastPickedObj.currentHex =
-                this.lastPickedObj.material.color.getHex();
-            this.lastPickedObj.material.color.setHex(this.pickingColor);
+    changeColorOfFirstPickedObj(obj, name) {
+        if (name == "player") {
+            if (this.ballonPlayer != obj) {
+                if (this.ballonPlayer)
+                    this.ballonPlayer.material.color.setHex(
+                        this.ballonPlayer.currentHex
+                    );
+                this.ballonPlayer = obj;
+                this.ballonPlayer.currentHex =
+                    this.ballonPlayer.material.color.getHex();
+                this.ballonPlayer.material.color.setHex(this.pickingColor);
+            }
+        }
+        if (name == "oponent") {
+            if (this.ballonOponnent != obj) {
+                if (this.balloballonOponnentnPlayer)
+                    this.ballonOponnent.material.color.setHex(
+                        this.ballonOponnent.currentHex
+                    );
+                this.ballonOponnent = obj;
+                this.ballonOponnent.currentHex =
+                    this.ballonOponnent.material.color.getHex();
+                this.ballonOponnent.material.color.setHex(this.pickingColor);
+            }
         }
     }
 
@@ -227,42 +244,48 @@ class MyContents {
      * Restore the original color of the intersected object
      *
      */
-    restoreColorOfFirstPickedObj() {
-        if (this.lastPickedObj)
-            this.lastPickedObj.material.color.setHex(
-                this.lastPickedObj.currentHex
-            );
-        this.lastPickedObj = null;
+    restoreColorOfFirstPickedObj(name) {
+        if (name == "player") {
+            if (this.ballonPlayer)
+                this.ballonPlayer.material.color.setHex(
+                    this.ballonPlayer.currentHex
+                );
+            this.ballonPlayer = null;
+        }
+        if (name == "oponent") {
+            if (this.ballonOponnent)
+                this.ballonOponnent.material.color.setHex(
+                    this.ballonOponnent.currentHex
+                );
+            this.ballonOponnent = null;
+        }
     }
 
     pickingHelper(intersects) {
-        const possible = [
-            this.selectedLayer + "_1",
-            this.selectedLayer + "_2",
-            this.selectedLayer + "_3",
-            this.selectedLayer + "_4",
+        const possible_player = [
+            "player_1",
+            "player_2",
+            "player_3",
+            "player_4",
         ];
 
-        // objects were intersected
+        const possible_oponent = [
+            "oponent_1",
+            "oponent_2",
+            "oponent_3",
+            "oponent_4",
+        ];
+
         if (intersects.length > 0) {
             const obj = intersects[0].object;
-
-            // object selected is not a choice
-            if (!possible.includes(obj.name)) {
-                this.restoreColorOfFirstPickedObj();
-                console.log("Object cannot be picked !");
+            if (possible_player.includes(obj.name)) {
+                this.restoreColorOfFirstPickedObj("player");
+                this.changeColorOfFirstPickedObj(obj, "player");
             }
-
-            // object selected is a choice
-            else {
-                console.log("Object was picked !");
-                this.changeColorOfFirstPickedObj(obj);
+            if (possible_oponent.includes(obj.name)) {
+                this.restoreColorOfFirstPickedObj("oponent");
+                this.changeColorOfFirstPickedObj(obj, "oponent");
             }
-        }
-
-        // no objects were intersected
-        else {
-            this.restoreColorOfFirstPickedObj();
         }
     }
 

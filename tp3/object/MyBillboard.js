@@ -10,10 +10,10 @@ class MyBillboard extends THREE.Object3D {
         super();
 
         // constants
-        const poleH = 20;
-        const poleR = 1;
-        const baseH = 30;
-        const baseW = 40;
+        const poleH = 10;
+        const poleR = 0.5;
+        const baseH = 15;
+        const baseW = 20;
 
         // geometries
         const geometryP = new THREE.CylinderGeometry(poleR, poleR, poleH);
@@ -38,7 +38,7 @@ class MyBillboard extends THREE.Object3D {
         this.add(meshB);
 
         this.display = new MyMenuStart(app);
-        this.display.scale.set(0.4, 0.3, 0.4);
+        this.display.scale.set(0.2, 0.15, 0.2);
         this.display.rotateY(Math.PI / 2);
         this.display.position.set(poleR + 0.001, poleH + baseH / 2, baseW / 4);
         this.add(this.display);
