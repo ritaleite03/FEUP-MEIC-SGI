@@ -21,6 +21,9 @@ class MyTrack extends THREE.Object3D {
         this.path = new THREE.CatmullRomCurve3(points);
         this.object = null;
 
+        this.widthS = 10;
+        this.heightS = 0.2;
+
         // define texture
         const loader = new THREE.TextureLoader();
         const texture = loader.load("./image/road.jpg");
@@ -41,6 +44,32 @@ class MyTrack extends THREE.Object3D {
 
         // build object
         this.buildObject();
+        this.buildSideSelector();
+    }
+
+    buildSideSelector() {
+        // define geometry and materials
+        const geometryS = new THREE.SphereGeometry(3);
+        const materialA = new THREE.MeshBasicMaterial({ color: "#ffffff" });
+        const materialB = new THREE.MeshBasicMaterial({ color: "#ffffff" });
+
+        // build meshes
+        this.selectorA = new THREE.Mesh(geometryS, materialA);
+        this.selectorB = new THREE.Mesh(geometryS, materialB);
+        this.selectorA.name = "side_1";
+        this.selectorB.name = "side_2";
+
+        const posX = -this.points[0].x * this.widthS;
+        const posY = this.points[0].y * this.heightS;
+        const posZ = this.points[0].z * this.widthS;
+
+        this.selectorA.position.set(posX - 5, posY + 3, posZ);
+        this.selectorB.position.set(posX + 5, posY + 3, posZ);
+
+        console.log(this.selectorA.position);
+        console.log(this.selectorB.position);
+        this.app.scene.add(this.selectorA);
+        this.app.scene.add(this.selectorB);
     }
 
     buildObject() {
@@ -69,7 +98,7 @@ class MyTrack extends THREE.Object3D {
         this.object.add(this.wireframe);
         this.object.add(this.line);
         this.object.rotateZ(Math.PI);
-        this.object.scale.set(10, 0.2, 10);
+        this.object.scale.set(this.widthS, this.heightS, this.widthS);
     }
 
     /**

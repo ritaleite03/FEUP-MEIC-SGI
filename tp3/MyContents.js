@@ -22,8 +22,11 @@ class MyContents {
         this.track = null;
         this.parkPlayer = new MyPark(this.app, "player");
         this.parkOponent = new MyPark(this.app, "oponent");
+        this.ballonPlayerPicker = null;
+        this.ballonOponnentPicker = null;
         this.ballonPlayer = null;
         this.ballonOponnent = null;
+        this.sidePlayer = null;
         this.billboard = new MyBillboard(app);
 
         // reader
@@ -51,7 +54,6 @@ class MyContents {
         this.intersectedObj = null;
         this.pickingColor = "0x00ff00";
 
-        this.availableLayers = ["none", "player", "oponent"];
         document.addEventListener(
             // "pointermove",
             // "mousemove",
@@ -59,6 +61,8 @@ class MyContents {
             // list of events: https://developer.mozilla.org/en-US/docs/Web/API/Element
             this.onPointerMove.bind(this)
         );
+
+        this.state = "initial";
     }
 
     /**
@@ -132,6 +136,45 @@ class MyContents {
 
         this.app.scene.add(this.parkPlayer);
         this.app.scene.add(this.parkOponent);
+    }
+
+    buildSceneGame() {
+        const postTrackX = -this.track.points[0].x * this.track.widthS;
+        const postTrackZ = this.track.points[0].z * this.track.widthS;
+
+        const dictPlayer = {
+            player_1: 0,
+            player_2: 1,
+            player_3: 2,
+            player_4: 3,
+        };
+        const dictOponent = {
+            oponent_1: 0,
+            oponent_2: 1,
+            oponent_3: 2,
+            oponent_4: 3,
+        };
+
+        this.ballonPlayer =
+            this.parkPlayer.ballons[
+                dictPlayer[this.ballonPlayerPicker.name]
+            ].clone();
+
+        this.ballonOponnent =
+            this.parkOponent.ballons[
+                dictOponent[this.ballonOponnentPicker.name]
+            ].clone();
+
+        if ((this.sidePlayer.name = "side_1")) {
+            this.ballonPlayer.position.set(postTrackX - 5, 10, postTrackZ);
+            this.ballonOponnent.position.set(postTrackX + 5, 10, postTrackZ);
+        } else {
+            this.ballonPlayer.position.set(postTrackX + 5, 10, postTrackZ);
+            this.ballonOponnent.position.set(postTrackX - 5, 10, postTrackZ);
+        }
+
+        this.app.scene.add(this.ballonPlayer);
+        this.app.scene.add(this.ballonOponnent);
     }
 
     buildGuiInterface() {
@@ -215,27 +258,44 @@ class MyContents {
      */
     changeColorOfFirstPickedObj(obj, name) {
         if (name == "player") {
-            if (this.ballonPlayer != obj) {
-                if (this.ballonPlayer)
-                    this.ballonPlayer.material.color.setHex(
-                        this.ballonPlayer.currentHex
+            if (this.ballonPlayerPicker != obj) {
+                if (this.ballonPlayerPicker)
+                    this.ballonPlayerPicker.material.color.setHex(
+                        this.ballonPlayerPicker.currentHex
                     );
-                this.ballonPlayer = obj;
-                this.ballonPlayer.currentHex =
-                    this.ballonPlayer.material.color.getHex();
-                this.ballonPlayer.material.color.setHex(this.pickingColor);
+                this.ballonPlayerPicker = obj;
+                this.ballonPlayerPicker.currentHex =
+                    this.ballonPlayerPicker.material.color.getHex();
+                this.ballonPlayerPicker.material.color.setHex(
+                    this.pickingColor
+                );
             }
         }
         if (name == "oponent") {
-            if (this.ballonOponnent != obj) {
-                if (this.balloballonOponnentnPlayer)
-                    this.ballonOponnent.material.color.setHex(
-                        this.ballonOponnent.currentHex
+            if (this.ballonOponnentPicker != obj) {
+                if (this.ballonOponnentPicker)
+                    this.ballonOponnentPicker.material.color.setHex(
+                        this.ballonOponnentPicker.currentHex
                     );
-                this.ballonOponnent = obj;
-                this.ballonOponnent.currentHex =
-                    this.ballonOponnent.material.color.getHex();
-                this.ballonOponnent.material.color.setHex(this.pickingColor);
+                this.ballonOponnentPicker = obj;
+                this.ballonOponnentPicker.currentHex =
+                    this.ballonOponnentPicker.material.color.getHex();
+                this.ballonOponnentPicker.material.color.setHex(
+                    this.pickingColor
+                );
+            }
+        }
+        if (name == "side") {
+            if (this.sidePlayer != obj) {
+                if (this.sidePlayer) {
+                    this.sidePlayer.material.color.setHex(
+                        this.sidePlayer.currentHex
+                    );
+                }
+                this.sidePlayer = obj;
+                this.sidePlayer.currentHex =
+                    this.sidePlayer.material.color.getHex();
+                this.sidePlayer.material.color.setHex(this.pickingColor);
             }
         }
     }
@@ -244,22 +304,29 @@ class MyContents {
      * Restore the original color of the intersected object
      *
      */
-    restoreColorOfFirstPickedObj(name) {
-        if (name == "player") {
-            if (this.ballonPlayer)
-                this.ballonPlayer.material.color.setHex(
-                    this.ballonPlayer.currentHex
-                );
-            this.ballonPlayer = null;
-        }
-        if (name == "oponent") {
-            if (this.ballonOponnent)
-                this.ballonOponnent.material.color.setHex(
-                    this.ballonOponnent.currentHex
-                );
-            this.ballonOponnent = null;
-        }
-    }
+    // restoreColorOfFirstPickedObj(name) {
+    //     if (name == "player") {
+    //         if (this.ballonPlayerPicker)
+    //             this.ballonPlayerPicker.material.color.setHex(
+    //                 this.ballonPlayerPicker.currentHex
+    //             );
+    //         this.ballonPlayerPicker = null;
+    //     }
+    //     if (name == "oponent") {
+    //         if (this.ballonOponnentPicker)
+    //             this.ballonOponnentPicker.material.color.setHex(
+    //                 this.ballonOponnentPicker.currentHex
+    //             );
+    //         this.ballonOponnentPicker = null;
+    //     }
+    //
+    //     if (name == "side") {
+    //         if (this.side) {
+    //             this.side.material.color.setHex(this.side.currentHex);
+    //         }
+    //         this.side = null;
+    //     }
+    // }
 
     pickingHelper(intersects) {
         const possible_player = [
@@ -276,15 +343,41 @@ class MyContents {
             "oponent_4",
         ];
 
+        const possible_side = ["side_1", "side_2"];
+
         if (intersects.length > 0) {
-            const obj = intersects[0].object;
-            if (possible_player.includes(obj.name)) {
-                this.restoreColorOfFirstPickedObj("player");
-                this.changeColorOfFirstPickedObj(obj, "player");
-            }
-            if (possible_oponent.includes(obj.name)) {
-                this.restoreColorOfFirstPickedObj("oponent");
-                this.changeColorOfFirstPickedObj(obj, "oponent");
+            // initial state
+            if (this.state === "initial") {
+                const obj = intersects[0].object;
+
+                // picking player ballon
+                if (possible_player.includes(obj.name)) {
+                    this.changeColorOfFirstPickedObj(obj, "player");
+                }
+
+                // picking oponent ballon
+                if (possible_oponent.includes(obj.name)) {
+                    this.changeColorOfFirstPickedObj(obj, "oponent");
+                }
+
+                // picking side track
+                if (possible_side.includes(obj.name)) {
+                    this.changeColorOfFirstPickedObj(obj, "side");
+                }
+
+                // starting game
+                if (obj.name == "startButton") {
+                    if (
+                        this.ballonPlayerPicker !== null &&
+                        this.ballonOponnentPicker !== null &&
+                        this.billboard.display.name !== "" &&
+                        this.sidePlayer !== null
+                    ) {
+                        this.state = "game";
+                        this.billboard.updateDisplay();
+                        this.buildSceneGame();
+                    }
+                }
             }
         }
     }

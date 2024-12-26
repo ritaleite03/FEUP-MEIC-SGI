@@ -18,8 +18,8 @@ class MyMenuStart extends THREE.Object3D {
         this.fontParser = new MyFont();
 
         // base material
-        const loader = new THREE.TextureLoader();
-        this.texture = loader.load("./image/menuBase.jpg");
+        this.loader = new THREE.TextureLoader();
+        this.texture = this.loader.load("./image/menuBase.jpg");
         this.texture.wrapS = THREE.MirroredRepeatWrapping;
         this.texture.wrapT = THREE.MirroredRepeatWrapping;
 
@@ -37,6 +37,7 @@ class MyMenuStart extends THREE.Object3D {
         this.buildAuthors();
         this.buildIntroName();
         this.buildName(this.name);
+        this.buildStartButton();
     }
 
     buildTitle() {
@@ -171,6 +172,25 @@ class MyMenuStart extends THREE.Object3D {
         }
         this.name = name;
         this.buildName(name);
+    }
+
+    buildStartButton() {
+        const y =
+            this.height / 2 -
+            (this.marginSize * 2 +
+                3 * this.titleSize +
+                3 * this.textSize +
+                5 * this.introSize);
+
+        const box = new THREE.PlaneGeometry(20, 10);
+        const texture = this.loader.load("./image/start.png");
+        const material = new THREE.MeshBasicMaterial({
+            map: texture,
+        });
+        const mesh = new THREE.Mesh(box, material);
+        mesh.name = "startButton";
+        mesh.position.set(0, y, this.depth + 0.05);
+        this.add(mesh);
     }
 }
 

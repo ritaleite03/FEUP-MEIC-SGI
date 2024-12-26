@@ -10,6 +10,7 @@ class MyBillboard extends THREE.Object3D {
         super();
 
         // constants
+        this.app = app;
         const poleH = 10;
         const poleR = 0.5;
         const baseH = 15;
@@ -21,9 +22,9 @@ class MyBillboard extends THREE.Object3D {
 
         // materials
         const materialP = new THREE.MeshBasicMaterial({ color: "#ffffff" });
-        const materialB = new THREE.MeshBasicMaterial({ color: "#ff0000" });
+        const materialB = new THREE.MeshBasicMaterial({ color: "#000000" });
 
-        // pole mesh
+        // poles mesh
         const meshP1 = new THREE.Mesh(geometryP, materialP);
         meshP1.position.set(0, poleH / 2, 0);
         this.add(meshP1);
@@ -43,22 +44,34 @@ class MyBillboard extends THREE.Object3D {
         this.display.position.set(poleR + 0.001, poleH + baseH / 2, baseW / 4);
         this.add(this.display);
 
-        // deal with screen
         document.addEventListener("keydown", (event) => {
-            // remove letter or space
-            if (event.key === "Backspace")
-                this.display.updateName(this.display.name.slice(0, -1));
+            // deal with screen input
+            if (this.display instanceof MyMenuStart) {
+                // remove letter or space
+                if (event.key === "Backspace")
+                    this.display.updateName(this.display.name.slice(0, -1));
 
-            // add letter
-            if (/^[a-zA-Z]$/.test(event.key))
-                this.display.updateName(
-                    this.display.name + event.key.toUpperCase()
-                );
+                // add letter
+                if (/^[a-zA-Z]$/.test(event.key))
+                    this.display.updateName(
+                        this.display.name + event.key.toUpperCase()
+                    );
 
-            // add space
-            if (event.key === " ")
-                this.display.updateName(this.display.name + " ");
+                // add space
+                if (event.key === " ")
+                    this.display.updateName(this.display.name + " ");
+            }
         });
+    }
+
+    /**
+     * Changes the screen on the billboard from initial to game status
+     */
+    updateDisplay() {
+        if (this.display !== null && this.display !== undefined) {
+            this.remove(this.display);
+            this.app.scene.remove(this.display);
+        }
     }
 }
 
