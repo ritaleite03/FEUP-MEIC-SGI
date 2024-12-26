@@ -12,8 +12,8 @@ class MyTrack extends THREE.Object3D {
         this.app = app;
         this.points = points;
         this.segments = 300;
-        this.width = 1;
-        this.textureRepeat = 50;
+        this.width = 2;
+        this.textureRepeat = 10;
         this.showWireframe = false;
         this.showMesh = true;
         this.showLine = true;
@@ -21,7 +21,7 @@ class MyTrack extends THREE.Object3D {
         this.path = new THREE.CatmullRomCurve3(points);
         this.object = null;
 
-        this.widthS = 10;
+        this.widthS = 5;
         this.heightS = 0.2;
 
         // define texture
@@ -52,7 +52,7 @@ class MyTrack extends THREE.Object3D {
      */
     buildSideSelector() {
         // define geometry and materials
-        const geometryS = new THREE.SphereGeometry(3);
+        const geometryS = new THREE.SphereGeometry(1);
         const materialA = new THREE.MeshBasicMaterial({ color: "#ffffff" });
         const materialB = new THREE.MeshBasicMaterial({ color: "#ffffff" });
 
@@ -66,8 +66,8 @@ class MyTrack extends THREE.Object3D {
         const posY = this.points[0].y * this.heightS;
         const posZ = this.points[0].z * this.widthS;
 
-        this.selectorA.position.set(posX - 5, posY + 3, posZ);
-        this.selectorB.position.set(posX + 5, posY + 3, posZ);
+        this.selectorA.position.set(posX - 5, posY + 1, posZ);
+        this.selectorB.position.set(posX + 5, posY + 1, posZ);
 
         this.app.scene.add(this.selectorA);
         this.app.scene.add(this.selectorB);
@@ -167,8 +167,13 @@ class MyTrack extends THREE.Object3D {
         const distMax = radius + this.width * this.widthS;
         for (let i = 0; i <= samples; i++) {
             const t = i / samples;
-            if (this.path.getPointAt(t).distanceTo(position) <= distMax)
-                return true;
+            const oldPos = this.path.getPointAt(t);
+            const newPos = new THREE.Vector3(
+                -oldPos.x * this.widthS,
+                oldPos.y * this.widthS,
+                oldPos.z * this.widthS
+            );
+            if (newPos.distanceTo(position) <= distMax) return true;
         }
         return false;
     }

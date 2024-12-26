@@ -20,6 +20,8 @@ class MyContents {
         this.parser = null;
         this.axis = null;
         this.track = null;
+        this.powerUps = null;
+        this.powerDowns = null;
         this.parkPlayer = new MyPark(this.app, "player");
         this.parkOponent = new MyPark(this.app, "oponent");
         this.ballonPlayerPicker = null;
@@ -127,6 +129,8 @@ class MyContents {
 
         // build track
         this.track = this.parser.track;
+        this.powerUps = this.parser.powerUps;
+        this.powerDowns = this.parser.powerDowns;
 
         // build lights
         this.dataLights = this.parser.dataLights;
@@ -144,6 +148,13 @@ class MyContents {
 
         this.app.scene.add(this.parkPlayer);
         this.app.scene.add(this.parkOponent);
+
+        for (const i in this.powerUps) {
+            this.app.scene.add(this.powerUps[i]);
+        }
+        for (const i in this.powerDowns) {
+            this.app.scene.add(this.powerDowns[i]);
+        }
     }
 
     buildSceneGame() {

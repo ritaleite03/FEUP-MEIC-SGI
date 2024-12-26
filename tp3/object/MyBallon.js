@@ -81,10 +81,10 @@ class MyBallon extends THREE.Object3D {
     moveWind(n, s, e, w) {
         const posY = this.position.y;
         // move ballon
-        if (posY > 10 && posY <= 20) this.position.z -= 1 * n; // layer 1 - North
-        if (posY > 20 && posY <= 30) this.position.z += 1 * s; // layer 2 - South
-        if (posY > 30 && posY <= 40) this.position.x += 1 * e; // layer 3 - East
-        if (posY > 40 && posY <= 50) this.position.x -= 1 * w; // layer 4 - West
+        if (posY > 5 && posY <= 10) this.position.z -= 1 * n; // layer 1 - North
+        if (posY > 10 && posY <= 15) this.position.z += 1 * s; // layer 2 - South
+        if (posY > 15 && posY <= 20) this.position.x += 1 * e; // layer 3 - East
+        if (posY > 20 && posY <= 25) this.position.x -= 1 * w; // layer 4 - West
         // move shadow
         this.moveShadowBallon();
     }

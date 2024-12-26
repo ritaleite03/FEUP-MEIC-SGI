@@ -4,6 +4,8 @@ import { MyGuiInterface } from "../MyGuiInterface.js";
 import { MyTriangle } from "./MyTriangle.js";
 import { ParametricGeometry } from "three/addons/geometries/ParametricGeometry.js";
 import { MyTrack } from "../object/MyTrack .js";
+import { MyPowerUp } from "../object/MyPowerUp.js";
+import { MyObstacle } from "../object/MyObstacle.js";
 
 class MyParser {
     /**
@@ -23,6 +25,8 @@ class MyParser {
         this.ambientLight = null;
         this.graph = null;
         this.track = null;
+        this.powerUps = [];
+        this.powerDowns = [];
         this.buider = new MyNurbsBuilder();
     }
 
@@ -78,6 +82,8 @@ class MyParser {
         this.defineGlobals(this.data.yasf.globals);
         this.defineCameras(this.data.yasf.cameras);
         this.defineTrack(this.data.yasf.track);
+        this.definePowerUp(this.data.yasf.powerUp);
+        this.definePowerDown(this.data.yasf.powerDown);
 
         // Parse the scene graph
         this.graph = this.parse(
@@ -415,6 +421,30 @@ class MyParser {
             pointsList.push(new THREE.Vector3(x, y, z));
         }
         this.track = new MyTrack(this.app, pointsList);
+    }
+
+    definePowerUp(data) {
+        for (let i = 0; i < data.points.length; i++) {
+            let x = data.points[i].x;
+            let y = data.points[i].y;
+            let z = data.points[i].z;
+            const power = new MyPowerUp();
+            power.position.set(x, y, z);
+            this.powerUps.push(power);
+        }
+    }
+
+    definePowerDown(data) {
+        console.log(1);
+        for (let i = 0; i < data.points.length; i++) {
+            let x = data.points[i].x;
+            let y = data.points[i].y;
+            let z = data.points[i].z;
+            const power = new MyObstacle();
+            power.position.set(x, y, z);
+            this.powerDowns.push(power);
+        }
+        console.log(2);
     }
 
     /**
