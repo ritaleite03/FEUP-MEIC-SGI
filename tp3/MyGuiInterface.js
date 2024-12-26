@@ -33,12 +33,14 @@ class MyGuiInterface {
             camerasNames.push(key);
         }
 
+        // cameras configuration
         const cameraFolder = this.datgui.addFolder("Camera");
         cameraFolder
             .add(this.app, "activeCameraName", camerasNames)
             .name("active camera");
         cameraFolder.open();
 
+        // ambient and background configuration
         const ambientBackgroundFolder = this.datgui.addFolder(
             "Ambient and Background"
         );
@@ -61,6 +63,7 @@ class MyGuiInterface {
                 this.app.scene.background = value;
             });
 
+        // wireframe configuration
         const objectFolder = this.datgui.addFolder("Wireframe");
         objectFolder
             .add(this.contents, "graphActive", [
@@ -74,6 +77,7 @@ class MyGuiInterface {
             });
         objectFolder.open();
 
+        // helpers configuration
         const lightHelpersFolder = this.datgui.addFolder("Lights");
         lightHelpersFolder
             .add(this.contents, "lightHelpers")
@@ -83,6 +87,7 @@ class MyGuiInterface {
             });
         lightHelpersFolder.open();
 
+        // track configuration
         const trackFolder = this.datgui.addFolder("Track");
         trackFolder
             .add(this.contents.track, "segments", 10, 500)
@@ -109,6 +114,25 @@ class MyGuiInterface {
             .add(this.contents.track, "showMesh")
             .name("Show mesh")
             .onChange(() => this.contents.track.updateMeshVisibility());
+
+        // wind configuration
+        const windFolder = this.datgui.addFolder("Wind");
+        windFolder
+            .add(this.contents, "windN", 1, 10)
+            .step(1)
+            .onChange((value) => (this.contents.windN = value));
+        windFolder
+            .add(this.contents, "windS", 1, 10)
+            .step(1)
+            .onChange((value) => (this.contents.windS = value));
+        windFolder
+            .add(this.contents, "windE", 1, 10)
+            .step(1)
+            .onChange((value) => (this.contents.windE = value));
+        windFolder
+            .add(this.contents, "windW", 1, 10)
+            .step(1)
+            .onChange((value) => (this.contents.windW = value));
     }
 }
 
