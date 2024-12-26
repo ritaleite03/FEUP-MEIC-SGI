@@ -2,9 +2,15 @@ import * as THREE from "three";
 import { MyBallon } from "./MyBallon.js";
 
 class MyPark extends THREE.Object3D {
+    /**
+     *
+     * @param {*} app
+     * @param {*} name
+     */
     constructor(app, name) {
         // define attributes
         super();
+        this.app = app;
         const sizeF = 50;
         const heightL = 20;
         const radiusL = 0.3;
@@ -20,10 +26,10 @@ class MyPark extends THREE.Object3D {
         materialF.wrapT = THREE.MirroredRepeatWrapping;
 
         this.ballons = [
-            new MyBallon(name + "_1"),
-            new MyBallon(name + "_2"),
-            new MyBallon(name + "_3"),
-            new MyBallon(name + "_4"),
+            new MyBallon(app, name + "_1"),
+            new MyBallon(app, name + "_2"),
+            new MyBallon(app, name + "_3"),
+            new MyBallon(app, name + "_4"),
         ];
 
         this.ballonsP = [
@@ -70,6 +76,12 @@ MyPark.prototype.isGroup = true;
 export { MyPark };
 
 class MyParkLamp extends THREE.Object3D {
+    /**
+     *
+     * @param {*} app
+     * @param {*} height
+     * @param {*} radius
+     */
     constructor(app, height, radius) {
         super();
         this.app = app;

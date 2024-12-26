@@ -193,6 +193,11 @@ class MyContents {
                 this.windE,
                 this.windW
             );
+            const shadowP = this.ballonPlayer.shadow.position;
+            const shadowR = 2;
+            const inside = this.track.colision(shadowP, shadowR);
+            if (inside) console.log("inside");
+            else console.log("outside");
             await this.sleep(1000);
         }
     }

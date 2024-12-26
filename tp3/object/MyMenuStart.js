@@ -2,6 +2,10 @@ import * as THREE from "three";
 import { MyFont } from "../parser/MyFont.js";
 
 class MyMenuStart extends THREE.Object3D {
+    /**
+     *
+     * @param {*} app
+     */
     constructor(app) {
         // variables
         super();
@@ -40,6 +44,9 @@ class MyMenuStart extends THREE.Object3D {
         this.buildStartButton();
     }
 
+    /**
+     * Called to build title of the game on the screen
+     */
     buildTitle() {
         // define constants
         const title = "BALLONS RACE";
@@ -58,6 +65,9 @@ class MyMenuStart extends THREE.Object3D {
         this.add(meshTitle);
     }
 
+    /**
+     * Called to build the name of the authors of the game on the screen
+     */
     buildAuthors() {
         // define constants
         const intro = "MADE BY";
@@ -116,6 +126,9 @@ class MyMenuStart extends THREE.Object3D {
         this.add(meshAuthor2);
     }
 
+    /**
+     * Called to build the indicating for the player to introduce his name
+     */
     buildIntroName() {
         // define constants
         const intro = "WRITE YOUR NAME";
@@ -139,6 +152,10 @@ class MyMenuStart extends THREE.Object3D {
         this.add(meshIntro);
     }
 
+    /**
+     * Called to build the name of the player on the screen
+     * @param {string} name name of the player
+     */
     buildName(name) {
         // define constants
         const nameLenght = name.length * this.titleSize;
@@ -165,6 +182,10 @@ class MyMenuStart extends THREE.Object3D {
         this.add(this.meshNameInput);
     }
 
+    /**
+     * Called to build the name of the player on the screen when he changes its input
+     * @param {string} name
+     */
     updateName(name) {
         if (this.meshNameInput !== undefined && this.meshNameInput !== null) {
             this.app.scene.remove(this.meshNameInput);
@@ -174,6 +195,9 @@ class MyMenuStart extends THREE.Object3D {
         this.buildName(name);
     }
 
+    /**
+     * Called to build start button on the screen
+     */
     buildStartButton() {
         const y =
             this.height / 2 -
