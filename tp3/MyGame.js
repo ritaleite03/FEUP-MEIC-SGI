@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { MyBillboard } from "./object/MyBillboard.js";
 import { MyPark } from "./object/MyPark.js";
+import { MyBallon } from "./object/MyBallon.js";
 
 class MyGame {
     constructor(app, track, powerUps, powerDowns) {
@@ -112,20 +113,33 @@ class MyGame {
             const colisionT = this.colisionTrack(this.ballonP);
             const colisionU = this.collisionPowerUps(this.ballonP);
             const colisionD = this.collisionPowerDowns(this.ballonP);
-            if (colisionU) {
+            console.log(colisionT, colisionD, colisionU);
+            if (colisionU === true) {
                 this.ballonP.vouchers += 1;
             }
-            if (colisionD) {
+            if (colisionD === true || colisionT === true) {
                 if (this.ballonP.vouchers > 0) {
                     this.ballonP.vouchers -= 1;
                 } else {
                     await this.sleep(this.obstaclePenalty * 1000);
                 }
             }
+            if (colisionT === true) {
+                const position = this.colisionTrackRepositing(this.ballonP);
+                const posX = position.x;
+                const posY = this.ballonP.position.y;
+                const posZ = position.z;
+                this.ballonP.position.set(posX, posY, posZ);
+            }
             await this.sleep(1000);
         }
     }
 
+    /**
+     * Called to check if ballon collied with power ups
+     * @param {MyBallon} ballon ballon of the player or the oponent
+     * @returns true if collision with power up and false otherwise
+     */
     collisionPowerUps(ballon) {
         const position = ballon.position;
         const radius = ballon.collisionRadius;
@@ -140,6 +154,11 @@ class MyGame {
         return false;
     }
 
+    /**
+     * Called to check if ballon collied with obstacle
+     * @param {MyBallon} ballon ballon of the player or the oponent
+     * @returns true if collision with obstacle and false otherwise
+     */
     collisionPowerDowns(ballon) {
         const position = ballon.position;
         const radius = ballon.collisionRadius;
@@ -155,10 +174,9 @@ class MyGame {
     }
 
     /**
-     * Called to detect collision between track and the shadow of the ballon
-     * @param {THREE.Vector3Like} position position of the center of the shadow of the ballon
-     * @param {Number} radius radius of shadow of the ballon
-     * @returns
+     * Called to check if ballon is inside or outside the track
+     * @param {MyBallon} ballon ballon of the player or the oponent
+     * @returns true if off track and false otherwise
      */
     colisionTrack(ballon) {
         // variables
@@ -179,9 +197,42 @@ class MyGame {
             const newPos = new THREE.Vector3(xPos, yPos, zPos);
 
             // calculate distance
-            if (newPos.distanceTo(position) <= distMax) return true;
+            if (newPos.distanceTo(position) <= distMax) return false;
         }
-        return false;
+        return true;
+    }
+
+    /**
+     * Called to get the position of point in the track closest to the ballon (used when ballon is off track)
+     * @param {MyBallon} ballon ballon of the player or the oponent
+     * @returns position of closest point of the track
+     */
+    colisionTrackRepositing(ballon) {
+        // variables
+        const position = ballon.position;
+        const samples = 1000;
+        let closestPoint = null;
+        let closestDist = null;
+
+        // check distance to points
+        for (let i = 0; i <= samples; i++) {
+            const t = i / samples;
+
+            // coordinates of a point in the track with scale if it
+            const oldPos = this.track.path.getPointAt(t);
+            const xPos = -oldPos.x * this.track.widthS;
+            const yPos = oldPos.y * this.track.widthS;
+            const zPos = oldPos.z * this.track.widthS;
+            const newPos = new THREE.Vector3(xPos, yPos, zPos);
+
+            const dist = newPos.distanceTo(position);
+            if (closestDist === null || dist < closestDist) {
+                closestDist = dist;
+                closestPoint = newPos;
+            }
+        }
+
+        return closestPoint;
     }
 
     /**

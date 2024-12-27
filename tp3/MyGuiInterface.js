@@ -92,6 +92,10 @@ class MyGuiInterface {
             .step(50)
             .onChange((value) => this.contents.game.track.updateCurve(value));
         trackFolder
+            .add(this.contents.game.track, "width", 1, 5)
+            .step(0.1)
+            .onChange((value) => this.contents.game.track.updateCurve(value));
+        trackFolder
             .add(this.contents.game.track, "closedCurve")
             .name("closed curve")
             .onChange((value) =>
