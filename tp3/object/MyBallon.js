@@ -16,19 +16,19 @@ class MyBallon extends THREE.Object3D {
         this.shadow = null;
 
         // materials
-        const blue_material = new THREE.MeshLambertMaterial({
+        const material = new THREE.MeshLambertMaterial({
             color: "#0000ff",
         });
 
         // base
         const base = new THREE.BoxGeometry(1, 1, 1);
-        const mesh_base = new THREE.Mesh(base, blue_material);
+        const mesh_base = new THREE.Mesh(base, material);
         mesh_base.position.set(0, 0.5, 0);
         mesh_base.name = name;
 
         // top
         const top = new THREE.SphereGeometry(2);
-        const mesh_top = new THREE.Mesh(top, blue_material);
+        const mesh_top = new THREE.Mesh(top, material);
         mesh_top.position.set(0, 3, 0);
         mesh_top.name = name;
 
@@ -38,6 +38,20 @@ class MyBallon extends THREE.Object3D {
         group.add(mesh_top);
         group.position.set(0, -1.5, 0);
         this.add(group);
+
+        // bounding box
+        const boundingB = new THREE.Box3();
+        const center = new THREE.Vector3();
+        boundingB.setFromObject(group);
+        boundingB.getCenter(center);
+
+        // bounding sphere
+        const sizeX = Math.abs(boundingB.max.x) + Math.abs(boundingB.min.x);
+        const sizeY = Math.abs(boundingB.max.y) + Math.abs(boundingB.min.y);
+        const sizeZ = Math.abs(boundingB.max.z) + Math.abs(boundingB.min.z);
+        const geometryBox = new THREE.BoxGeometry(sizeX, sizeY, sizeZ);
+        geometryBox.computeBoundingSphere();
+        this.collisionRadius = geometryBox.boundingSphere.radius;
     }
 
     /**
@@ -61,7 +75,7 @@ class MyBallon extends THREE.Object3D {
      * Called to move the ballon up
      */
     moveUp() {
-        this.position.y += 1;
+        this.position.y = this.position.y + 1 <= 25 ? this.position.y + 1 : 25;
     }
 
     /**

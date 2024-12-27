@@ -11,9 +11,8 @@ class MyParser {
     /**
      * Constructs the object.
      */
-    constructor(contents, app, data) {
+    constructor(app, data) {
         // Set up initial variables
-        this.contents = contents;
         this.app = app;
         this.data = data;
         this.dataCameras = [];
@@ -191,7 +190,6 @@ class MyParser {
             ambient_color,
             ambient_intesity
         );
-        this.app.scene.add(this.ambientLight);
 
         // define ambient
         const fog_color = [
@@ -435,7 +433,6 @@ class MyParser {
     }
 
     definePowerDown(data) {
-        console.log(1);
         for (let i = 0; i < data.points.length; i++) {
             let x = data.points[i].x;
             let y = data.points[i].y;
@@ -444,7 +441,6 @@ class MyParser {
             power.position.set(x, y, z);
             this.powerDowns.push(power);
         }
-        console.log(2);
     }
 
     /**

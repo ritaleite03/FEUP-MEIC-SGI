@@ -33,55 +33,53 @@ class MyGuiInterface {
             camerasNames.push(key);
         }
 
-        // cameras configuration
+        // define folders
         const cameraFolder = this.datgui.addFolder("Camera");
+        const sceneFolder = this.datgui.addFolder("Scene");
+        const lightHelpersFolder = this.datgui.addFolder("Lights");
+        const gameFolder = this.datgui.addFolder("Game");
+
+        // cameras configuration
         cameraFolder
             .add(this.app, "activeCameraName", camerasNames)
             .name("active camera");
         cameraFolder.open();
 
-        // ambient and background configuration
-        const ambientBackgroundFolder = this.datgui.addFolder(
-            "Ambient and Background"
-        );
-        ambientBackgroundFolder
-            .add(this.contents.ambientLight, "intensity", 0, 10)
-            .name("Ambient's Intensity")
+        // scene configuration
+        sceneFolder
+            .add(this.contents.game.ambientLight, "intensity", 0, 10)
+            .name("ambient intensity")
             .onChange((value) => {
-                this.contents.ambientLight.intensity = value;
+                this.contents.game.ambientLight.intensity = value;
             });
-        ambientBackgroundFolder
-            .addColor(this.contents.ambientLight, "color")
-            .name("Ambient's Color")
+        sceneFolder
+            .addColor(this.contents.game.ambientLight, "color")
+            .name("ambient color")
             .onChange((value) => {
-                this.contents.ambientLight.color = value;
+                this.contents.game.ambientLight.color = value;
             });
-        ambientBackgroundFolder
+        sceneFolder
             .addColor(this.app.scene, "background")
-            .name("Background's Color")
+            .name("background color")
             .onChange((value) => {
                 this.app.scene.background = value;
             });
-
-        // wireframe configuration
-        const objectFolder = this.datgui.addFolder("Wireframe");
-        objectFolder
+        sceneFolder
             .add(this.contents, "graphActive", [
                 "Default",
                 "With Wireframe",
                 "Without Wireframe",
             ])
-            .name("Wireframe")
+            .name("wireframe")
             .onChange((value) => {
                 this.contents.updateGraph(value);
             });
-        objectFolder.open();
+        sceneFolder.open();
 
         // helpers configuration
-        const lightHelpersFolder = this.datgui.addFolder("Lights");
         lightHelpersFolder
             .add(this.contents, "lightHelpers")
-            .name("Enabled Helpers")
+            .name("enabled helpers")
             .onChange(() => {
                 this.contents.updateHelpers(this.contents.lightHelpers);
             });
@@ -90,49 +88,63 @@ class MyGuiInterface {
         // track configuration
         const trackFolder = this.datgui.addFolder("Track");
         trackFolder
-            .add(this.contents.track, "segments", 10, 500)
+            .add(this.contents.game.track, "segments", 10, 500)
             .step(50)
-            .onChange((value) => this.contents.track.updateCurve(value));
+            .onChange((value) => this.contents.game.track.updateCurve(value));
         trackFolder
-            .add(this.contents.track, "closedCurve")
-            .onChange((value) => this.contents.track.updateCurveClosing(value));
+            .add(this.contents.game.track, "closedCurve")
+            .name("closed curve")
+            .onChange((value) =>
+                this.contents.game.track.updateCurveClosing(value)
+            );
         trackFolder
-            .add(this.contents.track, "textureRepeat", 1, 100)
+            .add(this.contents.game.track, "textureRepeat", 1, 100)
+            .name("texture repeat")
             .step(1)
             .onChange((value) => {
-                this.contents.track.updateTextureRepeat(value);
+                this.contents.game.track.updateTextureRepeat(value);
             });
         trackFolder
-            .add(this.contents.track, "showLine")
-            .name("Show line")
-            .onChange(() => this.contents.track.updateLineVisibility());
+            .add(this.contents.game.track, "showLine")
+            .name("show line")
+            .onChange(() => this.contents.game.track.updateLineVisibility());
         trackFolder
-            .add(this.contents.track, "showWireframe")
-            .name("Show wireframe")
-            .onChange(() => this.contents.track.updateWireframeVisibility());
+            .add(this.contents.game.track, "showWireframe")
+            .name("show wireframe")
+            .onChange(() =>
+                this.contents.game.track.updateWireframeVisibility()
+            );
         trackFolder
-            .add(this.contents.track, "showMesh")
-            .name("Show mesh")
-            .onChange(() => this.contents.track.updateMeshVisibility());
+            .add(this.contents.game.track, "showMesh")
+            .name("show mesh")
+            .onChange(() => this.contents.game.track.updateMeshVisibility());
 
-        // wind configuration
-        const windFolder = this.datgui.addFolder("Wind");
-        windFolder
-            .add(this.contents, "windN", 1, 10)
+        // game configuration folder
+        gameFolder
+            .add(this.contents.game, "obstaclePenalty", 1, 10)
+            .name("penalty duration")
             .step(1)
-            .onChange((value) => (this.contents.windN = value));
-        windFolder
-            .add(this.contents, "windS", 1, 10)
+            .onChange((value) => (this.contents.game.obstaclePenalty = value));
+        gameFolder
+            .add(this.contents.game, "wN", 1, 10)
+            .name("north wind")
             .step(1)
-            .onChange((value) => (this.contents.windS = value));
-        windFolder
-            .add(this.contents, "windE", 1, 10)
+            .onChange((value) => (this.contents.game.wN = value));
+        gameFolder
+            .add(this.contents.game, "wS", 1, 10)
+            .name("south wind")
             .step(1)
-            .onChange((value) => (this.contents.windE = value));
-        windFolder
-            .add(this.contents, "windW", 1, 10)
+            .onChange((value) => (this.contents.game.wS = value));
+        gameFolder
+            .add(this.contents.game, "wE", 1, 10)
+            .name("east wind")
             .step(1)
-            .onChange((value) => (this.contents.windW = value));
+            .onChange((value) => (this.contents.game.wE = value));
+        gameFolder
+            .add(this.contents.game, "wW", 1, 10)
+            .name("west wind")
+            .step(1)
+            .onChange((value) => (this.contents.game.wW = value));
     }
 }
 

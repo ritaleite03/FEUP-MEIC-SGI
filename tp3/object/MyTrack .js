@@ -155,28 +155,6 @@ class MyTrack extends THREE.Object3D {
     updateMeshVisibility() {
         this.mesh.visible = this.showMesh;
     }
-
-    /**
-     * Called to detect collision between track and the shadow of the ballon
-     * @param {THREE.Vector3Like} position position of the center of the shadow of the ballon
-     * @param {Number} radius radius of shadow of the ballon
-     * @returns
-     */
-    colision(position, radius) {
-        const samples = 1000;
-        const distMax = radius + this.width * this.widthS;
-        for (let i = 0; i <= samples; i++) {
-            const t = i / samples;
-            const oldPos = this.path.getPointAt(t);
-            const newPos = new THREE.Vector3(
-                -oldPos.x * this.widthS,
-                oldPos.y * this.widthS,
-                oldPos.z * this.widthS
-            );
-            if (newPos.distanceTo(position) <= distMax) return true;
-        }
-        return false;
-    }
 }
 
 export { MyTrack };
