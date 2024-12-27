@@ -13,10 +13,12 @@ class MyMenuStart extends THREE.Object3D {
         this.height = 100;
         this.width = 100;
         this.depth = 0.5;
-        this.marginSize = 6;
-        this.textSize = 3;
-        this.introSize = 4;
-        this.titleSize = 6;
+
+        this.sizeMargin = 10;
+        this.sizeBig = 6;
+        this.sizeMedium = 5;
+        this.sizeSmall = 4;
+
         this.name = "";
         this.meshNameInput = null;
         this.fontParser = new MyFont();
@@ -50,15 +52,15 @@ class MyMenuStart extends THREE.Object3D {
     buildTitle() {
         // define constants
         const title = "BALLONS RACE";
-        const titleLenght = title.length * this.titleSize;
+        const titleLenght = title.length * this.sizeBig;
 
         // build mesh
         const meshTitle = this.fontParser.createTextMesh(
             title,
-            this.titleSize,
-            this.titleSize
+            this.sizeBig,
+            this.sizeBig
         );
-        const y = this.height / 2 - this.marginSize;
+        const y = this.height / 2 - this.sizeMargin;
         meshTitle.position.set(-titleLenght / 2, y, this.depth + 0.001);
 
         // add to scene
@@ -73,33 +75,30 @@ class MyMenuStart extends THREE.Object3D {
         const intro = "MADE BY";
         const author1 = "RITA LEITE";
         const author2 = "TIAGO AZEVEDO";
-        const introLenght = intro.length * this.introSize;
-        const author1Lenght = author1.length * this.textSize;
-        const author2Lenght = author2.length * this.textSize;
-        const yIntro = this.height / 2 - (this.marginSize + 2 * this.titleSize);
+        const introLenght = intro.length * this.sizeMedium;
+        const author1Lenght = author1.length * this.sizeSmall;
+        const author2Lenght = author2.length * this.sizeSmall;
+
+        const yIntro = this.height / 2 - 2 * this.sizeMargin;
         const yAuthor1 =
-            this.height / 2 -
-            (this.marginSize + 2 * this.titleSize + this.introSize);
+            this.height / 2 - (2 * this.sizeMargin + this.sizeMedium);
         const yAuthor2 =
             this.height / 2 -
-            (this.marginSize +
-                2 * this.titleSize +
-                this.textSize +
-                this.introSize);
+            (2 * this.sizeMargin + this.sizeMedium + this.sizeSmall);
 
         // build intro mesh
         const meshIntro = this.fontParser.createTextMesh(
             intro,
-            this.introSize,
-            this.introSize
+            this.sizeMedium,
+            this.sizeMedium
         );
         meshIntro.position.set(-introLenght / 2, yIntro, this.depth + 0.001);
 
         // build author 1 mesh
         const meshAuthor1 = this.fontParser.createTextMesh(
             author1,
-            this.textSize,
-            this.textSize
+            this.sizeSmall,
+            this.sizeSmall
         );
 
         meshAuthor1.position.set(
@@ -111,8 +110,8 @@ class MyMenuStart extends THREE.Object3D {
         // build author 2 mesh
         const meshAuthor2 = this.fontParser.createTextMesh(
             author2,
-            this.textSize,
-            this.textSize
+            this.sizeSmall,
+            this.sizeSmall
         );
         meshAuthor2.position.set(
             -author2Lenght / 2,
@@ -132,19 +131,16 @@ class MyMenuStart extends THREE.Object3D {
     buildIntroName() {
         // define constants
         const intro = "WRITE YOUR NAME";
-        const introLenght = intro.length * this.introSize;
+        const introLenght = intro.length * this.sizeMedium;
         const yIntro =
             this.height / 2 -
-            (this.marginSize * 2 +
-                2 * this.titleSize +
-                3 * this.textSize +
-                this.introSize);
+            (3 * this.sizeMargin + this.sizeMedium + this.sizeSmall);
 
         // build intro mesh
         const meshIntro = this.fontParser.createTextMesh(
             intro,
-            this.introSize,
-            this.introSize
+            this.sizeMedium,
+            this.sizeMedium
         );
         meshIntro.position.set(-introLenght / 2, yIntro, this.depth + 0.001);
 
@@ -158,19 +154,16 @@ class MyMenuStart extends THREE.Object3D {
      */
     buildName(name) {
         // define constants
-        const nameLenght = name.length * this.titleSize;
+        const nameLenght = name.length * this.sizeBig;
         const yIntro =
             this.height / 2 -
-            (this.marginSize * 2 +
-                2 * this.titleSize +
-                3 * this.textSize +
-                3 * this.introSize);
+            (4 * this.sizeMargin + this.sizeMedium + this.sizeSmall);
 
         // build intro mesh
         this.meshNameInput = this.fontParser.createTextMesh(
             name,
-            this.titleSize,
-            this.titleSize
+            this.sizeBig,
+            this.sizeBig
         );
         this.meshNameInput.position.set(
             -nameLenght / 2,
@@ -201,10 +194,7 @@ class MyMenuStart extends THREE.Object3D {
     buildStartButton() {
         const y =
             this.height / 2 -
-            (this.marginSize * 2 +
-                3 * this.titleSize +
-                3 * this.textSize +
-                5 * this.introSize);
+            (5 * this.sizeMargin + this.sizeMedium + this.sizeSmall);
 
         const box = new THREE.PlaneGeometry(20, 10);
         const texture = this.loader.load("./image/start.png");

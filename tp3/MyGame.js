@@ -110,20 +110,38 @@ class MyGame {
 
         while (true) {
             this.ballonP.moveWind(this.wN, this.wS, this.wE, this.wW);
+            // check for colisions
             const colisionT = this.colisionTrack(this.ballonP);
             const colisionU = this.collisionPowerUps(this.ballonP);
             const colisionD = this.collisionPowerDowns(this.ballonP);
-            console.log(colisionT, colisionD, colisionU);
+
+            // update billboard in relation to vouchers
+            this.billboard.display.updateVouchers(this.ballonP.vouchers);
+
+            // update billboard in relation to wind
+            if (this.ballonP.position.y > 0 && this.ballonP.position.y <= 5)
+                this.billboard.display.updateWind("no wind");
+            if (this.ballonP.position.y > 5 && this.ballonP.position.y <= 10)
+                this.billboard.display.updateWind("north");
+            if (this.ballonP.position.y > 10 && this.ballonP.position.y <= 15)
+                this.billboard.display.updateWind("south");
+            if (this.ballonP.position.y > 15 && this.ballonP.position.y <= 20)
+                this.billboard.display.updateWind("east");
+            if (this.ballonP.position.y > 20 && this.ballonP.position.y <= 25)
+                this.billboard.display.updateWind("west");
+
+            // collision with power up
             if (colisionU === true) {
                 this.ballonP.vouchers += 1;
             }
+
+            // collision with obstacle or off track
             if (colisionD === true || colisionT === true) {
-                if (this.ballonP.vouchers > 0) {
-                    this.ballonP.vouchers -= 1;
-                } else {
-                    await this.sleep(this.obstaclePenalty * 1000);
-                }
+                if (this.ballonP.vouchers > 0) this.ballonP.vouchers -= 1;
+                else await this.sleep(this.obstaclePenalty * 1000);
             }
+
+            // off track
             if (colisionT === true) {
                 const position = this.colisionTrackRepositing(this.ballonP);
                 const posX = position.x;

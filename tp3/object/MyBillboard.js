@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import { MyMenuStart } from "./MyMenuStart.js";
+import { MyMenuRun } from "./MyMenuRun.js";
 
 class MyBillboard extends THREE.Object3D {
     /**
@@ -11,14 +12,22 @@ class MyBillboard extends THREE.Object3D {
 
         // constants
         this.app = app;
-        const poleH = 10;
-        const poleR = 0.5;
-        const baseH = 15;
-        const baseW = 20;
+        this.poleH = 10;
+        this.poleR = 0.5;
+        this.baseH = 15;
+        this.baseW = 20;
 
         // geometries
-        const geometryP = new THREE.CylinderGeometry(poleR, poleR, poleH);
-        const geometryB = new THREE.BoxGeometry(baseW, baseH, poleR * 2);
+        const geometryP = new THREE.CylinderGeometry(
+            this.poleR,
+            this.poleR,
+            this.poleH
+        );
+        const geometryB = new THREE.BoxGeometry(
+            this.baseW,
+            this.baseH,
+            this.poleR * 2
+        );
 
         // materials
         const materialP = new THREE.MeshBasicMaterial({ color: "#ffffff" });
@@ -26,23 +35,20 @@ class MyBillboard extends THREE.Object3D {
 
         // poles mesh
         const meshP1 = new THREE.Mesh(geometryP, materialP);
-        meshP1.position.set(0, poleH / 2, 0);
+        meshP1.position.set(0, this.poleH / 2, 0);
         this.add(meshP1);
         const meshP2 = new THREE.Mesh(geometryP, materialP);
-        meshP2.position.set(0, poleH / 2, poleH);
+        meshP2.position.set(0, this.poleH / 2, this.poleH);
         this.add(meshP2);
 
         // base mesh
         const meshB = new THREE.Mesh(geometryB, materialB);
         meshB.rotateY(Math.PI / 2);
-        meshB.position.set(0, poleH + baseH / 2, baseW / 4);
+        meshB.position.set(0, this.poleH + this.baseH / 2, this.baseW / 4);
         this.add(meshB);
 
         this.display = new MyMenuStart(app);
-        this.display.scale.set(0.2, 0.15, 0.2);
-        this.display.rotateY(Math.PI / 2);
-        this.display.position.set(poleR + 0.001, poleH + baseH / 2, baseW / 4);
-        this.add(this.display);
+        this.buildDisplay();
 
         document.addEventListener("keydown", (event) => {
             // deal with screen input
@@ -64,6 +70,17 @@ class MyBillboard extends THREE.Object3D {
         });
     }
 
+    buildDisplay() {
+        this.display.scale.set(0.2, 0.15, 0.2);
+        this.display.rotateY(Math.PI / 2);
+        this.display.position.set(
+            this.poleR + 0.001,
+            this.poleH + this.baseH / 2,
+            this.baseW / 4
+        );
+        this.app.scene.add(this.display);
+    }
+
     /**
      * Changes the screen on the billboard from initial to game status
      */
@@ -72,6 +89,8 @@ class MyBillboard extends THREE.Object3D {
             this.remove(this.display);
             this.app.scene.remove(this.display);
         }
+        this.display = new MyMenuRun(this.app);
+        this.buildDisplay();
     }
 }
 
