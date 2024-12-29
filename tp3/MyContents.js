@@ -170,7 +170,9 @@ class MyContents {
         this.graphActive = value;
     }
 
-    update() {}
+    update() {
+        this.game.update();
+    }
 }
 
 export { MyContents };

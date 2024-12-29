@@ -796,7 +796,6 @@ class MyParser {
             material_attributes_height.map = texture_height;
         }
         if (material.bumpref && material.bumpref !== "null") {
-            console.log("oi");
             const texture_base = this.dataTextures[material.bumpref].clone();
             const texture_top = this.dataTextures[material.bumpref].clone();
             const texture_height = this.dataTextures[material.bumpref].clone();
@@ -809,10 +808,6 @@ class MyParser {
                 (top * 2) / material.texlength_t
             );
             texture_height.repeat.set(
-                (2 * Math.PI * radius_origin) / material.texlength_s,
-                height / material.texlength_t
-            );
-            console.log(
                 (2 * Math.PI * radius_origin) / material.texlength_s,
                 height / material.texlength_t
             );

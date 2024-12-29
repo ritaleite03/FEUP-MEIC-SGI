@@ -381,6 +381,20 @@ class MyGame {
             }
         }
     }
+
+    update() {
+        let t = this.app.clock.getElapsedTime();
+        for (const i in this.powerUps) {
+            if (this.powerUps[i]) {
+                this.powerUps[i].update(t);
+            }
+        }
+        for (const i in this.powerDowns) {
+            if (this.powerDowns[i]) {
+                this.powerDowns[i].update(t);
+            }
+        }
+    }
 }
 
 export { MyGame };
