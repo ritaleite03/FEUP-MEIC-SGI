@@ -14,10 +14,9 @@ class MyMenuStart extends THREE.Object3D {
         this.width = 100;
         this.depth = 0.5;
 
-        this.sizeMargin = 10;
-        this.sizeBig = 6;
-        this.sizeMedium = 5;
-        this.sizeSmall = 4;
+        this.sM = 10;
+        this.sB = 6;
+        this.sS = 4;
 
         this.name = "";
         this.meshNameInput = null;
@@ -25,9 +24,7 @@ class MyMenuStart extends THREE.Object3D {
 
         // base material
         this.loader = new THREE.TextureLoader();
-        this.texture = this.loader.load("./image/menuBase.jpg");
-        this.texture.wrapS = THREE.MirroredRepeatWrapping;
-        this.texture.wrapT = THREE.MirroredRepeatWrapping;
+        this.texture = this.loader.load("./image/billboard.jpg");
 
         // base mesh
         const planeGeometry = new THREE.BoxGeometry(
@@ -35,117 +32,59 @@ class MyMenuStart extends THREE.Object3D {
             this.height,
             this.depth
         );
-        const material = new THREE.MeshBasicMaterial({ color: "#000000" });
+        const material = new THREE.MeshPhongMaterial({
+            map: this.texture,
+            specular: "#808080",
+        });
         const mesh = new THREE.Mesh(planeGeometry, material);
+        mesh.castShadow = true;
+        mesh.receiveShadow = true;
         this.add(mesh);
 
-        this.buildTitle();
-        this.buildAuthors();
-        this.buildIntroName();
+        this.buildText();
         this.buildName(this.name);
         this.buildStartButton();
     }
 
-    /**
-     * Called to build title of the game on the screen
-     */
-    buildTitle() {
-        // define constants
+    buildText() {
+        // define text
         const title = "BALLONS RACE";
-        const titleLenght = title.length * this.sizeBig;
+        const text1 = "MADE BY:";
+        const text2 = "RITA LEITE";
+        const text3 = "TIAGO AZEVEDO";
+        const intro = "WRITE YOUR NAME:";
 
         // build mesh
-        const meshTitle = this.fontParser.createTextMesh(
-            title,
-            this.sizeBig,
-            this.sizeBig
-        );
-        const y = this.height / 2 - this.sizeMargin;
-        meshTitle.position.set(-titleLenght / 2, y, this.depth + 0.001);
+        const meshTT = this.fontParser.createTextMesh(title, this.sB, this.sB);
+        const meshT1 = this.fontParser.createTextMesh(text1, this.sS, this.sS);
+        const meshT2 = this.fontParser.createTextMesh(text2, this.sS, this.sS);
+        const meshT3 = this.fontParser.createTextMesh(text3, this.sS, this.sS);
+        const meshIN = this.fontParser.createTextMesh(intro, this.sS, this.sS);
+
+        // position mesh
+        const xTT = -(title.length * this.sB) / 2 + this.sM / 2;
+        const xT1 = -(text1.length * this.sS) / 2 + this.sM / 2;
+        const xT2 = -(text2.length * this.sS) / 2 + this.sM / 2;
+        const xT3 = -(text3.length * this.sS) / 2 + this.sM / 2;
+        const xIN = -(intro.length * this.sS) / 2 + this.sM / 2;
+        const yTT = this.height / 2 - this.sB;
+        const yT1 = yTT - this.sB - this.sB;
+        const yT2 = yT1 - this.sS;
+        const yT3 = yT2 - this.sS;
+        const yIN = yT3 - this.sS - this.sB;
+
+        meshTT.position.set(xTT, yTT, this.depth + 0.005);
+        meshT1.position.set(xT1, yT1, this.depth + 0.005);
+        meshT2.position.set(xT2, yT2, this.depth + 0.005);
+        meshT3.position.set(xT3, yT3, this.depth + 0.005);
+        meshIN.position.set(xIN, yIN, this.depth + 0.005);
 
         // add to scene
-        this.add(meshTitle);
-    }
-
-    /**
-     * Called to build the name of the authors of the game on the screen
-     */
-    buildAuthors() {
-        // define constants
-        const intro = "MADE BY";
-        const author1 = "RITA LEITE";
-        const author2 = "TIAGO AZEVEDO";
-        const introLenght = intro.length * this.sizeMedium;
-        const author1Lenght = author1.length * this.sizeSmall;
-        const author2Lenght = author2.length * this.sizeSmall;
-
-        const yIntro = this.height / 2 - 2 * this.sizeMargin;
-        const yAuthor1 =
-            this.height / 2 - (2 * this.sizeMargin + this.sizeMedium);
-        const yAuthor2 =
-            this.height / 2 -
-            (2 * this.sizeMargin + this.sizeMedium + this.sizeSmall);
-
-        // build intro mesh
-        const meshIntro = this.fontParser.createTextMesh(
-            intro,
-            this.sizeMedium,
-            this.sizeMedium
-        );
-        meshIntro.position.set(-introLenght / 2, yIntro, this.depth + 0.001);
-
-        // build author 1 mesh
-        const meshAuthor1 = this.fontParser.createTextMesh(
-            author1,
-            this.sizeSmall,
-            this.sizeSmall
-        );
-
-        meshAuthor1.position.set(
-            -author1Lenght / 2,
-            yAuthor1,
-            this.depth + 0.001
-        );
-
-        // build author 2 mesh
-        const meshAuthor2 = this.fontParser.createTextMesh(
-            author2,
-            this.sizeSmall,
-            this.sizeSmall
-        );
-        meshAuthor2.position.set(
-            -author2Lenght / 2,
-            yAuthor2,
-            this.depth + 0.001
-        );
-
-        // add to scene
-        this.add(meshIntro);
-        this.add(meshAuthor1);
-        this.add(meshAuthor2);
-    }
-
-    /**
-     * Called to build the indicating for the player to introduce his name
-     */
-    buildIntroName() {
-        // define constants
-        const intro = "WRITE YOUR NAME";
-        const introLenght = intro.length * this.sizeMedium;
-        const yIntro =
-            this.height / 2 -
-            (3 * this.sizeMargin + this.sizeMedium + this.sizeSmall);
-
-        // build intro mesh
-        const meshIntro = this.fontParser.createTextMesh(
-            intro,
-            this.sizeMedium,
-            this.sizeMedium
-        );
-        meshIntro.position.set(-introLenght / 2, yIntro, this.depth + 0.001);
-
-        // add to scene
-        this.add(meshIntro);
+        this.add(meshTT);
+        this.add(meshT1);
+        this.add(meshT2);
+        this.add(meshT3);
+        this.add(meshIN);
     }
 
     /**
@@ -153,23 +92,14 @@ class MyMenuStart extends THREE.Object3D {
      * @param {string} name name of the player
      */
     buildName(name) {
-        // define constants
-        const nameLenght = name.length * this.sizeBig;
-        const yIntro =
-            this.height / 2 -
-            (4 * this.sizeMargin + this.sizeMedium + this.sizeSmall);
+        const sS = this.sS;
+        const sB = this.sB;
 
-        // build intro mesh
-        this.meshNameInput = this.fontParser.createTextMesh(
-            name,
-            this.sizeBig,
-            this.sizeBig
-        );
-        this.meshNameInput.position.set(
-            -nameLenght / 2,
-            yIntro,
-            this.depth + 0.001
-        );
+        // build and position mesh
+        this.meshNameInput = this.fontParser.createTextMesh(name, sS, sS);
+        const x = -(name.length * sS) / 2 + this.sM / 2;
+        const y = this.height / 2 - 5 * sB - 3 * sS;
+        this.meshNameInput.position.set(x, y, this.depth + 0.001);
 
         // add to scene
         this.add(this.meshNameInput);
@@ -192,10 +122,7 @@ class MyMenuStart extends THREE.Object3D {
      * Called to build start button on the screen
      */
     buildStartButton() {
-        const y =
-            this.height / 2 -
-            (5 * this.sizeMargin + this.sizeMedium + this.sizeSmall);
-
+        const y = -this.height / 2 + this.sB;
         const box = new THREE.PlaneGeometry(20, 10);
         const texture = this.loader.load("./image/start.png");
         const material = new THREE.MeshBasicMaterial({
@@ -205,6 +132,24 @@ class MyMenuStart extends THREE.Object3D {
         mesh.name = "startButton";
         mesh.position.set(0, y, this.depth + 0.05);
         this.add(mesh);
+    }
+
+    splitText(text, maxLength) {
+        const words = text.split(" ");
+        const result = [];
+        let chunk = "";
+
+        for (const word of words) {
+            if ((chunk + word).length <= maxLength) {
+                chunk += (chunk ? " " : "") + word;
+            } else {
+                result.push(chunk);
+                chunk = word;
+            }
+        }
+        if (chunk) result.push(chunk);
+
+        return result;
     }
 }
 

@@ -21,7 +21,24 @@
                 "right": "scenes/textures/sky.jpg"
             }
         },
-        "textures": {},
+        "textures": {
+            "t_wood": {
+                "filepath": "scenes/textures/wood.jpg",
+                "isVideo": false
+            },
+            "t_trunk": {
+                "filepath": "scenes/textures/trunk.jpg",
+                "isVideo": false
+            },
+            "b_trunk": {
+                "filepath": "scenes/textures/b_trunk.jpg",
+                "isVideo": false
+            },
+            "t_bush": {
+                "filepath": "scenes/textures/bush.jpg",
+                "isVideo": false
+            }
+        },
         "materials": {
             "white": {
                 "color": { "r": 1.0, "g": 1.0, "b": 1.0 },
@@ -31,6 +48,48 @@
                 "twosided": false,
                 "transparent": false,
                 "opacity": 2.5
+            },
+            "wood": {
+                "color": { "r": 1.0, "g": 1.0, "b": 1.0 },
+                "emissive": { "r": 0.0, "g": 0.0, "b": 0.0 },
+                "specular": { "r": 0, "g": 0, "b": 0 },
+                "shininess": 0,
+                "twosided": false,
+                "transparent": false,
+                "opacity": 2.5,
+                "textureref": "t_wood",
+                "texlength_s": 5,
+                "texlength_t": 2,
+                "bumpref": "t_wood",
+                "bumpscale": 0.5
+            },
+            "trunk": {
+                "color": { "r": 1.0, "g": 1.0, "b": 1.0 },
+                "emissive": { "r": 0.0, "g": 0.0, "b": 0.0 },
+                "specular": { "r": 0, "g": 0, "b": 0 },
+                "shininess": 0,
+                "twosided": false,
+                "transparent": false,
+                "opacity": 2.5,
+                "textureref": "t_trunk",
+                "texlength_s": 5,
+                "texlength_t": 5,
+                "bumpref": "b_trunk",
+                "bumpscale": 1
+            },
+            "bush": {
+                "color": { "r": 1.0, "g": 1.0, "b": 1.0 },
+                "emissive": { "r": 0.0, "g": 0.0, "b": 0.0 },
+                "specular": { "r": 0, "g": 0, "b": 0 },
+                "shininess": 0,
+                "twosided": false,
+                "transparent": false,
+                "opacity": 2.5,
+                "textureref": "t_bush",
+                "texlength_s": 2.5,
+                "texlength_t": 2.5,
+                "bumpref": "t_bush",
+                "bumpscale": 0.5
             }
         },
         "cameras": {
@@ -48,16 +107,262 @@
             "rootid": "scene",
             "scene": {
                 "type": "node",
+                "materialref": { "materialId": "white" },
                 "children": {
-                    "pointlight": {
-                        "type": "pointlight",
-                        "enabled": true,
-                        "color": { "r": 1, "g": 1, "b": 1 },
-                        "intensity": 100,
-                        "position": { "x": 0, "y": 10, "z": 0 },
-                        "castshadow": true
+                    "nodesList": ["floor", "bench_1", "tree_1"]
+                }
+            },
+            "tree_1": {
+                "type": "node",
+                "children": { "nodesList": ["tree"] },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 10, "y": 0, "z": -20 }
+                    }
+                ]
+            },
+            "tree": {
+                "type": "node",
+                "children": { "nodesList": ["tree_bush_1", "tree_trunk_1"] }
+            },
+            "tree_bush_1": {
+                "type": "node",
+                "children": { "nodesList": ["tree_bush"] },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 0, "y": 16, "z": 0 }
+                    }
+                ]
+            },
+            "tree_trunk_1": {
+                "type": "node",
+                "children": { "nodesList": ["tree_trunk"] },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 0, "y": 4, "z": 0 }
+                    }
+                ]
+            },
+            "tree_bush": {
+                "type": "node",
+                "materialref": { "materialId": "bush" },
+                "children": {
+                    "prim": {
+                        "type": "cylinder",
+                        "base": 3,
+                        "top": 0.1,
+                        "height": 16,
+                        "slices": 20,
+                        "stacks": 20,
+                        "capsclose": true
+                    }
+                }
+            },
+            "tree_trunk": {
+                "type": "node",
+                "materialref": { "materialId": "trunk" },
+                "children": {
+                    "prim": {
+                        "type": "cylinder",
+                        "base": 1,
+                        "top": 0.5,
+                        "height": 8,
+                        "slices": 20,
+                        "stacks": 20,
+                        "capsclose": true
+                    }
+                }
+            },
+            "bench_1": {
+                "type": "node",
+                "children": { "nodesList": ["bench"] },
+                "transforms": [
+                    {
+                        "type": "rotate",
+                        "amount": { "x": 0, "y": 30, "z": 0 }
                     },
-                    "nodesList": ["floor"]
+                    {
+                        "type": "translate",
+                        "amount": { "x": 20, "y": 0, "z": -30 }
+                    }
+                ]
+            },
+            "bench": {
+                "type": "node",
+                "materialref": { "materialId": "wood" },
+                "children": {
+                    "nodesList": [
+                        "bench_base",
+                        "bench_legs",
+                        "bench_lateral_1",
+                        "bench_lateral_2",
+                        "bench_lateral_3",
+                        "bench_lateral_4",
+                        "bench_lateral_5",
+                        "bench_top_1"
+                    ]
+                },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 0, "y": 2.15, "z": 0 }
+                    }
+                ]
+            },
+            "bench_legs": {
+                "type": "node",
+                "children": {
+                    "nodesList": [
+                        "bench_leg_1",
+                        "bench_leg_2",
+                        "bench_leg_3",
+                        "bench_leg_4"
+                    ]
+                }
+            },
+            "bench_leg_1": {
+                "type": "node",
+                "children": { "nodesList": ["bench_leg"] },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": -2.4, "y": -1, "z": -0.9 }
+                    }
+                ]
+            },
+            "bench_leg_2": {
+                "type": "node",
+                "children": { "nodesList": ["bench_leg"] },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": -2.4, "y": -1, "z": 0.9 }
+                    }
+                ]
+            },
+            "bench_leg_3": {
+                "type": "node",
+                "children": { "nodesList": ["bench_leg"] },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 2.4, "y": -1, "z": -0.9 }
+                    }
+                ]
+            },
+            "bench_leg_4": {
+                "type": "node",
+                "children": { "nodesList": ["bench_leg"] },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 2.4, "y": -1, "z": 0.9 }
+                    }
+                ]
+            },
+            "bench_lateral_5": {
+                "type": "node",
+                "children": { "nodesList": ["bench_lateral"] },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 0, "y": 1, "z": -0.9 }
+                    }
+                ]
+            },
+            "bench_lateral_4": {
+                "type": "node",
+                "children": { "nodesList": ["bench_lateral"] },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": -1.2, "y": 1, "z": -0.9 }
+                    }
+                ]
+            },
+            "bench_lateral_3": {
+                "type": "node",
+                "children": { "nodesList": ["bench_lateral"] },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 1.2, "y": 1, "z": -0.9 }
+                    }
+                ]
+            },
+            "bench_lateral_2": {
+                "type": "node",
+                "children": { "nodesList": ["bench_lateral"] },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 2.4, "y": 1, "z": -0.9 }
+                    }
+                ]
+            },
+            "bench_lateral_1": {
+                "type": "node",
+                "children": { "nodesList": ["bench_lateral"] },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": -2.4, "y": 1, "z": -0.9 }
+                    }
+                ]
+            },
+            "bench_top_1": {
+                "type": "node",
+                "children": {
+                    "nodesList": ["bench_top"]
+                },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 0, "y": 2, "z": -0.9 }
+                    }
+                ]
+            },
+            "bench_top": {
+                "type": "node",
+                "children": {
+                    "prim": {
+                        "type": "box",
+                        "xyz1": { "x": -2.5, "y": -0.1, "z": -0.1 },
+                        "xyz2": { "x": 2.5, "y": 0.1, "z": 0.1 }
+                    }
+                }
+            },
+            "bench_lateral": {
+                "type": "node",
+                "children": {
+                    "prim": {
+                        "type": "box",
+                        "xyz1": { "x": -0.1, "y": -1, "z": -0.1 },
+                        "xyz2": { "x": 0.1, "y": 1, "z": 0.1 }
+                    }
+                }
+            },
+            "bench_leg": {
+                "type": "node",
+                "children": {
+                    "prim": {
+                        "type": "box",
+                        "xyz1": { "x": -0.1, "y": -1, "z": -0.1 },
+                        "xyz2": { "x": 0.1, "y": 1, "z": 0.1 }
+                    }
+                }
+            },
+            "bench_base": {
+                "type": "node",
+                "children": {
+                    "prim": {
+                        "type": "box",
+                        "xyz1": { "x": -2.5, "y": -0.15, "z": -1.0 },
+                        "xyz2": { "x": 2.5, "y": 0.15, "z": 1.0 }
+                    }
                 }
             },
             "floor": {

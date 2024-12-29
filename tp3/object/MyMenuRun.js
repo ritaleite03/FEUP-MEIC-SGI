@@ -14,10 +14,9 @@ class MyMenuRun extends THREE.Object3D {
         this.width = 100;
         this.depth = 0.5;
 
-        this.sizeMargin = 10;
-        this.sizeBig = 6;
-        this.sizeMedium = 5;
-        this.sizeSmall = 4;
+        this.sM = 10;
+        this.sB = 6;
+        this.sS = 4;
 
         this.time = 0;
         this.meshTime = null;
@@ -31,9 +30,7 @@ class MyMenuRun extends THREE.Object3D {
 
         // base material
         this.loader = new THREE.TextureLoader();
-        this.texture = this.loader.load("./image/menuBase.jpg");
-        this.texture.wrapS = THREE.MirroredRepeatWrapping;
-        this.texture.wrapT = THREE.MirroredRepeatWrapping;
+        this.texture = this.loader.load("./image/billboard.jpg");
 
         // base mesh
         const planeGeometry = new THREE.BoxGeometry(
@@ -41,7 +38,10 @@ class MyMenuRun extends THREE.Object3D {
             this.height,
             this.depth
         );
-        const material = new THREE.MeshBasicMaterial({ color: "#000000" });
+        const material = new THREE.MeshPhongMaterial({
+            map: this.texture,
+            specular: "#808080",
+        });
         const mesh = new THREE.Mesh(planeGeometry, material);
         this.add(mesh);
 
@@ -56,96 +56,51 @@ class MyMenuRun extends THREE.Object3D {
      * Called to build title of the game on the screen
      */
     buildTitle() {
-        // define constants
         const title = "BALLONS RACE";
-        const titleLenght = title.length * this.sizeBig;
-
-        // build mesh
-        const meshTitle = this.fontParser.createTextMesh(
-            title,
-            this.sizeBig,
-            this.sizeBig
-        );
-        const y = this.height / 2 - this.sizeMargin;
-        meshTitle.position.set(-titleLenght / 2, y, this.depth + 0.001);
-
-        // add to scene
-        this.add(meshTitle);
+        const mesh = this.fontParser.createTextMesh(title, this.sB, this.sB);
+        const x = -(title.length * this.sB) / 2;
+        const y = this.height / 2 - this.sB;
+        mesh.position.set(x, y, this.depth + 0.001);
+        this.add(mesh);
     }
 
     buildTime() {
-        // define constants
-        const word = "Elapsed Time : " + this.time.toString();
-        const wordLenght = word.length * this.sizeMedium;
-
-        // build mesh
-        const mesh = this.fontParser.createTextMesh(
-            word,
-            this.sizeMedium,
-            this.sizeMedium
-        );
-        const y = this.height / 2 - 2 * this.sizeMargin;
-        mesh.position.set(-wordLenght / 2, y, this.depth + 0.001);
+        const word = "ELAPSED TIME : " + this.time.toString();
+        const mesh = this.fontParser.createTextMesh(word, this.sS, this.sS);
+        const x = -this.width / 2 + this.sS;
+        const y = this.height / 2 - 3 * this.sB;
+        mesh.position.set(x, y, this.depth + 0.001);
         this.meshTime = mesh;
-
-        // add to scene
         this.add(mesh);
     }
 
     buildLaps() {
-        // define constants
-        const word = "Laps : " + this.laps.toString();
-        const wordLenght = word.length * this.sizeMedium;
-
-        // build mesh
-        const mesh = this.fontParser.createTextMesh(
-            word,
-            this.sizeMedium,
-            this.sizeMedium
-        );
-        const y = this.height / 2 - 3 * this.sizeMargin;
-        mesh.position.set(-wordLenght / 2, y, this.depth + 0.001);
+        const word = "LAPS : " + this.laps.toString();
+        const mesh = this.fontParser.createTextMesh(word, this.sS, this.sS);
+        const x = -this.width / 2 + this.sS;
+        const y = this.height / 2 - 5 * this.sB;
+        mesh.position.set(x, y, this.depth + 0.001);
         this.meshLaps = mesh;
-
-        // add to scene
         this.add(mesh);
     }
 
     buildWind() {
-        // define constants
-        const word = "Wind : " + this.wind;
-        const wordLenght = word.length * this.sizeMedium;
-
-        // build mesh
-        const mesh = this.fontParser.createTextMesh(
-            word,
-            this.sizeMedium,
-            this.sizeMedium
-        );
-        const y = this.height / 2 - 4 * this.sizeMargin;
-        mesh.position.set(-wordLenght / 2, y, this.depth + 0.001);
+        const word = "WIND : " + this.wind.toUpperCase();
+        const mesh = this.fontParser.createTextMesh(word, this.sS, this.sS);
+        const x = -this.width / 2 + this.sS;
+        const y = this.height / 2 - 7 * this.sB;
+        mesh.position.set(x, y, this.depth + 0.001);
         this.meshWind = mesh;
-
-        // add to scene
         this.add(mesh);
     }
 
     buildVouchers() {
-        // define constants
-        const word = "Vouchers : " + this.vouchers.toString();
-        const wordLenght = word.length * this.sizeMedium;
-
-        // build mesh
-        const mesh = this.fontParser.createTextMesh(
-            word,
-            this.sizeMedium,
-            this.sizeMedium
-        );
-        const y = this.height / 2 - 5 * this.sizeMargin;
-        mesh.position.set(-wordLenght / 2, y, this.depth + 0.001);
+        const word = "VOUCHERS : " + this.vouchers.toString();
+        const mesh = this.fontParser.createTextMesh(word, this.sS, this.sS);
+        const x = -this.width / 2 + this.sS;
+        const y = this.height / 2 - 9 * this.sB;
+        mesh.position.set(x, y, this.depth + 0.001);
         this.meshVouchers = mesh;
-
-        // add to scene
         this.add(mesh);
     }
 

@@ -2,7 +2,7 @@ import * as THREE from "three";
 import { MyBillboard } from "./object/MyBillboard.js";
 import { MyPark } from "./object/MyPark.js";
 import { MyBallon } from "./object/MyBallon.js";
-
+import { MyMenuStart } from "./object/MyMenuStart.js";
 class MyGame {
     constructor(app, track, powerUps, powerDowns) {
         this.app = app;
@@ -33,7 +33,7 @@ class MyGame {
         this.track = track;
         this.powerUps = powerUps;
         this.powerDowns = powerDowns;
-        this.billboard = new MyBillboard(this.app);
+        this.billboard = new MyBillboard(this.app, new MyMenuStart(this.app));
         this.parkP = new MyPark(this.app, "player");
         this.parkO = new MyPark(this.app, "oponent");
 
@@ -163,10 +163,19 @@ class MyGame {
         const radius = ballon.collisionRadius;
 
         for (const i in this.powerUps) {
-            const positionP = this.powerUps[i].position;
-            const radiusP = this.powerUps[i].collisionRadius;
-            const distMax = radius + radiusP;
-            if (positionP.distanceTo(position) <= distMax) return true;
+            // check if powerup is activated
+            if (this.powerUps[i].activated === true) {
+                // variables
+                const positionP = this.powerUps[i].position;
+                const radiusP = this.powerUps[i].collisionRadius;
+                const distMax = radius + radiusP;
+
+                // check if they are colliding
+                if (positionP.distanceTo(position) <= distMax) {
+                    this.powerUps[i].desactivate(this.obstaclePenalty);
+                    return true;
+                }
+            }
         }
 
         return false;
@@ -182,10 +191,19 @@ class MyGame {
         const radius = ballon.collisionRadius;
 
         for (const i in this.powerDowns) {
-            const positionP = this.powerDowns[i].position;
-            const radiusP = this.powerDowns[i].collisionRadius;
-            const distMax = radius + radiusP;
-            if (positionP.distanceTo(position) <= distMax) return true;
+            // check if powerdown is activated
+            if (this.powerDowns[i].activated === true) {
+                // variables
+                const positionP = this.powerDowns[i].position;
+                const radiusP = this.powerDowns[i].collisionRadius;
+                const distMax = radius + radiusP;
+
+                // check if they are colliding
+                if (positionP.distanceTo(position) <= distMax) {
+                    this.powerDowns[i].desactivate(this.obstaclePenalty);
+                    return true;
+                }
+            }
         }
 
         return false;

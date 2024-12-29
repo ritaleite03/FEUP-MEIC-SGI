@@ -1,5 +1,7 @@
 import * as THREE from "three";
 import { MyBallon } from "./MyBallon.js";
+import { MyBillboard } from "./MyBillboard.js";
+import { MyMenuBallon } from "./MyMenuBallon.js";
 
 class MyPark extends THREE.Object3D {
     /**
@@ -69,6 +71,10 @@ class MyPark extends THREE.Object3D {
         const mesh = new THREE.Mesh(geometry, materialF);
         mesh.position.set(0, 0.5, 0);
         this.add(mesh);
+
+        const display = new MyBillboard(app, new MyMenuBallon(this.app, name));
+        display.position.set(-sizeF / 2, 0, 0);
+        this.add(display);
     }
 }
 
