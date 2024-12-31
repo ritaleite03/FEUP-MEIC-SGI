@@ -109,6 +109,14 @@
                 "type": "node",
                 "materialref": { "materialId": "white" },
                 "children": {
+                    "pointlight": {
+                        "type": "pointlight",
+                        "enabled": true,
+                        "color": { "r": 1, "g": 1, "b": 1 },
+                        "intensity": 100,
+                        "position": { "x": 0, "y": 200, "z": 0 },
+                        "castshadow": true
+                    },
                     "nodesList": ["floor", "bench_1", "tree_1"]
                 }
             },

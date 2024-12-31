@@ -3,10 +3,13 @@ import { MyBillboard } from "./object/MyBillboard.js";
 import { MyPark } from "./object/MyPark.js";
 import { MyBallon } from "./object/MyBallon.js";
 import { MyMenuStart } from "./object/MyMenuStart.js";
+import { MyFirework } from "./MyFirework.js";
+
 class MyGame {
     constructor(app, track, powerUps, powerDowns) {
         this.app = app;
         this.obstaclePenalty = 1;
+        this.fireworks = [];
         this.state = "initial";
         this.ambientLight = new THREE.AmbientLight("#ffffff");
 
@@ -84,12 +87,15 @@ class MyGame {
         }
     }
 
+    finishGame() {
+        this.state = "finish";
+    }
+
     /**
      * Called to run the game
      */
     async runGame() {
-        const postTrackX = -this.track.points[0].x * this.track.widthS;
-        const postTrackZ = this.track.points[0].z * this.track.widthS;
+        let timeLeft = 60 * 5;
 
         this.ballonP =
             this.parkP.ballons[this.dictP[this.ballonPickerP.name]].clone();
@@ -98,18 +104,51 @@ class MyGame {
             this.parkO.ballons[this.dictO[this.ballonPickerO.name]].clone();
 
         if ((this.sideP.name = "side_1")) {
-            this.ballonP.position.set(postTrackX - 5, 4, postTrackZ);
-            this.ballonO.position.set(postTrackX + 5, 4, postTrackZ);
+            this.ballonP.position.set(
+                this.track.p1.x,
+                this.track.p1.y + 3,
+                this.track.p1.z
+            );
+            this.ballonO.position.set(
+                this.track.p2.x,
+                this.track.p2.y + 3,
+                this.track.p2.z
+            );
         } else {
-            this.ballonP.position.set(postTrackX + 5, 4, postTrackZ);
-            this.ballonO.position.set(postTrackX - 5, 4, postTrackZ);
+            this.ballonP.position.set(
+                this.track.p2.x,
+                this.track.p2.y + 3,
+                this.track.p2.z
+            );
+            this.ballonO.position.set(
+                this.track.p1.x,
+                this.track.p1.y + 3,
+                this.track.p1.z
+            );
         }
 
         this.app.scene.add(this.ballonP);
         this.app.scene.add(this.ballonO);
 
-        while (true) {
+        const timerInterval = setInterval(() => {
+            if (timeLeft <= 0) {
+                clearInterval(timerInterval);
+                this.finishGame();
+            } else {
+                timeLeft--;
+                this.billboard.display.updateTime(timeLeft);
+            }
+        }, 1000);
+
+        const simulationInterval = setInterval(async () => {
+            // Só executa se o tempo restante for maior que 0
+            if (timeLeft <= 0) {
+                clearInterval(simulationInterval);
+                return;
+            }
+            const posOld = this.ballonP.position.clone();
             this.ballonP.moveWind(this.wN, this.wS, this.wE, this.wW);
+
             // check for colisions
             const colisionT = this.colisionTrack(this.ballonP);
             const colisionU = this.collisionPowerUps(this.ballonP);
@@ -149,8 +188,78 @@ class MyGame {
                 const posZ = position.z;
                 this.ballonP.position.set(posX, posY, posZ);
             }
-            await this.sleep(1000);
-        }
+
+            // check if finish line was passed
+            const posNow = this.ballonP.position.clone();
+            const finish = this.checkFinishLine(posOld, posNow);
+            if (finish === true) {
+                this.ballonP.laps += 1;
+                this.billboard.display.updateLaps(this.ballonP.laps);
+            }
+        }, 1000);
+    }
+
+    checkFinishLine(posOld, posNow) {
+        // define first point of track
+        const posCurTemp = this.track.path.getPointAt(0);
+        const posCurX = posCurTemp.x * this.track.widthS;
+        const posCurY = posCurTemp.y * this.track.widthS;
+        const posCurZ = posCurTemp.z * this.track.widthS;
+        const posCur = new THREE.Vector3(-posCurX, posCurY, posCurZ);
+
+        // define equation plane finish
+        const v1 = this.track.finish.normalize();
+        const v2 = new THREE.Vector3(0, 1, 0).normalize();
+        const nx = v1.y * v2.z - v1.z * v2.y;
+        const ny = v1.z * v2.x - v1.x * v2.z;
+        const nz = v1.x * v2.y - v1.y * v2.z;
+        const nr = nx * posCur.x + ny * posCur.y + nz * posCur.z;
+
+        // define equation direction ballon
+        let dx = posNow.x - posOld.x;
+        let dy = posNow.y - posOld.y;
+        let dz = posNow.z - posOld.z;
+        const vd = new THREE.Vector3(dx, dy, dz).normalize();
+        dx = vd.x;
+        dy = vd.y;
+        dz = vd.z;
+
+        // define equation direction curve first two points
+        const curve1 = this.track.points[0];
+        const curve2 = this.track.points[2];
+        let cx = -(curve1.x - curve2.x);
+        let cy = curve1.y - curve2.y;
+        let cz = curve1.z - curve2.z;
+        const vc = new THREE.Vector3(cx, cy, cz).normalize();
+        cx = vc.x;
+        cy = vc.y;
+        cz = vc.z;
+
+        // calculate t value
+        const num = nr - (nx * posOld.x + ny * posOld.y + nz * posOld.z);
+        const den = nx * dx + ny * dy + nz * dz;
+
+        // direction and plane are parallels (no intersection)
+        if (den === 0) return false;
+
+        const t = num / den;
+        const interX = posOld.x + t * dx;
+        const interY = posOld.y + t * dy;
+        const interZ = posOld.z + t * dz;
+        const intersection = new THREE.Vector3(interX, interY, interZ);
+        const center = new THREE.Vector3(posCur.x, interY, posCur.z);
+
+        const righDir = dx * cx + dy * cy + dz * cz;
+        const dist = center.distanceTo(intersection);
+
+        // intersection not between posOld and posNew
+        if (t < 0 || t > 1) return false;
+        // intersection outside track limits
+        if (dist > this.track.widthS + 1) return false;
+        // intersection when going backwards
+        if (righDir > 0) return false;
+        // complete
+        return true;
     }
 
     /**
@@ -394,6 +503,43 @@ class MyGame {
                 this.powerDowns[i].update(t);
             }
         }
+
+        if (this.state === "finish") {
+            // add new fireworks every 5% of the calls
+            if (Math.random() < 0.05) {
+                for (let i = 0; i < 5; i++) {
+                    const x = Math.random() * 50 - 25;
+                    const z = Math.random() * 50 - 25;
+                    const vertices = [x, 0, z];
+                    const color = this.getRandomColor();
+                    this.fireworks.push(
+                        new MyFirework(this.app, this, vertices, color)
+                    );
+                }
+            }
+
+            // for each fireworks
+            for (let i = 0; i < this.fireworks.length; i++) {
+                // is firework finished?
+                if (this.fireworks[i].done) {
+                    // remove firework
+                    this.fireworks.splice(i, 1);
+                    continue;
+                }
+                // otherwise upsdate  firework
+                this.fireworks[i].update();
+            }
+        }
+    }
+
+    getRandomColor() {
+        // Gera valores aleatórios para cada componente de cor (R, G, B)
+        const r = Math.floor(Math.random() * 256); // Valor para o componente R (0 a 255)
+        const g = Math.floor(Math.random() * 256); // Valor para o componente G (0 a 255)
+        const b = Math.floor(Math.random() * 256); // Valor para o componente B (0 a 255)
+
+        // Converte os valores para hexadecimal e combina em um valor final
+        return 0x1000000 + r * 0x10000 + g * 0x100 + b;
     }
 }
 

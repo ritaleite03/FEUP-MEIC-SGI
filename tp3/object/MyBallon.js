@@ -13,6 +13,7 @@ class MyBallon extends THREE.Object3D {
         this.app = app;
         this.vouchers = 0;
         this.route = route;
+        this.laps = 0;
         this.shadow = null;
 
         // materials
@@ -112,6 +113,7 @@ class MyBallon extends THREE.Object3D {
         const newBallon = super.clone(recursive);
         newBallon.app = this.app;
         newBallon.vouchers = this.vouchers;
+        newBallon.laps = this.laps;
         newBallon.route = this.route;
         newBallon.shadow = this.shadow;
         return newBallon;
