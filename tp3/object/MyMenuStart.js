@@ -122,16 +122,27 @@ class MyMenuStart extends THREE.Object3D {
      * Called to build start button on the screen
      */
     buildStartButton() {
-        const y = -this.height / 2 + this.sB;
-        const box = new THREE.PlaneGeometry(20, 10);
-        const texture = this.loader.load("./image/start.png");
-        const material = new THREE.MeshBasicMaterial({
-            map: texture,
-        });
-        const mesh = new THREE.Mesh(box, material);
+        const word = "START";
+        const mesh = this.fontParser.createTextMesh(word, this.sB, this.sB);
+        const x = -(word.length * this.sB) / 2;
+        const y = -this.height / 2 + 2 * this.sB;
         mesh.name = "startButton";
-        mesh.position.set(0, y, this.depth + 0.05);
+        mesh.position.set(x, y, this.depth + 0.05);
         this.add(mesh);
+
+        mesh.traverse((child) => {
+            child.name = mesh.name;
+        });
+
+        const planeH = this.sB + 4;
+        const planeW = word.length * this.sB + 4;
+        const planeGeo = new THREE.PlaneGeometry(planeW, planeH);
+        const material = new THREE.MeshBasicMaterial({ color: "#ffffff" });
+        const geoMesh = new THREE.Mesh(planeGeo, material);
+        geoMesh.name = "startButton";
+        geoMesh.position.set(-this.sB / 2, y, this.depth + 0.025);
+
+        this.add(geoMesh);
     }
 
     splitText(text, maxLength) {

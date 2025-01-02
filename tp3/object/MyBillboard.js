@@ -194,12 +194,12 @@ class MyBillboard extends THREE.Object3D {
     /**
      * Changes the screen on the billboard from initial to game status
      */
-    updateDisplay() {
+    updateDisplay(menu) {
         if (this.display !== null && this.display !== undefined) {
             this.remove(this.display);
             this.app.scene.remove(this.display);
         }
-        this.display = new MyMenuRun(this.app);
+        this.display = menu;
         this.buildDisplay();
     }
 }

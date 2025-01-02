@@ -1,12 +1,6 @@
 import * as THREE from "three";
 
 class MyBallon extends THREE.Object3D {
-    /**
-     *
-     * @param {*} app
-     * @param {*} name
-     * @param {*} route
-     */
     constructor(app, name, color, route) {
         // variables
         super();

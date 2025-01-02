@@ -109,7 +109,13 @@ class MyParkLamp extends THREE.Object3D {
         const depthB = radius * 2;
         const heightB = heightL / 2;
 
-        const material = new THREE.MeshBasicMaterial({ color: "#ffffff" });
+        const material = new THREE.MeshStandardMaterial({
+            color: "#808080",
+            metalness: 0.7,
+            roughness: 0.2,
+            emissive: 0x000000,
+            emissiveIntensity: 0.1,
+        });
 
         const geometryP = new THREE.CylinderGeometry(radius, radius, height);
         const geometryL = new THREE.CylinderGeometry(radiusL, radiusL, heightL);
@@ -134,6 +140,7 @@ class MyParkLamp extends THREE.Object3D {
             groupOut.add(groupIn);
             groupOut.rotateY((i * (2 * Math.PI)) / 3);
             groupOut.position.set(0, height / 2, 0);
+
             this.add(groupOut);
         }
 

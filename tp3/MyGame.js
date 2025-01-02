@@ -4,6 +4,8 @@ import { MyPark } from "./object/MyPark.js";
 import { MyBallon } from "./object/MyBallon.js";
 import { MyMenuStart } from "./object/MyMenuStart.js";
 import { MyFirework } from "./MyFirework.js";
+import { MyMenuRun } from "./object/MyMenuRun.js";
+import { MyMenuFinish } from "./object/MyMenuFinish.js";
 
 class MyGame {
     constructor(app, track, powerUps, powerDowns, parkPlayer, parkOponent) {
@@ -11,6 +13,7 @@ class MyGame {
         this.obstaclePenalty = 1;
         this.fireworks = [];
         this.state = "initial";
+        this.paused = false;
         this.ambientLight = new THREE.AmbientLight("#ffffff");
 
         // options mesh's name
@@ -87,8 +90,25 @@ class MyGame {
         }
     }
 
-    finishGame() {
+    /**
+     * Called to finish the game
+     * @param {Number} time time spent playing
+     */
+    finishGame(time) {
         this.state = "finish";
+        if (this.ballonP.lap > this.ballonO.laps) {
+            this.billboard.updateDisplay(
+                new MyMenuFinish(this.app, "PLAYER", "OPONENT", time, false)
+            );
+        } else if (this.ballonP.lap < this.ballonO.laps) {
+            this.billboard.updateDisplay(
+                new MyMenuFinish(this.app, "OPONENT", "PLAYER", time, false)
+            );
+        } else {
+            this.billboard.updateDisplay(
+                new MyMenuFinish(this.app, null, null, time, true)
+            );
+        }
     }
 
     /**
@@ -135,81 +155,108 @@ class MyGame {
         this.updateAmbientLight();
 
         const timerInterval = setInterval(() => {
-            if (timeLeft <= 0) {
-                clearInterval(timerInterval);
-                this.finishGame();
-            } else {
-                timeLeft--;
-                this.billboard.display.updateTime(timeLeft);
+            if (this.paused === false) {
+                if (timeLeft <= 0 || this.state === "finish") {
+                    const timeSpent = 60 * 5 - timeLeft;
+                    timeLeft = 0;
+                    clearInterval(timerInterval);
+                    this.finishGame(timeSpent);
+                } else {
+                    timeLeft--;
+                    this.billboard.display.updateTime(timeLeft);
+                }
             }
         }, 1000);
 
         const simulationInterval = setInterval(async () => {
-            // Só executa se o tempo restante for maior que 0
-            if (timeLeft <= 0) {
-                clearInterval(simulationInterval);
-                return;
+            if (this.paused === false) {
+                if (timeLeft <= 0) {
+                    clearInterval(simulationInterval);
+                    return;
+                }
+                const posOld = this.ballonP.position.clone();
+                this.ballonP.moveWind(this.wN, this.wS, this.wE, this.wW);
+
+                // check for colisions
+                const colisionT = this.colisionTrack(this.ballonP);
+                const colisionU = this.collisionPowerUps(this.ballonP);
+                const colisionD = this.collisionPowerDowns(this.ballonP);
+                console.log(colisionT, colisionU, colisionD);
+
+                // update billboard in relation to vouchers
+                this.billboard.display.updateVouchers(this.ballonP.vouchers);
+
+                // update billboard in relation to wind
+                if (this.ballonP.position.y > 0 && this.ballonP.position.y <= 5)
+                    this.billboard.display.updateWind("no wind");
+                if (
+                    this.ballonP.position.y > 5 &&
+                    this.ballonP.position.y <= 10
+                )
+                    this.billboard.display.updateWind("north");
+                if (
+                    this.ballonP.position.y > 10 &&
+                    this.ballonP.position.y <= 15
+                )
+                    this.billboard.display.updateWind("south");
+                if (
+                    this.ballonP.position.y > 15 &&
+                    this.ballonP.position.y <= 20
+                )
+                    this.billboard.display.updateWind("east");
+                if (
+                    this.ballonP.position.y > 20 &&
+                    this.ballonP.position.y <= 25
+                )
+                    this.billboard.display.updateWind("west");
+
+                // collision with power up
+                if (colisionU === true) {
+                    this.ballonP.vouchers += 1;
+                }
+
+                // collision with obstacle or off track
+                if (colisionD === true || colisionT === true) {
+                    if (this.ballonP.vouchers > 0) this.ballonP.vouchers -= 1;
+                    else await this.sleep(this.obstaclePenalty * 1000);
+                }
+
+                // off track
+                if (colisionT === true) {
+                    const position = this.colisionTrackRepositing(this.ballonP);
+                    const posX = position.x;
+                    const posY = this.ballonP.position.y;
+                    const posZ = position.z;
+                    this.ballonP.position.set(posX, posY, posZ);
+                }
+
+                // check if finish line was passed
+                const posNow = this.ballonP.position.clone();
+                const finish = this.checkFinishLine(posOld, posNow);
+                if (finish === true) {
+                    this.ballonP.laps += 1;
+                    this.billboard.display.updateLaps(this.ballonP.laps);
+                }
+
+                const posCX = posNow.x + 20;
+                const posCY = posNow.y + 20;
+                const posCZ = posNow.z + 20;
+                this.app.cameras["ThirdPerson"].position.set(
+                    posCX,
+                    posCY,
+                    posCZ
+                );
+                this.app.cameras["ThirdPerson"].lookAt(this.ballonP.position);
             }
-            const posOld = this.ballonP.position.clone();
-            this.ballonP.moveWind(this.wN, this.wS, this.wE, this.wW);
-
-            // check for colisions
-            const colisionT = this.colisionTrack(this.ballonP);
-            const colisionU = this.collisionPowerUps(this.ballonP);
-            const colisionD = this.collisionPowerDowns(this.ballonP);
-
-            console.log(colisionT, colisionU, colisionD);
-            // update billboard in relation to vouchers
-            this.billboard.display.updateVouchers(this.ballonP.vouchers);
-
-            // update billboard in relation to wind
-            if (this.ballonP.position.y > 0 && this.ballonP.position.y <= 5)
-                this.billboard.display.updateWind("no wind");
-            if (this.ballonP.position.y > 5 && this.ballonP.position.y <= 10)
-                this.billboard.display.updateWind("north");
-            if (this.ballonP.position.y > 10 && this.ballonP.position.y <= 15)
-                this.billboard.display.updateWind("south");
-            if (this.ballonP.position.y > 15 && this.ballonP.position.y <= 20)
-                this.billboard.display.updateWind("east");
-            if (this.ballonP.position.y > 20 && this.ballonP.position.y <= 25)
-                this.billboard.display.updateWind("west");
-
-            // collision with power up
-            if (colisionU === true) {
-                this.ballonP.vouchers += 1;
-            }
-
-            // collision with obstacle or off track
-            if (colisionD === true || colisionT === true) {
-                if (this.ballonP.vouchers > 0) this.ballonP.vouchers -= 1;
-                else await this.sleep(this.obstaclePenalty * 1000);
-            }
-
-            // off track
-            if (colisionT === true) {
-                const position = this.colisionTrackRepositing(this.ballonP);
-                const posX = position.x;
-                const posY = this.ballonP.position.y;
-                const posZ = position.z;
-                this.ballonP.position.set(posX, posY, posZ);
-            }
-
-            // check if finish line was passed
-            const posNow = this.ballonP.position.clone();
-            const finish = this.checkFinishLine(posOld, posNow);
-            if (finish === true) {
-                this.ballonP.laps += 1;
-                this.billboard.display.updateLaps(this.ballonP.laps);
-            }
-
-            const posCX = posNow.x + 20;
-            const posCY = posNow.y + 20;
-            const posCZ = posNow.z + 20;
-            this.app.cameras["ThirdPerson"].position.set(posCX, posCY, posCZ);
-            this.app.cameras["ThirdPerson"].lookAt(this.ballonP.position);
         }, 1000);
     }
 
+    /**
+     * Called to check if ballon passed finish line
+     * @param {THREE.Vector3} posOld previous position of the ballon
+     * @param {THREE.Vector3} posNow current position of the ballon
+     * @returns true if ballon passed finish line and false otherwise
+     */
     checkFinishLine(posOld, posNow) {
         // define first point of track
         const posCurTemp = this.track.path.getPointAt(0);
@@ -471,6 +518,12 @@ class MyGame {
             } else if (event.key === "ArrowUp") {
                 this.ballonP.moveUp();
                 this.updateAmbientLight();
+            } else if (event.key === " ") {
+                this.paused = !this.paused;
+                let status = this.paused === true ? "paused" : "running";
+                this.billboard.display.updateStatusGame(status);
+            } else if (event.key === "Escape") {
+                this.state = "finish";
             }
         }
     }
@@ -486,7 +539,6 @@ class MyGame {
         var intersects = this.raycaster.intersectObjects(
             this.app.scene.children
         );
-
         if (intersects.length > 0) {
             // initial state
             if (this.state === "initial") {
@@ -510,9 +562,34 @@ class MyGame {
                         this.sideP !== null
                     ) {
                         this.state = "game";
-                        this.billboard.updateDisplay();
+                        this.billboard.updateDisplay(new MyMenuRun(this.app));
                         this.runGame();
                     }
+                }
+            }
+
+            // finish state
+            if (this.state === "finish") {
+                const obj = intersects[0].object;
+                const name = obj.name;
+
+                if (name === "restartButton") {
+                    this.state = "game";
+                    this.app.scene.remove(this.ballonP.shadow);
+                    this.app.scene.remove(this.ballonO.shadow);
+                    this.app.scene.remove(this.ballonP);
+                    this.app.scene.remove(this.ballonO);
+                    this.billboard.updateDisplay(new MyMenuRun(this.app));
+                    this.runGame();
+                }
+
+                if (name === "homeButton") {
+                    this.state = "initial";
+                    this.app.scene.remove(this.ballonP.shadow);
+                    this.app.scene.remove(this.ballonO.shadow);
+                    this.app.scene.remove(this.ballonP);
+                    this.app.scene.remove(this.ballonO);
+                    this.billboard.updateDisplay(new MyMenuStart(this.app));
                 }
             }
         }
@@ -528,6 +605,16 @@ class MyGame {
         for (const i in this.powerDowns) {
             if (this.powerDowns[i]) {
                 this.powerDowns[i].update(t);
+            }
+        }
+
+        if (
+            (this.state === "game" || this.state === "initial") &&
+            this.fireworks.length != 0
+        ) {
+            for (const i in this.fireworks) {
+                this.fireworks[i].reset();
+                this.fireworks.splice(i, 1);
             }
         }
 
@@ -560,12 +647,9 @@ class MyGame {
     }
 
     getRandomColor() {
-        // Gera valores aleatórios para cada componente de cor (R, G, B)
-        const r = Math.floor(Math.random() * 256); // Valor para o componente R (0 a 255)
-        const g = Math.floor(Math.random() * 256); // Valor para o componente G (0 a 255)
-        const b = Math.floor(Math.random() * 256); // Valor para o componente B (0 a 255)
-
-        // Converte os valores para hexadecimal e combina em um valor final
+        const r = Math.floor(Math.random() * 256);
+        const g = Math.floor(Math.random() * 256);
+        const b = Math.floor(Math.random() * 256);
         return 0x1000000 + r * 0x10000 + g * 0x100 + b;
     }
 }

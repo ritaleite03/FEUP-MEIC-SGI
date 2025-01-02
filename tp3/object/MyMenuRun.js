@@ -18,15 +18,18 @@ class MyMenuRun extends THREE.Object3D {
         this.sB = 6;
         this.sS = 4;
 
+        this.fontParser = new MyFont();
+
         this.time = 0;
         this.meshTime = null;
         this.laps = 0;
         this.meshLaps = null;
         this.wind = "no wind";
         this.meshWind = null;
-        this.fontParser = new MyFont();
         this.vouchers = 0;
         this.meshVouchers = null;
+        this.statusGame = "running";
+        this.meshStatusGame = null;
 
         // base material
         this.loader = new THREE.TextureLoader();
@@ -50,6 +53,7 @@ class MyMenuRun extends THREE.Object3D {
         this.buildLaps();
         this.buildWind();
         this.buildVouchers();
+        this.buildStatusGame();
     }
 
     /**
@@ -104,6 +108,16 @@ class MyMenuRun extends THREE.Object3D {
         this.add(mesh);
     }
 
+    buildStatusGame() {
+        const word = "GAME STATUS : " + this.statusGame.toUpperCase();
+        const mesh = this.fontParser.createTextMesh(word, this.sS, this.sS);
+        const x = -this.width / 2 + this.sS;
+        const y = this.height / 2 - 11 * this.sB;
+        mesh.position.set(x, y, this.depth + 0.001);
+        this.meshStatusGame = mesh;
+        this.add(mesh);
+    }
+
     updateTime(time) {
         if (this.meshTime !== undefined && this.meshTime !== null) {
             this.app.scene.remove(this.meshTime);
@@ -138,6 +152,15 @@ class MyMenuRun extends THREE.Object3D {
         }
         this.vouchers = vouchers;
         this.buildVouchers();
+    }
+
+    updateStatusGame(statusGame) {
+        if (this.meshStatusGame !== undefined && this.meshStatusGame !== null) {
+            this.app.scene.remove(this.meshStatusGame);
+            this.remove(this.meshStatusGame);
+        }
+        this.statusGame = statusGame;
+        this.buildStatusGame();
     }
 }
 

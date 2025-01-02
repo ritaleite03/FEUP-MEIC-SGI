@@ -108,6 +108,8 @@
             "scene": {
                 "type": "node",
                 "materialref": { "materialId": "white" },
+                "castshadows": true,
+                "receiveshadows": true,
                 "children": {
                     "pointlight": {
                         "type": "pointlight",
@@ -117,8 +119,34 @@
                         "position": { "x": 0, "y": 200, "z": 0 },
                         "castshadow": true
                     },
-                    "nodesList": ["floor", "bench_1", "tree_1"]
+                    "nodesList": [
+                        "floor",
+                        "bench_1",
+                        "tree_1",
+                        "tree_2",
+                        "tree_3"
+                    ]
                 }
+            },
+            "tree_3": {
+                "type": "node",
+                "children": { "nodesList": ["tree"] },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 20, "y": 0, "z": 25 }
+                    }
+                ]
+            },
+            "tree_2": {
+                "type": "node",
+                "children": { "nodesList": ["tree"] },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 10, "y": 0, "z": 20 }
+                    }
+                ]
             },
             "tree_1": {
                 "type": "node",
