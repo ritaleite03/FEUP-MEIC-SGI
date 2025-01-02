@@ -6,7 +6,7 @@ import { MyMenuStart } from "./object/MyMenuStart.js";
 import { MyFirework } from "./MyFirework.js";
 
 class MyGame {
-    constructor(app, track, powerUps, powerDowns) {
+    constructor(app, track, powerUps, powerDowns, parkPlayer, parkOponent) {
         this.app = app;
         this.obstaclePenalty = 1;
         this.fireworks = [];
@@ -37,8 +37,8 @@ class MyGame {
         this.powerUps = powerUps;
         this.powerDowns = powerDowns;
         this.billboard = new MyBillboard(this.app, new MyMenuStart(this.app));
-        this.parkP = new MyPark(this.app, "player");
-        this.parkO = new MyPark(this.app, "oponent");
+        this.parkP = new MyPark(this.app, "player", parkPlayer);
+        this.parkO = new MyPark(this.app, "oponent", parkOponent);
 
         // player configuration
         this.ballonPickerP = null;
@@ -59,7 +59,7 @@ class MyGame {
         this.raycaster.far = 200;
         this.pointer = new THREE.Vector2();
         this.intersectedObj = null;
-        this.pickingColor = "0x00ff00";
+        this.pickingColor = "0x000000";
 
         // picker and move event
         document.addEventListener("pointerdown", this.onPointerMove.bind(this));
@@ -103,32 +103,36 @@ class MyGame {
         this.ballonO =
             this.parkO.ballons[this.dictO[this.ballonPickerO.name]].clone();
 
-        if ((this.sideP.name = "side_1")) {
+        this.ballonP.add(this.app.cameras["FirstPerson"]);
+
+        const heightB = this.ballonP.height;
+        if (this.sideP.name === "side_1") {
             this.ballonP.position.set(
                 this.track.p1.x,
-                this.track.p1.y + 3,
+                this.track.p1.y + heightB / 2,
                 this.track.p1.z
             );
             this.ballonO.position.set(
                 this.track.p2.x,
-                this.track.p2.y + 3,
+                this.track.p2.y + heightB / 2,
                 this.track.p2.z
             );
         } else {
             this.ballonP.position.set(
                 this.track.p2.x,
-                this.track.p2.y + 3,
+                this.track.p2.y + heightB / 2,
                 this.track.p2.z
             );
             this.ballonO.position.set(
                 this.track.p1.x,
-                this.track.p1.y + 3,
+                this.track.p1.y + heightB / 2,
                 this.track.p1.z
             );
         }
 
         this.app.scene.add(this.ballonP);
         this.app.scene.add(this.ballonO);
+        this.updateAmbientLight();
 
         const timerInterval = setInterval(() => {
             if (timeLeft <= 0) {
@@ -154,6 +158,7 @@ class MyGame {
             const colisionU = this.collisionPowerUps(this.ballonP);
             const colisionD = this.collisionPowerDowns(this.ballonP);
 
+            console.log(colisionT, colisionU, colisionD);
             // update billboard in relation to vouchers
             this.billboard.display.updateVouchers(this.ballonP.vouchers);
 
@@ -196,6 +201,12 @@ class MyGame {
                 this.ballonP.laps += 1;
                 this.billboard.display.updateLaps(this.ballonP.laps);
             }
+
+            const posCX = posNow.x + 20;
+            const posCY = posNow.y + 20;
+            const posCZ = posNow.z + 20;
+            this.app.cameras["ThirdPerson"].position.set(posCX, posCY, posCZ);
+            this.app.cameras["ThirdPerson"].lookAt(this.ballonP.position);
         }, 1000);
     }
 
@@ -268,19 +279,27 @@ class MyGame {
      * @returns true if collision with power up and false otherwise
      */
     collisionPowerUps(ballon) {
-        const position = ballon.position;
-        const radius = ballon.collisionRadius;
+        const posB = ballon.position;
+        const bbxB = ballon.boundingBox;
 
         for (const i in this.powerUps) {
             // check if powerup is activated
             if (this.powerUps[i].activated === true) {
                 // variables
-                const positionP = this.powerUps[i].position;
-                const radiusP = this.powerUps[i].collisionRadius;
-                const distMax = radius + radiusP;
+                const posP = this.powerUps[i].position;
+                const bbxP = this.powerUps[i].boundingBox;
 
-                // check if they are colliding
-                if (positionP.distanceTo(position) <= distMax) {
+                // distances
+                const distX = Math.abs(Math.abs(posB.x) - Math.abs(posP.x));
+                const distY = Math.abs(Math.abs(posB.y) - Math.abs(posP.y));
+                const distZ = Math.abs(Math.abs(posB.z) - Math.abs(posP.z));
+
+                if (
+                    distX <= bbxB[0] / 2 + bbxP[0] / 2 &&
+                    distY <= bbxB[1] / 2 + bbxP[1] / 2 &&
+                    distZ <= bbxB[2] / 2 + bbxP[2] / 2
+                ) {
+                    // check if they are colliding
                     this.powerUps[i].desactivate(this.obstaclePenalty);
                     return true;
                 }
@@ -296,19 +315,27 @@ class MyGame {
      * @returns true if collision with obstacle and false otherwise
      */
     collisionPowerDowns(ballon) {
-        const position = ballon.position;
-        const radius = ballon.collisionRadius;
+        const posB = ballon.position;
+        const bbxB = ballon.boundingBox;
 
         for (const i in this.powerDowns) {
-            // check if powerdown is activated
+            // check if powerup is activated
             if (this.powerDowns[i].activated === true) {
                 // variables
-                const positionP = this.powerDowns[i].position;
-                const radiusP = this.powerDowns[i].collisionRadius;
-                const distMax = radius + radiusP;
+                const posP = this.powerDowns[i].position;
+                const bbxP = this.powerDowns[i].boundingBox;
 
-                // check if they are colliding
-                if (positionP.distanceTo(position) <= distMax) {
+                // distances
+                const distX = Math.abs(Math.abs(posB.x) - Math.abs(posP.x));
+                const distY = Math.abs(Math.abs(posB.y) - Math.abs(posP.y));
+                const distZ = Math.abs(Math.abs(posB.z) - Math.abs(posP.z));
+
+                if (
+                    distX <= bbxB[0] / 2 + bbxP[0] / 2 &&
+                    distY <= bbxB[1] / 2 + bbxP[1] / 2 &&
+                    distZ <= bbxB[2] / 2 + bbxP[2] / 2
+                ) {
+                    // check if they are colliding
                     this.powerDowns[i].desactivate(this.obstaclePenalty);
                     return true;
                 }

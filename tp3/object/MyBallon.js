@@ -7,7 +7,7 @@ class MyBallon extends THREE.Object3D {
      * @param {*} name
      * @param {*} route
      */
-    constructor(app, name, route) {
+    constructor(app, name, color, route) {
         // variables
         super();
         this.app = app;
@@ -15,29 +15,57 @@ class MyBallon extends THREE.Object3D {
         this.route = route;
         this.laps = 0;
         this.shadow = null;
+        this.color = color;
+        this.height = 12;
+
+        if (this.color === undefined) this.color = "#ffffff";
 
         // materials
-        const material = new THREE.MeshLambertMaterial({
-            color: "#0000ff",
+        this.material = new THREE.MeshBasicMaterial({
+            color: this.color,
         });
 
         // base
-        const base = new THREE.BoxGeometry(1, 1, 1);
-        const mesh_base = new THREE.Mesh(base, material);
-        mesh_base.position.set(0, 0.5, 0);
+        const base = new THREE.BoxGeometry(0.5, 0.5, 0.5);
+        const mesh_base = new THREE.Mesh(base, this.material);
+        mesh_base.position.set(0, 0.25, 0);
         mesh_base.name = name;
 
         // top
-        const top = new THREE.SphereGeometry(2);
-        const mesh_top = new THREE.Mesh(top, material);
-        mesh_top.position.set(0, 3, 0);
+        const top = new THREE.SphereGeometry(2, 20, 20, 0, Math.PI);
+        const mesh_top = new THREE.Mesh(top, this.material);
+        mesh_top.rotateX(-Math.PI / 2);
+        mesh_top.position.set(0, 4, 0);
         mesh_top.name = name;
 
+        const top1 = new THREE.CylinderGeometry(2, 0.5, 3);
+        const mesh_top1 = new THREE.Mesh(top1, this.material);
+        mesh_top1.position.set(0, 2.5, 0);
+
+        // link
+        const link = new THREE.BoxGeometry(0.05, 0.5, 0.05);
+
+        const mesh_link1 = new THREE.Mesh(link, this.material);
+        const mesh_link2 = new THREE.Mesh(link, this.material);
+        const mesh_link3 = new THREE.Mesh(link, this.material);
+        const mesh_link4 = new THREE.Mesh(link, this.material);
+
+        mesh_link1.position.set(-0.2, 0.75, -0.2);
+        mesh_link2.position.set(0.2, 0.75, -0.2);
+        mesh_link3.position.set(-0.2, 0.75, 0.2);
+        mesh_link4.position.set(0.2, 0.75, 0.2);
         // combine objects
         const group = new THREE.Group();
         group.add(mesh_base);
         group.add(mesh_top);
+        group.add(mesh_top1);
+        group.add(mesh_link1);
+        group.add(mesh_link2);
+        group.add(mesh_link3);
+        group.add(mesh_link4);
         group.position.set(0, -1.5, 0);
+
+        group.scale.set(2, 2, 2);
         this.add(group);
 
         // bounding box
@@ -50,9 +78,7 @@ class MyBallon extends THREE.Object3D {
         const sizeX = Math.abs(boundingB.max.x) + Math.abs(boundingB.min.x);
         const sizeY = Math.abs(boundingB.max.y) + Math.abs(boundingB.min.y);
         const sizeZ = Math.abs(boundingB.max.z) + Math.abs(boundingB.min.z);
-        const geometryBox = new THREE.BoxGeometry(sizeX, sizeY, sizeZ);
-        geometryBox.computeBoundingSphere();
-        this.collisionRadius = geometryBox.boundingSphere.radius;
+        this.boundingBox = [sizeX, sizeY, sizeZ];
     }
 
     /**
@@ -63,11 +89,11 @@ class MyBallon extends THREE.Object3D {
             this.app.scene.remove(this.shadow);
         }
 
-        const white_material = new THREE.MeshLambertMaterial({
-            color: "#ffffff",
-        });
+        // const white_material = new THREE.MeshBasicMaterial({
+        //     color: thicolor,
+        // });
         const geometryS = new THREE.CylinderGeometry(2, 2, 1);
-        this.shadow = new THREE.Mesh(geometryS, white_material);
+        this.shadow = new THREE.Mesh(geometryS, this.material);
         this.shadow.position.set(this.position.x, 0.5, this.position.z);
         this.app.scene.add(this.shadow);
     }
@@ -116,6 +142,9 @@ class MyBallon extends THREE.Object3D {
         newBallon.laps = this.laps;
         newBallon.route = this.route;
         newBallon.shadow = this.shadow;
+        newBallon.height = this.height;
+        newBallon.color = this.color;
+        newBallon.material.color = this.color;
         return newBallon;
     }
 }

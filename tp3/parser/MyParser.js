@@ -1,8 +1,6 @@
 import * as THREE from "three";
 import { MyNurbsBuilder } from "../MyNurbsBuilder.js";
-import { MyGuiInterface } from "../MyGuiInterface.js";
 import { MyTriangle } from "./MyTriangle.js";
-import { ParametricGeometry } from "three/addons/geometries/ParametricGeometry.js";
 import { MyTrack } from "../object/MyTrack .js";
 import { MyPowerUp } from "../object/MyPowerUp.js";
 import { MyObstacle } from "../object/MyObstacle.js";
@@ -23,9 +21,14 @@ class MyParser {
         this.dataLightsHelpers = [];
         this.ambientLight = null;
         this.graph = null;
+
+        // Set up game variables
         this.track = null;
         this.powerUps = [];
         this.powerDowns = [];
+        this.parkPlayer = [];
+        this.parkOponent = [];
+
         this.buider = new MyNurbsBuilder();
     }
 
@@ -83,6 +86,8 @@ class MyParser {
         this.defineTrack(this.data.yasf.track);
         this.definePowerUp(this.data.yasf.powerUp);
         this.definePowerDown(this.data.yasf.powerDown);
+        this.defineParkPlayer(this.data.yasf.parkPlayer);
+        this.defineParkOponent(this.data.yasf.parkOponent);
 
         // Parse the scene graph
         this.graph = this.parse(
@@ -440,6 +445,32 @@ class MyParser {
             const power = new MyObstacle();
             power.position.set(x, y, z);
             this.powerDowns.push(power);
+        }
+    }
+
+    defineParkPlayer(data) {
+        if (!data.ballons) {
+            console.error(
+                "Error in MyParser.defineParkPlayer : component ballons is undefined"
+            );
+        }
+        for (const i in data.ballons) {
+            let color = data.ballons[i].color;
+            color = new THREE.Color().setRGB(color.r, color.g, color.b);
+            this.parkPlayer.push({ color: color });
+        }
+    }
+
+    defineParkOponent(data) {
+        if (!data.ballons) {
+            console.error(
+                "Error in MyParser.defineParkOponent : component ballons is undefined"
+            );
+        }
+        for (const i in data.ballons) {
+            let color = data.ballons[i].color;
+            color = new THREE.Color().setRGB(color.r, color.g, color.b);
+            this.parkOponent.push({ color: color });
         }
     }
 

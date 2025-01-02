@@ -9,7 +9,7 @@ class MyPark extends THREE.Object3D {
      * @param {*} app
      * @param {*} name
      */
-    constructor(app, name) {
+    constructor(app, name, ballons) {
         // define attributes
         super();
         this.app = app;
@@ -27,18 +27,30 @@ class MyPark extends THREE.Object3D {
         materialF.wrapS = THREE.MirroredRepeatWrapping;
         materialF.wrapT = THREE.MirroredRepeatWrapping;
 
-        this.ballons = [
-            new MyBallon(app, name + "_1"),
-            new MyBallon(app, name + "_2"),
-            new MyBallon(app, name + "_3"),
-            new MyBallon(app, name + "_4"),
-        ];
+        this.ballons = [];
+        for (const i in ballons) {
+            const index = (Number(i) + 1).toString();
+            const color = ballons[i].color;
+            this.ballons.push(new MyBallon(app, name + "_" + index, color));
+        }
 
         this.ballonsP = [
-            { x: 0, z: 0 },
-            { x: 5, z: 0 },
-            { x: 0, z: 5 },
-            { x: 5, z: 5 },
+            {
+                x: -this.ballons[0].boundingBox[0],
+                z: -this.ballons[0].boundingBox[0],
+            },
+            {
+                x: -this.ballons[0].boundingBox[0],
+                z: this.ballons[0].boundingBox[0],
+            },
+            {
+                x: this.ballons[0].boundingBox[0],
+                z: -this.ballons[0].boundingBox[0],
+            },
+            {
+                x: this.ballons[0].boundingBox[0],
+                z: this.ballons[0].boundingBox[0],
+            },
         ];
 
         this.lampsP = [

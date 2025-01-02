@@ -21,11 +21,7 @@ class MyObstacle extends THREE.Object3D {
         );
         this.geometry = new THREE.BoxGeometry(2, 2, 2);
         this.mesh = null;
-
-        const materialTemp = new THREE.MeshBasicMaterial({ color: "#ffffff" });
-        const meshTemp = new THREE.Mesh(this.geometry, materialTemp);
-        meshTemp.geometry.computeBoundingSphere();
-        this.collisionRadius = meshTemp.geometry.boundingSphere.radius;
+        this.boundingBox = [2, 2, 2];
 
         const interval = setInterval(() => {
             if (this.shader.ready) {

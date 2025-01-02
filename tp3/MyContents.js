@@ -3,6 +3,8 @@ import { MyFileReader } from "./parser/MyFileReader.js";
 import { MyParser } from "./parser/MyParser.js";
 import { MyGuiInterface } from "./MyGuiInterface.js";
 import { MyGame } from "./MyGame.js";
+import { PerspectiveCamera } from "three";
+import * as THREE from "three";
 
 /**
  *  This class contains the contents of out application
@@ -70,6 +72,26 @@ class MyContents {
                 this.app.setActiveCamera(this.parser.data.yasf.cameras.initial);
                 this.app.cameras = this.parser.dataCameras;
 
+                const fov = 75;
+                const aspect = window.innerWidth / window.innerHeight;
+                const near = 0.1;
+                const far = 1000;
+
+                this.app.cameras["FirstPerson"] = new THREE.PerspectiveCamera(
+                    fov,
+                    aspect,
+                    near,
+                    far
+                );
+
+                this.app.cameras["ThirdPerson"] = new THREE.PerspectiveCamera(
+                    fov,
+                    aspect,
+                    near,
+                    far
+                );
+
+                console;
                 // build graphs
                 const graph = this.parser.graph;
                 this.graphDefault = this.parser.graph;
@@ -88,7 +110,9 @@ class MyContents {
                     this.app,
                     this.parser.track,
                     this.parser.powerUps,
-                    this.parser.powerDowns
+                    this.parser.powerDowns,
+                    this.parser.parkPlayer,
+                    this.parser.parkOponent
                 );
                 this.game.startGame();
 
