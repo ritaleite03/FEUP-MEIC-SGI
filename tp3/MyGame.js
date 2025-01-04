@@ -43,6 +43,7 @@ class MyGame {
         this.routes = routes;
         this.showRoute = false;
         this.billboard = new MyBillboard(this.app, new MyMenuStart(this.app));
+        this.billboard.position.set(-15, 0, 0);
         this.parkP = new MyPark(this.app, "player", parkPlayer);
         this.parkO = new MyPark(this.app, "oponent", parkOponent);
 
@@ -116,14 +117,6 @@ class MyGame {
         for (const i in this.powerDowns) {
             this.app.scene.add(this.powerDowns[i]);
         }
-
-        //this.ballonO = new MyBallon(this.app, "teste", null);
-        //this.ballonO.position.set(-85, 4, 0);
-        //this.app.scene.add(this.ballonO);
-//
-        //this.ballonP = new MyBallon(this.app, "teste2", null);
-        //this.ballonP.position.set(-75, 4, 0);
-        //this.app.scene.add(this.ballonP);
         
     }
 
