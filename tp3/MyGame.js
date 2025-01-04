@@ -4,7 +4,7 @@ import { MyPark } from "./object/MyPark.js";
 import { MyBallon } from "./object/MyBallon.js";
 
 class MyGame {
-    constructor(app, track, powerUps, powerDowns) {
+    constructor(app, track, powerUps, powerDowns, routes) {
         this.app = app;
         this.obstaclePenalty = 1;
         this.state = "initial";
@@ -33,6 +33,7 @@ class MyGame {
         this.track = track;
         this.powerUps = powerUps;
         this.powerDowns = powerDowns;
+        this.routes = routes;
         this.billboard = new MyBillboard(this.app);
         this.parkP = new MyPark(this.app, "player");
         this.parkO = new MyPark(this.app, "oponent");
@@ -61,7 +62,22 @@ class MyGame {
         // picker and move event
         document.addEventListener("pointerdown", this.onPointerMove.bind(this));
         document.addEventListener("keydown", this.onKeyPressed.bind(this));
-    }
+
+        // Animation
+        this.clock = new THREE.Clock();
+        this.lapTime = (3 + Math.random()) * 60;
+        this.currentLapTime = 0;  
+        //this.prevTime = 0;
+        //this.speedFactor = 0.1; 
+        //this.lapCount = 0;               
+        //this.lapTimes = [];            
+        //this.speed = 0.1;               
+        //this.totalTime = 0;            
+        //for (let i = 0; i < 3; i++) {
+        //    const randomTime = Math.random() * + 4;
+        //    this.lapTimes.push(randomTime * 60);
+        //}
+    } 
 
     /**
      * Called to start the game
@@ -71,8 +87,12 @@ class MyGame {
         this.app.scene.add(this.track.object);
         this.app.scene.add(this.billboard);
 
-        this.parkP.position.set(-20, 0, 50);
-        this.parkO.position.set(-20, 0, -50);
+        this.routes.forEach(route => {
+            this.app.scene.add(route.debugRoute());
+        });
+
+        this.parkP.position.set(-200, 0, 50);
+        this.parkO.position.set(-200, 0, -50);
         this.app.scene.add(this.parkP);
         this.app.scene.add(this.parkO);
 
@@ -82,14 +102,23 @@ class MyGame {
         for (const i in this.powerDowns) {
             this.app.scene.add(this.powerDowns[i]);
         }
+
+        //this.ballonO = new MyBallon(this.app, "teste", null);
+        //this.ballonO.position.set(-85, 4, 0);
+        //this.app.scene.add(this.ballonO);
+//
+        //this.ballonP = new MyBallon(this.app, "teste2", null);
+        //this.ballonP.position.set(-75, 4, 0);
+        //this.app.scene.add(this.ballonP);
+        
     }
 
     /**
      * Called to run the game
      */
     async runGame() {
-        const postTrackX = -this.track.points[0].x * this.track.widthS;
-        const postTrackZ = this.track.points[0].z * this.track.widthS;
+        const postTrackX = -this.track.points[0].x //* this.track.widthS;
+        const postTrackZ = this.track.points[0].z //* this.track.widthS;
 
         this.ballonP =
             this.parkP.ballons[this.dictP[this.ballonPickerP.name]].clone();
@@ -201,7 +230,7 @@ class MyGame {
         const position = ballon.shadow.position;
         const radius = ballon.shadow.geometry.parameters.radiusTop;
         const samples = 1000;
-        const distMax = radius + this.track.width * this.track.widthS;
+        const distMax = radius + this.track.width; //* this.track.widthS;
 
         // check colision with points of the track
         for (let i = 0; i <= samples; i++) {
@@ -209,9 +238,9 @@ class MyGame {
 
             // coordinates of a point in the track with scale if it
             const oldPos = this.track.path.getPointAt(t);
-            const xPos = -oldPos.x * this.track.widthS;
-            const yPos = oldPos.y * this.track.widthS;
-            const zPos = oldPos.z * this.track.widthS;
+            const xPos = -oldPos.x; //* this.track.widthS;
+            const yPos = oldPos.y; //* this.track.widthS;
+            const zPos = oldPos.z; //* this.track.widthS;
             const newPos = new THREE.Vector3(xPos, yPos, zPos);
 
             // calculate distance
@@ -238,9 +267,9 @@ class MyGame {
 
             // coordinates of a point in the track with scale if it
             const oldPos = this.track.path.getPointAt(t);
-            const xPos = -oldPos.x * this.track.widthS;
-            const yPos = oldPos.y * this.track.widthS;
-            const zPos = oldPos.z * this.track.widthS;
+            const xPos = -oldPos.x; //* this.track.widthS;
+            const yPos = oldPos.y; //* this.track.widthS;
+            const zPos = oldPos.z; //* this.track.widthS;
             const newPos = new THREE.Vector3(xPos, yPos, zPos);
 
             const dist = newPos.distanceTo(position);
@@ -363,6 +392,77 @@ class MyGame {
             }
         }
     }
+
+    //oponentRun(route){
+    //    conts time = []
+    //    const keyframes = []
+    //    for (let i = 0; i < route.length; i++){
+    //        keyframes.push(...route[i])
+    //    }
+    //    const positionKF = new THREE.VectorKeyframeTrack('.position',  
+    //        time,
+    //        keyframes,
+    //        THREE.InterpolateSmooth  
+    //        // THREE.InterpolateLinear      // (default), 
+    //        // THREE.InterpolateDiscrete,
+    //    )
+
+    //    const positionClip = new THREE.AnimationClip('positionAnimation', 6, [positionKF])
+
+    //    // Create an AnimationMixer
+    //    this.mixer = new THREE.AnimationMixer(this.ballonO)
+
+    //    // Create AnimationActions for each clip
+    //    const positionAction = this.mixer.clipAction(positionClip)
+
+    //    // Play both animations
+    //    positionAction.play()
+    //}
+
+    //updateSpeed() {
+    //    this.totalTime = this.lapTimes[this.lapCount % this.lapTimes.length];
+    //    this.speed = 1 / this.totalTime;
+    //    console.log(`Lap ${this.lapCount + 1}: ${this.totalTime / 60} minutes`);
+    //}
+
+
+    //update() {
+    //    if (this.ballonO !== null && this.ballonP !== null){
+    //        
+    //        //const adjustedTime = ((Date.now() % (60000 * 3/ this.speedFactor)) / ( 3 * 60000 / this.speedFactor));
+    //        //const point = this.routes[1].route.getPointAt(adjustedTime);
+    //        //
+    //        //this.ballonO.position.set(...point)
+    //        //const point2 = this.routes[0].route.getPointAt(adjustedTime);
+    //        //this.ballonP.position.set(...point2)
+    //        //if (adjustedTime < this.prevTime) { 
+    //        //    console.log("Volta completa!");
+    //        //    this.speedFactor = Math.random() + 0.5;
+    //        //    console.log("Nova velocidade:", this.speedFactor);
+    //        //}
+    //        //
+    //        //this.prevTime = adjustedTime;
+//
+    //        this.currentLapTime += this.clock.getDelta(); 
+//
+    //        let time = (this.currentLapTime / this.lapTime) % 1;
+    //      
+    //        const position =  this.routes[1].route.getPointAt(time);
+    //      
+    //        this.ballonO.position.copy(position);
+    //      
+    //        if (this.currentLapTime >= this.lapTime) {
+    //            console.log("Lap complet!");
+    //            this.currentLapTime = 0;
+    //            this.lapTime = (3 + Math.random()) * 60; 
+    //        }
+//
+    //    }
+//
+    //    //const delta = this.clock.getDelta()
+    //    //this.mixer.update(delta)
+    //}
+    
 }
 
 export { MyGame };

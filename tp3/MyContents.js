@@ -88,7 +88,8 @@ class MyContents {
                     this.app,
                     this.parser.track,
                     this.parser.powerUps,
-                    this.parser.powerDowns
+                    this.parser.powerDowns,
+                    this.parser.routes
                 );
                 this.game.startGame();
 
@@ -170,7 +171,11 @@ class MyContents {
         this.graphActive = value;
     }
 
-    update() {}
+    update() {
+        //if (this.game !== null) {
+        //    this.game.update();
+        //}
+    }
 }
 
 export { MyContents };
