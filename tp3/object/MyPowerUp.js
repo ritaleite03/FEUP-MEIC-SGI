@@ -21,8 +21,8 @@ class MyPowerUp extends THREE.Object3D {
             null,
             "PowerUp Shader",
             "Shader for pulsating power-ups",
-            "./../shaders/powerup.vert",
-            "./../shaders/powerup.frag",
+            new URL("../shaders/powerup.vert", import.meta.url).href,
+            new URL("../shaders/powerup.frag", import.meta.url).href,
             this.uniformValues
         );
 

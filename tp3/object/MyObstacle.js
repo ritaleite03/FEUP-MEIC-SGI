@@ -21,8 +21,8 @@ class MyObstacle extends THREE.Object3D {
             null,
             "Obstacle Shader",
             "Shader for pulsating obstacles",
-            "./../shaders/obstacle.vert",
-            "./../shaders/obstacle.frag",
+            new URL("../shaders/obstacle.vert", import.meta.url).href,
+            new URL("../shaders/obstacle.frag", import.meta.url).href,
             this.uniformValues
         );
         this.geometry = new THREE.BoxGeometry(2, 2, 2);
