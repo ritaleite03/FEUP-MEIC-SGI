@@ -37,9 +37,11 @@ class MyGame {
         };
 
         // constants
+        this.allPowerUps = powerUps;
+        this.allPowerDowns = powerDowns;
         this.track = track;
-        this.powerUps = powerUps;
-        this.powerDowns = powerDowns;
+        this.powerUps = this.randomElements(10, this.allPowerUps);
+        this.powerDowns = this.randomElements(10, this.allPowerDowns);
         this.routes = routes;
         this.showRoute = false;
         this.billboard = new MyBillboard(this.app, new MyMenuStart(this.app));
@@ -87,7 +89,23 @@ class MyGame {
         //    const randomTime = Math.random() * + 4;
         //    this.lapTimes.push(randomTime * 60);
         //}
-    } 
+    }
+
+    /**
+     * 
+     */
+    randomElements(number, elements){
+        const numbers = new Set();
+        const result = []
+
+        while (numbers.size < number) {
+          const randomNumber = Math.floor(Math.random() * (elements.length));
+          numbers.add(randomNumber);
+          result.push(elements[randomNumber]);
+        }
+
+        return result
+    }
 
     /**
      * Called to start the game
