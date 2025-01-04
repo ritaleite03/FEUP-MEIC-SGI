@@ -20,6 +20,8 @@ class MyBallon extends THREE.Object3D {
         this.vouchers = 0;
         this.laps = 0;
         this.color = color;
+        this.object = null;
+        this.billboard = null;
 
         // variables used in player ballon
         this.shadow = null;
@@ -39,54 +41,18 @@ class MyBallon extends THREE.Object3D {
             color: this.color,
         });
 
-        // base
-        const base = new THREE.BoxGeometry(0.5, 0.5, 0.5);
-        const mesh_base = new THREE.Mesh(base, this.material);
-        mesh_base.position.set(0, 0.25, 0);
-        mesh_base.name = name;
+        this.buildObject(name);
+        this.buildBillboard(name);
 
-        // top
-        const top = new THREE.SphereGeometry(2, 20, 20, 0, Math.PI);
-        const mesh_top = new THREE.Mesh(top, this.material);
-        mesh_top.rotateX(-Math.PI / 2);
-        mesh_top.position.set(0, 4, 0);
-        mesh_top.name = name;
-
-        const top1 = new THREE.CylinderGeometry(2, 0.5, 3);
-        const mesh_top1 = new THREE.Mesh(top1, this.material);
-        mesh_top1.position.set(0, 2.5, 0);
-
-        // link
-        const link = new THREE.BoxGeometry(0.05, 0.5, 0.05);
-
-        const mesh_link1 = new THREE.Mesh(link, this.material);
-        const mesh_link2 = new THREE.Mesh(link, this.material);
-        const mesh_link3 = new THREE.Mesh(link, this.material);
-        const mesh_link4 = new THREE.Mesh(link, this.material);
-
-        mesh_link1.position.set(-0.2, 0.75, -0.2);
-        mesh_link2.position.set(0.2, 0.75, -0.2);
-        mesh_link3.position.set(-0.2, 0.75, 0.2);
-        mesh_link4.position.set(0.2, 0.75, 0.2);
-
-        // combine objects
-        const group = new THREE.Group();
-        group.add(mesh_base);
-        group.add(mesh_top);
-        group.add(mesh_top1);
-        group.add(mesh_link1);
-        group.add(mesh_link2);
-        group.add(mesh_link3);
-        group.add(mesh_link4);
-        group.position.set(0, -1.5, 0);
-
-        group.scale.set(2, 2, 2);
-        this.add(group);
+        this.lod = new THREE.LOD();
+        this.lod.addLevel(this.object, 50);
+        this.lod.addLevel(this.billboard, 100);
+        this.add(this.lod);
 
         // bounding box
         const boundingB = new THREE.Box3();
         const center = new THREE.Vector3();
-        boundingB.setFromObject(group);
+        boundingB.setFromObject(this.object);
         boundingB.getCenter(center);
 
         // bounding sphere
@@ -121,6 +87,106 @@ class MyBallon extends THREE.Object3D {
         this.groupEast.rotateY(-Math.PI / 2);
 
         this.groupWind = this.groupNorth.clone();
+    }
+
+    /**
+     * Called to build ballon's object
+     * @param {String} name name of the ballon
+     */
+    buildObject(name) {
+        // base
+        const base = new THREE.BoxGeometry(0.5, 0.5, 0.5);
+        const mesh_base = new THREE.Mesh(base, this.material);
+        mesh_base.position.set(0, 0.25, 0);
+        mesh_base.name = name;
+
+        // top
+        const top = new THREE.SphereGeometry(2, 20, 20, 0, Math.PI);
+        const mesh_top = new THREE.Mesh(top, this.material);
+        mesh_top.rotateX(-Math.PI / 2);
+        mesh_top.position.set(0, 4, 0);
+        mesh_top.name = name;
+
+        const top1 = new THREE.CylinderGeometry(2, 0.5, 3);
+        const mesh_top1 = new THREE.Mesh(top1, this.material);
+        mesh_top1.position.set(0, 2.5, 0);
+        mesh_top1.name = name;
+
+        // link
+        const link = new THREE.BoxGeometry(0.05, 0.5, 0.05);
+
+        const mesh_link1 = new THREE.Mesh(link, this.material);
+        const mesh_link2 = new THREE.Mesh(link, this.material);
+        const mesh_link3 = new THREE.Mesh(link, this.material);
+        const mesh_link4 = new THREE.Mesh(link, this.material);
+
+        mesh_link1.position.set(-0.2, 0.75, -0.2);
+        mesh_link2.position.set(0.2, 0.75, -0.2);
+        mesh_link3.position.set(-0.2, 0.75, 0.2);
+        mesh_link4.position.set(0.2, 0.75, 0.2);
+
+        mesh_link1.name = name;
+        mesh_link2.name = name;
+        mesh_link3.name = name;
+        mesh_link4.name = name;
+
+        // combine objects
+        const group = new THREE.Group();
+        group.add(mesh_base);
+        group.add(mesh_top);
+        group.add(mesh_top1);
+        group.add(mesh_link1);
+        group.add(mesh_link2);
+        group.add(mesh_link3);
+        group.add(mesh_link4);
+        group.position.set(0, -1.5, 0);
+        group.scale.set(2, 2, 2);
+
+        this.object = group;
+    }
+
+    /**
+     * Called to build ballon's billboard
+     * @param {String} name name of the ballon
+     */
+    buildBillboard(name) {
+        // base plane
+        const base = new THREE.PlaneGeometry(0.5, 0.5);
+        const mesh_base = new THREE.Mesh(base, this.material);
+        mesh_base.position.set(0, 0.25, 0);
+        mesh_base.name = name;
+
+        // top plane
+        const top = new THREE.CircleGeometry(2, 20);
+        const mesh_top = new THREE.Mesh(top, this.material);
+        mesh_top.position.set(0, 4, 0);
+        mesh_top.name = name;
+
+        const top1 = new THREE.PlaneGeometry(4, 3);
+        const mesh_top1 = new THREE.Mesh(top1, this.material);
+        mesh_top1.position.set(0, 2.5, 0);
+        mesh_top1.name = name;
+
+        // link plane
+        const link = new THREE.PlaneGeometry(0.05, 0.5);
+        const mesh_link1 = new THREE.Mesh(link, this.material);
+        const mesh_link2 = new THREE.Mesh(link, this.material);
+        mesh_link1.position.set(-0.2, 0.75, 0);
+        mesh_link2.position.set(0.2, 0.75, 0);
+        mesh_link1.name = name;
+        mesh_link2.name = name;
+
+        // combine objects
+        const group = new THREE.Group();
+        group.add(mesh_base);
+        group.add(mesh_top);
+        group.add(mesh_top1);
+        group.add(mesh_link1);
+        group.add(mesh_link2);
+
+        group.position.set(0, -1.5, 0);
+        group.scale.set(2, 2, 2);
+        this.billboard = group;
     }
 
     /**
@@ -209,7 +275,11 @@ class MyBallon extends THREE.Object3D {
      * @returns
      */
     clone(recursive = true) {
+        // clone without lod
+        const lod = this.lod;
+        this.remove(this.lod);
         const newBallon = super.clone(recursive);
+        this.add(lod);
 
         // variables
         newBallon.app = this.app;

@@ -681,6 +681,23 @@ class MyGame {
 
     update() {
         let t = this.app.clock.getElapsedTime();
+
+        // update lookat of the billboards
+        const posCamera = this.app.activeCamera.position;
+        for (const i in this.parkO.ballons) {
+            this.parkO.ballons[i].billboard.lookAt(posCamera);
+        }
+        for (const i in this.parkP.ballons) {
+            this.parkP.ballons[i].billboard.lookAt(posCamera);
+        }
+        if (this.ballonP !== null && this.ballonP !== undefined) {
+            this.ballonP.billboard.lookAt(posCamera);
+        }
+        if (this.ballonO !== null && this.ballonO !== undefined) {
+            this.ballonO.billboard.lookAt(posCamera);
+        }
+
+        // update power ups and obstacles according with shader
         for (const i in this.powerUps) {
             if (this.powerUps[i]) {
                 this.powerUps[i].update(t);
@@ -692,6 +709,7 @@ class MyGame {
             }
         }
 
+        // end firework
         if (
             (this.state === "game" || this.state === "initial") &&
             this.fireworks.length != 0
@@ -702,6 +720,7 @@ class MyGame {
             }
         }
 
+        // launch firework
         if (this.state === "finish") {
             // add new fireworks every 5% of the calls
             if (Math.random() < 0.05) {
