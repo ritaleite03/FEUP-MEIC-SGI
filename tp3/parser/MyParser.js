@@ -502,6 +502,11 @@ class MyParser {
                 const x = data.ballons[i].route[j].x;
                 const y = data.ballons[i].route[j].y;
                 const z = data.ballons[i].route[j].z;
+
+                //const x = -data.ballons[i].route[j].x * 5;
+                //const y = data.ballons[i].route[j].y * 5;
+                //const z = data.ballons[i].route[j].z * 5;
+
                 route.push(new THREE.Vector3(x, y, z));
             }
 

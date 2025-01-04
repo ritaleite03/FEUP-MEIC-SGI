@@ -306,10 +306,8 @@ class MyBallon extends THREE.Object3D {
         if (this.route !== null && this.route !== undefined) {
             this.spline = new THREE.CatmullRomCurve3(this.route);
 
-            console.log(this.route)
             let number = [];
             for (const i in this.route) number.push(i);
-            console.log(number)
 
             const posKeyFrame = new THREE.VectorKeyframeTrack(
                 ".position",

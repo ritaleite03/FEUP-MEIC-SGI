@@ -101,7 +101,6 @@ class MyGame {
         //    .copy(this.app.getActiveCamera())
         //    .add(direction);
         //console.log("Câmera está mirando para:", cameraTarget);
-
         this.app.scene.add(this.ambientLight);
         this.app.scene.add(this.track.object);
         this.app.scene.add(this.billboard);
