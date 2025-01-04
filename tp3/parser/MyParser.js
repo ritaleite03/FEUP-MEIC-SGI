@@ -4,6 +4,7 @@ import { MyGuiInterface } from "../MyGuiInterface.js";
 import { MyTriangle } from "./MyTriangle.js";
 import { ParametricGeometry } from "three/addons/geometries/ParametricGeometry.js";
 import { MyTrack } from "../object/MyTrack .js";
+import { MyRoute } from "../object/MyRoute.js";
 import { MyPowerUp } from "../object/MyPowerUp.js";
 import { MyObstacle } from "../object/MyObstacle.js";
 
@@ -24,6 +25,7 @@ class MyParser {
         this.ambientLight = null;
         this.graph = null;
         this.track = null;
+        this.routes = []
         this.powerUps = [];
         this.powerDowns = [];
         this.buider = new MyNurbsBuilder();
@@ -81,6 +83,7 @@ class MyParser {
         this.defineGlobals(this.data.yasf.globals);
         this.defineCameras(this.data.yasf.cameras);
         this.defineTrack(this.data.yasf.track);
+        this.defineRoutes(this.data.yasf.routes);
         this.definePowerUp(this.data.yasf.powerUp);
         this.definePowerDown(this.data.yasf.powerDown);
 
@@ -419,6 +422,21 @@ class MyParser {
             pointsList.push(new THREE.Vector3(x, y, z));
         }
         this.track = new MyTrack(this.app, pointsList);
+    }
+
+    defineRoutes(data) {
+        Object.entries(data).forEach(([key, value]) => {
+            let pointsList = [];
+            for (let j = 0; j < value.points.length; j++) {
+                let x = value.points[j].x;
+                let y = value.points[j].y;
+                let z = value.points[j].z;
+                pointsList.push(new THREE.Vector3(x, y, z));
+            }
+            const route = new MyRoute(pointsList);
+            route.name = key;
+            this.routes.push(route);
+       })
     }
 
     definePowerUp(data) {
