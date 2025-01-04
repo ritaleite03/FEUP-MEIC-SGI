@@ -1,10 +1,13 @@
 import * as THREE from "three";
 import { MyFont } from "../parser/MyFont.js";
 
+/**
+ * This class contains the representation of the menu displayed in the billboard of the ballon's parking
+ */
 class MyMenuBallon extends THREE.Object3D {
     /**
      *
-     * @param {*} app
+     * @param {MyApp} app application object
      */
     constructor(app, name) {
         // variables
@@ -18,9 +21,8 @@ class MyMenuBallon extends THREE.Object3D {
         this.fontParser = new MyFont();
 
         this.sM = 10;
-        this.sB = 6;
-        this.sizeMedium = 4;
-        this.sS = 4;
+        this.sB = 8;
+        this.sS = 6;
 
         // base material
         this.loader = new THREE.TextureLoader();
@@ -47,7 +49,7 @@ class MyMenuBallon extends THREE.Object3D {
      * Called to build title of the game on the screen
      */
     buildTitle() {
-        const title = this.name.toUpperCase() + "'S PARK";
+        const title = this.name.toUpperCase();
         const mesh = this.fontParser.createTextMesh(title, this.sB, this.sB);
         const x = -(title.length * this.sB) / 2;
         const y = this.height / 2 - this.sM;
@@ -55,25 +57,28 @@ class MyMenuBallon extends THREE.Object3D {
         this.add(mesh);
     }
 
+    /**
+     * Called to be build text bellow title
+     */
     buildText() {
         // define phrase
-        const maxSize = this.width / this.sizeMedium - this.sS;
-        const phrase = "SELECT ONE BALLON BEFORE STARTING THE GAME !";
+        const maxSize = this.width / this.sS - this.sS;
+        const phrase = "SELECT ONE BEFORE STARTING";
         const phraseList = this.splitText(phrase, maxSize);
 
         const group = new THREE.Group();
         for (const i in phraseList) {
             // define phrase
             const subphrase = phraseList[i];
-            const subphraseLenght = subphrase.length * this.sizeMedium;
+            const subphraseLenght = subphrase.length * this.sS;
 
             // build mesh
             const mesh = this.fontParser.createTextMesh(
                 subphrase,
-                this.sizeMedium,
-                this.sizeMedium
+                this.sS,
+                this.sS
             );
-            const y = this.height / 2 - 3 * this.sM - i * this.sizeMedium;
+            const y = this.height / 2 - 3 * this.sM - i * 1.5 * this.sS;
             mesh.position.set(-subphraseLenght / 2, y, this.depth + 0.001);
             group.add(mesh);
         }
@@ -82,6 +87,12 @@ class MyMenuBallon extends THREE.Object3D {
         this.add(group);
     }
 
+    /**
+     * Called to split text to fit in the billboard
+     * @param {String} text text to be split
+     * @param {Number} maxLength maximum lenght allowed
+     * @returns
+     */
     splitText(text, maxLength) {
         const words = text.split(" ");
         const result = [];

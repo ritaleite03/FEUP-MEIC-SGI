@@ -1,8 +1,15 @@
 import * as THREE from "three";
 import { MyMenuStart } from "./MyMenuStart.js";
-import { MyMenuRun } from "./MyMenuRun.js";
 
+/**
+ * This class contains the representation of a billboard
+ */
 class MyBillboard extends THREE.Object3D {
+    /**
+     *
+     * @param {MyApp} app application object
+     * @param {MyMenuStart | MyMenuBallon | MyMenuFinish | MyMenyRun} menu menu to be displayed on the billboard
+     */
     constructor(app, menu) {
         super();
 

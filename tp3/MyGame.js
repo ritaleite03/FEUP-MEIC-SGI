@@ -92,12 +92,22 @@ class MyGame {
      * Called to start the game
      */
     startGame() {
+        //this.app.getActiveCamera().lookAt(0,100,0)
+        //const direction = new THREE.Vector3();
+        ////console.log(this.app.getActiveCamera());
+        //this.app.getActiveCamera().getWorldDirection(direction);
+        //console.log(direction);
+        //const cameraTarget = new THREE.Vector3()
+        //    .copy(this.app.getActiveCamera())
+        //    .add(direction);
+        //console.log("Câmera está mirando para:", cameraTarget);
+
         this.app.scene.add(this.ambientLight);
         this.app.scene.add(this.track.object);
         this.app.scene.add(this.billboard);
 
-        this.parkP.position.set(-200, 0, 50);
-        this.parkO.position.set(-200, 0, -50);
+        this.parkP.position.set(-30, 0, 80);
+        this.parkO.position.set(-30, 0, -80);
         this.app.scene.add(this.parkP);
         this.app.scene.add(this.parkO);
 
@@ -123,12 +133,13 @@ class MyGame {
      * @param {Number} time time spent playing
      */
     finishGame(time) {
+        this.paused = false;
         this.state = "finish";
-        if (this.ballonP.lap > this.ballonO.laps) {
+        if (this.ballonP.laps > this.ballonO.laps) {
             this.billboard.updateDisplay(
                 new MyMenuFinish(this.app, "PLAYER", "OPONENT", time, false)
             );
-        } else if (this.ballonP.lap < this.ballonO.laps) {
+        } else if (this.ballonP.laps < this.ballonO.laps) {
             this.billboard.updateDisplay(
                 new MyMenuFinish(this.app, "OPONENT", "PLAYER", time, false)
             );
@@ -147,6 +158,7 @@ class MyGame {
         //const postTrackX = -this.track.points[0].x //* this.track.widthS;
         //const postTrackZ = this.track.points[0].z //* this.track.widthS;
 
+        const timeTotal = 60 * 5;
         let timeLeft = 60 * 5;
 
         this.ballonP =
@@ -188,26 +200,65 @@ class MyGame {
         this.app.scene.add(this.ballonO);
         this.updateAmbientLight();
 
+        this.ballonO.defineAnimation();
+        this.ballonO.positionAction.play();
+
+        let posPrevO = null;
+        let pointO1 = this.ballonO.route[0];
+        pointO1 = new THREE.Vector3(pointO1.x, pointO1.y, pointO1.z);
+        this.ballonO.laps += 1;
+
         const timerInterval = setInterval(() => {
-            if (this.paused === false) {
-                if (timeLeft <= 0 || this.state === "finish") {
-                    const timeSpent = 60 * 5 - timeLeft;
-                    timeLeft = 0;
-                    clearInterval(timerInterval);
-                    this.finishGame(timeSpent);
-                } else {
+            if (timeLeft <= 0 || this.state === "finish") {
+                const timeSpent = timeTotal - timeLeft;
+                timeLeft = 0;
+                clearInterval(timerInterval);
+                this.finishGame(timeSpent);
+            } else {
+                if (this.paused === false) {
                     timeLeft--;
                     this.billboard.display.updateTime(timeLeft);
                 }
             }
         }, 1000);
 
-        const simulationInterval = setInterval(async () => {
-            if (this.paused === false) {
+        const oponentMoviment = setInterval(async () => {
+            if (timeLeft <= 0) {
+                clearInterval(oponentMoviment);
+                return;
+            }
+
+            // check if game is paused or not
+            if (this.paused === true) this.ballonO.mixer.timeScale = 0;
+            else this.ballonO.mixer.timeScale = 1;
+
+            // move oponent ballon
+            this.ballonO.moveAnimation();
+            const now = this.ballonO.position.clone();
+
+            // check if finish line was passed
+            if (
+                now.x === pointO1.x &&
+                now.y === pointO1.y &&
+                now.z === pointO1.z
+            ) {
+                if (posPrevO !== null) {
+                    posPrevO = null;
+                    this.ballonO.laps += 1;
+                }
+            } else {
+                posPrevO = now.clone();
+            }
+        }, 10);
+
+        const playerMoviment = setInterval(async () => {
+            if (this.paused === false && this.ballonP.penalty !== true) {
                 if (timeLeft <= 0) {
-                    clearInterval(simulationInterval);
+                    clearInterval(playerMoviment);
                     return;
                 }
+
+                // move player ballon
                 const posOld = this.ballonP.position.clone();
                 this.ballonP.moveWind(this.wN, this.wS, this.wE, this.wW);
 
@@ -215,7 +266,8 @@ class MyGame {
                 const colisionT = this.colisionTrack(this.ballonP);
                 const colisionU = this.collisionPowerUps(this.ballonP);
                 const colisionD = this.collisionPowerDowns(this.ballonP);
-                console.log(colisionT, colisionU, colisionD);
+                const colisionB = this.checkCollisionBallons();
+                //console.log(colisionT, colisionU, colisionD);
 
                 // update billboard in relation to vouchers
                 this.billboard.display.updateVouchers(this.ballonP.vouchers);
@@ -250,9 +302,17 @@ class MyGame {
                 }
 
                 // collision with obstacle or off track
-                if (colisionD === true || colisionT === true) {
+                if (
+                    colisionD === true ||
+                    colisionT === true ||
+                    colisionB === true
+                ) {
                     if (this.ballonP.vouchers > 0) this.ballonP.vouchers -= 1;
-                    else await this.sleep(this.obstaclePenalty * 1000);
+                    else {
+                        this.ballonP.penalty = true;
+                        await this.sleep(this.obstaclePenalty * 1000);
+                        this.ballonP.penalty = false;
+                    }
                 }
 
                 // off track
@@ -354,6 +414,30 @@ class MyGame {
         return true;
     }
 
+    checkCollisionBallons() {
+        const posP = this.ballonP.position;
+        const bbxP = this.ballonP.boundingBox;
+        const posO = this.ballonO.position;
+        const bbxO = this.ballonO.boundingBox;
+
+        // distances
+        const distX = Math.abs(Math.abs(posP.x) - Math.abs(posO.x));
+        const distY = Math.abs(Math.abs(posP.y) - Math.abs(posO.y));
+        const distZ = Math.abs(Math.abs(posP.z) - Math.abs(posO.z));
+
+        // check if they are colliding
+
+        if (
+            distX <= bbxP[0] / 2 + bbxO[0] / 2 &&
+            distY <= bbxP[1] / 2 + bbxO[1] / 2 &&
+            distZ <= bbxP[2] / 2 + bbxO[2] / 2
+        ) {
+            // check if they are colliding
+            return true;
+        }
+        return false;
+    }
+
     /**
      * Called to check if ballon collied with power ups
      * @param {MyBallon} ballon ballon of the player or the oponent
@@ -379,8 +463,10 @@ class MyGame {
                     distX <= bbxB[0] / 2 + bbxP[0] / 2 &&
                     distY <= bbxB[1] / 2 + bbxP[1] / 2 &&
                     distZ <= bbxB[2] / 2 + bbxP[2] / 2
+                    
                 ) {
                     // check if they are colliding
+                    console.log("Collide")
                     this.powerUps[i].desactivate(this.obstaclePenalty);
                     return true;
                 }
@@ -657,29 +743,29 @@ class MyGame {
 
 
     //update() {
-    //    if (this.ballonO !== null && this.ballonP !== null){
-    //        
-    //        //const adjustedTime = ((Date.now() % (60000 * 3/ this.speedFactor)) / ( 3 * 60000 / this.speedFactor));
-    //        //const point = this.routes[1].route.getPointAt(adjustedTime);
-    //        //
-    //        //this.ballonO.position.set(...point)
-    //        //const point2 = this.routes[0].route.getPointAt(adjustedTime);
-    //        //this.ballonP.position.set(...point2)
-    //        //if (adjustedTime < this.prevTime) { 
-    //        //    console.log("Volta completa!");
-    //        //    this.speedFactor = Math.random() + 0.5;
-    //        //    console.log("Nova velocidade:", this.speedFactor);
-    //        //}
-    //        //
-    //        //this.prevTime = adjustedTime;
-    //    }
-//
     //    //const delta = this.clock.getDelta()
     //    //this.mixer.update(delta)
     //}
     
     update() {
         let t = this.app.clock.getElapsedTime();
+
+        // update lookat of the billboards
+        const posCamera = this.app.activeCamera.position;
+        for (const i in this.parkO.ballons) {
+            this.parkO.ballons[i].billboard.lookAt(posCamera);
+        }
+        for (const i in this.parkP.ballons) {
+            this.parkP.ballons[i].billboard.lookAt(posCamera);
+        }
+        if (this.ballonP !== null && this.ballonP !== undefined) {
+            this.ballonP.billboard.lookAt(posCamera);
+        }
+        if (this.ballonO !== null && this.ballonO !== undefined) {
+            this.ballonO.billboard.lookAt(posCamera);
+        }
+
+        // update power ups and obstacles according with shader
         for (const i in this.powerUps) {
             if (this.powerUps[i]) {
                 this.powerUps[i].update(t);
@@ -691,25 +777,26 @@ class MyGame {
             }
         }
 
-        if (this.ballonO !== null && this.ballonP !== null && this.state == "game"){
-    
-                this.currentLapTime += this.clock.getDelta(); 
-    
-                let time = (this.currentLapTime / this.lapTime) % 1;
-              
-                const position =  this.routes[1].route.getPointAt(time);
-              
-                this.ballonO.position.copy(position);
-              
-                if (this.currentLapTime >= this.lapTime) {
-                    console.log("Lap complet!");
-                    this.currentLapTime = 0;
-                    this.ballonO.laps +=1;
-                    this.lapTime = (3 + Math.random()) * 60; 
-                }
-    
-            }
-
+        //if (this.ballonO !== null && this.ballonP !== null && this.state == "game"){
+    //
+        //    this.currentLapTime += this.clock.getDelta(); 
+//
+        //    let time = (this.currentLapTime / this.lapTime) % 1;
+        //    
+        //    const position =  this.routes[1].route.getPointAt(time);
+        //    
+        //    this.ballonO.position.copy(position);
+        //    
+        //    if (this.currentLapTime >= this.lapTime) {
+        //        console.log("Lap complet!");
+        //        this.currentLapTime = 0;
+        //        this.ballonO.laps +=1;
+        //        this.lapTime = (3 + Math.random()) * 60; 
+        //    }
+    //
+        //}
+//
+        // end firework
         if (
             (this.state === "game" || this.state === "initial") &&
             this.fireworks.length != 0
@@ -720,6 +807,7 @@ class MyGame {
             }
         }
 
+        // launch firework
         if (this.state === "finish") {
             // add new fireworks every 5% of the calls
             if (Math.random() < 0.05) {

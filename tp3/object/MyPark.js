@@ -3,11 +3,15 @@ import { MyBallon } from "./MyBallon.js";
 import { MyBillboard } from "./MyBillboard.js";
 import { MyMenuBallon } from "./MyMenuBallon.js";
 
+/**
+ * This class contains the representation of the ballons park
+ */
 class MyPark extends THREE.Object3D {
     /**
      *
-     * @param {*} app
-     * @param {*} name
+     * @param {MyApp} app application object
+     * @param {String} name name of the owner of the park (it can be player or oponent)
+     * @param {Array} ballons configuration of the ballons
      */
     constructor(app, name, ballons) {
         // define attributes
@@ -31,7 +35,11 @@ class MyPark extends THREE.Object3D {
         for (const i in ballons) {
             const index = (Number(i) + 1).toString();
             const color = ballons[i].color;
-            this.ballons.push(new MyBallon(app, name + "_" + index, color));
+            const velocity = ballons[i].velocity ? ballons[i].velocity : null;
+            const route = ballons[i].route ? ballons[i].route : null;
+            this.ballons.push(
+                new MyBallon(app, name + "_" + index, color, velocity, route)
+            );
         }
 
         this.ballonsP = [
@@ -93,12 +101,15 @@ class MyPark extends THREE.Object3D {
 MyPark.prototype.isGroup = true;
 export { MyPark };
 
+/**
+ * This class contains the representation of the lamp of the park
+ */
 class MyParkLamp extends THREE.Object3D {
     /**
      *
-     * @param {*} app
-     * @param {*} height
-     * @param {*} radius
+     * @param {MyApp} app application object
+     * @param {Number} height height of the lamp
+     * @param {Number} radius radius of the lamp
      */
     constructor(app, height, radius) {
         super();
