@@ -2,12 +2,19 @@ import * as THREE from "three";
 import { MyBillboard } from "./object/MyBillboard.js";
 import { MyPark } from "./object/MyPark.js";
 import { MyBallon } from "./object/MyBallon.js";
+import { MyMenuStart } from "./object/MyMenuStart.js";
+import { MyFirework } from "./MyFirework.js";
+import { MyMenuRun } from "./object/MyMenuRun.js";
+import { MyMenuFinish } from "./object/MyMenuFinish.js";
 
 class MyGame {
-    constructor(app, track, powerUps, powerDowns, routes) {
+
+    constructor(app, track, powerUps, powerDowns, routes, parkPlayer, parkOponent) {
         this.app = app;
         this.obstaclePenalty = 1;
+        this.fireworks = [];
         this.state = "initial";
+        this.paused = false;
         this.ambientLight = new THREE.AmbientLight("#ffffff");
 
         // options mesh's name
@@ -34,9 +41,10 @@ class MyGame {
         this.powerUps = powerUps;
         this.powerDowns = powerDowns;
         this.routes = routes;
-        this.billboard = new MyBillboard(this.app);
-        this.parkP = new MyPark(this.app, "player");
-        this.parkO = new MyPark(this.app, "oponent");
+        this.showRoute = false;
+        this.billboard = new MyBillboard(this.app, new MyMenuStart(this.app));
+        this.parkP = new MyPark(this.app, "player", parkPlayer);
+        this.parkO = new MyPark(this.app, "oponent", parkOponent);
 
         // player configuration
         this.ballonPickerP = null;
@@ -44,6 +52,7 @@ class MyGame {
         this.ballonP = null;
         this.ballonO = null;
         this.sideP = null;
+        this.selectRoute = null;
 
         // wind
         this.wE = 1;
@@ -57,7 +66,7 @@ class MyGame {
         this.raycaster.far = 200;
         this.pointer = new THREE.Vector2();
         this.intersectedObj = null;
-        this.pickingColor = "0x00ff00";
+        this.pickingColor = "0x000000";
 
         // picker and move event
         document.addEventListener("pointerdown", this.onPointerMove.bind(this));
@@ -87,10 +96,6 @@ class MyGame {
         this.app.scene.add(this.track.object);
         this.app.scene.add(this.billboard);
 
-        this.routes.forEach(route => {
-            this.app.scene.add(route.debugRoute());
-        });
-
         this.parkP.position.set(-200, 0, 50);
         this.parkO.position.set(-200, 0, -50);
         this.app.scene.add(this.parkP);
@@ -114,11 +119,35 @@ class MyGame {
     }
 
     /**
+     * Called to finish the game
+     * @param {Number} time time spent playing
+     */
+    finishGame(time) {
+        this.state = "finish";
+        if (this.ballonP.lap > this.ballonO.laps) {
+            this.billboard.updateDisplay(
+                new MyMenuFinish(this.app, "PLAYER", "OPONENT", time, false)
+            );
+        } else if (this.ballonP.lap < this.ballonO.laps) {
+            this.billboard.updateDisplay(
+                new MyMenuFinish(this.app, "OPONENT", "PLAYER", time, false)
+            );
+        } else {
+            this.billboard.updateDisplay(
+                new MyMenuFinish(this.app, null, null, time, true)
+            );
+        }
+    }
+
+    /**
      * Called to run the game
      */
     async runGame() {
-        const postTrackX = -this.track.points[0].x //* this.track.widthS;
-        const postTrackZ = this.track.points[0].z //* this.track.widthS;
+
+        //const postTrackX = -this.track.points[0].x //* this.track.widthS;
+        //const postTrackZ = this.track.points[0].z //* this.track.widthS;
+
+        let timeLeft = 60 * 5;
 
         this.ballonP =
             this.parkP.ballons[this.dictP[this.ballonPickerP.name]].clone();
@@ -126,60 +155,203 @@ class MyGame {
         this.ballonO =
             this.parkO.ballons[this.dictO[this.ballonPickerO.name]].clone();
 
-        if ((this.sideP.name = "side_1")) {
-            this.ballonP.position.set(postTrackX - 5, 4, postTrackZ);
-            this.ballonO.position.set(postTrackX + 5, 4, postTrackZ);
+        this.ballonP.add(this.app.cameras["FirstPerson"]);
+
+        const heightB = this.ballonP.height;
+        if (this.sideP.name === "side_1") {
+            this.selectRoute = this.routes[0];
+            this.ballonP.position.set(
+                this.track.p1.x,
+                this.track.p1.y + heightB / 2,
+                this.track.p1.z
+            );
+            this.ballonO.position.set(
+                this.track.p2.x,
+                this.track.p2.y + heightB / 2,
+                this.track.p2.z
+            );
         } else {
-            this.ballonP.position.set(postTrackX + 5, 4, postTrackZ);
-            this.ballonO.position.set(postTrackX - 5, 4, postTrackZ);
+            this.selectRoute = this.routes[1];
+            this.ballonP.position.set(
+                this.track.p2.x,
+                this.track.p2.y + heightB / 2,
+                this.track.p2.z
+            );
+            this.ballonO.position.set(
+                this.track.p1.x,
+                this.track.p1.y + heightB / 2,
+                this.track.p1.z
+            );
         }
 
         this.app.scene.add(this.ballonP);
         this.app.scene.add(this.ballonO);
+        this.updateAmbientLight();
 
-        while (true) {
-            this.ballonP.moveWind(this.wN, this.wS, this.wE, this.wW);
-            // check for colisions
-            const colisionT = this.colisionTrack(this.ballonP);
-            const colisionU = this.collisionPowerUps(this.ballonP);
-            const colisionD = this.collisionPowerDowns(this.ballonP);
-
-            // update billboard in relation to vouchers
-            this.billboard.display.updateVouchers(this.ballonP.vouchers);
-
-            // update billboard in relation to wind
-            if (this.ballonP.position.y > 0 && this.ballonP.position.y <= 5)
-                this.billboard.display.updateWind("no wind");
-            if (this.ballonP.position.y > 5 && this.ballonP.position.y <= 10)
-                this.billboard.display.updateWind("north");
-            if (this.ballonP.position.y > 10 && this.ballonP.position.y <= 15)
-                this.billboard.display.updateWind("south");
-            if (this.ballonP.position.y > 15 && this.ballonP.position.y <= 20)
-                this.billboard.display.updateWind("east");
-            if (this.ballonP.position.y > 20 && this.ballonP.position.y <= 25)
-                this.billboard.display.updateWind("west");
-
-            // collision with power up
-            if (colisionU === true) {
-                this.ballonP.vouchers += 1;
+        const timerInterval = setInterval(() => {
+            if (this.paused === false) {
+                if (timeLeft <= 0 || this.state === "finish") {
+                    const timeSpent = 60 * 5 - timeLeft;
+                    timeLeft = 0;
+                    clearInterval(timerInterval);
+                    this.finishGame(timeSpent);
+                } else {
+                    timeLeft--;
+                    this.billboard.display.updateTime(timeLeft);
+                }
             }
+        }, 1000);
 
-            // collision with obstacle or off track
-            if (colisionD === true || colisionT === true) {
-                if (this.ballonP.vouchers > 0) this.ballonP.vouchers -= 1;
-                else await this.sleep(this.obstaclePenalty * 1000);
-            }
+        const simulationInterval = setInterval(async () => {
+            if (this.paused === false) {
+                if (timeLeft <= 0) {
+                    clearInterval(simulationInterval);
+                    return;
+                }
+                const posOld = this.ballonP.position.clone();
+                this.ballonP.moveWind(this.wN, this.wS, this.wE, this.wW);
 
-            // off track
-            if (colisionT === true) {
-                const position = this.colisionTrackRepositing(this.ballonP);
-                const posX = position.x;
-                const posY = this.ballonP.position.y;
-                const posZ = position.z;
-                this.ballonP.position.set(posX, posY, posZ);
+                // check for colisions
+                const colisionT = this.colisionTrack(this.ballonP);
+                const colisionU = this.collisionPowerUps(this.ballonP);
+                const colisionD = this.collisionPowerDowns(this.ballonP);
+                console.log(colisionT, colisionU, colisionD);
+
+                // update billboard in relation to vouchers
+                this.billboard.display.updateVouchers(this.ballonP.vouchers);
+
+                // update billboard in relation to wind
+                if (this.ballonP.position.y > 0 && this.ballonP.position.y <= 5)
+                    this.billboard.display.updateWind("no wind");
+                if (
+                    this.ballonP.position.y > 5 &&
+                    this.ballonP.position.y <= 10
+                )
+                    this.billboard.display.updateWind("north");
+                if (
+                    this.ballonP.position.y > 10 &&
+                    this.ballonP.position.y <= 15
+                )
+                    this.billboard.display.updateWind("south");
+                if (
+                    this.ballonP.position.y > 15 &&
+                    this.ballonP.position.y <= 20
+                )
+                    this.billboard.display.updateWind("east");
+                if (
+                    this.ballonP.position.y > 20 &&
+                    this.ballonP.position.y <= 25
+                )
+                    this.billboard.display.updateWind("west");
+
+                // collision with power up
+                if (colisionU === true) {
+                    this.ballonP.vouchers += 1;
+                }
+
+                // collision with obstacle or off track
+                if (colisionD === true || colisionT === true) {
+                    if (this.ballonP.vouchers > 0) this.ballonP.vouchers -= 1;
+                    else await this.sleep(this.obstaclePenalty * 1000);
+                }
+
+                // off track
+                if (colisionT === true) {
+                    const position = this.colisionTrackRepositing(this.ballonP);
+                    const posX = position.x;
+                    const posY = this.ballonP.position.y;
+                    const posZ = position.z;
+                    this.ballonP.position.set(posX, posY, posZ);
+                }
+
+                // check if finish line was passed
+                const posNow = this.ballonP.position.clone();
+                const finish = this.checkFinishLine(posOld, posNow);
+                if (finish === true) {
+                    this.ballonP.laps += 1;
+                    this.billboard.display.updateLaps(this.ballonP.laps);
+                }
+
+                const posCX = posNow.x + 20;
+                const posCY = posNow.y + 20;
+                const posCZ = posNow.z + 20;
+                this.app.cameras["ThirdPerson"].position.set(
+                    posCX,
+                    posCY,
+                    posCZ
+                );
+                this.app.cameras["ThirdPerson"].lookAt(this.ballonP.position);
             }
-            await this.sleep(1000);
-        }
+        }, 1000);
+    }
+
+    /**
+     * Called to check if ballon passed finish line
+     * @param {THREE.Vector3} posOld previous position of the ballon
+     * @param {THREE.Vector3} posNow current position of the ballon
+     * @returns true if ballon passed finish line and false otherwise
+     */
+    checkFinishLine(posOld, posNow) {
+        // define first point of track
+        const posCurTemp = this.track.path.getPointAt(0);
+        const posCurX = posCurTemp.x; //* this.track.widthS;
+        const posCurY = posCurTemp.y; //* this.track.widthS;
+        const posCurZ = posCurTemp.z; //* this.track.widthS;
+        const posCur = new THREE.Vector3(-posCurX, posCurY, posCurZ);
+
+        // define equation plane finish
+        const v1 = this.track.finish.normalize();
+        const v2 = new THREE.Vector3(0, 1, 0).normalize();
+        const nx = v1.y * v2.z - v1.z * v2.y;
+        const ny = v1.z * v2.x - v1.x * v2.z;
+        const nz = v1.x * v2.y - v1.y * v2.z;
+        const nr = nx * posCur.x + ny * posCur.y + nz * posCur.z;
+
+        // define equation direction ballon
+        let dx = posNow.x - posOld.x;
+        let dy = posNow.y - posOld.y;
+        let dz = posNow.z - posOld.z;
+        const vd = new THREE.Vector3(dx, dy, dz).normalize();
+        dx = vd.x;
+        dy = vd.y;
+        dz = vd.z;
+
+        // define equation direction curve first two points
+        const curve1 = this.track.points[0];
+        const curve2 = this.track.points[2];
+        let cx = -(curve1.x - curve2.x);
+        let cy = curve1.y - curve2.y;
+        let cz = curve1.z - curve2.z;
+        const vc = new THREE.Vector3(cx, cy, cz).normalize();
+        cx = vc.x;
+        cy = vc.y;
+        cz = vc.z;
+
+        // calculate t value
+        const num = nr - (nx * posOld.x + ny * posOld.y + nz * posOld.z);
+        const den = nx * dx + ny * dy + nz * dz;
+
+        // direction and plane are parallels (no intersection)
+        if (den === 0) return false;
+
+        const t = num / den;
+        const interX = posOld.x + t * dx;
+        const interY = posOld.y + t * dy;
+        const interZ = posOld.z + t * dz;
+        const intersection = new THREE.Vector3(interX, interY, interZ);
+        const center = new THREE.Vector3(posCur.x, interY, posCur.z);
+
+        const righDir = dx * cx + dy * cy + dz * cz;
+        const dist = center.distanceTo(intersection);
+
+        // intersection not between posOld and posNew
+        if (t < 0 || t > 1) return false;
+        // intersection outside track limits
+        if (dist > this.track.widthS + 1) return false; //####################### Não sei bem #########################################
+        // intersection when going backwards
+        if (righDir > 0) return false;
+        // complete
+        return true;
     }
 
     /**
@@ -188,14 +360,31 @@ class MyGame {
      * @returns true if collision with power up and false otherwise
      */
     collisionPowerUps(ballon) {
-        const position = ballon.position;
-        const radius = ballon.collisionRadius;
+        const posB = ballon.position;
+        const bbxB = ballon.boundingBox;
 
         for (const i in this.powerUps) {
-            const positionP = this.powerUps[i].position;
-            const radiusP = this.powerUps[i].collisionRadius;
-            const distMax = radius + radiusP;
-            if (positionP.distanceTo(position) <= distMax) return true;
+            // check if powerup is activated
+            if (this.powerUps[i].activated === true) {
+                // variables
+                const posP = this.powerUps[i].position;
+                const bbxP = this.powerUps[i].boundingBox;
+
+                // distances
+                const distX = Math.abs(Math.abs(posB.x) - Math.abs(posP.x));
+                const distY = Math.abs(Math.abs(posB.y) - Math.abs(posP.y));
+                const distZ = Math.abs(Math.abs(posB.z) - Math.abs(posP.z));
+
+                if (
+                    distX <= bbxB[0] / 2 + bbxP[0] / 2 &&
+                    distY <= bbxB[1] / 2 + bbxP[1] / 2 &&
+                    distZ <= bbxB[2] / 2 + bbxP[2] / 2
+                ) {
+                    // check if they are colliding
+                    this.powerUps[i].desactivate(this.obstaclePenalty);
+                    return true;
+                }
+            }
         }
 
         return false;
@@ -207,14 +396,31 @@ class MyGame {
      * @returns true if collision with obstacle and false otherwise
      */
     collisionPowerDowns(ballon) {
-        const position = ballon.position;
-        const radius = ballon.collisionRadius;
+        const posB = ballon.position;
+        const bbxB = ballon.boundingBox;
 
         for (const i in this.powerDowns) {
-            const positionP = this.powerDowns[i].position;
-            const radiusP = this.powerDowns[i].collisionRadius;
-            const distMax = radius + radiusP;
-            if (positionP.distanceTo(position) <= distMax) return true;
+            // check if powerup is activated
+            if (this.powerDowns[i].activated === true) {
+                // variables
+                const posP = this.powerDowns[i].position;
+                const bbxP = this.powerDowns[i].boundingBox;
+
+                // distances
+                const distX = Math.abs(Math.abs(posB.x) - Math.abs(posP.x));
+                const distY = Math.abs(Math.abs(posB.y) - Math.abs(posP.y));
+                const distZ = Math.abs(Math.abs(posB.z) - Math.abs(posP.z));
+
+                if (
+                    distX <= bbxB[0] / 2 + bbxP[0] / 2 &&
+                    distY <= bbxB[1] / 2 + bbxP[1] / 2 &&
+                    distZ <= bbxB[2] / 2 + bbxP[2] / 2
+                ) {
+                    // check if they are colliding
+                    this.powerDowns[i].desactivate(this.obstaclePenalty);
+                    return true;
+                }
+            }
         }
 
         return false;
@@ -238,7 +444,7 @@ class MyGame {
 
             // coordinates of a point in the track with scale if it
             const oldPos = this.track.path.getPointAt(t);
-            const xPos = -oldPos.x; //* this.track.widthS;
+            const xPos = oldPos.x; //* this.track.widthS;
             const yPos = oldPos.y; //* this.track.widthS;
             const zPos = oldPos.z; //* this.track.widthS;
             const newPos = new THREE.Vector3(xPos, yPos, zPos);
@@ -267,7 +473,7 @@ class MyGame {
 
             // coordinates of a point in the track with scale if it
             const oldPos = this.track.path.getPointAt(t);
-            const xPos = -oldPos.x; //* this.track.widthS;
+            const xPos = oldPos.x; //* this.track.widthS;
             const yPos = oldPos.y; //* this.track.widthS;
             const zPos = oldPos.z; //* this.track.widthS;
             const newPos = new THREE.Vector3(xPos, yPos, zPos);
@@ -346,6 +552,12 @@ class MyGame {
             } else if (event.key === "ArrowUp") {
                 this.ballonP.moveUp();
                 this.updateAmbientLight();
+            } else if (event.key === " ") {
+                this.paused = !this.paused;
+                let status = this.paused === true ? "paused" : "running";
+                this.billboard.display.updateStatusGame(status);
+            } else if (event.key === "Escape") {
+                this.state = "finish";
             }
         }
     }
@@ -361,7 +573,6 @@ class MyGame {
         var intersects = this.raycaster.intersectObjects(
             this.app.scene.children
         );
-
         if (intersects.length > 0) {
             // initial state
             if (this.state === "initial") {
@@ -385,9 +596,34 @@ class MyGame {
                         this.sideP !== null
                     ) {
                         this.state = "game";
-                        this.billboard.updateDisplay();
+                        this.billboard.updateDisplay(new MyMenuRun(this.app));
                         this.runGame();
                     }
+                }
+            }
+
+            // finish state
+            if (this.state === "finish") {
+                const obj = intersects[0].object;
+                const name = obj.name;
+
+                if (name === "restartButton") {
+                    this.state = "game";
+                    this.app.scene.remove(this.ballonP.shadow);
+                    this.app.scene.remove(this.ballonO.shadow);
+                    this.app.scene.remove(this.ballonP);
+                    this.app.scene.remove(this.ballonO);
+                    this.billboard.updateDisplay(new MyMenuRun(this.app));
+                    this.runGame();
+                }
+
+                if (name === "homeButton") {
+                    this.state = "initial";
+                    this.app.scene.remove(this.ballonP.shadow);
+                    this.app.scene.remove(this.ballonO.shadow);
+                    this.app.scene.remove(this.ballonP);
+                    this.app.scene.remove(this.ballonO);
+                    this.billboard.updateDisplay(new MyMenuStart(this.app));
                 }
             }
         }
@@ -419,12 +655,6 @@ class MyGame {
     //    positionAction.play()
     //}
 
-    //updateSpeed() {
-    //    this.totalTime = this.lapTimes[this.lapCount % this.lapTimes.length];
-    //    this.speed = 1 / this.totalTime;
-    //    console.log(`Lap ${this.lapCount + 1}: ${this.totalTime / 60} minutes`);
-    //}
-
 
     //update() {
     //    if (this.ballonO !== null && this.ballonP !== null){
@@ -442,27 +672,100 @@ class MyGame {
     //        //}
     //        //
     //        //this.prevTime = adjustedTime;
-//
-    //        this.currentLapTime += this.clock.getDelta(); 
-//
-    //        let time = (this.currentLapTime / this.lapTime) % 1;
-    //      
-    //        const position =  this.routes[1].route.getPointAt(time);
-    //      
-    //        this.ballonO.position.copy(position);
-    //      
-    //        if (this.currentLapTime >= this.lapTime) {
-    //            console.log("Lap complet!");
-    //            this.currentLapTime = 0;
-    //            this.lapTime = (3 + Math.random()) * 60; 
-    //        }
-//
     //    }
 //
     //    //const delta = this.clock.getDelta()
     //    //this.mixer.update(delta)
     //}
     
+    update() {
+        let t = this.app.clock.getElapsedTime();
+        for (const i in this.powerUps) {
+            if (this.powerUps[i]) {
+                this.powerUps[i].update(t);
+            }
+        }
+        for (const i in this.powerDowns) {
+            if (this.powerDowns[i]) {
+                this.powerDowns[i].update(t);
+            }
+        }
+
+        if (this.ballonO !== null && this.ballonP !== null && this.state == "game"){
+    
+                this.currentLapTime += this.clock.getDelta(); 
+    
+                let time = (this.currentLapTime / this.lapTime) % 1;
+              
+                const position =  this.routes[1].route.getPointAt(time);
+              
+                this.ballonO.position.copy(position);
+              
+                if (this.currentLapTime >= this.lapTime) {
+                    console.log("Lap complet!");
+                    this.currentLapTime = 0;
+                    this.ballonO.laps +=1;
+                    this.lapTime = (3 + Math.random()) * 60; 
+                }
+    
+            }
+
+        if (
+            (this.state === "game" || this.state === "initial") &&
+            this.fireworks.length != 0
+        ) {
+            for (const i in this.fireworks) {
+                this.fireworks[i].reset();
+                this.fireworks.splice(i, 1);
+            }
+        }
+
+        if (this.state === "finish") {
+            // add new fireworks every 5% of the calls
+            if (Math.random() < 0.05) {
+                for (let i = 0; i < 5; i++) {
+                    const x = Math.random() * 50 - 25;
+                    const z = Math.random() * 50 - 25;
+                    const vertices = [x, 0, z];
+                    const color = this.getRandomColor();
+                    this.fireworks.push(
+                        new MyFirework(this.app, this, vertices, color)
+                    );
+                }
+            }
+
+            // for each fireworks
+            for (let i = 0; i < this.fireworks.length; i++) {
+                // is firework finished?
+                if (this.fireworks[i].done) {
+                    // remove firework
+                    this.fireworks.splice(i, 1);
+                    continue;
+                }
+                // otherwise upsdate  firework
+                this.fireworks[i].update();
+            }
+        }
+    }
+
+    getRandomColor() {
+        const r = Math.floor(Math.random() * 256);
+        const g = Math.floor(Math.random() * 256);
+        const b = Math.floor(Math.random() * 256);
+        return 0x1000000 + r * 0x10000 + g * 0x100 + b;
+    }
+
+    showRoutes() {
+        if(this.showRoute)
+            this.routes.forEach(route => {
+                this.app.scene.add(route.debugRoute());
+            });
+        else{
+            this.routes.forEach(route => {
+                this.app.scene.remove(route.debugRoute());
+            });
+        }
+    }
 }
 
 export { MyGame };

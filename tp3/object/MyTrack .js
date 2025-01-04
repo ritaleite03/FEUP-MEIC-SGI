@@ -43,6 +43,11 @@ class MyTrack extends THREE.Object3D {
             transparent: true,
         });
 
+        // finish line
+        this.finish = null;
+        this.p1 = null;
+        this.p2 = null;
+
         // build object
         this.buildObject();
         this.buildSideSelector();
@@ -52,6 +57,20 @@ class MyTrack extends THREE.Object3D {
      * Called to build two objects the select side of the track that the player wants to use
      */
     buildSideSelector() {
+        let trackPt = this.path.getPointAt(0).clone();
+        trackPt.x = trackPt.x //* this.widthS;
+        trackPt.y = trackPt.y //* this.widthS;
+        trackPt.z = trackPt.z //* this.widthS;
+
+        const trackTg = this.path.getTangentAt(0).normalize();
+        const trackUp = new THREE.Vector3(0, 1, 0);
+        const trackFL = new THREE.Vector3()
+            .crossVectors(trackTg, trackUp)
+            .normalize();
+
+        const p1 = trackPt.clone().add(trackFL.clone().multiplyScalar(5));
+        const p2 = trackPt.clone().add(trackFL.clone().multiplyScalar(-5));
+
         // define geometry and materials
         const geometryS = new THREE.SphereGeometry(1);
         const materialA = new THREE.MeshBasicMaterial({ color: "#ffffff" });
@@ -63,15 +82,23 @@ class MyTrack extends THREE.Object3D {
         this.selectorA.name = "side_1";
         this.selectorB.name = "side_2";
 
-        const posX = this.points[0].x //* this.widthS;
-        const posY = this.points[0].y  * this.heightS;
-        const posZ = this.points[0].z //* this.widthS;
+        //const posX = this.points[0].x //* this.widthS;
+        //const posY = this.points[0].y  * this.heightS;
+        //const posZ = this.points[0].z //* this.widthS;
+//
+        //this.selectorA.position.set(posX - 5, posY + 1, posZ);
+        //this.selectorB.position.set(posX + 5, posY + 1, posZ);
 
-        this.selectorA.position.set(posX - 5, posY + 1, posZ);
-        this.selectorB.position.set(posX + 5, posY + 1, posZ);
+        this.selectorA.position.set(p1.x, trackPt.y * this.heightS + 1, p1.z);
+        this.selectorB.position.set(p2.x, trackPt.y * this.heightS + 1, p2.z);
+
 
         this.app.scene.add(this.selectorA);
         this.app.scene.add(this.selectorB);
+
+        this.finish = trackFL;
+        this.p1 = p1;
+        this.p2 = p2;
     }
 
     /**
@@ -148,10 +175,7 @@ class MyTrack extends THREE.Object3D {
                 rightPoints[i + 1].x, rightPoints[i + 1].y, rightPoints[i + 1].z
             );
         
-            const baseIndex = i *6; //* 4;
-
-            //indices.push(baseIndex, baseIndex + 1, baseIndex + 2);
-            //indices.push(baseIndex + 1, baseIndex + 3, baseIndex + 2);
+            const baseIndex = i * 6; 
 
             //left
             indices.push(baseIndex, baseIndex + 1, baseIndex + 3);

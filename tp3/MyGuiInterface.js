@@ -38,6 +38,7 @@ class MyGuiInterface {
         const sceneFolder = this.datgui.addFolder("Scene");
         const lightHelpersFolder = this.datgui.addFolder("Lights");
         const gameFolder = this.datgui.addFolder("Game");
+        const routeFolder = this.datgui.addFolder("Route");
 
         // cameras configuration
         cameraFolder
@@ -149,6 +150,12 @@ class MyGuiInterface {
             .name("west wind")
             .step(1)
             .onChange((value) => (this.contents.game.wW = value));
+
+        //route folder
+        routeFolder
+            .add(this.contents.game, "showRoute")
+            .name("show routes")
+            .onChange(() => this.contents.game.showRoutes());
     }
 }
 

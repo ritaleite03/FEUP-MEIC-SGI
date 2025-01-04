@@ -1,8 +1,6 @@
 import * as THREE from "three";
 import { MyNurbsBuilder } from "../MyNurbsBuilder.js";
-import { MyGuiInterface } from "../MyGuiInterface.js";
 import { MyTriangle } from "./MyTriangle.js";
-import { ParametricGeometry } from "three/addons/geometries/ParametricGeometry.js";
 import { MyTrack } from "../object/MyTrack .js";
 import { MyRoute } from "../object/MyRoute.js";
 import { MyPowerUp } from "../object/MyPowerUp.js";
@@ -24,10 +22,15 @@ class MyParser {
         this.dataLightsHelpers = [];
         this.ambientLight = null;
         this.graph = null;
+
+        // Set up game variables
         this.track = null;
         this.routes = []
         this.powerUps = [];
         this.powerDowns = [];
+        this.parkPlayer = [];
+        this.parkOponent = [];
+
         this.buider = new MyNurbsBuilder();
     }
 
@@ -86,6 +89,8 @@ class MyParser {
         this.defineRoutes(this.data.yasf.routes);
         this.definePowerUp(this.data.yasf.powerUp);
         this.definePowerDown(this.data.yasf.powerDown);
+        this.defineParkPlayer(this.data.yasf.parkPlayer);
+        this.defineParkOponent(this.data.yasf.parkOponent);
 
         // Parse the scene graph
         this.graph = this.parse(
@@ -461,6 +466,32 @@ class MyParser {
         }
     }
 
+    defineParkPlayer(data) {
+        if (!data.ballons) {
+            console.error(
+                "Error in MyParser.defineParkPlayer : component ballons is undefined"
+            );
+        }
+        for (const i in data.ballons) {
+            let color = data.ballons[i].color;
+            color = new THREE.Color().setRGB(color.r, color.g, color.b);
+            this.parkPlayer.push({ color: color });
+        }
+    }
+
+    defineParkOponent(data) {
+        if (!data.ballons) {
+            console.error(
+                "Error in MyParser.defineParkOponent : component ballons is undefined"
+            );
+        }
+        for (const i in data.ballons) {
+            let color = data.ballons[i].color;
+            color = new THREE.Color().setRGB(color.r, color.g, color.b);
+            this.parkOponent.push({ color: color });
+        }
+    }
+
     /**
      * Creates all textures
      */
@@ -791,7 +822,7 @@ class MyParser {
         let material_attributes_base = material.attributes;
         let material_attributes_top = material.attributes;
         let material_attributes_height = material.attributes;
-        const radius_origin = base + (top - base) * 2;
+        const radius_origin = base + (top - base) / 2;
         if (material.textureref && material.textureref !== "null") {
             const texture_base = this.dataTextures[material.textureref].clone();
             const texture_top = this.dataTextures[material.textureref].clone();

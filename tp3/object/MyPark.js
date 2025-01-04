@@ -1,5 +1,7 @@
 import * as THREE from "three";
 import { MyBallon } from "./MyBallon.js";
+import { MyBillboard } from "./MyBillboard.js";
+import { MyMenuBallon } from "./MyMenuBallon.js";
 
 class MyPark extends THREE.Object3D {
     /**
@@ -7,7 +9,7 @@ class MyPark extends THREE.Object3D {
      * @param {*} app
      * @param {*} name
      */
-    constructor(app, name) {
+    constructor(app, name, ballons) {
         // define attributes
         super();
         this.app = app;
@@ -25,18 +27,30 @@ class MyPark extends THREE.Object3D {
         materialF.wrapS = THREE.MirroredRepeatWrapping;
         materialF.wrapT = THREE.MirroredRepeatWrapping;
 
-        this.ballons = [
-            new MyBallon(app, name + "_1"),
-            new MyBallon(app, name + "_2"),
-            new MyBallon(app, name + "_3"),
-            new MyBallon(app, name + "_4"),
-        ];
+        this.ballons = [];
+        for (const i in ballons) {
+            const index = (Number(i) + 1).toString();
+            const color = ballons[i].color;
+            this.ballons.push(new MyBallon(app, name + "_" + index, color));
+        }
 
         this.ballonsP = [
-            { x: 0, z: 0 },
-            { x: 5, z: 0 },
-            { x: 0, z: 5 },
-            { x: 5, z: 5 },
+            {
+                x: -this.ballons[0].boundingBox[0],
+                z: -this.ballons[0].boundingBox[0],
+            },
+            {
+                x: -this.ballons[0].boundingBox[0],
+                z: this.ballons[0].boundingBox[0],
+            },
+            {
+                x: this.ballons[0].boundingBox[0],
+                z: -this.ballons[0].boundingBox[0],
+            },
+            {
+                x: this.ballons[0].boundingBox[0],
+                z: this.ballons[0].boundingBox[0],
+            },
         ];
 
         this.lampsP = [
@@ -69,6 +83,10 @@ class MyPark extends THREE.Object3D {
         const mesh = new THREE.Mesh(geometry, materialF);
         mesh.position.set(0, 0.5, 0);
         this.add(mesh);
+
+        const display = new MyBillboard(app, new MyMenuBallon(this.app, name));
+        display.position.set(-sizeF / 2, 0, 0);
+        this.add(display);
     }
 }
 
@@ -91,7 +109,13 @@ class MyParkLamp extends THREE.Object3D {
         const depthB = radius * 2;
         const heightB = heightL / 2;
 
-        const material = new THREE.MeshBasicMaterial({ color: "#ffffff" });
+        const material = new THREE.MeshStandardMaterial({
+            color: "#808080",
+            metalness: 0.7,
+            roughness: 0.2,
+            emissive: 0x000000,
+            emissiveIntensity: 0.1,
+        });
 
         const geometryP = new THREE.CylinderGeometry(radius, radius, height);
         const geometryL = new THREE.CylinderGeometry(radiusL, radiusL, heightL);
@@ -116,6 +140,7 @@ class MyParkLamp extends THREE.Object3D {
             groupOut.add(groupIn);
             groupOut.rotateY((i * (2 * Math.PI)) / 3);
             groupOut.position.set(0, height / 2, 0);
+
             this.add(groupOut);
         }
 
