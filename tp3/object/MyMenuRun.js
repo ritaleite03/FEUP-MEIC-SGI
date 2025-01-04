@@ -1,10 +1,13 @@
 import * as THREE from "three";
 import { MyFont } from "../parser/MyFont.js";
 
+/**
+ * This class contains the representation of the menu displayed in the main billboard when the game is running
+ */
 class MyMenuRun extends THREE.Object3D {
     /**
      *
-     * @param {*} app
+     * @param {MyApp} app application object
      */
     constructor(app) {
         // variables
@@ -68,6 +71,9 @@ class MyMenuRun extends THREE.Object3D {
         this.add(mesh);
     }
 
+    /**
+     * Called to build the text indicating the time remaining on the screen
+     */
     buildTime() {
         const word = "ELAPSED TIME : " + this.time.toString();
         const mesh = this.fontParser.createTextMesh(word, this.sS, this.sS);
@@ -78,6 +84,9 @@ class MyMenuRun extends THREE.Object3D {
         this.add(mesh);
     }
 
+    /**
+     * Called to build the text indicating the number laps done by the player on the screen
+     */
     buildLaps() {
         const word = "LAPS : " + this.laps.toString();
         const mesh = this.fontParser.createTextMesh(word, this.sS, this.sS);
@@ -88,6 +97,9 @@ class MyMenuRun extends THREE.Object3D {
         this.add(mesh);
     }
 
+    /**
+     * Called to build the text indicating the wind layer that the player is on the screen
+     */
     buildWind() {
         const word = "WIND : " + this.wind.toUpperCase();
         const mesh = this.fontParser.createTextMesh(word, this.sS, this.sS);
@@ -98,6 +110,9 @@ class MyMenuRun extends THREE.Object3D {
         this.add(mesh);
     }
 
+    /**
+     * Called to build the text indicating the number of vouchers that the player has on the screen
+     */
     buildVouchers() {
         const word = "VOUCHERS : " + this.vouchers.toString();
         const mesh = this.fontParser.createTextMesh(word, this.sS, this.sS);
@@ -108,6 +123,9 @@ class MyMenuRun extends THREE.Object3D {
         this.add(mesh);
     }
 
+    /**
+     * Called to build the text indicating the status of the game on the screen (it can be running or paused)
+     */
     buildStatusGame() {
         const word = "GAME STATUS : " + this.statusGame.toUpperCase();
         const mesh = this.fontParser.createTextMesh(word, this.sS, this.sS);
@@ -118,6 +136,10 @@ class MyMenuRun extends THREE.Object3D {
         this.add(mesh);
     }
 
+    /**
+     * Called to update the text indicating the time remaining on the screen
+     * @param {Number} time remaing time
+     */
     updateTime(time) {
         if (this.meshTime !== undefined && this.meshTime !== null) {
             this.app.scene.remove(this.meshTime);
@@ -127,6 +149,10 @@ class MyMenuRun extends THREE.Object3D {
         this.buildTime();
     }
 
+    /**
+     * Called to update the text indicating the number laps done by the player on the screen
+     * @param {Number} laps laps performed by the player
+     */
     updateLaps(laps) {
         if (this.meshLaps !== undefined && this.meshLaps !== null) {
             this.app.scene.remove(this.meshLaps);
@@ -136,6 +162,10 @@ class MyMenuRun extends THREE.Object3D {
         this.buildLaps();
     }
 
+    /**
+     * Called to update the text indicating the wind layer that the player is on the screen
+     * @param {String} wind name of the wind layer (it can be north, south, east, west)
+     */
     updateWind(wind) {
         if (this.meshWind !== undefined && this.meshWind !== null) {
             this.app.scene.remove(this.meshWind);
@@ -145,6 +175,10 @@ class MyMenuRun extends THREE.Object3D {
         this.buildWind();
     }
 
+    /**
+     * Called to update the text indicating the number of vouchers that the player has on the screen
+     * @param {Number} vouchers number of vouchers of the player
+     */
     updateVouchers(vouchers) {
         if (this.meshVouchers !== undefined && this.meshVouchers !== null) {
             this.app.scene.remove(this.meshVouchers);
@@ -154,6 +188,10 @@ class MyMenuRun extends THREE.Object3D {
         this.buildVouchers();
     }
 
+    /**
+     * Called to build the text indicating the status of the game on the screen (it can be running or paused)
+     * @param {String} statusGame status of the game (it can be running or paused)
+     */
     updateStatusGame(statusGame) {
         if (this.meshStatusGame !== undefined && this.meshStatusGame !== null) {
             this.app.scene.remove(this.meshStatusGame);

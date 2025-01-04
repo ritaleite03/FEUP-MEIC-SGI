@@ -1,16 +1,36 @@
 import * as THREE from "three";
 
+/**
+ * This class contains the representation of a ballon
+ */
 class MyBallon extends THREE.Object3D {
-    constructor(app, name, color, route) {
+    /**
+     *
+     * @param {MyApp} app application object
+     * @param {String} name name indicating if ballons is from player or oponent
+     * @param {String} color color of the ballon
+     * @param {Number} velocity velocity of the ballon (only used in the ballons of the oponent)
+     * @param {Array<THREE.Vector3>} route list of the positions in the path of the ballon (only used in the ballons of the oponent)
+     */
+    constructor(app, name, color, velocity, route) {
         // variables
         super();
         this.app = app;
-        this.vouchers = 0;
-        this.route = route;
-        this.laps = 0;
-        this.shadow = null;
-        this.color = color;
         this.height = 12;
+        this.vouchers = 0;
+        this.laps = 0;
+        this.color = color;
+
+        // variables used in player ballon
+        this.shadow = null;
+        this.penalty = false;
+
+        // variables used in oponent ballon
+        this.velocity = velocity;
+        this.route = route;
+        this.clock = new THREE.Clock();
+        this.mixerTime = 0;
+        this.mixerPause = false;
 
         if (this.color === undefined) this.color = "#ffffff";
 
@@ -48,6 +68,7 @@ class MyBallon extends THREE.Object3D {
         mesh_link2.position.set(0.2, 0.75, -0.2);
         mesh_link3.position.set(-0.2, 0.75, 0.2);
         mesh_link4.position.set(0.2, 0.75, 0.2);
+
         // combine objects
         const group = new THREE.Group();
         group.add(mesh_base);
@@ -73,6 +94,50 @@ class MyBallon extends THREE.Object3D {
         const sizeY = Math.abs(boundingB.max.y) + Math.abs(boundingB.min.y);
         const sizeZ = Math.abs(boundingB.max.z) + Math.abs(boundingB.min.z);
         this.boundingBox = [sizeX, sizeY, sizeZ];
+
+        // build wind indication
+        const materialWind = new THREE.MeshBasicMaterial({ color: "#ffffff" });
+        const cylinder = new THREE.CylinderGeometry(0.25, 0.25, 1);
+        const cylinderMesh = new THREE.Mesh(cylinder, materialWind);
+        cylinderMesh.rotateX(Math.PI / 2);
+        cylinderMesh.position.set(0, -1, 1);
+
+        const cone = new THREE.ConeGeometry(0.5, 1);
+        const coneMesh = new THREE.Mesh(cone, materialWind);
+        coneMesh.rotateX(Math.PI / 2);
+        coneMesh.position.set(0, -1, 2);
+
+        this.groupSouth = new THREE.Group();
+        this.groupSouth.add(cylinderMesh);
+        this.groupSouth.add(coneMesh);
+
+        this.groupWest = this.groupSouth.clone();
+        this.groupWest.rotateY(-Math.PI / 2);
+
+        this.groupNorth = this.groupWest.clone();
+        this.groupNorth.rotateY(-Math.PI / 2);
+
+        this.groupEast = this.groupNorth.clone();
+        this.groupEast.rotateY(-Math.PI / 2);
+
+        this.groupWind = this.groupNorth.clone();
+    }
+
+    /**
+     * Called to update arrow indicating wind direction
+     * @param {String} layer name of the wind layer (it can be north, south, east or west)
+     */
+    updateWindIndicating(layer) {
+        if (this.groupWind !== null && this.groupWind !== undefined) {
+            this.remove(this.groupWind);
+        }
+
+        if (layer === "north") this.groupWind = this.groupNorth.clone();
+        if (layer === "south") this.groupWind = this.groupSouth.clone();
+        if (layer === "east") this.groupWind = this.groupEast.clone();
+        if (layer === "west") this.groupWind = this.groupWest.clone();
+
+        this.add(this.groupWind);
     }
 
     /**
@@ -83,9 +148,6 @@ class MyBallon extends THREE.Object3D {
             this.app.scene.remove(this.shadow);
         }
 
-        // const white_material = new THREE.MeshBasicMaterial({
-        //     color: thicolor,
-        // });
         const geometryS = new THREE.CylinderGeometry(2, 2, 1);
         this.shadow = new THREE.Mesh(geometryS, this.material);
         this.shadow.position.set(this.position.x, 0.5, this.position.z);
@@ -115,11 +177,28 @@ class MyBallon extends THREE.Object3D {
      */
     moveWind(n, s, e, w) {
         const posY = this.position.y;
-        // move ballon
-        if (posY > 5 && posY <= 10) this.position.z -= 1 * n; // layer 1 - North
-        if (posY > 10 && posY <= 15) this.position.z += 1 * s; // layer 2 - South
-        if (posY > 15 && posY <= 20) this.position.x += 1 * e; // layer 3 - East
-        if (posY > 20 && posY <= 25) this.position.x -= 1 * w; // layer 4 - West
+
+        // layer 1 - North
+        if (posY > 5 && posY <= 10) {
+            this.position.z -= 1 * n;
+            this.updateWindIndicating("north");
+        }
+        // layer 2 - South
+        if (posY > 10 && posY <= 15) {
+            this.position.z += 1 * s;
+            this.updateWindIndicating("south");
+        }
+        // layer 3 - East
+        if (posY > 15 && posY <= 20) {
+            this.position.x += 1 * e;
+            this.updateWindIndicating("east");
+        }
+        // layer 4 - West
+        if (posY > 20 && posY <= 25) {
+            this.position.x -= 1 * w;
+            this.updateWindIndicating("west");
+        }
+
         // move shadow
         this.moveShadowBallon();
     }
@@ -131,15 +210,79 @@ class MyBallon extends THREE.Object3D {
      */
     clone(recursive = true) {
         const newBallon = super.clone(recursive);
+
+        // variables
         newBallon.app = this.app;
         newBallon.vouchers = this.vouchers;
         newBallon.laps = this.laps;
-        newBallon.route = this.route;
-        newBallon.shadow = this.shadow;
         newBallon.height = this.height;
         newBallon.color = this.color;
         newBallon.material.color = this.color;
+
+        // variables used in player ballon
+        newBallon.shadow = this.shadow;
+
+        // variables used in oponent ballon
+        newBallon.route = this.route;
+        newBallon.velocity = this.velocity;
+
         return newBallon;
+    }
+
+    /**
+     * Called to define animation of the oponent ballon because it moves automatic
+     */
+    defineAnimation() {
+        if (this.route !== null && this.route !== undefined) {
+            this.spline = new THREE.CatmullRomCurve3(this.route);
+
+            let number = [];
+            for (const i in this.route) number.push(i);
+
+            const posKeyFrame = new THREE.VectorKeyframeTrack(
+                ".position",
+                number,
+                this.route.flatMap((v) => [v.x, v.y, v.z]),
+                THREE.InterpolateSmooth
+            );
+            const posClip = new THREE.AnimationClip(
+                "positionAnimation",
+                number.length,
+                [posKeyFrame]
+            );
+
+            this.mixer = new THREE.AnimationMixer(this);
+            this.positionAction = this.mixer.clipAction(posClip);
+        }
+    }
+
+    /**
+     * Called to move oponent ballon according with the animation
+     */
+    moveAnimation() {
+        // update mixer
+        const delta = this.clock.getDelta() * this.velocity;
+        this.mixer.update(delta);
+
+        // get actions
+        const actions = this.mixer._actions;
+
+        for (let i = 0; i < actions.length; i++) {
+            const track = actions[i]._clip.tracks[0];
+
+            //if (
+            //    track.name === ".position" &&
+            //    this.enableAnimationPosition === false
+            //) {
+            //    actions[i].stop();
+            //} else {
+
+            if (!actions[i].isRunning()) {
+                actions[i].play();
+            }
+
+            //}
+        }
     }
 }
 

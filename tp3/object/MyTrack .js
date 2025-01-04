@@ -1,10 +1,13 @@
 import * as THREE from "three";
 
+/**
+ * This class contains the representation of the track
+ */
 class MyTrack extends THREE.Object3D {
     /**
      *
-     * @param {*} app
-     * @param {*} points
+     * @param {MyApp} app application object
+     * @param {Array} points points of the path
      */
     constructor(app, points) {
         // define attributes

@@ -1,10 +1,17 @@
 import * as THREE from "three";
 import { MyFont } from "../parser/MyFont.js";
 
+/**
+ * This class contains the representation of the menu displayed in the main billboard when the game is finish
+ */
 class MyMenuFinish extends THREE.Object3D {
     /**
      *
-     * @param {*} app
+     * @param {MyApp} app application object
+     * @param {String} winner name of the winner
+     * @param {String} loser name of the loser
+     * @param {Number} time time spent playing
+     * @param {Boolean} draw true if it was a draw, false otherwise
      */
     constructor(app, winner, loser, time, draw) {
         // variables
@@ -15,8 +22,8 @@ class MyMenuFinish extends THREE.Object3D {
         this.depth = 0.5;
 
         this.sM = 10;
-        this.sB = 6;
-        this.sS = 4;
+        this.sB = 8;
+        this.sS = 6;
 
         this.fontParser = new MyFont();
 
@@ -50,17 +57,21 @@ class MyMenuFinish extends THREE.Object3D {
     }
 
     /**
-     * Called to build title of the game on the screen
+     * Called to build text indicating title of the game on the screen
      */
     buildTitle() {
         const title = "BALLONS RACE";
         const mesh = this.fontParser.createTextMesh(title, this.sB, this.sB);
-        const x = -(title.length * this.sB) / 2;
+        const x = -(title.length * this.sB) / 2 + this.sM / 2;
         const y = this.height / 2 - this.sB;
         mesh.position.set(x, y, this.depth + 0.001);
         this.add(mesh);
     }
 
+    /**
+     * Called to build text indicating time spent on the screen
+     * @param {Number} time time spent playing
+     */
     buildTime(time) {
         const word = "TIME SPENT : " + time.toString();
         const mesh = this.fontParser.createTextMesh(word, this.sS, this.sS);
@@ -70,6 +81,10 @@ class MyMenuFinish extends THREE.Object3D {
         this.add(mesh);
     }
 
+    /**
+     * Called to build text indicating name of the winner on the screen
+     * @param {String} winner name of the winner
+     */
     buildWinner(winner) {
         const word = "WINNER : " + winner.toUpperCase();
         const mesh = this.fontParser.createTextMesh(word, this.sS, this.sS);
@@ -79,6 +94,10 @@ class MyMenuFinish extends THREE.Object3D {
         this.add(mesh);
     }
 
+    /**
+     * Called to build text indicating name of the loser on the screen
+     * @param {String} loser name of the loser
+     */
     buildLoser(loser) {
         const word = "LOSER : " + loser.toUpperCase();
         const mesh = this.fontParser.createTextMesh(word, this.sS, this.sS);
@@ -88,6 +107,9 @@ class MyMenuFinish extends THREE.Object3D {
         this.add(mesh);
     }
 
+    /**
+     * Called to build text indicating that is was a draw on the screen
+     */
     buildDraw() {
         const word = "THERE WAS A DRAW";
         const mesh = this.fontParser.createTextMesh(word, this.sS, this.sS);
@@ -97,6 +119,9 @@ class MyMenuFinish extends THREE.Object3D {
         this.add(mesh);
     }
 
+    /**
+     * Called to build HOME button
+     */
     buildHomeButton() {
         const word = "HOME";
         const mesh = this.fontParser.createTextMesh(word, this.sB, this.sB);
@@ -121,6 +146,9 @@ class MyMenuFinish extends THREE.Object3D {
         this.add(geoMesh);
     }
 
+    /**
+     * Called to build the RESTART button
+     */
     buildRestartButton() {
         const word = "RESTART";
         const mesh = this.fontParser.createTextMesh(word, this.sB, this.sB);

@@ -1,7 +1,13 @@
 import * as THREE from "three";
 import { MyShader } from "./../MyShader.js";
 
+/**
+ * This class contains the representation of the obstacle
+ */
 class MyObstacle extends THREE.Object3D {
+    /**
+     *
+     */
     constructor() {
         super();
         this.activated = true;
@@ -32,12 +38,20 @@ class MyObstacle extends THREE.Object3D {
         }, 100);
     }
 
+    /**
+     * Called to update values of the shader
+     * @param {Number} value
+     */
     update(value) {
         if (this.shader.ready) {
             this.shader.updateUniformsValue("time", value);
         }
     }
 
+    /**
+     * Called to desactivate the obstacle for a specific time
+     * @param {Number} penalty duration of the penalty
+     */
     async desactivate(penalty) {
         this.activated = false;
         await this.sleep(penalty * 1000 + 10000);
@@ -46,7 +60,7 @@ class MyObstacle extends THREE.Object3D {
 
     /**
      * Called to make the function wait for n seconds
-     * @param {Number} ms
+     * @param {Number} ms seconds to wait
      * @returns
      */
     sleep(ms) {

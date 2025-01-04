@@ -468,9 +468,30 @@ class MyParser {
             );
         }
         for (const i in data.ballons) {
+            // define color
             let color = data.ballons[i].color;
             color = new THREE.Color().setRGB(color.r, color.g, color.b);
-            this.parkOponent.push({ color: color });
+
+            // define velocity
+            let velocity = data.ballons[i].velocity
+                ? data.ballons[i].velocity
+                : null;
+
+            // define route
+            let route = [];
+
+            for (const j in data.ballons[i].route) {
+                const x = -data.ballons[i].route[j].x * 5;
+                const y = data.ballons[i].route[j].y * 5;
+                const z = data.ballons[i].route[j].z * 5;
+                route.push(new THREE.Vector3(x, y, z));
+            }
+
+            this.parkOponent.push({
+                color: color,
+                velocity: velocity,
+                route: route,
+            });
         }
     }
 
@@ -1457,7 +1478,7 @@ class MyParser {
         const length_t = firstRowfirstPoint.distanceTo(firstRowlastPoint);
         const length_s = firstRowlastPoint.distanceTo(LastRowLastPoint);
 
-        return length_s, length_t;
+        return [length_s, length_t];
     }
 
     /**
