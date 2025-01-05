@@ -22,6 +22,10 @@
             }
         },
         "textures": {
+            "t_pub1": {
+                "filepath": "scenes/textures/pub1.jpg",
+                "isVideo": false
+            },
             "t_wood": {
                 "filepath": "scenes/textures/wood.jpg",
                 "isVideo": false
@@ -44,8 +48,26 @@
             }
         },
         "materials": {
+            "black": {
+                "color": { "r": 0.0, "g": 0.0, "b": 0.0 },
+                "emissive": { "r": 0.0, "g": 0.0, "b": 0.0 },
+                "specular": { "r": 0, "g": 0, "b": 0 },
+                "shininess": 0,
+                "twosided": false,
+                "transparent": false,
+                "opacity": 2.5
+            },
             "white": {
                 "color": { "r": 1.0, "g": 1.0, "b": 1.0 },
+                "emissive": { "r": 0.0, "g": 0.0, "b": 0.0 },
+                "specular": { "r": 0, "g": 0, "b": 0 },
+                "shininess": 0,
+                "twosided": false,
+                "transparent": false,
+                "opacity": 2.5
+            },
+            "red": {
+                "color": { "r": 1.0, "g": 0.0, "b": 0.0 },
                 "emissive": { "r": 0.0, "g": 0.0, "b": 0.0 },
                 "specular": { "r": 0, "g": 0, "b": 0 },
                 "shininess": 0,
@@ -106,6 +128,18 @@
                 "textureref": "t_grass",
                 "texlength_s": 20,
                 "texlength_t": 20
+            },
+            "pub1": {
+                "color": { "r": 1.0, "g": 1.0, "b": 1.0 },
+                "emissive": { "r": 0.0, "g": 0.0, "b": 0.0 },
+                "specular": { "r": 0, "g": 0, "b": 0 },
+                "shininess": 0,
+                "twosided": false,
+                "transparent": false,
+                "opacity": 2.5,
+                "textureref": "t_pub1",
+                "texlength_s": 20,
+                "texlength_t": 10
             }
         },
         "cameras": {
@@ -141,8 +175,500 @@
                         "tree_1",
                         "tree_2",
                         "tree_3",
-                        "bump"
+                        "bump",
+                        "stand",
+                        "grid_stand",
+                        "grid_stand1",
+                        "grid_stand2"
                     ]
+                }
+            },
+            "grid_stand2": {
+                "type": "node",
+                "children": { "nodesList": ["grid_stand"] },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 0, "y": 0, "z": 11 }
+                    }
+                ]
+            },
+            "grid_stand1": {
+                "type": "node",
+                "children": { "nodesList": ["grid_stand"] },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 0, "y": 0, "z": -11 }
+                    }
+                ]
+            },
+            "grid_stand": {
+                "type": "node",
+                "children": { "nodesList": ["grid"] },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": -100, "y": 0, "z": 0 }
+                    }
+                ]
+            },
+            "grid": {
+                "type": "node",
+                "materialref": { "materialId": "black" },
+                "children": {
+                    "nodesList": [
+                        "grid_horizontal",
+                        "grid_horizontal1",
+                        "grid_vertical",
+                        "grid_vertical1",
+                        "grid_vertical2",
+                        "grid_vertical3",
+                        "grid_vertical4",
+                        "grid_leg1",
+                        "grid_leg2",
+                        "grid_leg3",
+                        "grid_leg4"
+                    ]
+                }
+            },
+            "grid_leg4": {
+                "type": "node",
+                "children": {
+                    "nodesList": ["grid_leg3"]
+                },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 0, "y": 0, "z": 5 }
+                    }
+                ]
+            },
+            "grid_leg3": {
+                "type": "node",
+                "children": { "nodesList": ["grid_leg_temp"] },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 0, "y": 1, "z": -2.5 }
+                    },
+                    { "type": "rotate", "amount": { "x": 0, "y": 0, "z": -30 } }
+                ]
+            },
+            "grid_leg2": {
+                "type": "node",
+                "children": {
+                    "nodesList": ["grid_leg1"]
+                },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 0, "y": 0, "z": 5 }
+                    }
+                ]
+            },
+            "grid_leg1": {
+                "type": "node",
+                "children": { "nodesList": ["grid_leg_temp"] },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 0, "y": 1, "z": -2.5 }
+                    },
+                    { "type": "rotate", "amount": { "x": 0, "y": 0, "z": 30 } }
+                ]
+            },
+            "grid_leg_temp": {
+                "type": "node",
+                "children": {
+                    "prim": {
+                        "type": "cylinder",
+                        "capsclose": true,
+                        "base": 0.2,
+                        "top": 0.2,
+                        "height": 1,
+                        "slices": 10,
+                        "stacks": 10
+                    }
+                },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 0, "y": -0.5, "z": 0 }
+                    }
+                ]
+            },
+            "grid_vertical4": {
+                "type": "node",
+                "children": {
+                    "nodesList": ["grid_vertical"]
+                },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 0, "y": 0, "z": -2.4 }
+                    }
+                ]
+            },
+            "grid_vertical3": {
+                "type": "node",
+                "children": {
+                    "nodesList": ["grid_vertical"]
+                },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 0, "y": 0, "z": 2.4 }
+                    }
+                ]
+            },
+            "grid_vertical2": {
+                "type": "node",
+                "children": {
+                    "nodesList": ["grid_vertical"]
+                },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 0, "y": 0, "z": 4.8 }
+                    }
+                ]
+            },
+            "grid_vertical1": {
+                "type": "node",
+                "children": {
+                    "nodesList": ["grid_vertical"]
+                },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 0, "y": 0, "z": -4.8 }
+                    }
+                ]
+            },
+            "grid_vertical": {
+                "type": "node",
+                "children": {
+                    "prim": {
+                        "type": "cylinder",
+                        "capsclose": true,
+                        "base": 0.2,
+                        "top": 0.2,
+                        "height": 5,
+                        "slices": 10,
+                        "stacks": 10
+                    }
+                },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 0, "y": 3.5, "z": 0 }
+                    }
+                ]
+            },
+            "grid_horizontal1": {
+                "type": "node",
+                "children": { "nodesList": ["grid_horizontal"] },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 0, "y": 5, "z": 0 }
+                    }
+                ]
+            },
+            "grid_horizontal": {
+                "type": "node",
+                "children": {
+                    "prim": {
+                        "type": "cylinder",
+                        "capsclose": true,
+                        "base": 0.2,
+                        "top": 0.2,
+                        "height": 10,
+                        "slices": 10,
+                        "stacks": 10
+                    }
+                },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 0, "y": 1, "z": 0 }
+                    },
+                    { "type": "rotate", "amount": { "x": 90, "y": 0, "z": 0 } }
+                ]
+            },
+            "stand": {
+                "type": "node",
+                "materialref": { "materialId": "wood" },
+                "children": {
+                    "nodesList": [
+                        "stand_seat1",
+                        "stand_seat2",
+                        "stand_seat3",
+                        "stand_seat4",
+                        "stand_seat_last",
+                        "placard",
+                        "stand_limit_back",
+
+                        "light",
+                        "light1",
+                        "light2",
+                        "light3",
+                        "light4"
+                    ]
+                },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": -20, "y": 0, "z": 0 }
+                    }
+                ]
+            },
+            "light4": {
+                "type": "node",
+                "children": {
+                    "nodesList": ["light"]
+                },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 0, "y": 0, "z": 35 }
+                    }
+                ]
+            },
+            "light3": {
+                "type": "node",
+                "children": {
+                    "nodesList": ["light"]
+                },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 0, "y": 0, "z": -35 }
+                    }
+                ]
+            },
+            "light2": {
+                "type": "node",
+                "children": {
+                    "nodesList": ["light"]
+                },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 0, "y": 0, "z": 70 }
+                    }
+                ]
+            },
+            "light1": {
+                "type": "node",
+                "children": {
+                    "nodesList": ["light"]
+                },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 0, "y": 0, "z": -70 }
+                    }
+                ]
+            },
+            "light": {
+                "type": "node",
+                "materialref": { "materialId": "black" },
+                "children": {
+                    "nodesList": [
+                        "stand_light_struture_horizontal",
+                        "stand_light_struture_vertical",
+                        "stand_light_struture_light",
+                        "stand_light_light"
+                    ]
+                }
+            },
+            "stand_light_light": {
+                "type": "node",
+                "children": {
+                    "prim": {
+                        "type": "spotlight",
+                        "angle": 90,
+                        "intensity": 500,
+                        "distance": 34,
+                        "color": { "r": 1, "g": 1, "b": 1 },
+                        "position": { "x": -118.2, "y": 33.6, "z": 0 },
+                        "target": { "x": -118.2, "y": 0, "z": 0 }
+                    }
+                }
+            },
+            "stand_light_struture_light": {
+                "type": "node",
+                "children": {
+                    "prim": {
+                        "type": "box",
+                        "xyz1": { "x": -1, "y": -0.4, "z": -1 },
+                        "xyz2": { "x": 1, "y": 0.4, "z": 1 }
+                    }
+                },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": -118.2, "y": 34, "z": 0 }
+                    }
+                ]
+            },
+            "stand_light_struture_vertical": {
+                "type": "node",
+                "children": {
+                    "prim": {
+                        "type": "box",
+                        "xyz1": { "x": -2, "y": -0.2, "z": -0.2 },
+                        "xyz2": { "x": 2, "y": 0.2, "z": 0.2 }
+                    }
+                },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": -121.2, "y": 34, "z": 0 }
+                    }
+                ]
+            },
+            "stand_light_struture_horizontal": {
+                "type": "node",
+                "children": {
+                    "prim": {
+                        "type": "box",
+                        "xyz1": { "x": -0.2, "y": -2, "z": -0.2 },
+                        "xyz2": { "x": 0.2, "y": 2, "z": 0.2 }
+                    }
+                },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": -123, "y": 32, "z": 0 }
+                    }
+                ]
+            },
+            "stand_limit_back": {
+                "type": "node",
+                "materialref": { "materialId": "black" },
+                "children": {
+                    "prim": {
+                        "type": "box",
+                        "xyz1": { "x": -1, "y": -15, "z": -80 },
+                        "xyz2": { "x": 1, "y": 15, "z": 80 }
+                    }
+                },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": -123, "y": 15, "z": 0 }
+                    }
+                ]
+            },
+
+            "placard": {
+                "type": "node",
+                "materialref": { "materialId": "pub1" },
+                "children": {
+                    "prim": {
+                        "type": "box",
+                        "xyz1": { "x": -40, "y": -5, "z": -80 },
+                        "xyz2": { "x": 40, "y": 5, "z": 80 }
+                    }
+                },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": -121.9, "y": 25, "z": 0 }
+                    },
+                    {
+                        "type": "scale",
+                        "amount": { "x": 0.0025, "y": 1, "z": 1 }
+                    }
+                ]
+            },
+            "stand_seat_last": {
+                "type": "node",
+                "children": {
+                    "nodesList": ["stand_seat"]
+                },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": -118, "y": 10, "z": 0 }
+                    },
+                    {
+                        "type": "scale",
+                        "amount": { "x": 2, "y": 5, "z": 1 }
+                    }
+                ]
+            },
+            "stand_seat4": {
+                "type": "node",
+                "children": {
+                    "nodesList": ["stand_seat"]
+                },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": -112, "y": 8, "z": 0 }
+                    },
+                    {
+                        "type": "scale",
+                        "amount": { "x": 1, "y": 4, "z": 1 }
+                    }
+                ]
+            },
+            "stand_seat3": {
+                "type": "node",
+                "children": {
+                    "nodesList": ["stand_seat"]
+                },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": -108, "y": 6, "z": 0 }
+                    },
+                    {
+                        "type": "scale",
+                        "amount": { "x": 1, "y": 3, "z": 1 }
+                    }
+                ]
+            },
+            "stand_seat2": {
+                "type": "node",
+                "children": {
+                    "nodesList": ["stand_seat"]
+                },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": -104, "y": 4, "z": 0 }
+                    },
+                    {
+                        "type": "scale",
+                        "amount": { "x": 1, "y": 2, "z": 1 }
+                    }
+                ]
+            },
+            "stand_seat1": {
+                "type": "node",
+                "children": {
+                    "nodesList": ["stand_seat"]
+                },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": -100, "y": 2, "z": 0 }
+                    }
+                ]
+            },
+            "stand_seat": {
+                "type": "node",
+                "children": {
+                    "prim": {
+                        "type": "box",
+                        "xyz1": { "x": -2, "y": -2, "z": -80 },
+                        "xyz2": { "x": 2, "y": 2, "z": 80 }
+                    }
                 }
             },
             "bump": {

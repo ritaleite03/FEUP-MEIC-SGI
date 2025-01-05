@@ -14,7 +14,7 @@ class MyFirework {
         this.points = null;
 
         this.material = new THREE.PointsMaterial({
-            size: 0.5,
+            size: 0.25,
             color: s_color,
             opacity: 1,
             vertexColors: true,
