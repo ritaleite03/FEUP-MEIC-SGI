@@ -8,8 +8,15 @@ import { MyMenuRun } from "./object/MyMenuRun.js";
 import { MyMenuFinish } from "./object/MyMenuFinish.js";
 
 class MyGame {
-
-    constructor(app, track, powerUps, powerDowns, routes, parkPlayer, parkOponent) {
+    constructor(
+        app,
+        track,
+        powerUps,
+        powerDowns,
+        routes,
+        parkPlayer,
+        parkOponent
+    ) {
         this.app = app;
         this.obstaclePenalty = 1;
         this.fireworks = [];
@@ -78,13 +85,13 @@ class MyGame {
         // Animation
         this.clock = new THREE.Clock();
         this.lapTime = (3 + Math.random()) * 60;
-        this.currentLapTime = 0;  
+        this.currentLapTime = 0;
         //this.prevTime = 0;
-        //this.speedFactor = 0.1; 
-        //this.lapCount = 0;               
-        //this.lapTimes = [];            
-        //this.speed = 0.1;               
-        //this.totalTime = 0;            
+        //this.speedFactor = 0.1;
+        //this.lapCount = 0;
+        //this.lapTimes = [];
+        //this.speed = 0.1;
+        //this.totalTime = 0;
         //for (let i = 0; i < 3; i++) {
         //    const randomTime = Math.random() * + 4;
         //    this.lapTimes.push(randomTime * 60);
@@ -92,19 +99,19 @@ class MyGame {
     }
 
     /**
-     * 
+     *
      */
-    randomElements(number, elements){
+    randomElements(number, elements) {
         const numbers = new Set();
-        const result = []
+        const result = [];
 
         while (numbers.size < number) {
-          const randomNumber = Math.floor(Math.random() * (elements.length));
-          numbers.add(randomNumber);
-          result.push(elements[randomNumber]);
+            const randomNumber = Math.floor(Math.random() * elements.length);
+            numbers.add(randomNumber);
+            result.push(elements[randomNumber]);
         }
 
-        return result
+        return result;
     }
 
     /**
@@ -135,7 +142,6 @@ class MyGame {
         for (const i in this.powerDowns) {
             this.app.scene.add(this.powerDowns[i]);
         }
-        
     }
 
     /**
@@ -164,7 +170,6 @@ class MyGame {
      * Called to run the game
      */
     async runGame() {
-
         //const postTrackX = -this.track.points[0].x //* this.track.widthS;
         //const postTrackZ = this.track.points[0].z //* this.track.widthS;
 
@@ -216,7 +221,6 @@ class MyGame {
         let posPrevO = null;
         let pointO1 = this.ballonO.route[0];
         pointO1 = new THREE.Vector3(pointO1.x, pointO1.y, pointO1.z);
-        this.ballonO.laps += 1;
 
         const timerInterval = setInterval(() => {
             if (timeLeft <= 0 || this.state === "finish") {
@@ -247,18 +251,11 @@ class MyGame {
             const now = this.ballonO.position.clone();
 
             // check if finish line was passed
-            if (
-                now.x === pointO1.x &&
-                now.y === pointO1.y &&
-                now.z === pointO1.z
-            ) {
-                if (posPrevO !== null) {
-                    posPrevO = null;
-                    this.ballonO.laps += 1;
-                }
-            } else {
-                posPrevO = now.clone();
+            if (posPrevO !== null && posPrevO !== undefined) {
+                const finish = this.checkFinishLine(posPrevO, now);
+                if (finish === true) this.ballonO.laps += 1;
             }
+            posPrevO = now.clone();
         }, 10);
 
         const playerMoviment = setInterval(async () => {
@@ -367,7 +364,7 @@ class MyGame {
         const posCurX = posCurTemp.x; //* this.track.widthS;
         const posCurY = posCurTemp.y; //* this.track.widthS;
         const posCurZ = posCurTemp.z; //* this.track.widthS;
-        const posCur = new THREE.Vector3(-posCurX, posCurY, posCurZ);
+        const posCur = new THREE.Vector3(posCurX, posCurY, posCurZ);
 
         // define equation plane finish
         const v1 = this.track.finish.normalize();
@@ -389,7 +386,7 @@ class MyGame {
         // define equation direction curve first two points
         const curve1 = this.track.points[0];
         const curve2 = this.track.points[2];
-        let cx = -(curve1.x - curve2.x);
+        let cx = curve1.x - curve2.x;
         let cy = curve1.y - curve2.y;
         let cz = curve1.z - curve2.z;
         const vc = new THREE.Vector3(cx, cy, cz).normalize();
@@ -404,20 +401,18 @@ class MyGame {
         // direction and plane are parallels (no intersection)
         if (den === 0) return false;
 
-        const t = num / den;
+        const t = -posOld.z / dz;
         const interX = posOld.x + t * dx;
         const interY = posOld.y + t * dy;
-        const interZ = posOld.z + t * dz;
-        const intersection = new THREE.Vector3(interX, interY, interZ);
+        const intersection = new THREE.Vector3(interX, interY, 0);
         const center = new THREE.Vector3(posCur.x, interY, posCur.z);
-
         const righDir = dx * cx + dy * cy + dz * cz;
         const dist = center.distanceTo(intersection);
 
         // intersection not between posOld and posNew
-        if (t < 0 || t > 1) return false;
+        if (t < 0 || t >= 1) return false;
         // intersection outside track limits
-        if (dist > this.track.widthS + 1) return false; //####################### Não sei bem #########################################
+        if (dist > this.track.width / 2 + 1) return false;
         // intersection when going backwards
         if (righDir > 0) return false;
         // complete
@@ -473,10 +468,8 @@ class MyGame {
                     distX <= bbxB[0] / 2 + bbxP[0] / 2 &&
                     distY <= bbxB[1] / 2 + bbxP[1] / 2 &&
                     distZ <= bbxB[2] / 2 + bbxP[2] / 2
-                    
                 ) {
                     // check if they are colliding
-                    console.log("Collide")
                     this.powerUps[i].desactivate(this.obstaclePenalty);
                     return true;
                 }
@@ -532,7 +525,7 @@ class MyGame {
         const position = ballon.shadow.position;
         const radius = ballon.shadow.geometry.parameters.radiusTop;
         const samples = 1000;
-        const distMax = radius + this.track.width; //* this.track.widthS;
+        const distMax = radius + this.track.width / 2; //* this.track.widthS;
 
         // check colision with points of the track
         for (let i = 0; i <= samples; i++) {
@@ -731,11 +724,11 @@ class MyGame {
     //    for (let i = 0; i < route.length; i++){
     //        keyframes.push(...route[i])
     //    }
-    //    const positionKF = new THREE.VectorKeyframeTrack('.position',  
+    //    const positionKF = new THREE.VectorKeyframeTrack('.position',
     //        time,
     //        keyframes,
-    //        THREE.InterpolateSmooth  
-    //        // THREE.InterpolateLinear      // (default), 
+    //        THREE.InterpolateSmooth
+    //        // THREE.InterpolateLinear      // (default),
     //        // THREE.InterpolateDiscrete,
     //    )
 
@@ -751,12 +744,11 @@ class MyGame {
     //    positionAction.play()
     //}
 
-
     //update() {
     //    //const delta = this.clock.getDelta()
     //    //this.mixer.update(delta)
     //}
-    
+
     update() {
         let t = this.app.clock.getElapsedTime();
 
@@ -788,24 +780,24 @@ class MyGame {
         }
 
         //if (this.ballonO !== null && this.ballonP !== null && this.state == "game"){
-    //
-        //    this.currentLapTime += this.clock.getDelta(); 
-//
+        //
+        //    this.currentLapTime += this.clock.getDelta();
+        //
         //    let time = (this.currentLapTime / this.lapTime) % 1;
-        //    
+        //
         //    const position =  this.routes[1].route.getPointAt(time);
-        //    
+        //
         //    this.ballonO.position.copy(position);
-        //    
+        //
         //    if (this.currentLapTime >= this.lapTime) {
         //        console.log("Lap complet!");
         //        this.currentLapTime = 0;
         //        this.ballonO.laps +=1;
-        //        this.lapTime = (3 + Math.random()) * 60; 
+        //        this.lapTime = (3 + Math.random()) * 60;
         //    }
-    //
+        //
         //}
-//
+        //
         // end firework
         if (
             (this.state === "game" || this.state === "initial") &&
@@ -854,12 +846,12 @@ class MyGame {
     }
 
     showRoutes() {
-        if(this.showRoute)
-            this.routes.forEach(route => {
+        if (this.showRoute)
+            this.routes.forEach((route) => {
                 this.app.scene.add(route.debugRoute());
             });
-        else{
-            this.routes.forEach(route => {
+        else {
+            this.routes.forEach((route) => {
                 this.app.scene.remove(route.debugRoute());
             });
         }
