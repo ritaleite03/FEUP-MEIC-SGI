@@ -24,6 +24,10 @@ class MyFirework {
 
         this.height = 50;
         this.speed = 20;
+        this.time = Date.now();
+
+        this.vV = null;
+        this.vP = null;
 
         this.launch(vertices);
     }
@@ -40,7 +44,20 @@ class MyFirework {
         let x = THREE.MathUtils.randFloat(-5, 5);
         let y = THREE.MathUtils.randFloat(this.height * 0.9, this.height * 1.1);
         let z = THREE.MathUtils.randFloat(-5, 5);
-        this.dest.push(vertices[0] + x, vertices[1] + y, vertices[2] + z);
+
+        let vx = THREE.MathUtils.randFloat(-20, 20);
+        let vy = THREE.MathUtils.randFloat(50, 80);
+        let vz = THREE.MathUtils.randFloat(-20, 20);
+        let t = THREE.MathUtils.randFloat(1, 5);
+
+        const xf = vertices[0] + vx * t;
+        const yf = vertices[1] + vy * t + 0.5 * -9.8 * t * t;
+        const zf = vertices[2] + vz * t;
+
+        this.vV = [vx, vy, vz];
+        this.vP = [vertices[0], vertices[1], vertices[2]];
+
+        this.dest.push(xf, yf, zf);
 
         this.geometry = new THREE.BufferGeometry();
         this.geometry.setAttribute(
@@ -125,14 +142,23 @@ class MyFirework {
 
             // lerp particle positions
             let j = 0;
+            const timeNow = Date.now();
+            const t = (timeNow - this.time) / 1000;
             for (let i = 0; i < vertices.length; i += 3) {
-                vertices[i] += (this.dest[i] - vertices[i]) / this.speed;
-                vertices[i + 1] +=
-                    (this.dest[i + 1] - vertices[i + 1]) / this.speed;
-                vertices[i + 2] +=
-                    (this.dest[i + 2] - vertices[i + 2]) / this.speed;
+                if (vertices.length === 3) {
+                    vertices[i] = this.vP[0] + this.vV[0] * t;
+                    vertices[i + 1] = this.vP[1] + this.vV[1] * t - 4.9 * t * t;
+                    vertices[i + 2] = this.vP[2] + this.vV[2] * t;
+                } else {
+                    vertices[i] += (this.dest[i] - vertices[i]) / this.speed;
+                    vertices[i + 1] +=
+                        (this.dest[i + 1] - vertices[i + 1]) / this.speed;
+                    vertices[i + 2] +=
+                        (this.dest[i + 2] - vertices[i + 2]) / this.speed;
+                }
             }
             verticesAtribute.needsUpdate = true;
+            //this.time = timeNow;
 
             // only one particle?
             if (count === 1) {

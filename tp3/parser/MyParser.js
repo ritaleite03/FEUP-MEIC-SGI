@@ -2,6 +2,7 @@ import * as THREE from "three";
 import { MyNurbsBuilder } from "../MyNurbsBuilder.js";
 import { MyTriangle } from "./MyTriangle.js";
 import { MyTrack } from "../object/MyTrack .js";
+import { MyRoute } from "../object/MyRoute.js";
 import { MyPowerUp } from "../object/MyPowerUp.js";
 import { MyObstacle } from "../object/MyObstacle.js";
 
@@ -24,6 +25,7 @@ class MyParser {
 
         // Set up game variables
         this.track = null;
+        this.routes = [];
         this.powerUps = [];
         this.powerDowns = [];
         this.parkPlayer = [];
@@ -84,6 +86,7 @@ class MyParser {
         this.defineGlobals(this.data.yasf.globals);
         this.defineCameras(this.data.yasf.cameras);
         this.defineTrack(this.data.yasf.track);
+        this.defineRoutes(this.data.yasf.routes);
         this.definePowerUp(this.data.yasf.powerUp);
         this.definePowerDown(this.data.yasf.powerDown);
         this.defineParkPlayer(this.data.yasf.parkPlayer);
@@ -426,6 +429,21 @@ class MyParser {
         this.track = new MyTrack(this.app, pointsList);
     }
 
+    defineRoutes(data) {
+        Object.entries(data).forEach(([key, value]) => {
+            let pointsList = [];
+            for (let j = 0; j < value.points.length; j++) {
+                let x = value.points[j].x;
+                let y = value.points[j].y;
+                let z = value.points[j].z;
+                pointsList.push(new THREE.Vector3(x, y, z));
+            }
+            const route = new MyRoute(pointsList);
+            route.name = key;
+            this.routes.push(route);
+        });
+    }
+
     definePowerUp(data) {
         for (let i = 0; i < data.points.length; i++) {
             let x = data.points[i].x;
@@ -481,9 +499,14 @@ class MyParser {
             let route = [];
 
             for (const j in data.ballons[i].route) {
-                const x = -data.ballons[i].route[j].x * 5;
-                const y = data.ballons[i].route[j].y * 5;
-                const z = data.ballons[i].route[j].z * 5;
+                const x = data.ballons[i].route[j].x;
+                const y = data.ballons[i].route[j].y;
+                const z = data.ballons[i].route[j].z;
+
+                //const x = -data.ballons[i].route[j].x * 5;
+                //const y = data.ballons[i].route[j].y * 5;
+                //const z = data.ballons[i].route[j].z * 5;
+
                 route.push(new THREE.Vector3(x, y, z));
             }
 

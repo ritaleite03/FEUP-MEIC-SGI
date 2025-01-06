@@ -91,7 +91,6 @@ class MyContents {
                     far
                 );
 
-                console;
                 // build graphs
                 const graph = this.parser.graph;
                 this.graphDefault = this.parser.graph;
@@ -111,6 +110,7 @@ class MyContents {
                     this.parser.track,
                     this.parser.powerUps,
                     this.parser.powerDowns,
+                    this.parser.routes,
                     this.parser.parkPlayer,
                     this.parser.parkOponent
                 );
@@ -195,7 +195,9 @@ class MyContents {
     }
 
     update() {
-        this.game.update();
+        if (this.game !== null) {
+            this.game.update();
+        }
     }
 }
 
