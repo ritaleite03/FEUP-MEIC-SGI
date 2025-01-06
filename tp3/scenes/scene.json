@@ -46,23 +46,23 @@
                 "filepath": "scenes/textures/grass_rock.jpg",
                 "isVideo": false
             },
-            "t_river":{
+            "t_river": {
                 "filepath": "scenes/textures/river.jpg",
                 "isVideo": false
             },
-            "t_bridge":{
+            "t_bridge": {
                 "filepath": "scenes/textures/stone-wall.jpg",
                 "isVideo": false
             },
-            "t_pine":{
+            "t_pine": {
                 "filepath": "scenes/textures/pine-leaves.jpg",
                 "isVideo": false
             },
-            "t_mountain":{
+            "t_mountain": {
                 "filepath": "scenes/textures/mountain.jpg",
                 "isVideo": false
             },
-            "b_mountain":{
+            "b_mountain": {
                 "filepath": "scenes/textures/mountain_b.jpg",
                 "isVideo": false
             }
@@ -258,10 +258,6 @@
                         "bridge_1",
                         "bridge_2",
                         "floor",
-                        "bump",
-                        "bump1",
-                        "bump2",
-                        "bump3",
                         "stand",
                         "grid_stand",
                         "grid_stand1",
@@ -307,7 +303,7 @@
                 "transforms": [
                     {
                         "type": "translate",
-                        "amount": { "x": -100, "y": 0, "z": 0 }
+                        "amount": { "x": -90, "y": 0, "z": 0 }
                     }
                 ]
             },
@@ -518,7 +514,7 @@
                 "transforms": [
                     {
                         "type": "translate",
-                        "amount": { "x": -20, "y": 0, "z": 0 }
+                        "amount": { "x": 0, "y": 0, "z": 10 }
                     }
                 ]
             },
@@ -769,175 +765,52 @@
                     }
                 }
             },
-            "bump": {
-                "type": "node",
-                "materialref": { "materialId": "grass" },
-                "transforms": [
-                    {
-                        "type": "translate",
-                        "amount": { "x": -20, "y": 0, "z": 0 }
-                    }
-                ],
-                "children": {
-                    "nurbsPrim": {
-                        "type": "nurbs",
-                        "degree_u": 2,
-                        "degree_v": 2,
-                        "parts_u": 8,
-                        "parts_v": 8,
-                        "controlpoints": [
-                            { "x": 10, "y": 0.05, "z": 10 },
-                            { "x": 0, "y": 0.05, "z": 10 },
-                            { "x": -10, "y": 0.05, "z": 10 },
-
-                            { "x": 10, "y": 0.05, "z": 0 },
-                            { "x": 0, "y": 10, "z": 0 },
-                            { "x": -10, "y": 0.05, "z": 0 },
-
-                            { "x": 10, "y": 0.05, "z": -10 },
-                            { "x": 0, "y": 0.05, "z": -10 },
-                            { "x": -10, "y": 0.05, "z": -10 }
-                        ]
-                    }
-                }
-            },
-            "bump1": {
-                "type": "node",
-                "materialref": { "materialId": "grass" },
-                "children": {
-                    "nurbsPrim": {
-                        "type": "nurbs",
-                        "degree_u": 2,
-                        "degree_v": 2,
-                        "parts_u": 8,
-                        "parts_v": 8,
-                        "controlpoints": [
-                            { "x": 100, "y": 0.05, "z": 25 },
-                            { "x": 75, "y": 0.05, "z": 25 },
-                            { "x": 50, "y": 0.05, "z": 25 },
-
-                            { "x": 100, "y": 0.05, "z": 0 },
-                            { "x": 75, "y": 30, "z": 0 },
-                            { "x": 50, "y": 0.05, "z": 0 },
-
-                            { "x": 100, "y": 0.05, "z": -25 },
-                            { "x": 75, "y": 0.05, "z": -25 },
-                            { "x": 50, "y": 0.05, "z": -25 }
-                        ]
-                    }
-                }
-            },
-            "bump2": {
-                "type": "node",
-                "materialref": { "materialId": "grass" },
-                "transforms": [
-                    {
-                        "type": "translate",
-                        "amount": { "x": -100, "y": 0, "z": 150 }
-                    }
-                ],
-                "children": {
-                    "nurbsPrim": {
-                        "type": "nurbs",
-                        "degree_u": 2,
-                        "degree_v": 2,
-                        "parts_u": 8,
-                        "parts_v": 8,
-                        "controlpoints": [
-                            { "x": 150, "y": 0.05, "z": 25 },
-                            { "x": 100, "y": 0.05, "z": 25 },
-                            { "x": 50, "y": 0.05, "z": 25 },
-
-                            { "x": 150, "y": 0.05, "z": 0 },
-                            { "x": 100, "y": 40, "z": 0 },
-                            { "x": 50, "y": 0.05, "z": 0 },
-
-                            { "x": 150, "y": 0.05, "z": -25 },
-                            { "x": 100, "y": 0.05, "z": -25 },
-                            { "x": 50, "y": 0.05, "z": -25 }
-                        ]
-                    }
-                }
-            },
-            "bump3": {
-                "type": "node",
-                "materialref": { "materialId": "grass" },
-                "transforms": [
-                    {
-                        "type": "translate",
-                        "amount": { "x": -50, "y": 0, "z": 80 }
-                    }
-                ],
-                "children": {
-                    "nurbsPrim": {
-                        "type": "nurbs",
-                        "degree_u": 2,
-                        "degree_v": 2,
-                        "parts_u": 8,
-                        "parts_v": 8,
-                        "controlpoints": [
-                            { "x": 90, "y": 0.05, "z": 20 },
-                            { "x": 70, "y": 0.05, "z": 40 },
-                            { "x": 50, "y": 0.05, "z": 20 },
-
-                            { "x": 90, "y": 0.05, "z": 0 },
-                            { "x": 70, "y": 40, "z": 0 },
-                            { "x": 50, "y": 0.05, "z": 0 },
-
-                            { "x": 90, "y": 0.05, "z": -20 },
-                            { "x": 70, "y": 0.05, "z": -40 },
-                            { "x": 50, "y": 0.05, "z": -20 }
-                        ]
-                    }
-                }
-            },
             "trees": {
                 "type": "node",
                 "castshadows": true,
-                "children": { 
-                    "nodesList": 
-                        [   
-                            "tree_1",
-                            "tree_2",
-                            "tree_3",
-                            "tree_4",
-                            "tree_5",
-                            "tree_6",
-                            "tree_7",
-                            "tree_8",
-                            "tree_9",
-                            "tree_10",
-                            "tree_11",
-                            "tree_12",
-                            "tree_13",
-                            "tree_14",
-                            "tree_15",
-                            "tree_16",
-                            "tree_17",
-                            "tree_18",
-                            "tree_19",
-                            "tree_20",
-                            "tree_21",
-                            "tree_22",
-                            "tree_23",
-                            "tree_24",
-                            "tree_25",
-                            "tree_26",
-                            "tree_27",
-                            "tree_28",
-                            "tree_29",
-                            "tree_30",
-                            "tree_31",
-                            "tree_32",
-                            "tree_33",
-                            "tree_34",
-                            "tree_35",
-                            "tree_36",
-                            "tree_37",
-                            "tree_38",
-                            "tree_39",
-                            "tree_40"
-                        ] 
+                "children": {
+                    "nodesList": [
+                        "tree_1",
+                        "tree_2",
+                        "tree_3",
+                        "tree_4",
+                        "tree_5",
+                        "tree_6",
+                        "tree_7",
+                        "tree_8",
+                        "tree_9",
+                        "tree_10",
+                        "tree_11",
+                        "tree_12",
+                        "tree_13",
+                        "tree_14",
+                        "tree_15",
+                        "tree_16",
+                        "tree_17",
+                        "tree_18",
+                        "tree_19",
+                        "tree_20",
+                        "tree_21",
+                        "tree_22",
+                        "tree_23",
+                        "tree_24",
+                        "tree_25",
+                        "tree_26",
+                        "tree_27",
+                        "tree_28",
+                        "tree_29",
+                        "tree_30",
+                        "tree_31",
+                        "tree_32",
+                        "tree_33",
+                        "tree_34",
+                        "tree_35",
+                        "tree_36",
+                        "tree_37",
+                        "tree_38",
+                        "tree_39",
+                        "tree_40"
+                    ]
                 }
             },
             "tree_1": {
@@ -1071,8 +944,6 @@
                 ]
             },
 
-
-
             "tree_14": {
                 "type": "node",
                 "children": { "lodsList": ["lod_tree"] },
@@ -1099,7 +970,7 @@
                 "transforms": [
                     {
                         "type": "translate",
-                        "amount":{ "x": 160, "y": 58, "z": 138 }
+                        "amount": { "x": 160, "y": 58, "z": 138 }
                     }
                 ]
             },
@@ -1193,8 +1064,6 @@
                     }
                 ]
             },
-
-
 
             "tree_26": {
                 "type": "node",
@@ -1302,7 +1171,7 @@
                 "transforms": [
                     {
                         "type": "translate",
-                        "amount":{ "x": -162, "y": 50, "z": 176 }
+                        "amount": { "x": -162, "y": 50, "z": 176 }
                     }
                 ]
             },
@@ -1420,7 +1289,9 @@
             "tree_top": {
                 "type": "node",
                 "materialref": { "materialId": "pine" },
-                "children": { "nodesList": ["tree_top_1", "tree_top_2", "tree_top_3"] },
+                "children": {
+                    "nodesList": ["tree_top_1", "tree_top_2", "tree_top_3"]
+                },
                 "transforms": [
                     {
                         "type": "translate",
@@ -1888,13 +1759,13 @@
                             { "x": 0, "y": 200, "z": 100 },
                             { "x": 55, "y": 0.0, "z": 100 },
                             { "x": 65, "y": 0.0, "z": 100 },
-                            
+
                             { "x": -55, "y": 0.0, "z": 200 },
                             { "x": -52, "y": 0.0, "z": 150 },
                             { "x": -12, "y": 200, "z": 150 },
                             { "x": 55, "y": 0.0, "z": 150 },
                             { "x": 65, "y": 0.0, "z": 150 },
-                            
+
                             { "x": -105, "y": 0.0, "z": 200 },
                             { "x": -100, "y": 0.0, "z": 200 },
                             { "x": 4, "y": 200, "z": 200 },
@@ -1963,10 +1834,7 @@
             "bridge_1": {
                 "type": "node",
                 "children": {
-                    "nodesList": [
-                        "bridge"
-
-                    ]
+                    "nodesList": ["bridge"]
                 },
                 "transforms": [
                     {
@@ -1978,10 +1846,7 @@
             "bridge_2": {
                 "type": "node",
                 "children": {
-                    "nodesList": [
-                        "bridge"
-
-                    ]
+                    "nodesList": ["bridge"]
                 },
                 "transforms": [
                     {
@@ -2005,7 +1870,6 @@
                         "bridge_triangle_2",
                         "bridge_triangle_3",
                         "bridge_triangle_4"
-
                     ]
                 },
                 "transforms": [
@@ -2090,7 +1954,6 @@
                         "type": "translate",
                         "amount": { "x": -20, "y": 0, "z": 11 }
                     }
-
                 ]
             },
             "bridge_triangle_2": {
@@ -2209,7 +2072,6 @@
                     }
                 }
             }
-
         },
         "track": {
             "points": [
