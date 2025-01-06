@@ -18,6 +18,7 @@ class MyGame {
         parkOponent
     ) {
         this.app = app;
+        this.playerName = null;
         this.obstaclePenalty = 1;
         this.fireworks = [];
         this.state = "initial";
@@ -153,11 +154,23 @@ class MyGame {
         this.state = "finish";
         if (this.ballonP.laps > this.ballonO.laps) {
             this.billboard.updateDisplay(
-                new MyMenuFinish(this.app, "PLAYER", "OPONENT", time, false)
+                new MyMenuFinish(
+                    this.app,
+                    this.playerName,
+                    "OPONENT",
+                    time,
+                    false
+                )
             );
         } else if (this.ballonP.laps < this.ballonO.laps) {
             this.billboard.updateDisplay(
-                new MyMenuFinish(this.app, "OPONENT", "PLAYER", time, false)
+                new MyMenuFinish(
+                    this.app,
+                    "OPONENT",
+                    this.playerName,
+                    time,
+                    false
+                )
             );
         } else {
             this.billboard.updateDisplay(
@@ -685,6 +698,7 @@ class MyGame {
                         this.sideP !== null
                     ) {
                         this.state = "game";
+                        this.playerName = this.billboard.display.name;
                         this.billboard.updateDisplay(new MyMenuRun(this.app));
                         this.runGame();
                     }
