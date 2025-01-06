@@ -31,7 +31,7 @@ class MyTrack extends THREE.Object3D {
         const loader = new THREE.TextureLoader();
         const texture = loader.load("./image/road.jpg");
         texture.rotation = Math.PI / 2;
-        texture.center.set(0.5, 0.5);   
+        texture.center.set(0.5, 0.5);
 
         // define material
         this.material = new THREE.MeshBasicMaterial({ map: texture });
@@ -61,14 +61,15 @@ class MyTrack extends THREE.Object3D {
      */
     buildSideSelector() {
         let trackPt = this.path.getPointAt(0).clone();
-        trackPt.x = trackPt.x //* this.widthS;
-        trackPt.y = trackPt.y //* this.widthS;
-        trackPt.z = trackPt.z //* this.widthS;
+        trackPt.x = trackPt.x; //* this.widthS;
+        trackPt.y = trackPt.y; //* this.widthS;
+        trackPt.z = trackPt.z; //* this.widthS;
 
         const trackTg = this.path.getTangentAt(0).normalize();
+
         const trackUp = new THREE.Vector3(0, 1, 0);
         const trackFL = new THREE.Vector3()
-            .crossVectors(trackTg, trackUp)
+            .crossVectors(new THREE.Vector3(trackTg.x, 0, trackTg.z), trackUp)
             .normalize();
 
         const p1 = trackPt.clone().add(trackFL.clone().multiplyScalar(5));
@@ -88,13 +89,12 @@ class MyTrack extends THREE.Object3D {
         //const posX = this.points[0].x //* this.widthS;
         //const posY = this.points[0].y  * this.heightS;
         //const posZ = this.points[0].z //* this.widthS;
-//
+        //
         //this.selectorA.position.set(posX - 5, posY + 1, posZ);
         //this.selectorB.position.set(posX + 5, posY + 1, posZ);
 
         this.selectorA.position.set(p1.x, trackPt.y * this.heightS + 1, p1.z);
         this.selectorB.position.set(p2.x, trackPt.y * this.heightS + 1, p2.z);
-
 
         this.app.scene.add(this.selectorA);
         this.app.scene.add(this.selectorB);
@@ -136,10 +136,9 @@ class MyTrack extends THREE.Object3D {
         //this.object.rotateZ(Math.PI);
         //this.object.scale.set(this.widthS, this.heightS, this.widthS);
 
-
         //Track
-        const L = this.width; 
-        const up = new THREE.Vector3(0, 1, 0); 
+        const L = this.width;
+        const up = new THREE.Vector3(0, 1, 0);
         const leftPoints = [];
         const rightPoints = [];
 
@@ -148,37 +147,55 @@ class MyTrack extends THREE.Object3D {
         for (let i = 0; i < points.length; i++) {
             const t = i / (points.length - 1);
             const tangent = this.path.getTangent(t).normalize();
-            const normal = new THREE.Vector3().crossVectors(up, tangent).normalize();
-            const left = points[i].clone().add(normal.clone().multiplyScalar(L / 2));
-            const right = points[i].clone().add(normal.clone().multiplyScalar(-L / 2));
-        
+            const normal = new THREE.Vector3()
+                .crossVectors(up, tangent)
+                .normalize();
+            const left = points[i]
+                .clone()
+                .add(normal.clone().multiplyScalar(L / 2));
+            const right = points[i]
+                .clone()
+                .add(normal.clone().multiplyScalar(-L / 2));
+
             leftPoints.push(left);
             rightPoints.push(right);
         }
-        
+
         const vertices = [];
         const indices = [];
         const uvs = [];
 
-        let totalLength = 0;                      
-        let lengths = [0];                        
+        let totalLength = 0;
+        let lengths = [0];
         for (let i = 1; i < points.length; i++) {
             const dist = points[i - 1].distanceTo(points[i]);
-            totalLength += dist;                   
-            lengths.push(totalLength);             
+            totalLength += dist;
+            lengths.push(totalLength);
         }
 
         for (let i = 0; i < leftPoints.length - 1; i++) {
             vertices.push(
-                leftPoints[i].x, leftPoints[i].y, leftPoints[i].z,
-                points[i].x, points[i].y, points[i].z,
-                rightPoints[i].x, rightPoints[i].y, rightPoints[i].z,
-                leftPoints[i + 1].x, leftPoints[i + 1].y, leftPoints[i + 1].z,
-                points[i + 1].x, points[i + 1].y, points[i + 1].z,
-                rightPoints[i + 1].x, rightPoints[i + 1].y, rightPoints[i + 1].z
+                leftPoints[i].x,
+                leftPoints[i].y,
+                leftPoints[i].z,
+                points[i].x,
+                points[i].y,
+                points[i].z,
+                rightPoints[i].x,
+                rightPoints[i].y,
+                rightPoints[i].z,
+                leftPoints[i + 1].x,
+                leftPoints[i + 1].y,
+                leftPoints[i + 1].z,
+                points[i + 1].x,
+                points[i + 1].y,
+                points[i + 1].z,
+                rightPoints[i + 1].x,
+                rightPoints[i + 1].y,
+                rightPoints[i + 1].z
             );
-        
-            const baseIndex = i * 6; 
+
+            const baseIndex = i * 6;
 
             //left
             indices.push(baseIndex, baseIndex + 1, baseIndex + 3);
@@ -191,29 +208,25 @@ class MyTrack extends THREE.Object3D {
             const v1 = lengths[i] / totalLength;
             const v2 = lengths[i + 1] / totalLength;
 
-            uvs.push(
-                0, v1,
-                0.5, v1,
-                1, v1,
-                0, v2,
-                0.5, v2,
-                1, v2
-            );
+            uvs.push(0, v1, 0.5, v1, 1, v1, 0, v2, 0.5, v2, 1, v2);
         }
-        
+
         const geometry = new THREE.BufferGeometry();
-        geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+        geometry.setAttribute(
+            "position",
+            new THREE.Float32BufferAttribute(vertices, 3)
+        );
         geometry.setIndex(indices);
         geometry.computeVertexNormals();
-        geometry.setAttribute('uv', new THREE.Float32BufferAttribute(uvs, 2));
-        
+        geometry.setAttribute("uv", new THREE.Float32BufferAttribute(uvs, 2));
+
         this.mesh = new THREE.Mesh(geometry, this.material);
-        this.mesh.translateY(0.1)
+        this.mesh.translateY(0.1);
         this.wireframe = new THREE.Mesh(geometry, this.wireframeMaterial);
 
-        const bGeometry = new THREE.BufferGeometry().setFromPoints( points );
-        this.line = new THREE.Line( bGeometry, this.lineMaterial);
-        this.line.translateY(0.2)
+        const bGeometry = new THREE.BufferGeometry().setFromPoints(points);
+        this.line = new THREE.Line(bGeometry, this.lineMaterial);
+        this.line.translateY(0.2);
 
         this.mesh.visible = this.showMesh;
         this.wireframe.visible = this.showWireframe;

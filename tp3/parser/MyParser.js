@@ -25,7 +25,7 @@ class MyParser {
 
         // Set up game variables
         this.track = null;
-        this.routes = []
+        this.routes = [];
         this.powerUps = [];
         this.powerDowns = [];
         this.parkPlayer = [];
@@ -441,7 +441,7 @@ class MyParser {
             const route = new MyRoute(pointsList);
             route.name = key;
             this.routes.push(route);
-       })
+        });
     }
 
     definePowerUp(data) {
