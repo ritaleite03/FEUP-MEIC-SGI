@@ -124,8 +124,8 @@ class MyGame {
         this.app.scene.add(this.track.object);
         this.app.scene.add(this.billboard);
 
-        this.parkP.position.set(-30, 0, 80);
-        this.parkO.position.set(-30, 0, -80);
+        this.parkP.position.set(20, 0, 110);
+        this.parkO.position.set(20, 0, -110);
         this.app.scene.add(this.parkP);
         this.app.scene.add(this.parkO);
 
