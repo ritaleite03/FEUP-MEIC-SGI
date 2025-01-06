@@ -93,7 +93,7 @@ class MyGuiInterface {
             .step(50)
             .onChange((value) => this.contents.game.track.updateCurve(value));
         trackFolder
-            .add(this.contents.game.track, "width", 1, 5)
+            .add(this.contents.game.track, "width", 5, 20)
             .step(0.1)
             .onChange((value) => this.contents.game.track.updateCurve(value));
         trackFolder
@@ -131,24 +131,24 @@ class MyGuiInterface {
             .step(1)
             .onChange((value) => (this.contents.game.obstaclePenalty = value));
         gameFolder
-            .add(this.contents.game, "wN", 1, 10)
+            .add(this.contents.game, "wN", 0.05, 1.5)
             .name("north wind")
-            .step(1)
+            .step(0.05)
             .onChange((value) => (this.contents.game.wN = value));
         gameFolder
-            .add(this.contents.game, "wS", 1, 10)
+            .add(this.contents.game, "wS", 0.05, 1.5)
             .name("south wind")
-            .step(1)
+            .step(0.05)
             .onChange((value) => (this.contents.game.wS = value));
         gameFolder
-            .add(this.contents.game, "wE", 1, 10)
+            .add(this.contents.game, "wE", 0.05, 1.5)
             .name("east wind")
-            .step(1)
+            .step(0.05)
             .onChange((value) => (this.contents.game.wE = value));
         gameFolder
-            .add(this.contents.game, "wW", 1, 10)
+            .add(this.contents.game, "wW", 0.05, 1.5)
             .name("west wind")
-            .step(1)
+            .step(0.05)
             .onChange((value) => (this.contents.game.wW = value));
 
         //route folder

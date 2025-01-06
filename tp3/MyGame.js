@@ -66,10 +66,10 @@ class MyGame {
         this.selectRoute = null;
 
         // wind
-        this.wE = 1;
-        this.wN = 1;
-        this.wW = 1;
-        this.wS = 1;
+        this.wE = 0.1;
+        this.wN = 0.1;
+        this.wW = 0.1;
+        this.wS = 0.1;
 
         // picker configuration
         this.raycaster = new THREE.Raycaster();
@@ -83,20 +83,6 @@ class MyGame {
         document.addEventListener("pointerdown", this.onPointerMove.bind(this));
         document.addEventListener("keydown", this.onKeyPressed.bind(this));
 
-        // Animation
-        this.clock = new THREE.Clock();
-        this.lapTime = (3 + Math.random()) * 60;
-        this.currentLapTime = 0;
-        //this.prevTime = 0;
-        //this.speedFactor = 0.1;
-        //this.lapCount = 0;
-        //this.lapTimes = [];
-        //this.speed = 0.1;
-        //this.totalTime = 0;
-        //for (let i = 0; i < 3; i++) {
-        //    const randomTime = Math.random() * + 4;
-        //    this.lapTimes.push(randomTime * 60);
-        //}
     }
 
     /**
@@ -437,7 +423,7 @@ class MyGame {
                     this.app.controls.update();
                 }
             }
-        }, 1000);
+        }, 10);
     }
 
     /**
@@ -887,6 +873,7 @@ class MyGame {
         //
         //}
         //
+
         // end firework
         if (
             (this.state === "game" || this.state === "initial") &&

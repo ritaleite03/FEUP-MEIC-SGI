@@ -307,7 +307,10 @@ class MyBallon extends THREE.Object3D {
             this.spline = new THREE.CatmullRomCurve3(this.route);
 
             let number = [];
-            for (const i in this.route) number.push(i);
+            const inverval = 90 / this.route.length;
+            for (let i = 0; i < this.route.length; i ++){
+                number.push(i * inverval);
+            } 
 
             const posKeyFrame = new THREE.VectorKeyframeTrack(
                 ".position",
@@ -317,7 +320,7 @@ class MyBallon extends THREE.Object3D {
             );
             const posClip = new THREE.AnimationClip(
                 "positionAnimation",
-                number.length,
+                90,
                 [posKeyFrame]
             );
 

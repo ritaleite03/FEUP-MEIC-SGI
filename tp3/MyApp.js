@@ -99,10 +99,34 @@ class MyApp {
                     this.activeCamera,
                     this.renderer.domElement
                 );
-                this.controls.enableZoom = true;
+                if(this.activeCameraName === "FirstPerson"){
+                    this.controls.enableZoom = false;
+                    this.controls.enableRotate = false;
+                    this.controls.enablePan = false;       
+                    this.controls.minPolarAngle = 0;       
+                    this.controls.maxPolarAngle = Math.PI;
+                    console.log("FirstPerson Teste");
+                }
+                else {
+                    this.controls.enableZoom = true;
+                }
                 this.controls.update();
             } else {
                 this.controls.object = this.activeCamera;
+                if(this.activeCameraName === "FirstPerson"){
+                    this.controls.enableZoom = false;
+                    this.controls.enablePan = false;
+                    this.controls.enableRotate = true;
+                    this.controls.minPolarAngle = 0;       
+                    this.controls.maxPolarAngle = Math.PI;
+                    console.log("FirstPerson Teste");
+                }
+                else {
+                    this.controls.enableZoom = true;
+                    this.controls.enablePan = true;
+                    this.controls.enableRotate = true;
+
+                }
             }
         }
     }
