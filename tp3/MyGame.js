@@ -293,28 +293,96 @@ class MyGame {
                 this.billboard.display.updateVouchers(this.ballonP.vouchers);
 
                 // update billboard in relation to wind
-                if (this.ballonP.position.y > 0 && this.ballonP.position.y <= 5)
+                if (
+                    this.ballonP.position.y > 0 &&
+                    this.ballonP.position.y <= 5
+                ) {
                     this.billboard.display.updateWind("no wind");
+                    if (
+                        this.app.activeCamera ===
+                        this.app.cameras["FirstPerson"]
+                    ) {
+                        const cameraPos = new THREE.Vector3(
+                            this.ballonP.position.x,
+                            this.ballonP.position.y,
+                            this.ballonP.position.z - 1
+                        );
+                        this.app.controls.target.copy(cameraPos);
+                        this.app.controls.update();
+                    }
+                }
                 if (
                     this.ballonP.position.y > 5 &&
                     this.ballonP.position.y <= 10
-                )
+                ) {
                     this.billboard.display.updateWind("north");
+                    if (
+                        this.app.activeCamera ===
+                        this.app.cameras["FirstPerson"]
+                    ) {
+                        const cameraPos = new THREE.Vector3(
+                            this.ballonP.position.x,
+                            this.ballonP.position.y,
+                            this.ballonP.position.z - 1
+                        );
+                        this.app.controls.target.copy(cameraPos);
+                        this.app.controls.update();
+                    }
+                }
                 if (
                     this.ballonP.position.y > 10 &&
                     this.ballonP.position.y <= 15
-                )
+                ) {
                     this.billboard.display.updateWind("south");
+                    if (
+                        this.app.activeCamera ===
+                        this.app.cameras["FirstPerson"]
+                    ) {
+                        const cameraPos = new THREE.Vector3(
+                            this.ballonP.position.x,
+                            this.ballonP.position.y,
+                            this.ballonP.position.z + 1
+                        );
+                        this.app.controls.target.copy(cameraPos);
+                        this.app.controls.update();
+                    }
+                }
                 if (
                     this.ballonP.position.y > 15 &&
                     this.ballonP.position.y <= 20
-                )
+                ) {
                     this.billboard.display.updateWind("east");
+                    if (
+                        this.app.activeCamera ===
+                        this.app.cameras["FirstPerson"]
+                    ) {
+                        const cameraPos = new THREE.Vector3(
+                            this.ballonP.position.x + 1,
+                            this.ballonP.position.y,
+                            this.ballonP.position.z
+                        );
+                        this.app.controls.target.copy(cameraPos);
+                        this.app.controls.update();
+                    }
+                }
                 if (
                     this.ballonP.position.y > 20 &&
                     this.ballonP.position.y <= 25
-                )
+                ) {
                     this.billboard.display.updateWind("west");
+                    if (
+                        this.app.activeCamera ===
+                        this.app.cameras["FirstPerson"]
+                    ) {
+                        const cameraPos = new THREE.Vector3(
+                            this.ballonP.position.x - 1,
+                            this.ballonP.position.y,
+                            this.ballonP.position.z
+                        );
+                        this.app.controls.target.copy(cameraPos);
+                        this.app.controls.update();
+                    }
+                }
 
                 // collision with power up
                 if (colisionU === true) {
@@ -352,15 +420,22 @@ class MyGame {
                     this.billboard.display.updateLaps(this.ballonP.laps);
                 }
 
+                // update cameras
                 const posCX = posNow.x + 20;
                 const posCY = posNow.y + 20;
                 const posCZ = posNow.z + 20;
+
                 this.app.cameras["ThirdPerson"].position.set(
                     posCX,
                     posCY,
                     posCZ
                 );
                 this.app.cameras["ThirdPerson"].lookAt(this.ballonP.position);
+
+                if (this.app.activeCamera === this.app.cameras["ThirdPerson"]) {
+                    this.app.controls.target.copy(this.ballonP.position);
+                    this.app.controls.update();
+                }
             }
         }, 1000);
     }

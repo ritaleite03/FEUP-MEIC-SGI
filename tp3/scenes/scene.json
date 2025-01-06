@@ -176,6 +176,9 @@
                         "tree_2",
                         "tree_3",
                         "bump",
+                        "bump1",
+                        "bump2",
+                        "bump3",
                         "stand",
                         "grid_stand",
                         "grid_stand1",
@@ -699,6 +702,96 @@
                             { "x": 10, "y": 0.05, "z": -10 },
                             { "x": 0, "y": 0.05, "z": -10 },
                             { "x": -10, "y": 0.05, "z": -10 }
+                        ]
+                    }
+                }
+            },
+            "bump1": {
+                "type": "node",
+                "materialref": { "materialId": "grass" },
+                "children": {
+                    "nurbsPrim": {
+                        "type": "nurbs",
+                        "degree_u": 2,
+                        "degree_v": 2,
+                        "parts_u": 8,
+                        "parts_v": 8,
+                        "controlpoints": [
+                            { "x": 100, "y": 0.05, "z": 25 },
+                            { "x": 75, "y": 0.05, "z": 25 },
+                            { "x": 50, "y": 0.05, "z": 25 },
+
+                            { "x": 100, "y": 0.05, "z": 0 },
+                            { "x": 75, "y": 30, "z": 0 },
+                            { "x": 50, "y": 0.05, "z": 0 },
+
+                            { "x": 100, "y": 0.05, "z": -25 },
+                            { "x": 75, "y": 0.05, "z": -25 },
+                            { "x": 50, "y": 0.05, "z": -25 }
+                        ]
+                    }
+                }
+            },
+            "bump2": {
+                "type": "node",
+                "materialref": { "materialId": "grass" },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": -100, "y": 0, "z": 150 }
+                    }
+                ],
+                "children": {
+                    "nurbsPrim": {
+                        "type": "nurbs",
+                        "degree_u": 2,
+                        "degree_v": 2,
+                        "parts_u": 8,
+                        "parts_v": 8,
+                        "controlpoints": [
+                            { "x": 150, "y": 0.05, "z": 25 },
+                            { "x": 100, "y": 0.05, "z": 25 },
+                            { "x": 50, "y": 0.05, "z": 25 },
+
+                            { "x": 150, "y": 0.05, "z": 0 },
+                            { "x": 100, "y": 40, "z": 0 },
+                            { "x": 50, "y": 0.05, "z": 0 },
+
+                            { "x": 150, "y": 0.05, "z": -25 },
+                            { "x": 100, "y": 0.05, "z": -25 },
+                            { "x": 50, "y": 0.05, "z": -25 }
+                        ]
+                    }
+                }
+            },
+            "bump3": {
+                "type": "node",
+                "materialref": { "materialId": "grass" },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": -50, "y": 0, "z": 80 }
+                    }
+                ],
+                "children": {
+                    "nurbsPrim": {
+                        "type": "nurbs",
+                        "degree_u": 2,
+                        "degree_v": 2,
+                        "parts_u": 8,
+                        "parts_v": 8,
+                        "controlpoints": [
+                            { "x": 90, "y": 0.05, "z": 20 },
+                            { "x": 70, "y": 0.05, "z": 40 },
+                            { "x": 50, "y": 0.05, "z": 20 },
+
+                            { "x": 90, "y": 0.05, "z": 0 },
+                            { "x": 70, "y": 40, "z": 0 },
+                            { "x": 50, "y": 0.05, "z": 0 },
+
+                            { "x": 90, "y": 0.05, "z": -20 },
+                            { "x": 70, "y": 0.05, "z": -40 },
+                            { "x": 50, "y": 0.05, "z": -20 }
                         ]
                     }
                 }

@@ -91,7 +91,6 @@ class MyContents {
                     far
                 );
 
-                console;
                 // build graphs
                 const graph = this.parser.graph;
                 this.graphDefault = this.parser.graph;
