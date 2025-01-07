@@ -86,13 +86,6 @@ class MyTrack extends THREE.Object3D {
         this.selectorA.name = "side_1";
         this.selectorB.name = "side_2";
 
-        //const posX = this.points[0].x //* this.widthS;
-        //const posY = this.points[0].y  * this.heightS;
-        //const posZ = this.points[0].z //* this.widthS;
-        //
-        //this.selectorA.position.set(posX - 5, posY + 1, posZ);
-        //this.selectorB.position.set(posX + 5, posY + 1, posZ);
-
         this.selectorA.position.set(p1.x, trackPt.y * this.heightS + 1, p1.z);
         this.selectorB.position.set(p2.x, trackPt.y * this.heightS + 1, p2.z);
 

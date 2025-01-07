@@ -56,10 +56,16 @@ class MyBallon extends THREE.Object3D {
         boundingB.getCenter(center);
 
         // bounding sphere
-        const sizeX = Math.abs(boundingB.max.x) + Math.abs(boundingB.min.x);
-        const sizeY = Math.abs(boundingB.max.y) + Math.abs(boundingB.min.y);
-        const sizeZ = Math.abs(boundingB.max.z) + Math.abs(boundingB.min.z);
-        this.boundingBox = [sizeX, sizeY, sizeZ];
+        const size = new THREE.Vector3();
+        boundingB.getSize(size); 
+        //console.log("teste1: ", size.x, size.y, size.z);
+        this.boundingBox = [size.x, size.y, size.z];
+        
+        //const sizeX = Math.abs(boundingB.max.x) + Math.abs(boundingB.min.x);
+        //const sizeY = Math.abs(boundingB.max.y) + Math.abs(boundingB.min.y);
+        //const sizeZ = Math.abs(boundingB.max.z) + Math.abs(boundingB.min.z);
+        //console.log("teste2:", sizeX, sizeY, sizeZ)
+        //this.boundingBox = [sizeX, sizeY, sizeZ];
 
         // build wind indication
         const materialWind = new THREE.MeshBasicMaterial({ color: "#ffffff" });
@@ -240,28 +246,29 @@ class MyBallon extends THREE.Object3D {
      * @param {Number} s strenght of the wind when in direction south
      * @param {Number} e strenght of the wind when in direction east
      * @param {Number} w strenght of the wind when in direction west
+     * @param {Number} delta interval of time
      */
-    moveWind(n, s, e, w) {
+    moveWind(n, s, e, w, delta) {
         const posY = this.position.y;
 
         // layer 1 - North
         if (posY > 5 && posY <= 10) {
-            this.position.z -= 1 * n;
+            this.position.z -= n * delta;
             this.updateWindIndicating("north");
         }
         // layer 2 - South
         if (posY > 10 && posY <= 15) {
-            this.position.z += 1 * s;
+            this.position.z += s * delta;
             this.updateWindIndicating("south");
         }
         // layer 3 - East
         if (posY > 15 && posY <= 20) {
-            this.position.x += 1 * e;
+            this.position.x += e * delta;
             this.updateWindIndicating("east");
         }
         // layer 4 - West
         if (posY > 20 && posY <= 25) {
-            this.position.x -= 1 * w;
+            this.position.x -=  w * delta;
             this.updateWindIndicating("west");
         }
 

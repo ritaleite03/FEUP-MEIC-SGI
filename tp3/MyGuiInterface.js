@@ -131,24 +131,24 @@ class MyGuiInterface {
             .step(1)
             .onChange((value) => (this.contents.game.obstaclePenalty = value));
         gameFolder
-            .add(this.contents.game, "wN", 0.05, 1.5)
+            .add(this.contents.game, "wN", 4, 15)
             .name("north wind")
-            .step(0.05)
+            .step(1)
             .onChange((value) => (this.contents.game.wN = value));
         gameFolder
-            .add(this.contents.game, "wS", 0.05, 1.5)
+            .add(this.contents.game, "wS", 4, 15)
             .name("south wind")
-            .step(0.05)
+            .step(1)
             .onChange((value) => (this.contents.game.wS = value));
         gameFolder
-            .add(this.contents.game, "wE", 0.05, 1.5)
+            .add(this.contents.game, "wE", 4, 15)
             .name("east wind")
-            .step(0.05)
+            .step(1)
             .onChange((value) => (this.contents.game.wE = value));
         gameFolder
-            .add(this.contents.game, "wW", 0.05, 1.5)
+            .add(this.contents.game, "wW", 4, 15)
             .name("west wind")
-            .step(0.05)
+            .step(1)
             .onChange((value) => (this.contents.game.wW = value));
 
         //route folder

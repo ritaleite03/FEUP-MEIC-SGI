@@ -65,11 +65,13 @@ class MyGame {
         this.sideP = null;
         this.selectRoute = null;
 
+        this.run = false;
+
         // wind
-        this.wE = 0.1;
-        this.wN = 0.1;
-        this.wW = 0.1;
-        this.wS = 0.1;
+        this.wE = 4.0;
+        this.wN = 4.0;
+        this.wW = 4.0;
+        this.wS = 4.0;
 
         // picker configuration
         this.raycaster = new THREE.Raycaster();
@@ -83,6 +85,14 @@ class MyGame {
         document.addEventListener("pointerdown", this.onPointerMove.bind(this));
         document.addEventListener("keydown", this.onKeyPressed.bind(this));
 
+        this.against = false;
+        this.run = false;
+
+        this.oldPos = null;
+        this.posPrevO = null;
+        this.timeLeft = 0;
+
+        this.i = 0
     }
 
     /**
@@ -105,15 +115,6 @@ class MyGame {
      * Called to start the game
      */
     startGame() {
-        //this.app.getActiveCamera().lookAt(0,100,0)
-        //const direction = new THREE.Vector3();
-        ////console.log(this.app.getActiveCamera());
-        //this.app.getActiveCamera().getWorldDirection(direction);
-        //console.log(direction);
-        //const cameraTarget = new THREE.Vector3()
-        //    .copy(this.app.getActiveCamera())
-        //    .add(direction);
-        //console.log("Câmera está mirando para:", cameraTarget);
         this.app.scene.add(this.ambientLight);
         this.app.scene.add(this.track.object);
         this.app.scene.add(this.billboard);
@@ -173,7 +174,7 @@ class MyGame {
         //const postTrackZ = this.track.points[0].z //* this.track.widthS;
 
         const timeTotal = 60 * 5;
-        let timeLeft = 60 * 5;
+        this.timeLeft = 60 * 5;
 
         this.ballonP =
             this.parkP.ballons[this.dictP[this.ballonPickerP.name]].clone();
@@ -217,214 +218,221 @@ class MyGame {
         this.ballonO.defineAnimation();
         this.ballonO.positionAction.play();
 
-        let posPrevO = null;
+        //let posPrevO = null;
         let pointO1 = this.ballonO.route[0];
         pointO1 = new THREE.Vector3(pointO1.x, pointO1.y, pointO1.z);
 
+        this.run = true;
+
         const timerInterval = setInterval(() => {
-            if (timeLeft <= 0 || this.state === "finish") {
-                const timeSpent = timeTotal - timeLeft;
-                timeLeft = 0;
+            if (this.timeLeft <= 0 || this.state === "finish") {
+                const timeSpent = timeTotal - this.timeLeft;
+                this.timeLeft = 0;
+                this.run = false;
                 clearInterval(timerInterval);
                 this.finishGame(timeSpent);
             } else {
                 if (this.paused === false) {
-                    timeLeft--;
-                    this.billboard.display.updateTime(timeLeft);
+                    this.timeLeft--;
+                    this.billboard.display.updateTime(this.timeLeft);
                 }
             }
         }, 1000);
+       
+    }
 
-        const oponentMoviment = setInterval(async () => {
-            if (timeLeft <= 0) {
-                clearInterval(oponentMoviment);
-                return;
+
+    oponentMoviment(){
+
+        // check if game is paused or not
+        if (this.paused === true) this.ballonO.mixer.timeScale = 0;
+        else this.ballonO.mixer.timeScale = 1;
+
+        // move oponent ballon
+        this.ballonO.moveAnimation();
+        const now = this.ballonO.position.clone();
+
+        // check if finish line was passed
+        if (this.posPrevO !== null && this.posPrevO !== undefined) {
+            if (this.i == 0){
+                console.log("Antiga", this.posPrevO, "Nova", now)
+                this.i += 1
             }
-
-            // check if game is paused or not
-            if (this.paused === true) this.ballonO.mixer.timeScale = 0;
-            else this.ballonO.mixer.timeScale = 1;
-
-            // move oponent ballon
-            this.ballonO.moveAnimation();
-            const now = this.ballonO.position.clone();
-
-            // check if finish line was passed
-            if (posPrevO !== null && posPrevO !== undefined) {
-                const finish = this.checkFinishLine(posPrevO, now);
-                if (finish === true) this.ballonO.laps += 1;
+            const finish = this.checkFinishLine(this.posPrevO, now);
+            if (finish === true) {this.ballonO.laps += 1
+                console.log(this.ballonO.laps)
             }
-            posPrevO = now.clone();
-        }, 10);
+        }
+        this.posPrevO = now.clone();
+    };
 
-        const playerMoviment = setInterval(async () => {
-            if (this.paused === false && this.ballonP.penalty !== true) {
-                if (timeLeft <= 0) {
-                    clearInterval(playerMoviment);
-                    return;
-                }
+    playerMoviment(delta) {
+        if (this.paused === false && this.ballonP.penalty !== true) {
 
-                // move player ballon
-                const posOld = this.ballonP.position.clone();
-                this.ballonP.moveWind(this.wN, this.wS, this.wE, this.wW);
+            // move player ballon
+            const posOld = this.ballonP.position.clone();
+            this.ballonP.moveWind(this.wN, this.wS, this.wE, this.wW, delta);
 
-                // check for colisions
-                const colisionT = this.colisionTrack(this.ballonP);
-                const colisionU = this.collisionPowerUps(this.ballonP);
-                const colisionD = this.collisionPowerDowns(this.ballonP);
-                const colisionB = this.checkCollisionBallons();
-                //console.log(colisionT, colisionU, colisionD);
+            // check for colisions
+            const colisionT = this.colisionTrack(this.ballonP);
+            const colisionU = this.collisionPowerUps(this.ballonP);
+            const colisionD = this.collisionPowerDowns(this.ballonP);
+            const colisionB = this.checkCollisionBallons();
+            //console.log(colisionT, colisionU, colisionD);
 
-                // update billboard in relation to vouchers
-                this.billboard.display.updateVouchers(this.ballonP.vouchers);
+            // update billboard in relation to vouchers
+            this.billboard.display.updateVouchers(this.ballonP.vouchers);
 
-                // update billboard in relation to wind
+            // update billboard in relation to wind
+            if (
+                this.ballonP.position.y > 0 &&
+                this.ballonP.position.y <= 5
+            ) {
+                this.billboard.display.updateWind("no wind");
                 if (
-                    this.ballonP.position.y > 0 &&
-                    this.ballonP.position.y <= 5
+                    this.app.activeCamera ===
+                    this.app.cameras["FirstPerson"]
                 ) {
-                    this.billboard.display.updateWind("no wind");
-                    if (
-                        this.app.activeCamera ===
-                        this.app.cameras["FirstPerson"]
-                    ) {
-                        const cameraPos = new THREE.Vector3(
-                            this.ballonP.position.x,
-                            this.ballonP.position.y,
-                            this.ballonP.position.z - 1
-                        );
-                        this.app.controls.target.copy(cameraPos);
-                        this.app.controls.update();
-                    }
-                }
-                if (
-                    this.ballonP.position.y > 5 &&
-                    this.ballonP.position.y <= 10
-                ) {
-                    this.billboard.display.updateWind("north");
-                    if (
-                        this.app.activeCamera ===
-                        this.app.cameras["FirstPerson"]
-                    ) {
-                        const cameraPos = new THREE.Vector3(
-                            this.ballonP.position.x,
-                            this.ballonP.position.y,
-                            this.ballonP.position.z - 1
-                        );
-                        this.app.controls.target.copy(cameraPos);
-                        this.app.controls.update();
-                    }
-                }
-                if (
-                    this.ballonP.position.y > 10 &&
-                    this.ballonP.position.y <= 15
-                ) {
-                    this.billboard.display.updateWind("south");
-                    if (
-                        this.app.activeCamera ===
-                        this.app.cameras["FirstPerson"]
-                    ) {
-                        const cameraPos = new THREE.Vector3(
-                            this.ballonP.position.x,
-                            this.ballonP.position.y,
-                            this.ballonP.position.z + 1
-                        );
-                        this.app.controls.target.copy(cameraPos);
-                        this.app.controls.update();
-                    }
-                }
-                if (
-                    this.ballonP.position.y > 15 &&
-                    this.ballonP.position.y <= 20
-                ) {
-                    this.billboard.display.updateWind("east");
-                    if (
-                        this.app.activeCamera ===
-                        this.app.cameras["FirstPerson"]
-                    ) {
-                        const cameraPos = new THREE.Vector3(
-                            this.ballonP.position.x + 1,
-                            this.ballonP.position.y,
-                            this.ballonP.position.z
-                        );
-                        this.app.controls.target.copy(cameraPos);
-                        this.app.controls.update();
-                    }
-                }
-                if (
-                    this.ballonP.position.y > 20 &&
-                    this.ballonP.position.y <= 25
-                ) {
-                    this.billboard.display.updateWind("west");
-                    if (
-                        this.app.activeCamera ===
-                        this.app.cameras["FirstPerson"]
-                    ) {
-                        const cameraPos = new THREE.Vector3(
-                            this.ballonP.position.x - 1,
-                            this.ballonP.position.y,
-                            this.ballonP.position.z
-                        );
-                        this.app.controls.target.copy(cameraPos);
-                        this.app.controls.update();
-                    }
-                }
-
-                // collision with power up
-                if (colisionU === true) {
-                    this.ballonP.vouchers += 1;
-                }
-
-                // collision with obstacle or off track
-                if (
-                    colisionD === true ||
-                    colisionT === true ||
-                    colisionB === true
-                ) {
-                    if (this.ballonP.vouchers > 0) this.ballonP.vouchers -= 1;
-                    else {
-                        this.ballonP.penalty = true;
-                        await this.sleep(this.obstaclePenalty * 1000);
-                        this.ballonP.penalty = false;
-                    }
-                }
-
-                // off track
-                if (colisionT === true) {
-                    const position = this.colisionTrackRepositing(this.ballonP);
-                    const posX = position.x;
-                    const posY = this.ballonP.position.y;
-                    const posZ = position.z;
-                    this.ballonP.position.set(posX, posY, posZ);
-                }
-
-                // check if finish line was passed
-                const posNow = this.ballonP.position.clone();
-                const finish = this.checkFinishLine(posOld, posNow);
-                if (finish === true) {
-                    this.ballonP.laps += 1;
-                    this.billboard.display.updateLaps(this.ballonP.laps);
-                }
-
-                // update cameras
-                const posCX = posNow.x + 20;
-                const posCY = posNow.y + 20;
-                const posCZ = posNow.z + 20;
-
-                this.app.cameras["ThirdPerson"].position.set(
-                    posCX,
-                    posCY,
-                    posCZ
-                );
-                this.app.cameras["ThirdPerson"].lookAt(this.ballonP.position);
-
-                if (this.app.activeCamera === this.app.cameras["ThirdPerson"]) {
-                    this.app.controls.target.copy(this.ballonP.position);
+                    const cameraPos = new THREE.Vector3(
+                        this.ballonP.position.x,
+                        this.ballonP.position.y,
+                        this.ballonP.position.z - 1
+                    );
+                    this.app.controls.target.copy(cameraPos);
                     this.app.controls.update();
                 }
             }
-        }, 10);
-    }
+            if (
+                this.ballonP.position.y > 5 &&
+                this.ballonP.position.y <= 10
+            ) {
+                this.billboard.display.updateWind("north");
+                if (
+                    this.app.activeCamera ===
+                    this.app.cameras["FirstPerson"]
+                ) {
+                    const cameraPos = new THREE.Vector3(
+                        this.ballonP.position.x,
+                        this.ballonP.position.y,
+                        this.ballonP.position.z - 1
+                    );
+                    this.app.controls.target.copy(cameraPos);
+                    this.app.controls.update();
+                }
+            }
+            if (
+                this.ballonP.position.y > 10 &&
+                this.ballonP.position.y <= 15
+            ) {
+                this.billboard.display.updateWind("south");
+                if (
+                    this.app.activeCamera ===
+                    this.app.cameras["FirstPerson"]
+                ) {
+                    const cameraPos = new THREE.Vector3(
+                        this.ballonP.position.x,
+                        this.ballonP.position.y,
+                        this.ballonP.position.z + 1
+                    );
+                    this.app.controls.target.copy(cameraPos);
+                    this.app.controls.update();
+                }
+            }
+            if (
+                this.ballonP.position.y > 15 &&
+                this.ballonP.position.y <= 20
+            ) {
+                this.billboard.display.updateWind("east");
+                if (
+                    this.app.activeCamera ===
+                    this.app.cameras["FirstPerson"]
+                ) {
+                    const cameraPos = new THREE.Vector3(
+                        this.ballonP.position.x + 1,
+                        this.ballonP.position.y,
+                        this.ballonP.position.z
+                    );
+                    this.app.controls.target.copy(cameraPos);
+                    this.app.controls.update();
+                }
+            }
+            if (
+                this.ballonP.position.y > 20 &&
+                this.ballonP.position.y <= 25
+            ) {
+                this.billboard.display.updateWind("west");
+                if (
+                    this.app.activeCamera ===
+                    this.app.cameras["FirstPerson"]
+                ) {
+                    const cameraPos = new THREE.Vector3(
+                        this.ballonP.position.x - 1,
+                        this.ballonP.position.y,
+                        this.ballonP.position.z
+                    );
+                    this.app.controls.target.copy(cameraPos);
+                    this.app.controls.update();
+                }
+            }
+
+            // collision with power up
+            if (colisionU === true) {
+                this.ballonP.vouchers += 1;
+            }
+
+            // collision with obstacle or off track
+            if (
+                colisionD === true ||
+                colisionT === true ||
+                colisionB === true
+            ) {
+                if (this.ballonP.vouchers > 0) this.ballonP.vouchers -= 1;
+                else {
+                    this.ballonP.penalty = true;
+
+                    setTimeout(() => {
+                        this.ballonP.penalty = false;
+                    }, this.obstaclePenalty * 1000);
+                    //await this.sleep(this.obstaclePenalty * 1000);
+                    //this.ballonP.penalty = false;
+                }
+            }
+
+            // off track
+            if (colisionT === true) {
+                const position = this.colisionTrackRepositing(this.ballonP);
+                const posX = position.x;
+                const posY = this.ballonP.position.y;
+                const posZ = position.z;
+                this.ballonP.position.set(posX, posY, posZ);
+            }
+
+            // check if finish line was passed
+            const posNow = this.ballonP.position.clone();
+            const finish = this.checkFinishLine(posOld, posNow, delta);
+            if (finish === true) {
+                this.ballonP.laps += 1;
+                this.billboard.display.updateLaps(this.ballonP.laps);
+            }
+
+            // update cameras
+            const posCX = posNow.x + 20;
+            const posCY = posNow.y + 20;
+            const posCZ = posNow.z + 20;
+
+            this.app.cameras["ThirdPerson"].position.set(
+                posCX,
+                posCY,
+                posCZ
+            );
+            this.app.cameras["ThirdPerson"].lookAt(this.ballonP.position);
+
+            if (this.app.activeCamera === this.app.cameras["ThirdPerson"]) {
+                this.app.controls.target.copy(this.ballonP.position);
+                this.app.controls.update();
+            }
+        }
+    };
 
     /**
      * Called to check if ballon passed finish line
@@ -434,28 +442,35 @@ class MyGame {
      */
     checkFinishLine(posOld, posNow) {
         // define first point of track
-        const posCurTemp = this.track.path.getPointAt(0);
-        const posCurX = posCurTemp.x; //* this.track.widthS;
-        const posCurY = posCurTemp.y; //* this.track.widthS;
-        const posCurZ = posCurTemp.z; //* this.track.widthS;
-        const posCur = new THREE.Vector3(posCurX, posCurY, posCurZ);
+        if(posOld.equals(posNow)) return false
 
-        // define equation plane finish
-        const v1 = this.track.finish.normalize();
-        const v2 = new THREE.Vector3(0, 1, 0).normalize();
-        const nx = v1.y * v2.z - v1.z * v2.y;
-        const ny = v1.z * v2.x - v1.x * v2.z;
-        const nz = v1.x * v2.y - v1.y * v2.z;
-        const nr = nx * posCur.x + ny * posCur.y + nz * posCur.z;
+        const posCur = this.track.path.getPointAt(0);
 
+        const tangent = this.track.path.getTangent(0).normalize();
+
+        const normal = tangent;  // Como a tangente é normal ao plano, usamos diretamente o vetor tangente
+
+        // Calculando D
+        const D = -(normal.x * posCur.x + normal.y * posCur.y + normal.z * posCur.z);
+
+
+
+        //// define equation plane finish
+        //const v1 = this.track.finish.normalize();
+        //const v2 = new THREE.Vector3(0, 1, 0).normalize();
+        //const nx = v1.y * v2.z - v1.z * v2.y;
+        //const ny = v1.z * v2.x - v1.x * v2.z;
+        //const nz = v1.x * v2.y - v1.y * v2.z;
+        //const nr = nx * posCur.x + ny * posCur.y + nz * posCur.z;
+//
         // define equation direction ballon
         let dx = posNow.x - posOld.x;
         let dy = posNow.y - posOld.y;
         let dz = posNow.z - posOld.z;
-        const vd = new THREE.Vector3(dx, dy, dz).normalize();
-        dx = vd.x;
-        dy = vd.y;
-        dz = vd.z;
+        //const vd = new THREE.Vector3(dx, dy, dz).normalize();
+        //dx = vd.x;
+        //dy = vd.y;
+        //dz = vd.z;
 
         // define equation direction curve first two points
         const curve1 = this.track.points[0];
@@ -468,14 +483,29 @@ class MyGame {
         cy = vc.y;
         cz = vc.z;
 
-        // calculate t value
-        const num = nr - (nx * posOld.x + ny * posOld.y + nz * posOld.z);
-        const den = nx * dx + ny * dy + nz * dz;
+        //// calculate t value
+        //const num = nr - (nx * posOld.x + ny * posOld.y + nz * posOld.z);
+        //const den = nx * dx + ny * dy + nz * dz;
+//
+        //// direction and plane are parallels (no intersection)
+        //if (den === 0) return false;
 
-        // direction and plane are parallels (no intersection)
-        if (den === 0) return false;
 
-        const t = -posOld.z / dz;
+    
+        // Calculando o parâmetro t de interseção
+        const numerator = -(normal.x * posOld.x + normal.y * posOld.y + normal.z * posOld.z + D);
+        const denominator = normal.x * dx + normal.y * dy + normal.z * dz;
+        const t = numerator / denominator;
+
+        if (denominator === 0) {
+            return false;
+        }
+    
+        // intersection not between posOld and posNew
+        if (t < 0 || t > 1) {
+            return false;}
+
+        //const t = -posOld.z / dz;
         const interX = posOld.x + t * dx;
         const interY = posOld.y + t * dy;
         const intersection = new THREE.Vector3(interX, interY, 0);
@@ -483,13 +513,18 @@ class MyGame {
         const righDir = dx * cx + dy * cy + dz * cz;
         const dist = center.distanceTo(intersection);
 
-        // intersection not between posOld and posNew
-        if (t < 0 || t >= 1) return false;
         // intersection outside track limits
         if (dist > this.track.width / 2 + 1) return false;
         // intersection when going backwards
-        if (righDir > 0) return false;
+        if (righDir > 0) {
+            this.against = true;
+            return false;}
+
         // complete
+        if(this.against){
+            this.against = false;
+            return false;
+        }
         return true;
     }
 
@@ -500,9 +535,9 @@ class MyGame {
         const bbxO = this.ballonO.boundingBox;
 
         // distances
-        const distX = Math.abs(Math.abs(posP.x) - Math.abs(posO.x));
-        const distY = Math.abs(Math.abs(posP.y) - Math.abs(posO.y));
-        const distZ = Math.abs(Math.abs(posP.z) - Math.abs(posO.z));
+        const distX = Math.abs(posP.x - posO.x);
+        const distY = Math.abs(posP.y - posO.y);
+        const distZ = Math.abs(posP.z - posO.z);
 
         // check if they are colliding
 
@@ -534,9 +569,9 @@ class MyGame {
                 const bbxP = this.powerUps[i].boundingBox;
 
                 // distances
-                const distX = Math.abs(Math.abs(posB.x) - Math.abs(posP.x));
-                const distY = Math.abs(Math.abs(posB.y) - Math.abs(posP.y));
-                const distZ = Math.abs(Math.abs(posB.z) - Math.abs(posP.z));
+                const distX = Math.abs(posB.x - posP.x);
+                const distY = Math.abs(posB.y - posP.y);
+                const distZ = Math.abs(posB.z - posP.z);
 
                 if (
                     distX <= bbxB[0] / 2 + bbxP[0] / 2 &&
@@ -544,6 +579,7 @@ class MyGame {
                     distZ <= bbxB[2] / 2 + bbxP[2] / 2
                 ) {
                     // check if they are colliding
+                    console.log("colidio PowerUp")
                     this.powerUps[i].desactivate(this.obstaclePenalty);
                     return true;
                 }
@@ -570,9 +606,9 @@ class MyGame {
                 const bbxP = this.powerDowns[i].boundingBox;
 
                 // distances
-                const distX = Math.abs(Math.abs(posB.x) - Math.abs(posP.x));
-                const distY = Math.abs(Math.abs(posB.y) - Math.abs(posP.y));
-                const distZ = Math.abs(Math.abs(posB.z) - Math.abs(posP.z));
+                const distX = Math.abs(posB.x - posP.x);
+                const distY = Math.abs(posB.y - posP.y);
+                const distZ = Math.abs(posB.z - posP.z);
 
                 if (
                     distX <= bbxB[0] / 2 + bbxP[0] / 2 &&
@@ -580,6 +616,7 @@ class MyGame {
                     distZ <= bbxB[2] / 2 + bbxP[2] / 2
                 ) {
                     // check if they are colliding
+                    console.log("colidio Obstaculo")
                     this.powerDowns[i].desactivate(this.obstaclePenalty);
                     return true;
                 }
@@ -605,12 +642,7 @@ class MyGame {
         for (let i = 0; i <= samples; i++) {
             const t = i / samples;
 
-            // coordinates of a point in the track with scale if it
-            const oldPos = this.track.path.getPointAt(t);
-            const xPos = oldPos.x; //* this.track.widthS;
-            const yPos = oldPos.y; //* this.track.widthS;
-            const zPos = oldPos.z; //* this.track.widthS;
-            const newPos = new THREE.Vector3(xPos, yPos, zPos);
+            const newPos = this.track.path.getPointAt(t);
 
             // calculate distance
             if (newPos.distanceTo(position) <= distMax) return false;
@@ -634,12 +666,7 @@ class MyGame {
         for (let i = 0; i <= samples; i++) {
             const t = i / samples;
 
-            // coordinates of a point in the track with scale if it
-            const oldPos = this.track.path.getPointAt(t);
-            const xPos = oldPos.x; //* this.track.widthS;
-            const yPos = oldPos.y; //* this.track.widthS;
-            const zPos = oldPos.z; //* this.track.widthS;
-            const newPos = new THREE.Vector3(xPos, yPos, zPos);
+            const newPos = this.track.path.getPointAt(t);
 
             const dist = newPos.distanceTo(position);
             if (closestDist === null || dist < closestDist) {
@@ -825,6 +852,9 @@ class MyGame {
     //}
 
     update() {
+
+        let delta = this.app.clock.getDelta(); 
+
         let t = this.app.clock.getElapsedTime();
 
         // update lookat of the billboards
@@ -854,7 +884,10 @@ class MyGame {
             }
         }
 
-        //if (this.ballonO !== null && this.ballonP !== null && this.state == "game"){
+        if (this.ballonO !== null && this.ballonP !== null && this.state == "game" && this.run == true){
+            this.oponentMoviment()
+            this.playerMoviment(delta)
+
         //
         //    this.currentLapTime += this.clock.getDelta();
         //
@@ -871,8 +904,8 @@ class MyGame {
         //        this.lapTime = (3 + Math.random()) * 60;
         //    }
         //
-        //}
-        //
+        }
+        
 
         // end firework
         if (
@@ -932,6 +965,40 @@ class MyGame {
             });
         }
     }
+
+    
+}
+
+function isPointBetweenOnPlane(P1, P2, nx, ny, nz, nr) {
+    // Definir a equação paramétrica da linha
+    const x1 = P1.x, y1 = P1.y, z1 = P1.z;
+    const x2 = P2.x, y2 = P2.y, z2 = P2.z;
+
+    // Definir a equação do plano: A * x + B * y + C * z = D
+    const A = nx, B = ny, C = nz, D = nr;
+
+    // Função que calcula o valor da equação do plano para um valor de t
+    function planeEquationAtT(t) {
+        // Ponto na linha: P(t) = (1 - t) * P1 + t * P2
+        const x = (1 - t) * x1 + t * x2;
+        const y = (1 - t) * y1 + t * y2;
+        const z = (1 - t) * z1 + t * z2;
+
+        // Retorna o valor da equação do plano para o ponto P(t)
+        return A * x + B * y + C * z;
+    }
+
+    // Verificar se existe um t entre 0 e 1 que satisfaça a equação do plano
+    let startValue = planeEquationAtT(0); // Valor da equação no ponto P1
+    let endValue = planeEquationAtT(1); // Valor da equação no ponto P2
+
+    // Se ambos os pontos P1 e P2 estão do mesmo lado do plano, não há ponto entre eles
+    if (startValue * endValue > 0) {
+        return false;
+    }
+
+    // Caso contrário, há um ponto entre eles que pertence ao plano
+    return true;
 }
 
 export { MyGame };
