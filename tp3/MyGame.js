@@ -92,7 +92,6 @@ class MyGame {
         this.posPrevO = null;
         this.timeLeft = 0;
 
-        this.i = 0
     }
 
     /**
@@ -186,7 +185,7 @@ class MyGame {
 
         const heightB = this.ballonP.height;
         if (this.sideP.name === "side_1") {
-            this.selectRoute = this.routes[0];
+            this.ballonO.defineRoute(0)
             this.ballonP.position.set(
                 this.track.p1.x,
                 this.track.p1.y + heightB / 2,
@@ -198,7 +197,7 @@ class MyGame {
                 this.track.p2.z
             );
         } else {
-            this.selectRoute = this.routes[1];
+            this.ballonO.defineRoute(1)
             this.ballonP.position.set(
                 this.track.p2.x,
                 this.track.p2.y + heightB / 2,
@@ -254,13 +253,9 @@ class MyGame {
 
         // check if finish line was passed
         if (this.posPrevO !== null && this.posPrevO !== undefined) {
-            if (this.i == 0){
-                console.log("Antiga", this.posPrevO, "Nova", now)
-                this.i += 1
-            }
             const finish = this.checkFinishLine(this.posPrevO, now);
-            if (finish === true) {this.ballonO.laps += 1
-                console.log(this.ballonO.laps)
+            if (finish === true) {
+                this.ballonO.laps += 1
             }
         }
         this.posPrevO = now.clone();
@@ -448,12 +443,10 @@ class MyGame {
 
         const tangent = this.track.path.getTangent(0).normalize();
 
-        const normal = tangent;  // Como a tangente é normal ao plano, usamos diretamente o vetor tangente
+        const normal = tangent;  //As the tangent is normal to the plane, we directly use the tangent vector
 
-        // Calculando D
+        // Calculate D
         const D = -(normal.x * posCur.x + normal.y * posCur.y + normal.z * posCur.z);
-
-
 
         //// define equation plane finish
         //const v1 = this.track.finish.normalize();
@@ -492,7 +485,7 @@ class MyGame {
 
 
     
-        // Calculando o parâmetro t de interseção
+        // calculate t value
         const numerator = -(normal.x * posOld.x + normal.y * posOld.y + normal.z * posOld.z + D);
         const denominator = normal.x * dx + normal.y * dy + normal.z * dz;
         const t = numerator / denominator;
@@ -502,7 +495,7 @@ class MyGame {
         }
     
         // intersection not between posOld and posNew
-        if (t < 0 || t > 1) {
+        if (t <= 0 || t > 1) {
             return false;}
 
         //const t = -posOld.z / dz;

@@ -496,24 +496,35 @@ class MyParser {
                 : null;
 
             // define route
-            let route = [];
+            let routes = [];
 
-            for (const j in data.ballons[i].route) {
-                const x = data.ballons[i].route[j].x;
-                const y = data.ballons[i].route[j].y;
-                const z = data.ballons[i].route[j].z;
+            Object.values(data.ballons[i].routes).forEach((value) => {
+                let pointsList = [];
+                for (let j = 0; j < value.points.length; j++) {
+                    let x = value.points[j].x;
+                    let y = value.points[j].y;
+                    let z = value.points[j].z;
+                    pointsList.push(new THREE.Vector3(x, y, z));
+                }
+                routes.push(pointsList);
+            });
 
-                //const x = -data.ballons[i].route[j].x * 5;
-                //const y = data.ballons[i].route[j].y * 5;
-                //const z = data.ballons[i].route[j].z * 5;
+            //for (const j in data.ballons[i].route) {
+            //    const x = data.ballons[i].route[j].x;
+            //    const y = data.ballons[i].route[j].y;
+            //    const z = data.ballons[i].route[j].z;
 
-                route.push(new THREE.Vector3(x, y, z));
-            }
+            //    //const x = -data.ballons[i].route[j].x * 5;
+            //    //const y = data.ballons[i].route[j].y * 5;
+            //    //const z = data.ballons[i].route[j].z * 5;
+
+            //    route.push(new THREE.Vector3(x, y, z));
+            //}
 
             this.parkOponent.push({
                 color: color,
                 velocity: velocity,
-                route: route,
+                routes: routes,
             });
         }
     }

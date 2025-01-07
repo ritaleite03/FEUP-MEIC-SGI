@@ -36,9 +36,9 @@ class MyPark extends THREE.Object3D {
             const index = (Number(i) + 1).toString();
             const color = ballons[i].color;
             const velocity = ballons[i].velocity ? ballons[i].velocity : null;
-            const route = ballons[i].route ? ballons[i].route : null;
+            const routes = ballons[i].routes ? ballons[i].routes : null;
             this.ballons.push(
-                new MyBallon(app, name + "_" + index, color, velocity, route)
+                new MyBallon(app, name + "_" + index, color, velocity, routes)
             );
         }
 

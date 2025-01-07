@@ -10,9 +10,9 @@ class MyBallon extends THREE.Object3D {
      * @param {String} name name indicating if ballons is from player or oponent
      * @param {String} color color of the ballon
      * @param {Number} velocity velocity of the ballon (only used in the ballons of the oponent)
-     * @param {Array<THREE.Vector3>} route list of the positions in the path of the ballon (only used in the ballons of the oponent)
+     * @param {Array<Array<THREE.Vector3>>} routes list of list of the positions in the path of the ballon (only used in the ballons of the oponent)
      */
-    constructor(app, name, color, velocity, route) {
+    constructor(app, name, color, velocity, routes) {
         // variables
         super();
         this.app = app;
@@ -22,6 +22,7 @@ class MyBallon extends THREE.Object3D {
         this.color = color;
         this.object = null;
         this.billboard = null;
+        this.route = null
 
         // variables used in player ballon
         this.shadow = null;
@@ -29,7 +30,7 @@ class MyBallon extends THREE.Object3D {
 
         // variables used in oponent ballon
         this.velocity = velocity;
-        this.route = route;
+        this.routes = routes;
         this.clock = new THREE.Clock();
         this.mixerTime = 0;
         this.mixerPause = false;
@@ -300,6 +301,7 @@ class MyBallon extends THREE.Object3D {
         newBallon.shadow = this.shadow;
 
         // variables used in oponent ballon
+        newBallon.routes = this.routes;
         newBallon.route = this.route;
         newBallon.velocity = this.velocity;
 
@@ -334,6 +336,13 @@ class MyBallon extends THREE.Object3D {
             this.mixer = new THREE.AnimationMixer(this);
             this.positionAction = this.mixer.clipAction(posClip);
         }
+    }
+
+    /**
+     * Called to define inside our outside route of the oponent ballon 
+     */
+    defineRoute(side) {
+        this.route = this.routes[side]
     }
 
     /**
