@@ -1,0 +1,997 @@
+import * as THREE from "three";
+import { MyBillboard } from "./object/MyBillboard.js";
+import { MyPark } from "./object/MyPark.js";
+import { MyBallon } from "./object/MyBallon.js";
+import { MyMenuStart } from "./object/MyMenuStart.js";
+import { MyFirework } from "./MyFirework.js";
+import { MyMenuRun } from "./object/MyMenuRun.js";
+import { MyMenuFinish } from "./object/MyMenuFinish.js";
+
+class MyGame {
+    constructor(
+        app,
+        track,
+        powerUps,
+        powerDowns,
+        routes,
+        parkPlayer,
+        parkOponent
+    ) {
+        this.app = app;
+        this.playerName = null;
+        this.obstaclePenalty = 1;
+        this.fireworks = [];
+        this.state = "initial";
+        this.paused = false;
+        this.ambientLight = new THREE.AmbientLight("#ffffff");
+
+        // options mesh's name
+        this.optionsP = ["player_1", "player_2", "player_3", "player_4"];
+        this.optionsO = ["oponent_1", "oponent_2", "oponent_3", "oponent_4"];
+        this.optionsS = ["side_1", "side_2"];
+
+        // option to index map
+        this.dictP = {
+            player_1: 0,
+            player_2: 1,
+            player_3: 2,
+            player_4: 3,
+        };
+        this.dictO = {
+            oponent_1: 0,
+            oponent_2: 1,
+            oponent_3: 2,
+            oponent_4: 3,
+        };
+
+        // constants
+        this.allPowerUps = powerUps;
+        this.allPowerDowns = powerDowns;
+        this.track = track;
+        this.powerUps = this.randomElements(10, this.allPowerUps);
+        this.powerDowns = this.randomElements(10, this.allPowerDowns);
+        this.routes = routes;
+        this.showRoute = false;
+        this.billboard = new MyBillboard(this.app, new MyMenuStart(this.app));
+        this.billboard.position.set(-15, 0, 0);
+        this.parkP = new MyPark(this.app, "player", parkPlayer);
+        this.parkO = new MyPark(this.app, "oponent", parkOponent);
+
+        // player configuration
+        this.ballonPickerP = null;
+        this.ballonPickerO = null;
+        this.ballonP = null;
+        this.ballonO = null;
+        this.sideP = null;
+        this.selectRoute = null;
+
+        this.run = false;
+
+        // wind
+        this.wE = 4.0;
+        this.wN = 4.0;
+        this.wW = 4.0;
+        this.wS = 4.0;
+
+        // picker configuration
+        this.raycaster = new THREE.Raycaster();
+        this.raycaster.near = 1;
+        this.raycaster.far = 200;
+        this.pointer = new THREE.Vector2();
+        this.intersectedObj = null;
+        this.pickingColor = "0x000000";
+
+        // picker and move event
+        document.addEventListener("pointerdown", this.onPointerMove.bind(this));
+        document.addEventListener("keydown", this.onKeyPressed.bind(this));
+
+        this.against = false;
+        this.run = false;
+
+        this.oldPos = null;
+        this.posPrevO = null;
+        this.timeLeft = 0;
+
+    }
+
+    /**
+     *
+     */
+    randomElements(number, elements) {
+        const numbers = new Set();
+        const result = [];
+
+        while (numbers.size < number) {
+            const randomNumber = Math.floor(Math.random() * elements.length);
+            numbers.add(randomNumber);
+            result.push(elements[randomNumber]);
+        }
+
+        return result;
+    }
+
+    /**
+     * Called to start the game
+     */
+    startGame() {
+        this.app.scene.add(this.ambientLight);
+        this.app.scene.add(this.track.object);
+        this.app.scene.add(this.billboard);
+
+        this.parkP.position.set(20, 0, 110);
+        this.parkO.position.set(20, 0, -110);
+        this.app.scene.add(this.parkP);
+        this.app.scene.add(this.parkO);
+
+        for (const i in this.powerUps) {
+            this.app.scene.add(this.powerUps[i]);
+        }
+        for (const i in this.powerDowns) {
+            this.app.scene.add(this.powerDowns[i]);
+        }
+    }
+
+    /**
+     * Called to finish the game
+     * @param {Number} time time spent playing
+     */
+    finishGame(time) {
+        this.paused = false;
+        this.state = "finish";
+        if (this.ballonP.laps > this.ballonO.laps) {
+            this.billboard.updateDisplay(
+                new MyMenuFinish(
+                    this.app,
+                    this.playerName,
+                    "OPONENT",
+                    time,
+                    false
+                )
+            );
+        } else if (this.ballonP.laps < this.ballonO.laps) {
+            this.billboard.updateDisplay(
+                new MyMenuFinish(
+                    this.app,
+                    "OPONENT",
+                    this.playerName,
+                    time,
+                    false
+                )
+            );
+        } else {
+            this.billboard.updateDisplay(
+                new MyMenuFinish(this.app, null, null, time, true)
+            );
+        }
+    }
+
+    /**
+     * Called to run the game
+     */
+    async runGame() {
+        //const postTrackX = -this.track.points[0].x //* this.track.widthS;
+        //const postTrackZ = this.track.points[0].z //* this.track.widthS;
+
+        const timeTotal = 60 * 5;
+        this.timeLeft = 60 * 5;
+
+        this.ballonP =
+            this.parkP.ballons[this.dictP[this.ballonPickerP.name]].clone();
+
+        this.ballonO =
+            this.parkO.ballons[this.dictO[this.ballonPickerO.name]].clone();
+
+        this.ballonP.add(this.app.cameras["FirstPerson"]);
+
+        const heightB = this.ballonP.height;
+        if (this.sideP.name === "side_1") {
+            this.ballonO.defineRoute(0)
+            this.ballonP.position.set(
+                this.track.p1.x,
+                this.track.p1.y + heightB / 2,
+                this.track.p1.z
+            );
+            this.ballonO.position.set(
+                this.track.p2.x,
+                this.track.p2.y + heightB / 2,
+                this.track.p2.z
+            );
+        } else {
+            this.ballonO.defineRoute(1)
+            this.ballonP.position.set(
+                this.track.p2.x,
+                this.track.p2.y + heightB / 2,
+                this.track.p2.z
+            );
+            this.ballonO.position.set(
+                this.track.p1.x,
+                this.track.p1.y + heightB / 2,
+                this.track.p1.z
+            );
+        }
+
+        this.app.scene.add(this.ballonP);
+        this.app.scene.add(this.ballonO);
+        this.updateAmbientLight();
+
+        this.ballonO.defineAnimation();
+        this.ballonO.positionAction.play();
+
+        //let posPrevO = null;
+        let pointO1 = this.ballonO.route[0];
+        pointO1 = new THREE.Vector3(pointO1.x, pointO1.y, pointO1.z);
+
+        this.run = true;
+
+        const timerInterval = setInterval(() => {
+            if (this.timeLeft <= 0 || this.state === "finish") {
+                const timeSpent = timeTotal - this.timeLeft;
+                this.timeLeft = 0;
+                this.run = false;
+                clearInterval(timerInterval);
+                this.finishGame(timeSpent);
+            } else {
+                if (this.paused === false) {
+                    this.timeLeft--;
+                    this.billboard.display.updateTime(this.timeLeft);
+                }
+            }
+        }, 1000);
+       
+    }
+
+
+    oponentMoviment(){
+
+        // check if game is paused or not
+        if (this.paused === true) this.ballonO.mixer.timeScale = 0;
+        else this.ballonO.mixer.timeScale = 1;
+
+        // move oponent ballon
+        this.ballonO.moveAnimation();
+        const now = this.ballonO.position.clone();
+
+        // check if finish line was passed
+        if (this.posPrevO !== null && this.posPrevO !== undefined) {
+            const finish = this.checkFinishLine(this.posPrevO, now);
+            if (finish === true) {
+                this.ballonO.laps += 1
+            }
+        }
+        this.posPrevO = now.clone();
+    };
+
+    playerMoviment(delta) {
+        if (this.paused === false && this.ballonP.penalty !== true) {
+
+            // move player ballon
+            const posOld = this.ballonP.position.clone();
+            this.ballonP.moveWind(this.wN, this.wS, this.wE, this.wW, delta);
+
+            // check for colisions
+            const colisionT = this.colisionTrack(this.ballonP);
+            const colisionU = this.collisionPowerUps(this.ballonP);
+            const colisionD = this.collisionPowerDowns(this.ballonP);
+            const colisionB = this.checkCollisionBallons();
+            //console.log(colisionT, colisionU, colisionD);
+
+            // update billboard in relation to vouchers
+            this.billboard.display.updateVouchers(this.ballonP.vouchers);
+
+            // update billboard in relation to wind
+            if (
+                this.ballonP.position.y > 0 &&
+                this.ballonP.position.y <= 5
+            ) {
+                this.billboard.display.updateWind("no wind");
+                if (
+                    this.app.activeCamera ===
+                    this.app.cameras["FirstPerson"]
+                ) {
+                    const cameraPos = new THREE.Vector3(
+                        this.ballonP.position.x,
+                        this.ballonP.position.y,
+                        this.ballonP.position.z - 1
+                    );
+                    this.app.controls.target.copy(cameraPos);
+                    this.app.controls.update();
+                }
+            }
+            if (
+                this.ballonP.position.y > 5 &&
+                this.ballonP.position.y <= 10
+            ) {
+                this.billboard.display.updateWind("north");
+                if (
+                    this.app.activeCamera ===
+                    this.app.cameras["FirstPerson"]
+                ) {
+                    const cameraPos = new THREE.Vector3(
+                        this.ballonP.position.x,
+                        this.ballonP.position.y,
+                        this.ballonP.position.z - 1
+                    );
+                    this.app.controls.target.copy(cameraPos);
+                    this.app.controls.update();
+                }
+            }
+            if (
+                this.ballonP.position.y > 10 &&
+                this.ballonP.position.y <= 15
+            ) {
+                this.billboard.display.updateWind("south");
+                if (
+                    this.app.activeCamera ===
+                    this.app.cameras["FirstPerson"]
+                ) {
+                    const cameraPos = new THREE.Vector3(
+                        this.ballonP.position.x,
+                        this.ballonP.position.y,
+                        this.ballonP.position.z + 1
+                    );
+                    this.app.controls.target.copy(cameraPos);
+                    this.app.controls.update();
+                }
+            }
+            if (
+                this.ballonP.position.y > 15 &&
+                this.ballonP.position.y <= 20
+            ) {
+                this.billboard.display.updateWind("east");
+                if (
+                    this.app.activeCamera ===
+                    this.app.cameras["FirstPerson"]
+                ) {
+                    const cameraPos = new THREE.Vector3(
+                        this.ballonP.position.x + 1,
+                        this.ballonP.position.y,
+                        this.ballonP.position.z
+                    );
+                    this.app.controls.target.copy(cameraPos);
+                    this.app.controls.update();
+                }
+            }
+            if (
+                this.ballonP.position.y > 20 &&
+                this.ballonP.position.y <= 25
+            ) {
+                this.billboard.display.updateWind("west");
+                if (
+                    this.app.activeCamera ===
+                    this.app.cameras["FirstPerson"]
+                ) {
+                    const cameraPos = new THREE.Vector3(
+                        this.ballonP.position.x - 1,
+                        this.ballonP.position.y,
+                        this.ballonP.position.z
+                    );
+                    this.app.controls.target.copy(cameraPos);
+                    this.app.controls.update();
+                }
+            }
+
+            // collision with power up
+            if (colisionU === true) {
+                this.ballonP.vouchers += 1;
+            }
+
+            // collision with obstacle or off track
+            if (
+                colisionD === true ||
+                colisionT === true ||
+                colisionB === true
+            ) {
+                if (this.ballonP.vouchers > 0) this.ballonP.vouchers -= 1;
+                else {
+                    this.ballonP.penalty = true;
+
+                    setTimeout(() => {
+                        this.ballonP.penalty = false;
+                    }, this.obstaclePenalty * 1000);
+                    //await this.sleep(this.obstaclePenalty * 1000);
+                    //this.ballonP.penalty = false;
+                }
+            }
+
+            // off track
+            if (colisionT === true) {
+                const position = this.colisionTrackRepositing(this.ballonP);
+                const posX = position.x;
+                const posY = this.ballonP.position.y;
+                const posZ = position.z;
+                this.ballonP.position.set(posX, posY, posZ);
+            }
+
+            // check if finish line was passed
+            const posNow = this.ballonP.position.clone();
+            const finish = this.checkFinishLine(posOld, posNow, delta);
+            if (finish === true) {
+                this.ballonP.laps += 1;
+                this.billboard.display.updateLaps(this.ballonP.laps);
+            }
+
+            // update cameras
+            const posCX = posNow.x + 20;
+            const posCY = posNow.y + 20;
+            const posCZ = posNow.z + 20;
+
+            this.app.cameras["ThirdPerson"].position.set(
+                posCX,
+                posCY,
+                posCZ
+            );
+            this.app.cameras["ThirdPerson"].lookAt(this.ballonP.position);
+
+            if (this.app.activeCamera === this.app.cameras["ThirdPerson"]) {
+                this.app.controls.target.copy(this.ballonP.position);
+                this.app.controls.update();
+            }
+        }
+    };
+
+    /**
+     * Called to check if ballon passed finish line
+     * @param {THREE.Vector3} posOld previous position of the ballon
+     * @param {THREE.Vector3} posNow current position of the ballon
+     * @returns true if ballon passed finish line and false otherwise
+     */
+    checkFinishLine(posOld, posNow) {
+        // define first point of track
+        if(posOld.equals(posNow)) return false
+
+        const posCur = this.track.path.getPointAt(0);
+
+        const tangent = this.track.path.getTangent(0).normalize();
+
+        const normal = tangent;  //As the tangent is normal to the plane, we directly use the tangent vector
+
+        // Calculate D
+        const D = -(normal.x * posCur.x + normal.y * posCur.y + normal.z * posCur.z);
+
+        //// define equation plane finish
+        //const v1 = this.track.finish.normalize();
+        //const v2 = new THREE.Vector3(0, 1, 0).normalize();
+        //const nx = v1.y * v2.z - v1.z * v2.y;
+        //const ny = v1.z * v2.x - v1.x * v2.z;
+        //const nz = v1.x * v2.y - v1.y * v2.z;
+        //const nr = nx * posCur.x + ny * posCur.y + nz * posCur.z;
+//
+        // define equation direction ballon
+        let dx = posNow.x - posOld.x;
+        let dy = posNow.y - posOld.y;
+        let dz = posNow.z - posOld.z;
+        //const vd = new THREE.Vector3(dx, dy, dz).normalize();
+        //dx = vd.x;
+        //dy = vd.y;
+        //dz = vd.z;
+
+        // define equation direction curve first two points
+        const curve1 = this.track.points[0];
+        const curve2 = this.track.points[2];
+        let cx = curve1.x - curve2.x;
+        let cy = curve1.y - curve2.y;
+        let cz = curve1.z - curve2.z;
+        const vc = new THREE.Vector3(cx, cy, cz).normalize();
+        cx = vc.x;
+        cy = vc.y;
+        cz = vc.z;
+
+        //// calculate t value
+        //const num = nr - (nx * posOld.x + ny * posOld.y + nz * posOld.z);
+        //const den = nx * dx + ny * dy + nz * dz;
+//
+        //// direction and plane are parallels (no intersection)
+        //if (den === 0) return false;
+
+
+    
+        // calculate t value
+        const numerator = -(normal.x * posOld.x + normal.y * posOld.y + normal.z * posOld.z + D);
+        const denominator = normal.x * dx + normal.y * dy + normal.z * dz;
+        const t = numerator / denominator;
+
+        if (denominator === 0) {
+            return false;
+        }
+    
+        // intersection not between posOld and posNew
+        if (t <= 0 || t > 1) {
+            return false;}
+
+        //const t = -posOld.z / dz;
+        const interX = posOld.x + t * dx;
+        const interY = posOld.y + t * dy;
+        const intersection = new THREE.Vector3(interX, interY, 0);
+        const center = new THREE.Vector3(posCur.x, interY, posCur.z);
+        const righDir = dx * cx + dy * cy + dz * cz;
+        const dist = center.distanceTo(intersection);
+
+        // intersection outside track limits
+        if (dist > this.track.width / 2 + 1) return false;
+        // intersection when going backwards
+        if (righDir > 0) {
+            this.against = true;
+            return false;}
+
+        // complete
+        if(this.against){
+            this.against = false;
+            return false;
+        }
+        return true;
+    }
+
+    checkCollisionBallons() {
+        const posP = this.ballonP.position;
+        const bbxP = this.ballonP.boundingBox;
+        const posO = this.ballonO.position;
+        const bbxO = this.ballonO.boundingBox;
+
+        // distances
+        const distX = Math.abs(posP.x - posO.x);
+        const distY = Math.abs(posP.y - posO.y);
+        const distZ = Math.abs(posP.z - posO.z);
+
+        // check if they are colliding
+
+        if (
+            distX <= bbxP[0] / 2 + bbxO[0] / 2 &&
+            distY <= bbxP[1] / 2 + bbxO[1] / 2 &&
+            distZ <= bbxP[2] / 2 + bbxO[2] / 2
+        ) {
+            // check if they are colliding
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Called to check if ballon collied with power ups
+     * @param {MyBallon} ballon ballon of the player or the oponent
+     * @returns true if collision with power up and false otherwise
+     */
+    collisionPowerUps(ballon) {
+        const posB = ballon.position;
+        const bbxB = ballon.boundingBox;
+
+        for (const i in this.powerUps) {
+            // check if powerup is activated
+            if (this.powerUps[i].activated === true) {
+                // variables
+                const posP = this.powerUps[i].position;
+                const bbxP = this.powerUps[i].boundingBox;
+
+                // distances
+                const distX = Math.abs(posB.x - posP.x);
+                const distY = Math.abs(posB.y - posP.y);
+                const distZ = Math.abs(posB.z - posP.z);
+
+                if (
+                    distX <= bbxB[0] / 2 + bbxP[0] / 2 &&
+                    distY <= bbxB[1] / 2 + bbxP[1] / 2 &&
+                    distZ <= bbxB[2] / 2 + bbxP[2] / 2
+                ) {
+                    // check if they are colliding
+                    console.log("colidio PowerUp")
+                    this.powerUps[i].desactivate(this.obstaclePenalty);
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Called to check if ballon collied with obstacle
+     * @param {MyBallon} ballon ballon of the player or the oponent
+     * @returns true if collision with obstacle and false otherwise
+     */
+    collisionPowerDowns(ballon) {
+        const posB = ballon.position;
+        const bbxB = ballon.boundingBox;
+
+        for (const i in this.powerDowns) {
+            // check if powerup is activated
+            if (this.powerDowns[i].activated === true) {
+                // variables
+                const posP = this.powerDowns[i].position;
+                const bbxP = this.powerDowns[i].boundingBox;
+
+                // distances
+                const distX = Math.abs(posB.x - posP.x);
+                const distY = Math.abs(posB.y - posP.y);
+                const distZ = Math.abs(posB.z - posP.z);
+
+                if (
+                    distX <= bbxB[0] / 2 + bbxP[0] / 2 &&
+                    distY <= bbxB[1] / 2 + bbxP[1] / 2 &&
+                    distZ <= bbxB[2] / 2 + bbxP[2] / 2
+                ) {
+                    // check if they are colliding
+                    console.log("colidio Obstaculo")
+                    this.powerDowns[i].desactivate(this.obstaclePenalty);
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Called to check if ballon is inside or outside the track
+     * @param {MyBallon} ballon ballon of the player or the oponent
+     * @returns true if off track and false otherwise
+     */
+    colisionTrack(ballon) {
+        // variables
+        const position = ballon.shadow.position;
+        const radius = ballon.shadow.geometry.parameters.radiusTop;
+        const samples = 1000;
+        const distMax = radius + this.track.width / 2; //* this.track.widthS;
+
+        // check colision with points of the track
+        for (let i = 0; i <= samples; i++) {
+            const t = i / samples;
+
+            const newPos = this.track.path.getPointAt(t);
+
+            // calculate distance
+            if (newPos.distanceTo(position) <= distMax) return false;
+        }
+        return true;
+    }
+
+    /**
+     * Called to get the position of point in the track closest to the ballon (used when ballon is off track)
+     * @param {MyBallon} ballon ballon of the player or the oponent
+     * @returns position of closest point of the track
+     */
+    colisionTrackRepositing(ballon) {
+        // variables
+        const position = ballon.position;
+        const samples = 1000;
+        let closestPoint = null;
+        let closestDist = null;
+
+        // check distance to points
+        for (let i = 0; i <= samples; i++) {
+            const t = i / samples;
+
+            const newPos = this.track.path.getPointAt(t);
+
+            const dist = newPos.distanceTo(position);
+            if (closestDist === null || dist < closestDist) {
+                closestDist = dist;
+                closestPoint = newPos;
+            }
+        }
+
+        return closestPoint;
+    }
+
+    /**
+     * Called to make the function wait for n seconds
+     * @param {Number} ms
+     * @returns
+     */
+    sleep(ms) {
+        return new Promise((resolve) => setTimeout(resolve, ms));
+    }
+
+    /*
+     * Change the color of the first intersected object
+     *
+     */
+    changePickedObj(obj, name) {
+        // define object
+        let objNew = null;
+        if (name == "player") objNew = this.ballonPickerP;
+        if (name == "oponent") objNew = this.ballonPickerO;
+        if (name == "side") objNew = this.sideP;
+
+        // change color
+        if (objNew != obj) {
+            if (objNew) objNew.material.color.setHex(objNew.currentHex);
+            objNew = obj;
+            objNew.currentHex = objNew.material.color.getHex();
+            objNew.material.color.setHex(this.pickingColor);
+        }
+
+        // update object
+        if (name == "player") this.ballonPickerP = objNew;
+        if (name == "oponent") this.ballonPickerO = objNew;
+        if (name == "side") this.sideP = objNew;
+    }
+
+    /**
+     * Called to update ambient light according with the height of the player's ballon
+     */
+    updateAmbientLight() {
+        const posY = this.ballonP.position.y;
+        if (posY > 0 && posY <= 5) {
+            this.ambientLight.color = new THREE.Color("#ffffff");
+        } else if (posY > 5 && posY <= 10) {
+            this.ambientLight.color = new THREE.Color("#ffbcb0");
+        } else if (posY > 10 && posY <= 15) {
+            this.ambientLight.color = new THREE.Color("#eaffb0");
+        } else if (posY > 15 && posY <= 20) {
+            this.ambientLight.color = new THREE.Color("#b0ffb3");
+        } else if (posY > 20 && posY <= 25) {
+            this.ambientLight.color = new THREE.Color("#b6e7fa");
+        }
+    }
+
+    /**
+     * Called to deal with the event of a key pressed
+     * @param {*} event
+     */
+    onKeyPressed(event) {
+        if (this.state === "game") {
+            if (event.key == "ArrowDown") {
+                this.ballonP.moveDown();
+                this.updateAmbientLight();
+            } else if (event.key === "ArrowUp") {
+                this.ballonP.moveUp();
+                this.updateAmbientLight();
+            } else if (event.key === " ") {
+                this.paused = !this.paused;
+                let status = this.paused === true ? "paused" : "running";
+                this.billboard.display.updateStatusGame(status);
+            } else if (event.key === "Escape") {
+                this.state = "finish";
+            }
+        }
+    }
+
+    /**
+     * Called to deal with the event of pointer movimentation
+     * @param {*} event
+     */
+    onPointerMove(event) {
+        this.pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
+        this.pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
+        this.raycaster.setFromCamera(this.pointer, this.app.getActiveCamera());
+        var intersects = this.raycaster.intersectObjects(
+            this.app.scene.children
+        );
+        if (intersects.length > 0) {
+            // initial state
+            if (this.state === "initial") {
+                const obj = intersects[0].object;
+                const name = obj.name;
+
+                // players configuration options
+                if (this.optionsP.includes(name))
+                    this.changePickedObj(obj, "player");
+                if (this.optionsO.includes(name))
+                    this.changePickedObj(obj, "oponent");
+                if (this.optionsS.includes(name))
+                    this.changePickedObj(obj, "side");
+
+                // click on button start game
+                if (name == "startButton") {
+                    if (
+                        this.ballonPickerP !== null &&
+                        this.ballonPickerO !== null &&
+                        this.billboard.display.name !== "" &&
+                        this.sideP !== null
+                    ) {
+                        this.state = "game";
+                        this.playerName = this.billboard.display.name;
+                        this.billboard.updateDisplay(new MyMenuRun(this.app));
+                        this.runGame();
+                    }
+                }
+            }
+
+            // finish state
+            if (this.state === "finish") {
+                const obj = intersects[0].object;
+                const name = obj.name;
+
+                if (name === "restartButton") {
+                    this.state = "game";
+                    this.app.scene.remove(this.ballonP.shadow);
+                    this.app.scene.remove(this.ballonO.shadow);
+                    this.app.scene.remove(this.ballonP);
+                    this.app.scene.remove(this.ballonO);
+                    this.billboard.updateDisplay(new MyMenuRun(this.app));
+                    this.runGame();
+                }
+
+                if (name === "homeButton") {
+                    this.state = "initial";
+                    this.app.scene.remove(this.ballonP.shadow);
+                    this.app.scene.remove(this.ballonO.shadow);
+                    this.app.scene.remove(this.ballonP);
+                    this.app.scene.remove(this.ballonO);
+                    this.billboard.updateDisplay(new MyMenuStart(this.app));
+                }
+            }
+        }
+    }
+
+    //oponentRun(route){
+    //    conts time = []
+    //    const keyframes = []
+    //    for (let i = 0; i < route.length; i++){
+    //        keyframes.push(...route[i])
+    //    }
+    //    const positionKF = new THREE.VectorKeyframeTrack('.position',
+    //        time,
+    //        keyframes,
+    //        THREE.InterpolateSmooth
+    //        // THREE.InterpolateLinear      // (default),
+    //        // THREE.InterpolateDiscrete,
+    //    )
+
+    //    const positionClip = new THREE.AnimationClip('positionAnimation', 6, [positionKF])
+
+    //    // Create an AnimationMixer
+    //    this.mixer = new THREE.AnimationMixer(this.ballonO)
+
+    //    // Create AnimationActions for each clip
+    //    const positionAction = this.mixer.clipAction(positionClip)
+
+    //    // Play both animations
+    //    positionAction.play()
+    //}
+
+    //update() {
+    //    //const delta = this.clock.getDelta()
+    //    //this.mixer.update(delta)
+    //}
+
+    update() {
+
+        let delta = this.app.clock.getDelta(); 
+
+        let t = this.app.clock.getElapsedTime();
+
+        // update lookat of the billboards
+        const posCamera = this.app.activeCamera.position;
+        for (const i in this.parkO.ballons) {
+            this.parkO.ballons[i].billboard.lookAt(posCamera);
+        }
+        for (const i in this.parkP.ballons) {
+            this.parkP.ballons[i].billboard.lookAt(posCamera);
+        }
+        if (this.ballonP !== null && this.ballonP !== undefined) {
+            this.ballonP.billboard.lookAt(posCamera);
+        }
+        if (this.ballonO !== null && this.ballonO !== undefined) {
+            this.ballonO.billboard.lookAt(posCamera);
+        }
+
+        // update power ups and obstacles according with shader
+        for (const i in this.powerUps) {
+            if (this.powerUps[i]) {
+                this.powerUps[i].update(t);
+            }
+        }
+        for (const i in this.powerDowns) {
+            if (this.powerDowns[i]) {
+                this.powerDowns[i].update(t);
+            }
+        }
+
+        if (this.ballonO !== null && this.ballonP !== null && this.state == "game" && this.run == true){
+            this.oponentMoviment()
+            this.playerMoviment(delta)
+
+        //
+        //    this.currentLapTime += this.clock.getDelta();
+        //
+        //    let time = (this.currentLapTime / this.lapTime) % 1;
+        //
+        //    const position =  this.routes[1].route.getPointAt(time);
+        //
+        //    this.ballonO.position.copy(position);
+        //
+        //    if (this.currentLapTime >= this.lapTime) {
+        //        console.log("Lap complet!");
+        //        this.currentLapTime = 0;
+        //        this.ballonO.laps +=1;
+        //        this.lapTime = (3 + Math.random()) * 60;
+        //    }
+        //
+        }
+        
+
+        // end firework
+        if (
+            (this.state === "game" || this.state === "initial") &&
+            this.fireworks.length != 0
+        ) {
+            for (const i in this.fireworks) {
+                this.fireworks[i].reset();
+                this.fireworks.splice(i, 1);
+            }
+        }
+
+        // launch firework
+        if (this.state === "finish") {
+            // add new fireworks every 5% of the calls
+            if (Math.random() < 0.05) {
+                for (let i = 0; i < 5; i++) {
+                    const x = Math.random() * 50 - 25;
+                    const z = Math.random() * 50 - 25;
+                    const vertices = [x, 0, z];
+                    const color = this.getRandomColor();
+                    this.fireworks.push(
+                        new MyFirework(this.app, this, vertices, color)
+                    );
+                }
+            }
+
+            // for each fireworks
+            for (let i = 0; i < this.fireworks.length; i++) {
+                // is firework finished?
+                if (this.fireworks[i].done) {
+                    // remove firework
+                    this.fireworks.splice(i, 1);
+                    continue;
+                }
+                // otherwise upsdate  firework
+                this.fireworks[i].update();
+            }
+        }
+    }
+
+    getRandomColor() {
+        const r = Math.floor(Math.random() * 256);
+        const g = Math.floor(Math.random() * 256);
+        const b = Math.floor(Math.random() * 256);
+        return 0x1000000 + r * 0x10000 + g * 0x100 + b;
+    }
+
+    showRoutes() {
+        if (this.showRoute)
+            this.routes.forEach((route) => {
+                this.app.scene.add(route.debugRoute());
+            });
+        else {
+            this.routes.forEach((route) => {
+                this.app.scene.remove(route.debugRoute());
+            });
+        }
+    }
+
+    
+}
+
+function isPointBetweenOnPlane(P1, P2, nx, ny, nz, nr) {
+    // Definir a equação paramétrica da linha
+    const x1 = P1.x, y1 = P1.y, z1 = P1.z;
+    const x2 = P2.x, y2 = P2.y, z2 = P2.z;
+
+    // Definir a equação do plano: A * x + B * y + C * z = D
+    const A = nx, B = ny, C = nz, D = nr;
+
+    // Função que calcula o valor da equação do plano para um valor de t
+    function planeEquationAtT(t) {
+        // Ponto na linha: P(t) = (1 - t) * P1 + t * P2
+        const x = (1 - t) * x1 + t * x2;
+        const y = (1 - t) * y1 + t * y2;
+        const z = (1 - t) * z1 + t * z2;
+
+        // Retorna o valor da equação do plano para o ponto P(t)
+        return A * x + B * y + C * z;
+    }
+
+    // Verificar se existe um t entre 0 e 1 que satisfaça a equação do plano
+    let startValue = planeEquationAtT(0); // Valor da equação no ponto P1
+    let endValue = planeEquationAtT(1); // Valor da equação no ponto P2
+
+    // Se ambos os pontos P1 e P2 estão do mesmo lado do plano, não há ponto entre eles
+    if (startValue * endValue > 0) {
+        return false;
+    }
+
+    // Caso contrário, há um ponto entre eles que pertence ao plano
+    return true;
+}
+
+export { MyGame };

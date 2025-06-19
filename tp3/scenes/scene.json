@@ -1,0 +1,2923 @@
+{
+    "yasf": {
+        "globals": {
+            "background": { "r": 0.0, "g": 0.0, "b": 0.0 },
+            "ambient": { "r": 1.0, "g": 1.0, "b": 1.0, "intensity": 1 },
+            "fog": {
+                "color": { "r": 1.0, "g": 1.0, "b": 1.0 },
+                "near": 1,
+                "far": 100000
+            },
+            "skybox": {
+                "size": { "x": 500, "y": 500, "z": 500 },
+                "center": { "x": 0, "y": 125, "z": 0 },
+                "emissive": { "r": 0.1, "g": 0.1, "b": 0.1 },
+                "intensity": 0.5,
+                "front": "scenes/textures/side.jpg",
+                "back": "scenes/textures/side.jpg",
+                "up": "scenes/textures/top_sky.jpg",
+                "down": "scenes/textures/sky.jpg",
+                "left": "scenes/textures/side_inverse.jpg",
+                "right": "scenes/textures/side_inverse.jpg"
+            }
+        },
+        "textures": {
+            "t_pub1": {
+                "filepath": "scenes/textures/pub1.jpg",
+                "isVideo": false
+            },
+            "t_wood": {
+                "filepath": "scenes/textures/wood.jpg",
+                "isVideo": false
+            },
+            "t_trunk": {
+                "filepath": "scenes/textures/trunk.jpg",
+                "isVideo": false
+            },
+            "b_trunk": {
+                "filepath": "scenes/textures/b_trunk.jpg",
+                "isVideo": false
+            },
+            "t_bush": {
+                "filepath": "scenes/textures/bush.jpg",
+                "isVideo": false
+            },
+            "t_grass": {
+                "filepath": "scenes/textures/grass_rock.jpg",
+                "isVideo": false
+            },
+            "t_river": {
+                "filepath": "scenes/textures/river.jpg",
+                "isVideo": false
+            },
+            "t_bridge": {
+                "filepath": "scenes/textures/stone-wall.jpg",
+                "isVideo": false
+            },
+            "t_pine": {
+                "filepath": "scenes/textures/pine-leaves.jpg",
+                "isVideo": false
+            },
+            "t_mountain": {
+                "filepath": "scenes/textures/mountain.jpg",
+                "isVideo": false
+            },
+            "b_mountain": {
+                "filepath": "scenes/textures/mountain_b.jpg",
+                "isVideo": false
+            }
+        },
+        "materials": {
+            "black": {
+                "color": { "r": 0.0, "g": 0.0, "b": 0.0 },
+                "emissive": { "r": 0.0, "g": 0.0, "b": 0.0 },
+                "specular": { "r": 0, "g": 0, "b": 0 },
+                "shininess": 0,
+                "twosided": false,
+                "transparent": false,
+                "opacity": 2.5
+            },
+            "white": {
+                "color": { "r": 1.0, "g": 1.0, "b": 1.0 },
+                "emissive": { "r": 0.0, "g": 0.0, "b": 0.0 },
+                "specular": { "r": 0, "g": 0, "b": 0 },
+                "shininess": 0,
+                "twosided": false,
+                "transparent": false,
+                "opacity": 2.5
+            },
+            "red": {
+                "color": { "r": 1.0, "g": 0.0, "b": 0.0 },
+                "emissive": { "r": 0.0, "g": 0.0, "b": 0.0 },
+                "specular": { "r": 0, "g": 0, "b": 0 },
+                "shininess": 0,
+                "twosided": false,
+                "transparent": false,
+                "opacity": 2.5
+            },
+            "wood": {
+                "color": { "r": 1.0, "g": 1.0, "b": 1.0 },
+                "emissive": { "r": 0.0, "g": 0.0, "b": 0.0 },
+                "specular": { "r": 0, "g": 0, "b": 0 },
+                "shininess": 0,
+                "twosided": false,
+                "transparent": false,
+                "opacity": 2.5,
+                "textureref": "t_wood",
+                "texlength_s": 5,
+                "texlength_t": 2,
+                "bumpref": "t_wood",
+                "bumpscale": 0.5
+            },
+            "trunk": {
+                "color": { "r": 1.0, "g": 1.0, "b": 1.0 },
+                "emissive": { "r": 0.0, "g": 0.0, "b": 0.0 },
+                "specular": { "r": 0, "g": 0, "b": 0 },
+                "shininess": 0,
+                "twosided": false,
+                "transparent": false,
+                "opacity": 2.5,
+                "textureref": "t_trunk",
+                "texlength_s": 5,
+                "texlength_t": 5,
+                "bumpref": "b_trunk",
+                "bumpscale": 1
+            },
+            "bush": {
+                "color": { "r": 1.0, "g": 1.0, "b": 1.0 },
+                "emissive": { "r": 0.0, "g": 0.0, "b": 0.0 },
+                "specular": { "r": 0, "g": 0, "b": 0 },
+                "shininess": 0,
+                "twosided": false,
+                "transparent": false,
+                "opacity": 2.5,
+                "textureref": "t_bush",
+                "texlength_s": 2.5,
+                "texlength_t": 2.5,
+                "bumpref": "t_bush",
+                "bumpscale": 0.5
+            },
+            "grass": {
+                "color": { "r": 1.0, "g": 1.0, "b": 1.0 },
+                "emissive": { "r": 0.0, "g": 0.0, "b": 0.0 },
+                "specular": { "r": 0, "g": 0, "b": 0 },
+                "shininess": 0,
+                "twosided": false,
+                "transparent": false,
+                "opacity": 2.5,
+                "textureref": "t_grass",
+                "texlength_s": 100,
+                "texlength_t": 100
+            },
+            "river": {
+                "color": { "r": 1.0, "g": 1.0, "b": 1.0 },
+                "emissive": { "r": 0.0, "g": 0.0, "b": 0.0 },
+                "specular": { "r": 0, "g": 0, "b": 0 },
+                "shininess": 0,
+                "twosided": false,
+                "transparent": false,
+                "opacity": 2.5,
+                "textureref": "t_river",
+                "texlength_s": 125,
+                "texlength_t": 60
+            },
+            "stones": {
+                "color": { "r": 1.0, "g": 1.0, "b": 1.0 },
+                "emissive": { "r": 0.0, "g": 0.0, "b": 0.0 },
+                "specular": { "r": 0, "g": 0, "b": 0 },
+                "shininess": 0,
+                "twosided": false,
+                "transparent": false,
+                "opacity": 2.5,
+                "textureref": "t_bridge",
+                "texlength_s": 20,
+                "texlength_t": 30
+            },
+            "pine": {
+                "color": { "r": 1.0, "g": 1.0, "b": 1.0 },
+                "emissive": { "r": 0.0, "g": 0.0, "b": 0.0 },
+                "specular": { "r": 0, "g": 0, "b": 0 },
+                "shininess": 0,
+                "twosided": false,
+                "transparent": false,
+                "opacity": 2.5,
+                "textureref": "t_pine",
+                "texlength_s": 1,
+                "texlength_t": 1,
+                "bumpref": "t_pine",
+                "bumpscale": 0.5
+            },
+            "mountain": {
+                "color": { "r": 1.0, "g": 1.0, "b": 1.0 },
+                "emissive": { "r": 0.0, "g": 0.0, "b": 0.0 },
+                "specular": { "r": 0, "g": 0, "b": 0 },
+                "shininess": 0,
+                "twosided": false,
+                "transparent": false,
+                "opacity": 2.5,
+                "textureref": "t_mountain",
+                "texlength_s": 100,
+                "texlength_t": 100,
+                "bumpref": "b_mountain",
+                "bumpscale": 0.5
+            },
+            "pub1": {
+                "color": { "r": 1.0, "g": 1.0, "b": 1.0 },
+                "emissive": { "r": 0.0, "g": 0.0, "b": 0.0 },
+                "specular": { "r": 0, "g": 0, "b": 0 },
+                "shininess": 0,
+                "twosided": false,
+                "transparent": false,
+                "opacity": 2.5,
+                "textureref": "t_pub1",
+                "texlength_s": 20,
+                "texlength_t": 10
+            }
+        },
+        "cameras": {
+            "initial": "perspective",
+            "perspective": {
+                "type": "perspective",
+                "angle": 60,
+                "near": 0.1,
+                "far": 1000,
+                "location": { "x": 80, "y": 40, "z": 0 },
+                "target": { "x": 0, "y": 0, "z": 0 }
+            }
+        },
+        "graph": {
+            "rootid": "scene",
+            "scene": {
+                "type": "node",
+                "materialref": { "materialId": "white" },
+                "castshadows": true,
+                "receiveshadows": true,
+                "children": {
+                    "directionallight": {
+                        "type": "directionallight",
+                        "color": { "r": 1, "g": 1, "b": 1 },
+                        "intensity": 4,
+                        "position": { "x": 50, "y": 200, "z": 0 },
+                        "shadowleft": -250,
+                        "shadowright": 250,
+                        "shadowbottom": -250,
+                        "shadowtop": 250,
+                        "shadowfar": 500,
+                        "shadowmapsize": 1024,
+                        "castshadow": true
+                    },
+                    "nodesList": [
+                        "pointlight",
+                        "bench_1",
+                        "trees",
+                        "mountain_1",
+                        "mountain_3",
+                        "mountain_2",
+                        "mountain_4",
+                        "valley",
+                        "bridge_1",
+                        "bridge_2",
+                        "floor",
+                        "stand",
+                        "grid_stand",
+                        "grid_stand1",
+                        "grid_stand2"
+                    ]
+                }
+            },
+            "pointlight": {
+                "type": "node",
+                "materialref": { "materialId": "white" },
+                "children": {
+                    "pointlight": {
+                        "type": "pointlight",
+                        "color": { "r": 1, "g": 1, "b": 1 },
+                        "intensity": 1,
+                        "position": { "x": 0, "y": 125, "z": 0 }
+                    }
+                }
+            },
+            "grid_stand2": {
+                "type": "node",
+                "children": { "nodesList": ["grid_stand"] },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 0, "y": 0, "z": 11 }
+                    }
+                ]
+            },
+            "grid_stand1": {
+                "type": "node",
+                "children": { "nodesList": ["grid_stand"] },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 0, "y": 0, "z": -11 }
+                    }
+                ]
+            },
+            "grid_stand": {
+                "type": "node",
+                "children": { "nodesList": ["grid"] },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": -90, "y": 0, "z": 0 }
+                    }
+                ]
+            },
+            "grid": {
+                "type": "node",
+                "materialref": { "materialId": "black" },
+                "children": {
+                    "nodesList": [
+                        "grid_horizontal",
+                        "grid_horizontal1",
+                        "grid_vertical",
+                        "grid_vertical1",
+                        "grid_vertical2",
+                        "grid_vertical3",
+                        "grid_vertical4",
+                        "grid_leg1",
+                        "grid_leg2",
+                        "grid_leg3",
+                        "grid_leg4"
+                    ]
+                }
+            },
+            "grid_leg4": {
+                "type": "node",
+                "children": {
+                    "nodesList": ["grid_leg3"]
+                },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 0, "y": 0, "z": 5 }
+                    }
+                ]
+            },
+            "grid_leg3": {
+                "type": "node",
+                "children": { "nodesList": ["grid_leg_temp"] },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 0, "y": 1, "z": -2.5 }
+                    },
+                    { "type": "rotate", "amount": { "x": 0, "y": 0, "z": -30 } }
+                ]
+            },
+            "grid_leg2": {
+                "type": "node",
+                "children": {
+                    "nodesList": ["grid_leg1"]
+                },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 0, "y": 0, "z": 5 }
+                    }
+                ]
+            },
+            "grid_leg1": {
+                "type": "node",
+                "children": { "nodesList": ["grid_leg_temp"] },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 0, "y": 1, "z": -2.5 }
+                    },
+                    { "type": "rotate", "amount": { "x": 0, "y": 0, "z": 30 } }
+                ]
+            },
+            "grid_leg_temp": {
+                "type": "node",
+                "children": {
+                    "prim": {
+                        "type": "cylinder",
+                        "capsclose": true,
+                        "base": 0.2,
+                        "top": 0.2,
+                        "height": 1,
+                        "slices": 10,
+                        "stacks": 10
+                    }
+                },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 0, "y": -0.5, "z": 0 }
+                    }
+                ]
+            },
+            "grid_vertical4": {
+                "type": "node",
+                "children": {
+                    "nodesList": ["grid_vertical"]
+                },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 0, "y": 0, "z": -2.4 }
+                    }
+                ]
+            },
+            "grid_vertical3": {
+                "type": "node",
+                "children": {
+                    "nodesList": ["grid_vertical"]
+                },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 0, "y": 0, "z": 2.4 }
+                    }
+                ]
+            },
+            "grid_vertical2": {
+                "type": "node",
+                "children": {
+                    "nodesList": ["grid_vertical"]
+                },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 0, "y": 0, "z": 4.8 }
+                    }
+                ]
+            },
+            "grid_vertical1": {
+                "type": "node",
+                "children": {
+                    "nodesList": ["grid_vertical"]
+                },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 0, "y": 0, "z": -4.8 }
+                    }
+                ]
+            },
+            "grid_vertical": {
+                "type": "node",
+                "children": {
+                    "prim": {
+                        "type": "cylinder",
+                        "capsclose": true,
+                        "base": 0.2,
+                        "top": 0.2,
+                        "height": 5,
+                        "slices": 10,
+                        "stacks": 10
+                    }
+                },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 0, "y": 3.5, "z": 0 }
+                    }
+                ]
+            },
+            "grid_horizontal1": {
+                "type": "node",
+                "children": { "nodesList": ["grid_horizontal"] },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 0, "y": 5, "z": 0 }
+                    }
+                ]
+            },
+            "grid_horizontal": {
+                "type": "node",
+                "children": {
+                    "prim": {
+                        "type": "cylinder",
+                        "capsclose": true,
+                        "base": 0.2,
+                        "top": 0.2,
+                        "height": 10,
+                        "slices": 10,
+                        "stacks": 10
+                    }
+                },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 0, "y": 1, "z": 0 }
+                    },
+                    { "type": "rotate", "amount": { "x": 90, "y": 0, "z": 0 } }
+                ]
+            },
+            "stand": {
+                "type": "node",
+                "materialref": { "materialId": "wood" },
+                "children": {
+                    "nodesList": [
+                        "stand_seat1",
+                        "stand_seat2",
+                        "stand_seat3",
+                        "stand_seat4",
+                        "stand_seat_last",
+                        "placard",
+                        "stand_limit_back",
+
+                        "light",
+                        "light1",
+                        "light2",
+                        "light3",
+                        "light4"
+                    ]
+                },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 0, "y": 0, "z": 10 }
+                    }
+                ]
+            },
+            "light4": {
+                "type": "node",
+                "children": {
+                    "nodesList": ["light"]
+                },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 0, "y": 0, "z": 35 }
+                    }
+                ]
+            },
+            "light3": {
+                "type": "node",
+                "children": {
+                    "nodesList": ["light"]
+                },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 0, "y": 0, "z": -35 }
+                    }
+                ]
+            },
+            "light2": {
+                "type": "node",
+                "children": {
+                    "nodesList": ["light"]
+                },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 0, "y": 0, "z": 70 }
+                    }
+                ]
+            },
+            "light1": {
+                "type": "node",
+                "children": {
+                    "nodesList": ["light"]
+                },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 0, "y": 0, "z": -70 }
+                    }
+                ]
+            },
+            "light": {
+                "type": "node",
+                "materialref": { "materialId": "black" },
+                "children": {
+                    "nodesList": [
+                        "stand_light_struture_horizontal",
+                        "stand_light_struture_vertical",
+                        "stand_light_struture_light",
+                        "stand_light_light"
+                    ]
+                }
+            },
+            "stand_light_light": {
+                "type": "node",
+                "children": {
+                    "prim": {
+                        "type": "spotlight",
+                        "angle": 90,
+                        "intensity": 500,
+                        "distance": 34,
+                        "color": { "r": 1, "g": 1, "b": 1 },
+                        "position": { "x": -118.2, "y": 33.6, "z": 0 },
+                        "target": { "x": -118.2, "y": 0, "z": 0 }
+                    }
+                }
+            },
+            "stand_light_struture_light": {
+                "type": "node",
+                "children": {
+                    "prim": {
+                        "type": "box",
+                        "xyz1": { "x": -1, "y": -0.4, "z": -1 },
+                        "xyz2": { "x": 1, "y": 0.4, "z": 1 }
+                    }
+                },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": -118.2, "y": 34, "z": 0 }
+                    }
+                ]
+            },
+            "stand_light_struture_vertical": {
+                "type": "node",
+                "children": {
+                    "prim": {
+                        "type": "box",
+                        "xyz1": { "x": -2, "y": -0.2, "z": -0.2 },
+                        "xyz2": { "x": 2, "y": 0.2, "z": 0.2 }
+                    }
+                },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": -121.2, "y": 34, "z": 0 }
+                    }
+                ]
+            },
+            "stand_light_struture_horizontal": {
+                "type": "node",
+                "children": {
+                    "prim": {
+                        "type": "box",
+                        "xyz1": { "x": -0.2, "y": -2, "z": -0.2 },
+                        "xyz2": { "x": 0.2, "y": 2, "z": 0.2 }
+                    }
+                },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": -123, "y": 32, "z": 0 }
+                    }
+                ]
+            },
+            "stand_limit_back": {
+                "type": "node",
+                "materialref": { "materialId": "black" },
+                "children": {
+                    "prim": {
+                        "type": "box",
+                        "xyz1": { "x": -1, "y": -15, "z": -80 },
+                        "xyz2": { "x": 1, "y": 15, "z": 80 }
+                    }
+                },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": -123, "y": 15, "z": 0 }
+                    }
+                ]
+            },
+
+            "placard": {
+                "type": "node",
+                "materialref": { "materialId": "pub1" },
+                "children": {
+                    "prim": {
+                        "type": "box",
+                        "xyz1": { "x": -40, "y": -5, "z": -80 },
+                        "xyz2": { "x": 40, "y": 5, "z": 80 }
+                    }
+                },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": -121.9, "y": 25, "z": 0 }
+                    },
+                    {
+                        "type": "scale",
+                        "amount": { "x": 0.0025, "y": 1, "z": 1 }
+                    }
+                ]
+            },
+            "stand_seat_last": {
+                "type": "node",
+                "children": {
+                    "nodesList": ["stand_seat"]
+                },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": -118, "y": 10, "z": 0 }
+                    },
+                    {
+                        "type": "scale",
+                        "amount": { "x": 2, "y": 5, "z": 1 }
+                    }
+                ]
+            },
+            "stand_seat4": {
+                "type": "node",
+                "children": {
+                    "nodesList": ["stand_seat"]
+                },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": -112, "y": 8, "z": 0 }
+                    },
+                    {
+                        "type": "scale",
+                        "amount": { "x": 1, "y": 4, "z": 1 }
+                    }
+                ]
+            },
+            "stand_seat3": {
+                "type": "node",
+                "children": {
+                    "nodesList": ["stand_seat"]
+                },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": -108, "y": 6, "z": 0 }
+                    },
+                    {
+                        "type": "scale",
+                        "amount": { "x": 1, "y": 3, "z": 1 }
+                    }
+                ]
+            },
+            "stand_seat2": {
+                "type": "node",
+                "children": {
+                    "nodesList": ["stand_seat"]
+                },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": -104, "y": 4, "z": 0 }
+                    },
+                    {
+                        "type": "scale",
+                        "amount": { "x": 1, "y": 2, "z": 1 }
+                    }
+                ]
+            },
+            "stand_seat1": {
+                "type": "node",
+                "children": {
+                    "nodesList": ["stand_seat"]
+                },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": -100, "y": 2, "z": 0 }
+                    }
+                ]
+            },
+            "stand_seat": {
+                "type": "node",
+                "children": {
+                    "prim": {
+                        "type": "box",
+                        "xyz1": { "x": -2, "y": -2, "z": -80 },
+                        "xyz2": { "x": 2, "y": 2, "z": 80 }
+                    }
+                }
+            },
+            "trees": {
+                "type": "node",
+                "castshadows": true,
+                "children": {
+                    "nodesList": [
+                        "tree_1",
+                        "tree_2",
+                        "tree_3",
+                        "tree_4",
+                        "tree_5",
+                        "tree_6",
+                        "tree_7",
+                        "tree_8",
+                        "tree_9",
+                        "tree_10",
+                        "tree_11",
+                        "tree_12",
+                        "tree_13",
+                        "tree_14",
+                        "tree_15",
+                        "tree_16",
+                        "tree_17",
+                        "tree_18",
+                        "tree_19",
+                        "tree_20",
+                        "tree_21",
+                        "tree_22",
+                        "tree_23",
+                        "tree_24",
+                        "tree_25",
+                        "tree_26",
+                        "tree_27",
+                        "tree_28",
+                        "tree_29",
+                        "tree_30",
+                        "tree_31",
+                        "tree_32",
+                        "tree_33",
+                        "tree_34",
+                        "tree_35",
+                        "tree_36",
+                        "tree_37",
+                        "tree_38",
+                        "tree_39",
+                        "tree_40"
+                    ]
+                }
+            },
+            "tree_1": {
+                "type": "node",
+                "children": { "lodsList": ["lod_tree"] },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": -10, "y": 0, "z": -20 }
+                    }
+                ]
+            },
+            "tree_2": {
+                "type": "node",
+                "children": { "lodsList": ["lod_tree"] },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": -10, "y": 0, "z": 20 }
+                    }
+                ]
+            },
+            "tree_3": {
+                "type": "node",
+                "children": { "lodsList": ["lod_tree"] },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 35, "y": 0, "z": 20 }
+                    }
+                ]
+            },
+            "tree_4": {
+                "type": "node",
+                "children": { "lodsList": ["lod_tree"] },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 40, "y": 2, "z": -20 }
+                    }
+                ]
+            },
+            "tree_5": {
+                "type": "node",
+                "children": { "lodsList": ["lod_tree"] },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 28, "y": 0, "z": -60 }
+                    }
+                ]
+            },
+            "tree_6": {
+                "type": "node",
+                "children": { "lodsList": ["lod_tree"] },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 60, "y": 0, "z": -120 }
+                    }
+                ]
+            },
+            "tree_7": {
+                "type": "node",
+                "children": { "lodsList": ["lod_tree"] },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 38, "y": 0, "z": -160 }
+                    }
+                ]
+            },
+            "tree_8": {
+                "type": "node",
+                "children": { "lodsList": ["lod_tree"] },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 14, "y": 0, "z": -240 }
+                    }
+                ]
+            },
+            "tree_9": {
+                "type": "node",
+                "children": { "lodsList": ["lod_tree"] },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 18, "y": 0, "z": 60 }
+                    }
+                ]
+            },
+            "tree_10": {
+                "type": "node",
+                "children": { "lodsList": ["lod_tree"] },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 65, "y": 0, "z": 87 }
+                    }
+                ]
+            },
+            "tree_11": {
+                "type": "node",
+                "children": { "lodsList": ["lod_tree"] },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 71, "y": 0, "z": 147 }
+                    }
+                ]
+            },
+            "tree_12": {
+                "type": "node",
+                "children": { "lodsList": ["lod_tree"] },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 7, "y": 0, "z": 168 }
+                    }
+                ]
+            },
+            "tree_13": {
+                "type": "node",
+                "children": { "lodsList": ["lod_tree"] },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 23, "y": 0, "z": 236 }
+                    }
+                ]
+            },
+
+            "tree_14": {
+                "type": "node",
+                "children": { "lodsList": ["lod_tree"] },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 155, "y": 60, "z": 180 }
+                    }
+                ]
+            },
+            "tree_15": {
+                "type": "node",
+                "children": { "lodsList": ["lod_tree"] },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 145, "y": 50, "z": 165 }
+                    }
+                ]
+            },
+            "tree_16": {
+                "type": "node",
+                "children": { "lodsList": ["lod_tree"] },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 160, "y": 58, "z": 138 }
+                    }
+                ]
+            },
+            "tree_17": {
+                "type": "node",
+                "children": { "lodsList": ["lod_tree"] },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 136, "y": 20, "z": 116 }
+                    }
+                ]
+            },
+            "tree_18": {
+                "type": "node",
+                "children": { "lodsList": ["lod_tree"] },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 150, "y": 56, "z": 11 }
+                    }
+                ]
+            },
+            "tree_19": {
+                "type": "node",
+                "children": { "lodsList": ["lod_tree"] },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 80, "y": 16, "z": 8 }
+                    }
+                ]
+            },
+            "tree_20": {
+                "type": "node",
+                "children": { "lodsList": ["lod_tree"] },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 127, "y": 53, "z": -13 }
+                    }
+                ]
+            },
+            "tree_21": {
+                "type": "node",
+                "children": { "lodsList": ["lod_tree"] },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 153, "y": 28, "z": -78 }
+                    }
+                ]
+            },
+            "tree_22": {
+                "type": "node",
+                "children": { "lodsList": ["lod_tree"] },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 170, "y": 54, "z": -104 }
+                    }
+                ]
+            },
+            "tree_23": {
+                "type": "node",
+                "children": { "lodsList": ["lod_tree"] },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 125, "y": 16, "z": -120 }
+                    }
+                ]
+            },
+            "tree_24": {
+                "type": "node",
+                "children": { "lodsList": ["lod_tree"] },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 145, "y": 50, "z": -160 }
+                    }
+                ]
+            },
+            "tree_25": {
+                "type": "node",
+                "children": { "lodsList": ["lod_tree"] },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 125, "y": 30, "z": -204 }
+                    }
+                ]
+            },
+
+            "tree_26": {
+                "type": "node",
+                "children": { "lodsList": ["lod_tree"] },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": -146, "y": 30, "z": -230 }
+                    }
+                ]
+            },
+            "tree_27": {
+                "type": "node",
+                "children": { "lodsList": ["lod_tree"] },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": -130, "y": 40, "z": -171 }
+                    }
+                ]
+            },
+            "tree_28": {
+                "type": "node",
+                "children": { "lodsList": ["lod_tree"] },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": -123, "y": 27, "z": -132 }
+                    }
+                ]
+            },
+            "tree_29": {
+                "type": "node",
+                "children": { "lodsList": ["lod_tree"] },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": -154, "y": 65, "z": -103 }
+                    }
+                ]
+            },
+            "tree_30": {
+                "type": "node",
+                "children": { "lodsList": ["lod_tree"] },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": -115, "y": 11, "z": -78 }
+                    }
+                ]
+            },
+            "tree_31": {
+                "type": "node",
+                "children": { "lodsList": ["lod_tree"] },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": -171, "y": 70, "z": -26 }
+                    }
+                ]
+            },
+            "tree_32": {
+                "type": "node",
+                "children": { "lodsList": ["lod_tree"] },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": -143, "y": 45, "z": 19 }
+                    }
+                ]
+            },
+            "tree_33": {
+                "type": "node",
+                "children": { "lodsList": ["lod_tree"] },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": -177, "y": 65, "z": 67 }
+                    }
+                ]
+            },
+            "tree_34": {
+                "type": "node",
+                "children": { "lodsList": ["lod_tree"] },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": -123, "y": 22, "z": 98 }
+                    }
+                ]
+            },
+            "tree_35": {
+                "type": "node",
+                "children": { "lodsList": ["lod_tree"] },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": -158, "y": 63, "z": 129 }
+                    }
+                ]
+            },
+            "tree_36": {
+                "type": "node",
+                "children": { "lodsList": ["lod_tree"] },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": -162, "y": 50, "z": 176 }
+                    }
+                ]
+            },
+            "tree_37": {
+                "type": "node",
+                "children": { "lodsList": ["lod_tree"] },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": -125, "y": 20, "z": 213 }
+                    }
+                ]
+            },
+            "tree_38": {
+                "type": "node",
+                "children": { "lodsList": ["lod_tree"] },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": -70, "y": 0, "z": -232 }
+                    }
+                ]
+            },
+            "tree_39": {
+                "type": "node",
+                "children": { "lodsList": ["lod_tree"] },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 81, "y": 0, "z": 241 }
+                    }
+                ]
+            },
+            "tree_40": {
+                "type": "node",
+                "children": { "lodsList": ["lod_tree"] },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 145, "y": 19, "z": 70 }
+                    }
+                ]
+            },
+            "lod_tree": {
+                "type": "lod",
+                "lodNodes": [
+                    {
+                        "nodeId": "tree_complex",
+                        "mindist": 0.0
+                    },
+                    {
+                        "nodeId": "tree",
+                        "mindist": 100.0
+                    }
+                ]
+            },
+            "tree": {
+                "type": "node",
+                "children": { "nodesList": ["tree_bush_1", "tree_trunk_1"] }
+            },
+            "tree_bush_1": {
+                "type": "node",
+                "children": { "nodesList": ["tree_bush"] },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 0, "y": 16, "z": 0 }
+                    }
+                ]
+            },
+            "tree_trunk_1": {
+                "type": "node",
+                "children": { "nodesList": ["tree_trunk"] },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 0, "y": 4, "z": 0 }
+                    }
+                ]
+            },
+            "tree_bush": {
+                "type": "node",
+                "materialref": { "materialId": "pine" },
+                "children": {
+                    "prim": {
+                        "type": "cylinder",
+                        "base": 3,
+                        "top": 0.1,
+                        "height": 16,
+                        "slices": 20,
+                        "stacks": 20,
+                        "capsclose": true
+                    }
+                }
+            },
+            "tree_trunk": {
+                "type": "node",
+                "materialref": { "materialId": "trunk" },
+                "children": {
+                    "prim": {
+                        "type": "cylinder",
+                        "base": 1,
+                        "top": 0.5,
+                        "height": 8,
+                        "slices": 20,
+                        "stacks": 20,
+                        "capsclose": true
+                    }
+                }
+            },
+            "tree_complex": {
+                "type": "node",
+                "children": { "nodesList": ["tree_trunk_1", "tree_top"] }
+            },
+            "tree_top": {
+                "type": "node",
+                "materialref": { "materialId": "pine" },
+                "children": {
+                    "nodesList": ["tree_top_1", "tree_top_2", "tree_top_3"]
+                },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 0, "y": 8, "z": 0 }
+                    }
+                ]
+            },
+            "tree_top_3": {
+                "type": "node",
+                "children": {
+                    "prim": {
+                        "type": "cylinder",
+                        "base": 3,
+                        "top": 0.1,
+                        "height": 6,
+                        "slices": 20,
+                        "stacks": 1,
+                        "capsclose": true
+                    }
+                },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 0, "y": 13.0, "z": 0 }
+                    }
+                ]
+            },
+            "tree_top_2": {
+                "type": "node",
+                "children": {
+                    "prim": {
+                        "type": "cylinder",
+                        "base": 4,
+                        "top": 0.1,
+                        "height": 6,
+                        "slices": 20,
+                        "stacks": 1,
+                        "capsclose": true
+                    }
+                },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 0, "y": 8.0, "z": 0 }
+                    }
+                ]
+            },
+            "tree_top_1": {
+                "type": "node",
+                "children": {
+                    "prim": {
+                        "type": "cylinder",
+                        "base": 5,
+                        "top": 0.1,
+                        "height": 6,
+                        "slices": 20,
+                        "stacks": 1,
+                        "capsclose": true
+                    }
+                },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 0, "y": 3.0, "z": 0 }
+                    }
+                ]
+            },
+            "bench_1": {
+                "type": "node",
+                "children": { "nodesList": ["bench"] },
+                "transforms": [
+                    {
+                        "type": "rotate",
+                        "amount": { "x": 0, "y": 30, "z": 0 }
+                    },
+                    {
+                        "type": "translate",
+                        "amount": { "x": 5, "y": 0, "z": -40 }
+                    }
+                ]
+            },
+            "bench": {
+                "type": "node",
+                "materialref": { "materialId": "wood" },
+                "children": {
+                    "nodesList": [
+                        "bench_base",
+                        "bench_legs",
+                        "bench_lateral_1",
+                        "bench_lateral_2",
+                        "bench_lateral_3",
+                        "bench_lateral_4",
+                        "bench_lateral_5",
+                        "bench_top_1"
+                    ]
+                },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 0, "y": 2.15, "z": 0 }
+                    }
+                ]
+            },
+            "bench_legs": {
+                "type": "node",
+                "children": {
+                    "nodesList": [
+                        "bench_leg_1",
+                        "bench_leg_2",
+                        "bench_leg_3",
+                        "bench_leg_4"
+                    ]
+                }
+            },
+            "bench_leg_1": {
+                "type": "node",
+                "children": { "nodesList": ["bench_leg"] },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": -2.4, "y": -1, "z": -0.9 }
+                    }
+                ]
+            },
+            "bench_leg_2": {
+                "type": "node",
+                "children": { "nodesList": ["bench_leg"] },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": -2.4, "y": -1, "z": 0.9 }
+                    }
+                ]
+            },
+            "bench_leg_3": {
+                "type": "node",
+                "children": { "nodesList": ["bench_leg"] },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 2.4, "y": -1, "z": -0.9 }
+                    }
+                ]
+            },
+            "bench_leg_4": {
+                "type": "node",
+                "children": { "nodesList": ["bench_leg"] },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 2.4, "y": -1, "z": 0.9 }
+                    }
+                ]
+            },
+            "bench_lateral_5": {
+                "type": "node",
+                "children": { "nodesList": ["bench_lateral"] },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 0, "y": 1, "z": -0.9 }
+                    }
+                ]
+            },
+            "bench_lateral_4": {
+                "type": "node",
+                "children": { "nodesList": ["bench_lateral"] },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": -1.2, "y": 1, "z": -0.9 }
+                    }
+                ]
+            },
+            "bench_lateral_3": {
+                "type": "node",
+                "children": { "nodesList": ["bench_lateral"] },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 1.2, "y": 1, "z": -0.9 }
+                    }
+                ]
+            },
+            "bench_lateral_2": {
+                "type": "node",
+                "children": { "nodesList": ["bench_lateral"] },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 2.4, "y": 1, "z": -0.9 }
+                    }
+                ]
+            },
+            "bench_lateral_1": {
+                "type": "node",
+                "children": { "nodesList": ["bench_lateral"] },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": -2.4, "y": 1, "z": -0.9 }
+                    }
+                ]
+            },
+            "bench_top_1": {
+                "type": "node",
+                "children": {
+                    "nodesList": ["bench_top"]
+                },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 0, "y": 2, "z": -0.9 }
+                    }
+                ]
+            },
+            "bench_top": {
+                "type": "node",
+                "children": {
+                    "prim": {
+                        "type": "box",
+                        "xyz1": { "x": -2.5, "y": -0.1, "z": -0.1 },
+                        "xyz2": { "x": 2.5, "y": 0.1, "z": 0.1 }
+                    }
+                }
+            },
+            "bench_lateral": {
+                "type": "node",
+                "children": {
+                    "prim": {
+                        "type": "box",
+                        "xyz1": { "x": -0.1, "y": -1, "z": -0.1 },
+                        "xyz2": { "x": 0.1, "y": 1, "z": 0.1 }
+                    }
+                }
+            },
+            "bench_leg": {
+                "type": "node",
+                "children": {
+                    "prim": {
+                        "type": "box",
+                        "xyz1": { "x": -0.1, "y": -1, "z": -0.1 },
+                        "xyz2": { "x": 0.1, "y": 1, "z": 0.1 }
+                    }
+                }
+            },
+            "bench_base": {
+                "type": "node",
+                "children": {
+                    "prim": {
+                        "type": "box",
+                        "xyz1": { "x": -2.5, "y": -0.15, "z": -1.0 },
+                        "xyz2": { "x": 2.5, "y": 0.15, "z": 1.0 }
+                    }
+                }
+            },
+            "floor": {
+                "type": "node",
+                "materialref": { "materialId": "grass" },
+                "children": {
+                    "prim": {
+                        "type": "rectangle",
+                        "xy1": { "x": -250, "y": -250 },
+                        "xy2": { "x": 250, "y": 250 }
+                    }
+                },
+                "transforms": [
+                    {
+                        "type": "rotate",
+                        "amount": { "x": -90, "y": 0, "z": 0 }
+                    }
+                ]
+            },
+            "mountain_1": {
+                "type": "node",
+                "receiveshadows": true,
+                "materialref": { "materialId": "mountain" },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": -170, "y": 0, "z": 0 }
+                    }
+                ],
+                "children": {
+                    "nurbsPrim": {
+                        "type": "nurbs",
+                        "degree_u": 6,
+                        "degree_v": 4,
+                        "parts_u": 8,
+                        "parts_v": 12,
+                        "controlpoints": [
+                            { "x": -75, "y": 0.0, "z": -250 },
+                            { "x": -40, "y": 0.0, "z": -250 },
+                            { "x": 0, "y": 80, "z": -250 },
+                            { "x": 40, "y": 0.0, "z": -250 },
+                            { "x": 75, "y": 0.0, "z": -250 },
+
+                            { "x": -75, "y": 0.0, "z": -166.67 },
+                            { "x": -40, "y": 0.0, "z": -166.67 },
+                            { "x": 200, "y": 200, "z": -166.67 },
+                            { "x": 40, "y": 0.0, "z": -166.67 },
+                            { "x": 75, "y": 0.0, "z": -166.67 },
+
+                            { "x": -75, "y": 0.0, "z": -83.34 },
+                            { "x": -40, "y": 0.0, "z": -83.34 },
+                            { "x": -200, "y": 200, "z": -83.34 },
+                            { "x": 40, "y": 0.0, "z": -83.34 },
+                            { "x": 75, "y": 0.0, "z": -83.34 },
+
+                            { "x": -75, "y": 0.0, "z": 0 },
+                            { "x": -40, "y": 0.0, "z": 0 },
+                            { "x": 200, "y": 200, "z": 0 },
+                            { "x": -40, "y": 0.0, "z": 0 },
+                            { "x": 75, "y": 0.0, "z": 0 },
+
+                            { "x": -75, "y": 0.0, "z": 83.34 },
+                            { "x": -40, "y": 0.0, "z": 83.34 },
+                            { "x": -200, "y": 200, "z": 83.34 },
+                            { "x": 40, "y": 0.0, "z": 83.34 },
+                            { "x": 75, "y": 0.0, "z": 83.34 },
+
+                            { "x": -75, "y": 0.0, "z": 166.67 },
+                            { "x": -40, "y": 0.0, "z": 166.67 },
+                            { "x": 200, "y": 200, "z": 166.67 },
+                            { "x": 40, "y": 0.0, "z": 166.67 },
+                            { "x": 75, "y": 0.0, "z": 166.67 },
+
+                            { "x": -75, "y": 0.0, "z": 250 },
+                            { "x": -40, "y": 0.0, "z": 250 },
+                            { "x": 0, "y": 80, "z": 250 },
+                            { "x": 40, "y": 0.0, "z": 250 },
+                            { "x": 75, "y": 0.0, "z": 250 }
+                        ]
+                    }
+                }
+            },
+            "mountain_2": {
+                "type": "node",
+                "receiveshadows": true,
+                "materialref": { "materialId": "mountain" },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 180, "y": 0, "z": 0 }
+                    }
+                ],
+                "children": {
+                    "nurbsPrim": {
+                        "type": "nurbs",
+                        "degree_u": 4,
+                        "degree_v": 4,
+                        "parts_u": 8,
+                        "parts_v": 8,
+                        "controlpoints": [
+                            { "x": -100, "y": 0.0, "z": -50 },
+                            { "x": -4, "y": 0.0, "z": -50 },
+                            { "x": 0, "y": 80, "z": -50 },
+                            { "x": 55, "y": 0.0, "z": -50 },
+                            { "x": 65, "y": 0.0, "z": -50 },
+
+                            { "x": -235, "y": 0.0, "z": -4 },
+                            { "x": -4, "y": 0.0, "z": -25 },
+                            { "x": -100, "y": 180, "z": -25 },
+                            { "x": 55, "y": 0.0, "z": -25 },
+                            { "x": 65, "y": 0.0, "z": -25 },
+
+                            { "x": -80, "y": 0.0, "z": 0 },
+                            { "x": -4, "y": 0.0, "z": 0 },
+                            { "x": -200, "y": 180, "z": 0 },
+                            { "x": 55, "y": 0.0, "z": 0 },
+                            { "x": 65, "y": 0.0, "z": 0 },
+
+                            { "x": -235, "y": 0.0, "z": -10 },
+                            { "x": -4, "y": 0.0, "z": 25 },
+                            { "x": -100, "y": 180, "z": 25 },
+                            { "x": 55, "y": 0.0, "z": 25 },
+                            { "x": 65, "y": 0.0, "z": 25 },
+
+                            { "x": -88, "y": 0.0, "z": 50 },
+                            { "x": -4, "y": 0.0, "z": 50 },
+                            { "x": 0, "y": 80, "z": 50 },
+                            { "x": 55, "y": 0.0, "z": 50 },
+                            { "x": 65, "y": 0.0, "z": 50 }
+                        ]
+                    }
+                }
+            },
+            "mountain_3": {
+                "type": "node",
+                "receiveshadows": true,
+                "materialref": { "materialId": "mountain" },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 180, "y": 0, "z": 0 }
+                    }
+                ],
+                "children": {
+                    "nurbsPrim": {
+                        "type": "nurbs",
+                        "degree_u": 4,
+                        "degree_v": 4,
+                        "parts_u": 8,
+                        "parts_v": 8,
+                        "controlpoints": [
+                            { "x": -120, "y": 0.0, "z": -250 },
+                            { "x": -47, "y": 0.0, "z": -250 },
+                            { "x": -8, "y": 80, "z": -250 },
+                            { "x": 55, "y": 10.0, "z": -250 },
+                            { "x": 65, "y": 0.0, "z": -250 },
+
+                            { "x": -100, "y": 0.0, "z": -180 },
+                            { "x": -100, "y": 0.0, "z": -170 },
+                            { "x": 4, "y": 200, "z": -170 },
+                            { "x": 55, "y": 10.0, "z": -170 },
+                            { "x": 65, "y": 0.0, "z": -170 },
+
+                            { "x": -70, "y": 0.0, "z": -190 },
+                            { "x": -52, "y": 0.0, "z": -150 },
+                            { "x": -12, "y": 200, "z": -150 },
+                            { "x": 55, "y": 10.0, "z": -150 },
+                            { "x": 65, "y": 0.0, "z": -150 },
+
+                            { "x": -70, "y": 0.0, "z": -90 },
+                            { "x": -40, "y": 0.0, "z": -125 },
+                            { "x": 0, "y": 200, "z": -125 },
+                            { "x": 55, "y": 10.0, "z": -125 },
+                            { "x": 65, "y": 0.0, "z": -125 },
+
+                            { "x": -100, "y": 0.0, "z": -50 },
+                            { "x": -4, "y": 0.0, "z": -50 },
+                            { "x": 0, "y": 80, "z": -50 },
+                            { "x": 55, "y": 0.0, "z": -50 },
+                            { "x": 65, "y": 0.0, "z": -50 }
+                        ]
+                    }
+                }
+            },
+            "mountain_4": {
+                "type": "node",
+                "receiveshadows": true,
+                "materialref": { "materialId": "mountain" },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 180, "y": 0, "z": 0 }
+                    }
+                ],
+                "children": {
+                    "nurbsPrim": {
+                        "type": "nurbs",
+                        "degree_u": 4,
+                        "degree_v": 4,
+                        "parts_u": 8,
+                        "parts_v": 8,
+                        "controlpoints": [
+                            { "x": -88, "y": 0.0, "z": 50 },
+                            { "x": -4, "y": 0.0, "z": 50 },
+                            { "x": 0, "y": 80, "z": 50 },
+                            { "x": 55, "y": 0.0, "z": 50 },
+                            { "x": 65, "y": 0.0, "z": 50 },
+
+                            { "x": -55, "y": 0.0, "z": 90 },
+                            { "x": -40, "y": 0.0, "z": 100 },
+                            { "x": 0, "y": 200, "z": 100 },
+                            { "x": 55, "y": 0.0, "z": 100 },
+                            { "x": 65, "y": 0.0, "z": 100 },
+
+                            { "x": -55, "y": 0.0, "z": 200 },
+                            { "x": -52, "y": 0.0, "z": 150 },
+                            { "x": -12, "y": 200, "z": 150 },
+                            { "x": 55, "y": 0.0, "z": 150 },
+                            { "x": 65, "y": 0.0, "z": 150 },
+
+                            { "x": -105, "y": 0.0, "z": 200 },
+                            { "x": -100, "y": 0.0, "z": 200 },
+                            { "x": 4, "y": 200, "z": 200 },
+                            { "x": 55, "y": 0.0, "z": 200 },
+                            { "x": 65, "y": 0.0, "z": 200 },
+
+                            { "x": -105, "y": 0.0, "z": 250 },
+                            { "x": -47, "y": 0.0, "z": 250 },
+                            { "x": -8, "y": 80, "z": 250 },
+                            { "x": 55, "y": 0.0, "z": 250 },
+                            { "x": 65, "y": 0.0, "z": 250 }
+                        ]
+                    }
+                }
+            },
+            "valley": {
+                "type": "node",
+                "materialref": { "materialId": "river" },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": -38, "y": 0, "z": 0 }
+                    }
+                ],
+                "children": {
+                    "nurbsPrim": {
+                        "type": "nurbs",
+                        "degree_u": 4,
+                        "degree_v": 4,
+                        "parts_u": 8,
+                        "parts_v": 8,
+                        "controlpoints": [
+                            { "x": -25, "y": 0.0, "z": -250 },
+                            { "x": -5, "y": 0.0, "z": -250 },
+                            { "x": 15, "y": -70, "z": -250 },
+                            { "x": 5, "y": 0.0, "z": -250 },
+                            { "x": 25, "y": 0.0, "z": -250 },
+
+                            { "x": -25, "y": 0.0, "z": -125 },
+                            { "x": -5, "y": 0.0, "z": -125 },
+                            { "x": -20, "y": -74, "z": -125 },
+                            { "x": 5, "y": 0.0, "z": -125 },
+                            { "x": 25, "y": 0.0, "z": -125 },
+
+                            { "x": -25, "y": 0.0, "z": 0 },
+                            { "x": -5, "y": 0.0, "z": 0 },
+                            { "x": -13, "y": -62, "z": 0 },
+                            { "x": 5, "y": 0.0, "z": 0 },
+                            { "x": 25, "y": 0.0, "z": 0 },
+
+                            { "x": -25, "y": 0.0, "z": 125 },
+                            { "x": -5, "y": 0.0, "z": 125 },
+                            { "x": 17, "y": -76, "z": 125 },
+                            { "x": 5, "y": 0.0, "z": 125 },
+                            { "x": 25, "y": 0.0, "z": 125 },
+
+                            { "x": -25, "y": 0.0, "z": 250 },
+                            { "x": -5, "y": 0.0, "z": 250 },
+                            { "x": 8, "y": -68, "z": 250 },
+                            { "x": 5, "y": 0.0, "z": 250 },
+                            { "x": 25, "y": 0.0, "z": 250 }
+                        ]
+                    }
+                }
+            },
+            "bridge_1": {
+                "type": "node",
+                "children": {
+                    "nodesList": ["bridge"]
+                },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 0.0, "y": 0.0, "z": 200 }
+                    }
+                ]
+            },
+            "bridge_2": {
+                "type": "node",
+                "children": {
+                    "nodesList": ["bridge"]
+                },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 0.0, "y": 0.0, "z": -200 }
+                    }
+                ]
+            },
+            "bridge": {
+                "type": "node",
+                "materialref": { "materialId": "stones" },
+                "children": {
+                    "nodesList": [
+                        "bridge_under",
+                        "bridge_side_left",
+                        "bridge_side_right",
+                        "bridge_base",
+                        "bridge_lateral_left",
+                        "bridge_lateral_right",
+                        "bridge_triangle_1",
+                        "bridge_triangle_2",
+                        "bridge_triangle_3",
+                        "bridge_triangle_4"
+                    ]
+                },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": -38.0, "y": -7, "z": 0 }
+                    }
+                ]
+            },
+            "bridge_base": {
+                "type": "node",
+                "children": {
+                    "prim": {
+                        "type": "rectangle",
+                        "xy1": { "x": -26.0, "y": -11.0 },
+                        "xy2": { "x": 26.0, "y": 11.0 }
+                    }
+                },
+                "transforms": [
+                    {
+                        "type": "rotate",
+                        "amount": { "x": -90, "y": 0, "z": 0 }
+                    },
+                    {
+                        "type": "translate",
+                        "amount": { "x": 0, "y": 6.75, "z": 0 }
+                    }
+                ]
+            },
+            "bridge_lateral_left": {
+                "type": "node",
+                "children": {
+                    "nodesList": ["bridge_lateral"]
+                },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 0, "y": 8.5, "z": -11.9 }
+                    }
+                ]
+            },
+            "bridge_lateral_right": {
+                "type": "node",
+                "children": {
+                    "nodesList": ["bridge_lateral"]
+                },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 0, "y": 8.5, "z": 12 }
+                    }
+                ]
+            },
+            "bridge_lateral": {
+                "type": "node",
+                "children": {
+                    "prim": {
+                        "type": "box",
+                        "xyz1": { "x": -26.0, "y": -1.5, "z": -1.0 },
+                        "xyz2": { "x": 26.0, "y": 1.5, "z": 1.0 }
+                    }
+                }
+            },
+            "bridge_triangle": {
+                "type": "node",
+                "children": {
+                    "prim": {
+                        "type": "triangle",
+                        "xyz1": { "x": 6, "y": -7, "z": 0 },
+                        "xyz2": { "x": 6, "y": 7, "z": 0 },
+                        "xyz3": { "x": -6, "y": 7, "z": 0 }
+                    }
+                }
+            },
+            "bridge_triangle_1": {
+                "type": "node",
+                "children": {
+                    "nodesList": ["bridge_triangle"]
+                },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": -20, "y": 0, "z": 11 }
+                    }
+                ]
+            },
+            "bridge_triangle_2": {
+                "type": "node",
+                "children": {
+                    "nodesList": ["bridge_triangle"]
+                },
+                "transforms": [
+                    {
+                        "type": "scale",
+                        "amount": { "x": -1, "y": 1, "z": 1 }
+                    },
+                    {
+                        "type": "translate",
+                        "amount": { "x": 20, "y": 0, "z": 11 }
+                    }
+                ]
+            },
+            "bridge_triangle_3": {
+                "type": "node",
+                "children": {
+                    "nodesList": ["bridge_triangle_1"]
+                },
+                "transforms": [
+                    {
+                        "type": "rotate",
+                        "amount": { "x": 0, "y": 180, "z": 0 }
+                    }
+                ]
+            },
+            "bridge_triangle_4": {
+                "type": "node",
+                "children": {
+                    "nodesList": ["bridge_triangle_2"]
+                },
+                "transforms": [
+                    {
+                        "type": "rotate",
+                        "amount": { "x": 0, "y": 180, "z": 0 }
+                    }
+                ]
+            },
+            "bridge_under": {
+                "type": "node",
+                "children": {
+                    "nurbsPrim": {
+                        "type": "nurbs",
+                        "degree_u": 3,
+                        "degree_v": 1,
+                        "parts_u": 8,
+                        "parts_v": 8,
+                        "controlpoints": [
+                            { "x": -14, "y": -7.0, "z": -11 },
+                            { "x": -14, "y": -7.0, "z": 11 },
+
+                            { "x": -14, "y": 7.0, "z": -11 },
+                            { "x": -14, "y": 7.0, "z": 11 },
+
+                            { "x": 14, "y": 7.0, "z": -11 },
+                            { "x": 14, "y": 7.0, "z": 11 },
+
+                            { "x": 14, "y": -7.0, "z": -11 },
+                            { "x": 14, "y": -7.0, "z": 11 }
+                        ]
+                    }
+                }
+            },
+            "bridge_side_left": {
+                "type": "node",
+                "children": {
+                    "nodesList": ["bridge_side"]
+                },
+                "transforms": [
+                    {
+                        "type": "translate",
+                        "amount": { "x": 0, "y": 0, "z": 11 }
+                    }
+                ]
+            },
+            "bridge_side_right": {
+                "type": "node",
+                "children": {
+                    "nodesList": ["bridge_side"]
+                },
+                "transforms": [
+                    {
+                        "type": "rotate",
+                        "amount": { "x": 0, "y": 180, "z": 0 }
+                    },
+                    {
+                        "type": "translate",
+                        "amount": { "x": 0, "y": 0, "z": -11 }
+                    }
+                ]
+            },
+            "bridge_side": {
+                "type": "node",
+                "children": {
+                    "nurbsPrim": {
+                        "type": "nurbs",
+                        "degree_u": 1,
+                        "degree_v": 3,
+                        "parts_u": 8,
+                        "parts_v": 8,
+                        "controlpoints": [
+                            { "x": -14, "y": 7.0, "z": 0 },
+                            { "x": -7, "y": 7.0, "z": 0 },
+                            { "x": 7, "y": 7.0, "z": 0 },
+                            { "x": 14, "y": 7.0, "z": 0 },
+
+                            { "x": -14, "y": -7.0, "z": 0 },
+                            { "x": -14, "y": 7.0, "z": 0 },
+                            { "x": 14, "y": 7.0, "z": 0 },
+                            { "x": 14, "y": -7.0, "z": 0 }
+                        ]
+                    }
+                }
+            }
+        },
+        "track": {
+            "points": [
+                { "x": -80.0, "y": 0.0, "z": 0.0 },
+                { "x": -80.0, "y": 0.0, "z": -65.0 },
+                { "x": -80.0, "y": 0.0, "z": -130.0 },
+                { "x": -80.0, "y": 0.0, "z": -180.0 },
+                { "x": -77.32, "y": 0.0, "z": -190.0 },
+                { "x": -74.14, "y": 0.0, "z": -194.14 },
+                { "x": -70.0, "y": 0.0, "z": -197.32 },
+                { "x": -60.0, "y": 0.0, "z": -200.0 },
+                { "x": 0.0, "y": 0.0, "z": -200.0 },
+
+                { "x": 55.0, "y": 0.0, "z": -200.0 },
+                { "x": 72.5, "y": 0.0, "z": -189.95 },
+                { "x": 79.75, "y": 0.0, "z": -178.03 },
+                { "x": 85.31, "y": 0.0, "z": -162.5 },
+                { "x": 90.0, "y": 0.0, "z": -125.0 },
+                { "x": 85.31, "y": 0.0, "z": -87.5 },
+                { "x": 79.75, "y": 0.0, "z": -71.97 },
+                { "x": 72.5, "y": 0.0, "z": -60.05 },
+                { "x": 55.0, "y": 0.0, "z": -50.0 },
+                { "x": 42.5, "y": 0.0, "z": -45.0 },
+
+                { "x": 30.0, "y": 0.0, "z": -40.0 },
+                { "x": 8.79, "y": 0.0, "z": -28.28 },
+                { "x": 0.0, "y": 0.0, "z": 0.0 },
+                { "x": 8.79, "y": 0.0, "z": 28.28 },
+                { "x": 30.0, "y": 0.0, "z": 40.0 },
+
+                { "x": 70.0, "y": 0.0, "z": 50.0 },
+                { "x": 85.0, "y": 0.0, "z": 60.05 },
+                { "x": 91.21, "y": 0.0, "z": 71.97 },
+                { "x": 95.98, "y": 0.0, "z": 87.5 },
+                { "x": 100.0, "y": 0.0, "z": 125.0 },
+                { "x": 95.98, "y": 0.0, "z": 162.5 },
+                { "x": 91.21, "y": 0.0, "z": 178.03 },
+                { "x": 85.0, "y": 0.0, "z": 189.95 },
+                { "x": 70.0, "y": 0.0, "z": 200.0 },
+
+                { "x": 50.0, "y": 0.0, "z": 200.0 },
+                { "x": 20.0, "y": 0.0, "z": 200.0 },
+                { "x": 0.0, "y": 0.0, "z": 200.0 },
+                { "x": -20.0, "y": 0.0, "z": 200.0 },
+                { "x": -40.0, "y": 0.0, "z": 200.0 },
+                { "x": -60.0, "y": 0.0, "z": 200.0 },
+                { "x": -74.14, "y": 0.0, "z": 194.14 },
+                { "x": -80.0, "y": 0.0, "z": 180.0 },
+                { "x": -80.0, "y": 0.0, "z": 100.0 }
+            ]
+        },
+        "routes": {
+            "route_1_inside": {
+                "points": [
+                    {"x": -75.0, "y": 2.5, "z": 0.0 },
+                    {"x": -77.6, "y": 3.5, "z": -29.3 },
+                    {"x": -80.2, "y": 4.5, "z": -58.6 },
+                    {"x": -82.8, "y": 5.5, "z": -87.9 },
+                    {"x": -85.4, "y": 6.5, "z": -117.2 },
+
+                    { "x": -88.0, "y": 7.5, "z": -146.54 },
+                    { "x": -79.77, "y": 8.5, "z": -177.27 },
+                    { "x": -70.0, "y": 9.5, "z": -190.0 },
+                    { "x": -57.27, "y": 7.5, "z": -199.77 },
+                    { "x": -26.54, "y": 6.5, "z": -208.0 },
+
+                    { "x": 8.72, "y": 5.5, "z": -208.0 },
+
+                    { "x": 43.97, "y": 8.5, "z": -208.0 },
+                    { "x": 62.99, "y": 9.5, "z": -195.58 },
+                    { "x": 70.86, "y": 10.5, "z": -182.63 },
+                    { "x": 76.9, "y": 14.5, "z": -165.75 },
+                    { "x": 82.0, "y": 17.5, "z": -125.0 },
+                    { "x": 76.9, "y": 15.5, "z": -84.25 },
+                    { "x": 70.86, "y": 12.5, "z": -67.37 },
+                    { "x": 62.99, "y": 16.5, "z": -54.42 },
+
+                    { "x": 38.0, "y": 17.5, "z": -40.0 },
+                    { "x": 16.79, "y": 18.5, "z": -28.28 },
+                    { "x": 8.0, "y": 22.5, "z": 0.0 },
+                    { "x": 16.79, "y": 20.5, "z": 28.28 },
+                    { "x": 38.0, "y": 18.5, "z": 40.0 },
+
+                    { "x": 63.0, "y": 15.5, "z": 50.0 },
+                    { "x": 77.0, "y": 13.5, "z": 60.05 },
+                    { "x": 83.21, "y": 12.5, "z": 71.97 },
+                    { "x": 87.98, "y": 10.5, "z": 87.5 },
+                    { "x": 92.0, "y": 8.5, "z": 125.0 },
+                    { "x": 87.98, "y": 6.5, "z": 162.5 },
+                    { "x": 83.21, "y": 7.5, "z": 178.03 },
+                    { "x": 77.0, "y": 7.5, "z": 189.95 },
+                    { "x": 63.0, "y": 4.5, "z": 200.0 },
+
+                    { "x": 18.23, "y": 3.5, "z": 204.0 },
+
+                    { "x": -26.54, "y": 5.5, "z": 208.0 },
+                    { "x": -57.27, "y": 7.5, "z": 199.77 },
+                    { "x": -70.0, "y": 9.5, "z": 190.0 },
+                    { "x": -79.77, "y": 11.5, "z": 177.27 },
+                    { "x": -88.0, "y": 12.5, "z": 146.54 },
+
+                    { "x": -84.75, "y": 10.5, "z": 110.04 },
+                    { "x": -81.5, "y": 7.5, "z": 73.54 },
+                    { "x": -78.25, "y": 4.5, "z": 37.04 },
+                    { "x": -75.0, "y": 2.5, "z": 0.0 }
+                ]
+            },
+            "route_1_outside": {
+                "points": [
+                    {"x": -85.0, "y": 2.5, "z": 0.0 },
+                    {"x": -85.1, "y": 3.5, "z": -29.3 },
+                    {"x": -85.2, "y": 4.5, "z": -58.6 },
+                    {"x": -85.3, "y": 5.5, "z": -87.9 },
+                    {"x": -85.4, "y": 6.5, "z": -117.2 },
+
+                    { "x": -88.0, "y": 7.5, "z": -146.54 },
+                    { "x": -79.77, "y": 8.5, "z": -177.27 },
+                    { "x": -70.0, "y": 9.5, "z": -190.0 },
+                    { "x": -57.27, "y": 7.5, "z": -199.77 },
+                    { "x": -26.54, "y": 6.5, "z": -208.0 },
+
+                    { "x": 8.72, "y": 5.5, "z": -208.0 },
+
+                    { "x": 43.97, "y": 8.5, "z": -208.0 },
+                    { "x": 62.99, "y": 9.5, "z": -195.58 },
+                    { "x": 70.86, "y": 10.5, "z": -182.63 },
+                    { "x": 76.9, "y": 14.5, "z": -165.75 },
+                    { "x": 82.0, "y": 17.5, "z": -125.0 },
+                    { "x": 76.9, "y": 15.5, "z": -84.25 },
+                    { "x": 70.86, "y": 12.5, "z": -67.37 },
+                    { "x": 62.99, "y": 16.5, "z": -54.42 },
+
+                    { "x": 38.0, "y": 17.5, "z": -40.0 },
+                    { "x": 16.79, "y": 18.5, "z": -28.28 },
+                    { "x": 8.0, "y": 22.5, "z": 0.0 },
+                    { "x": 16.79, "y": 20.5, "z": 28.28 },
+                    { "x": 38.0, "y": 18.5, "z": 40.0 },
+
+                    { "x": 63.0, "y": 15.5, "z": 50.0 },
+                    { "x": 77.0, "y": 13.5, "z": 60.05 },
+                    { "x": 83.21, "y": 12.5, "z": 71.97 },
+                    { "x": 87.98, "y": 10.5, "z": 87.5 },
+                    { "x": 92.0, "y": 8.5, "z": 125.0 },
+                    { "x": 87.98, "y": 6.5, "z": 162.5 },
+                    { "x": 83.21, "y": 7.5, "z": 178.03 },
+                    { "x": 77.0, "y": 7.5, "z": 189.95 },
+                    { "x": 63.0, "y": 4.5, "z": 200.0 },
+
+                    { "x": 18.23, "y": 3.5, "z": 204.0 },
+
+                    { "x": -26.54, "y": 5.5, "z": 208.0 },
+                    { "x": -57.27, "y": 7.5, "z": 199.77 },
+                    { "x": -70.0, "y": 9.5, "z": 190.0 },
+                    { "x": -79.77, "y": 11.5, "z": 177.27 },
+                    { "x": -88.0, "y": 12.5, "z": 146.54 },
+
+                    { "x": -87.25, "y": 10.5, "z": 110.04 },
+                    { "x": -86.5, "y": 7.5, "z": 73.54 },
+                    { "x": -85.75, "y": 4.5, "z": 37.04 },
+                    { "x": -85.0, "y": 2.5, "z": 0.0 }
+                ]
+            },
+            "route_2_inside": {
+                "points": [
+                    {"x": -75.0, "y": 2.5, "z": 0.0},
+                    {"x": -77.8, "y": 9.98, "z": -37.6},
+                    {"x": -80.6, "y": 8.61, "z": -75.2},
+                    {"x": -83.4, "y": 11.21, "z": -112.8},
+                    {"x": -86.6, "y": 7.87, "z": -150.4},
+                    {"x": -86.8, "y": 3.46, "z": -169.2},
+                    {"x": -86.6, "y": 9.83, "z": -169.2},
+                    {"x": -86.4, "y": 11.39, "z": -179.1},
+                    {"x": -86.2, "y": 14.94, "z": -184.05},
+                    {"x": -86.0, "y": 22.71, "z": -189.0},
+                    
+                    {"x": 20.0, "y": 9.25, "z": -207.0},
+                    {"x": 45.0, "y": 12.27, "z": -207.0},
+                    {"x": 55.0, "y": 19.95, "z": -206.0},
+
+                    {"x": 78.0, "y": 23.86, "z": -165.0},
+
+                    {"x": 90.0, "y": 11.8, "z": -84.0},
+
+                    {"x": 63.0, "y": 23.95, "z": -60.0},
+                    {"x": 16.79, "y": 11.02, "z": -28.28},
+
+                    {"x": -6.0, "y": 7.26, "z": 12.0},
+
+                    {"x": 82.0, "y": 24.15, "z": 66.0},
+
+                    {"x": 103.0, "y": 20.09, "z": 160.0},
+                    {"x": 70.0, "y": 6.15, "z": 192.0},
+                    {"x": -20.0, "y": 21.28, "z": 206.0},
+                    {"x": -40.0, "y": 15.07, "z": 206.0},
+                    {"x": -50.0, "y": 9.62, "z": 206.0},
+                    {"x": -60.0, "y": 3.39, "z": 205.0},
+                    {"x": -87.0, "y": 8.33, "z": 150.0},
+                    {"x": -88.0, "y": 6.01, "z": 112.5},
+                    {"x": -83.67, "y": 3.23, "z": 75.0},
+                    {"x": -79.34, "y": 3.23, "z": 40.0},
+                    {"x": -75.0, "y": 2.5, "z": 0.0}
+
+
+                ]
+            },
+            "route_2_outside": {
+                "points": [
+                    {"x": -85.0, "y": 2.5, "z": 0.0},
+                    {"x": -85.4, "y": 9.98, "z": -37.6},
+                    {"x": -85.8, "y": 8.61, "z": -75.2},
+                    {"x": -86.2, "y": 11.21, "z": -112.8},
+                    {"x": -86.6, "y": 7.87, "z": -150.4},
+                    {"x": -86.8, "y": 3.46, "z": -169.2},
+                    {"x": -86.6, "y": 9.83, "z": -169.2},
+                    {"x": -86.4, "y": 11.39, "z": -179.1},
+                    {"x": -86.2, "y": 14.94, "z": -184.05},
+                    {"x": -86.0, "y": 22.71, "z": -189.0},
+                    
+                    {"x": 20.0, "y": 9.25, "z": -207.0},
+                    {"x": 45.0, "y": 12.27, "z": -207.0},
+                    {"x": 55.0, "y": 19.95, "z": -206.0},
+                    {"x": 78.0, "y": 23.86, "z": -165.0},
+                    {"x": 90.0, "y": 11.8, "z": -84.0},
+                    {"x": 63.0, "y": 23.95, "z": -60.0},
+                    {"x": 16.79, "y": 11.02, "z": -28.28},
+                    {"x": -6.0, "y": 7.26, "z": 12.0},
+                    {"x": 82.0, "y": 24.15, "z": 66.0},
+                    {"x": 103.0, "y": 20.09, "z": 160.0},
+                    {"x": 70.0, "y": 6.15, "z": 192.0},
+                    {"x": -20.0, "y": 21.28, "z": 206.0},
+                    {"x": -40.0, "y": 15.07, "z": 206.0},
+                    {"x": -50.0, "y": 9.62, "z": 206.0},
+                    {"x": -60.0, "y": 3.39, "z": 205.0},
+
+                    {"x": -87.0, "y": 8.33, "z": 150.0},
+                    {"x": -88.0, "y": 6.01, "z": 112.5},
+                    {"x": -88.0, "y": 2.5, "z": 75.0}
+                ]
+            },
+            "route_3_inside": {
+                "points": [
+                    { "x": -75.0, "y": 2.5, "z": 0.0 },
+                    { "x": -80.0, "y": 4.5, "z": -65.0 },
+                    { "x": -80.0, "y": 6.5, "z": -130.0 },
+                    { "x": -80.0, "y": 8.5, "z": -180.0 },
+                    { "x": -77.32, "y": 12.5, "z": -190.0 },
+                    { "x": -74.14, "y": 14.5, "z": -194.14 },
+                    { "x": -70.0, "y": 16.5, "z": -197.32 },
+                    { "x": -60.0, "y": 14.5, "z": -200.0 },
+                    { "x": 0.0, "y": 12.5, "z": -200.0 },
+                    { "x": 55.0, "y": 10.5, "z": -200.0 },
+                    { "x": 72.5, "y": 8.5, "z": -189.95 },
+                    { "x": 79.75, "y": 6.5, "z": -178.03 },
+                    { "x": 85.31, "y": 8.5, "z": -162.5 },
+                    { "x": 90.0, "y": 10.5, "z": -125.0 },
+                    { "x": 85.31, "y": 12.5, "z": -87.5 },
+                    { "x": 79.75, "y": 14.5, "z": -71.97 },
+                    { "x": 72.5, "y": 16.5, "z": -60.05 },
+                    { "x": 55.0, "y": 14.5, "z": -50.0 },
+                    { "x": 42.5, "y": 12.5, "z": -45.0 },
+                    { "x": 30.0, "y": 10.5, "z": -40.0 },
+                    { "x": 8.79, "y": 12.5, "z": -28.28 },
+                    { "x": 0.0, "y": 14.5, "z": 0.0 },
+                    { "x": 8.79, "y": 16.5, "z": 28.28 },
+                    { "x": 30.0, "y": 18.5, "z": 40.0 },
+                    { "x": 70.0, "y": 20.5, "z": 50.0 },
+                    { "x": 85.0, "y": 22.5, "z": 60.05 },
+                    { "x": 91.21, "y": 20.5, "z": 71.97 },
+                    { "x": 95.98, "y": 18.5, "z": 87.5 },
+                    { "x": 100.0, "y": 16.5, "z": 125.0 },
+                    { "x": 95.98, "y": 14.5, "z": 162.5 },
+                    { "x": 91.21, "y": 12.5, "z": 178.03 },
+                    { "x": 85.0, "y": 10.5, "z": 189.95 },
+                    { "x": 70.0, "y": 8.5, "z": 200.0 },
+                    { "x": 50.0, "y": 6.5, "z": 200.0 },
+                    { "x": 20.0, "y": 4.5, "z": 200.0 },
+                    { "x": 0.0, "y": 2.5, "z": 200.0 },
+                    { "x": -20.0, "y": 4.5, "z": 200.0 },
+                    { "x": -40.0, "y": 6.5, "z": 200.0 },
+                    { "x": -60.0, "y": 8.5, "z": 200.0 },
+                    { "x": -74.14, "y": 10.5, "z": 194.14 },
+                    { "x": -80.0, "y": 8.5, "z": 180.0 },
+                    { "x": -80.0, "y": 6.5, "z": 100.0 },
+                    { "x": -80.0, "y": 4.5, "z": 50.0 },
+                    { "x": -75.0, "y": 2.5, "z": 0.0 }
+                    
+                ]
+            },
+            "route_3_outside": {
+                "points": [
+                    { "x": -85.0, "y": 4.5, "z": -65.0 },
+                    { "x": -80.0, "y": 6.5, "z": -130.0 },
+                    { "x": -80.0, "y": 8.5, "z": -180.0 },
+                    { "x": -77.32, "y": 12.5, "z": -190.0 },
+                    { "x": -74.14, "y": 14.5, "z": -194.14 },
+                    { "x": -70.0, "y": 16.5, "z": -197.32 },
+                    { "x": -60.0, "y": 14.5, "z": -200.0 },
+                    { "x": 0.0, "y": 12.5, "z": -200.0 },
+                    { "x": 55.0, "y": 10.5, "z": -200.0 },
+                    { "x": 72.5, "y": 8.5, "z": -189.95 },
+                    { "x": 79.75, "y": 6.5, "z": -178.03 },
+                    { "x": 85.31, "y": 8.5, "z": -162.5 },
+                    { "x": 90.0, "y": 10.5, "z": -125.0 },
+                    { "x": 85.31, "y": 12.5, "z": -87.5 },
+                    { "x": 79.75, "y": 14.5, "z": -71.97 },
+                    { "x": 72.5, "y": 16.5, "z": -60.05 },
+                    { "x": 55.0, "y": 14.5, "z": -50.0 },
+                    { "x": 42.5, "y": 12.5, "z": -45.0 },
+                    { "x": 30.0, "y": 10.5, "z": -40.0 },
+                    { "x": 8.79, "y": 12.5, "z": -28.28 },
+                    { "x": 0.0, "y": 14.5, "z": 0.0 },
+                    { "x": 8.79, "y": 16.5, "z": 28.28 },
+                    { "x": 30.0, "y": 18.5, "z": 40.0 },
+                    { "x": 70.0, "y": 20.5, "z": 50.0 },
+                    { "x": 85.0, "y": 22.5, "z": 60.05 },
+                    { "x": 91.21, "y": 20.5, "z": 71.97 },
+                    { "x": 95.98, "y": 18.5, "z": 87.5 },
+                    { "x": 100.0, "y": 16.5, "z": 125.0 },
+                    { "x": 95.98, "y": 14.5, "z": 162.5 },
+                    { "x": 91.21, "y": 12.5, "z": 178.03 },
+                    { "x": 85.0, "y": 10.5, "z": 189.95 },
+                    { "x": 70.0, "y": 8.5, "z": 200.0 },
+                    { "x": 50.0, "y": 6.5, "z": 200.0 },
+                    { "x": 20.0, "y": 4.5, "z": 200.0 },
+                    { "x": 0.0, "y": 2.5, "z": 200.0 },
+                    { "x": -20.0, "y": 4.5, "z": 200.0 },
+                    { "x": -40.0, "y": 6.5, "z": 200.0 },
+                    { "x": -60.0, "y": 8.5, "z": 200.0 },
+                    { "x": -74.14, "y": 10.5, "z": 194.14 },
+                    { "x": -80.0, "y": 8.5, "z": 180.0 },
+                    { "x": -80.0, "y": 6.5, "z": 100.0 },
+                    { "x": -80.0, "y": 4.5, "z": 50.0 },
+                    { "x": -85.0, "y": 2.5, "z": 0.0 }
+                ]
+            }
+        },
+        "powerUp": {
+            "points": [
+                { "x": -77.0, "y": 6.0, "z": -75.0 },
+                { "x": -84.0, "y": 10.0, "z": -30.0 },
+                { "x": -86.0, "y": 12.0, "z": -113.0 },
+                { "x": -73.0, "y": 24.0, "z": -148.0 },
+                { "x": -79.0, "y": 9.0, "z": -186.0 },
+                { "x": -86.0, "y": 6.0, "z": 18.0 },
+                { "x": -76.0, "y": 14.0, "z": 63.0 },
+                { "x": -78.0, "y": 17.0, "z": 114.0 },
+                { "x": -82.0, "y": 7.0, "z": 180.0 },
+                { "x": -85.0, "y": 8.0, "z": 150.0 },
+
+                { "x": -59.0, "y": 23.0, "z": -194.0 },
+                { "x": -23.0, "y": 6.0, "z": -202.0 },
+                { "x": 19.0, "y": 9.0, "z": -205.0 },
+                { "x": 47.0, "y": 17.0, "z": -197.0 },
+
+                { "x": 68.0, "y": 7.0, "z": -193.0 },
+                { "x": 79.0, "y": 10.0, "z": -163.0 },
+                { "x": 87.0, "y": 19.0, "z": -113.0 },
+                { "x": 76.0, "y": 23.0, "z": -86.0 },
+                { "x": 69.0, "y": 14.0, "z": -65.0 },
+
+                { "x": 31.0, "y": 17.0, "z": -41.0 },
+                { "x": 0.0, "y": 6.0, "z": 14.0 },
+                { "x": 23.0, "y": 12.0, "z": 36.0 },
+
+                { "x": 56.0, "y": 8.0, "z": 48.0 },
+                { "x": 91.0, "y": 5.0, "z": 65.0 },
+                { "x": 95.0, "y": 18.0, "z": 106.0 },
+                { "x": 98.0, "y": 13.0, "z": 148.0 },
+                { "x": 81.0, "y": 23.0, "z": 186.0 },
+
+                { "x": 57.0, "y": 6.0, "z": 205.0 },
+                { "x": 24.0, "y": 19.0, "z": 197.0 },
+                { "x": -18.0, "y": 13.0, "z": 194.0 },
+                { "x": -48.0, "y": 9.0, "z": 201.0 }
+            ]
+        },
+        "powerDown": {
+            "points": [
+                { "x": -74.0, "y": 6.0, "z": -19.0 },
+                { "x": -82.0, "y": 12.0, "z": -54.0 },
+                { "x": -81.0, "y": 17.0, "z": -92.0 },
+                { "x": -79.0, "y": 24.0, "z": -136.0 },
+                { "x": -73.0, "y": 8.0, "z": -178.0 },
+
+                { "x": -80.0, "y": 14.0, "z": 7.0 },
+                { "x": -71.0, "y": 21.0, "z": 38.0 },
+                { "x": -78.0, "y": 18.0, "z": 82.0 },
+                { "x": -85.0, "y": 13.0, "z": 134.0 },
+                { "x": -72.0, "y": 7.0, "z": 191.0 },
+
+                { "x": -48.0, "y": 9.0, "z": -201.0 },
+                { "x": -18.0, "y": 13.0, "z": -194.0 },
+                { "x": 24.0, "y": 19.0, "z": -197.0 },
+                { "x": 57.0, "y": 6.0, "z": -205.0 },
+
+                { "x": 69.0, "y": 24.0, "z": -179.0 },
+                { "x": 87.0, "y": 11.0, "z": -155.0 },
+                { "x": 91.0, "y": 6.0, "z": -120.0 },
+                { "x": 84.0, "y": 13.0, "z": -86.0 },
+
+                { "x": 53.0, "y": 19.0, "z": -50.0 },
+                { "x": 18.0, "y": 8.0, "z": -31.0 },
+
+                { "x": 6.0, "y": 16.0, "z": -8.0 },
+                { "x": 31.0, "y": 21.0, "z": 43.0 },
+
+                { "x": 71.0, "y": 19.0, "z": 47.0 },
+                { "x": 88.0, "y": 14.0, "z": 79.0 },
+                { "x": 102.0, "y": 7.0, "z": 126.0 },
+                { "x": 93.0, "y": 24.0, "z": 157.0 },
+                { "x": 75.0, "y": 9.0, "z": 201.0 },
+
+                { "x": 39.0, "y": 15.0, "z": 201.0 },
+                { "x": 13.0, "y": 11.0, "z": 193.0 },
+                { "x": -7.0, "y": 8.0, "z": 199.0 },
+                { "x": -31.0, "y": 23.0, "z": 203.0 }
+            ]
+        },
+        "parkPlayer": {
+            "ballons": [
+                { "color": { "r": 1.0, "g": 1.0, "b": 1.0 } },
+                { "color": { "r": 1.0, "g": 0.0, "b": 0.0 } },
+                { "color": { "r": 0.0, "g": 1.0, "b": 0.0 } },
+                { "color": { "r": 0.0, "g": 0.0, "b": 1.0 } }
+            ]
+        },
+        "parkOponent": {
+            "ballons": [
+                {
+                    "color": { "r": 1.0, "g": 1.0, "b": 1.0 },
+                    "velocity": 0.8,
+                    "routes": {
+                        "route_1_inside": {
+                            "points": [
+                                {"x": -75.0, "y": 2.5, "z": 0.0 },
+                                {"x": -77.6, "y": 3.5, "z": -29.3 },
+                                {"x": -80.2, "y": 4.5, "z": -58.6 },
+                                {"x": -82.8, "y": 5.5, "z": -87.9 },
+                                {"x": -85.4, "y": 6.5, "z": -117.2 },
+            
+                                { "x": -88.0, "y": 7.5, "z": -146.54 },
+                                { "x": -79.77, "y": 8.5, "z": -177.27 },
+                                { "x": -70.0, "y": 9.5, "z": -190.0 },
+                                { "x": -57.27, "y": 7.5, "z": -199.77 },
+                                { "x": -26.54, "y": 6.5, "z": -208.0 },
+            
+                                { "x": 8.72, "y": 5.5, "z": -208.0 },
+            
+                                { "x": 43.97, "y": 8.5, "z": -208.0 },
+                                { "x": 62.99, "y": 9.5, "z": -195.58 },
+                                { "x": 70.86, "y": 10.5, "z": -182.63 },
+                                { "x": 76.9, "y": 14.5, "z": -165.75 },
+                                { "x": 82.0, "y": 17.5, "z": -125.0 },
+                                { "x": 76.9, "y": 15.5, "z": -84.25 },
+                                { "x": 70.86, "y": 12.5, "z": -67.37 },
+                                { "x": 62.99, "y": 16.5, "z": -54.42 },
+            
+                                { "x": 38.0, "y": 17.5, "z": -40.0 },
+                                { "x": 16.79, "y": 18.5, "z": -28.28 },
+                                { "x": 8.0, "y": 22.5, "z": 0.0 },
+                                { "x": 16.79, "y": 20.5, "z": 28.28 },
+                                { "x": 38.0, "y": 18.5, "z": 40.0 },
+            
+                                { "x": 63.0, "y": 15.5, "z": 50.0 },
+                                { "x": 77.0, "y": 13.5, "z": 60.05 },
+                                { "x": 83.21, "y": 12.5, "z": 71.97 },
+                                { "x": 87.98, "y": 10.5, "z": 87.5 },
+                                { "x": 92.0, "y": 8.5, "z": 125.0 },
+                                { "x": 87.98, "y": 6.5, "z": 162.5 },
+                                { "x": 83.21, "y": 7.5, "z": 178.03 },
+                                { "x": 77.0, "y": 7.5, "z": 189.95 },
+                                { "x": 63.0, "y": 4.5, "z": 200.0 },
+            
+                                { "x": 18.23, "y": 3.5, "z": 204.0 },
+            
+                                { "x": -26.54, "y": 5.5, "z": 208.0 },
+                                { "x": -57.27, "y": 7.5, "z": 199.77 },
+                                { "x": -70.0, "y": 9.5, "z": 190.0 },
+                                { "x": -79.77, "y": 11.5, "z": 177.27 },
+                                { "x": -88.0, "y": 12.5, "z": 146.54 },
+            
+                                { "x": -84.75, "y": 10.5, "z": 110.04 },
+                                { "x": -81.5, "y": 7.5, "z": 73.54 },
+                                { "x": -78.25, "y": 4.5, "z": 37.04 },
+                                { "x": -75.0, "y": 2.5, "z": 0.0 }
+                            ]
+                        },
+                        "route_1_outside": {
+                            "points": [
+                                {"x": -85.0, "y": 2.5, "z": 0.0 },
+                                {"x": -85.1, "y": 3.5, "z": -29.3 },
+                                {"x": -85.2, "y": 4.5, "z": -58.6 },
+                                {"x": -85.3, "y": 5.5, "z": -87.9 },
+                                {"x": -85.4, "y": 6.5, "z": -117.2 },
+                            
+                                { "x": -88.0, "y": 7.5, "z": -146.54 },
+                                { "x": -79.77, "y": 8.5, "z": -177.27 },
+                                { "x": -70.0, "y": 9.5, "z": -190.0 },
+                                { "x": -57.27, "y": 7.5, "z": -199.77 },
+                                { "x": -26.54, "y": 6.5, "z": -208.0 },
+                            
+                                { "x": 8.72, "y": 5.5, "z": -208.0 },
+                            
+                                { "x": 43.97, "y": 8.5, "z": -208.0 },
+                                { "x": 62.99, "y": 9.5, "z": -195.58 },
+                                { "x": 70.86, "y": 10.5, "z": -182.63 },
+                                { "x": 76.9, "y": 14.5, "z": -165.75 },
+                                { "x": 82.0, "y": 17.5, "z": -125.0 },
+                                { "x": 76.9, "y": 15.5, "z": -84.25 },
+                                { "x": 70.86, "y": 12.5, "z": -67.37 },
+                                { "x": 62.99, "y": 16.5, "z": -54.42 },
+                            
+                                { "x": 38.0, "y": 17.5, "z": -40.0 },
+                                { "x": 16.79, "y": 18.5, "z": -28.28 },
+                                { "x": 8.0, "y": 22.5, "z": 0.0 },
+                                { "x": 16.79, "y": 20.5, "z": 28.28 },
+                                { "x": 38.0, "y": 18.5, "z": 40.0 },
+                            
+                                { "x": 63.0, "y": 15.5, "z": 50.0 },
+                                { "x": 77.0, "y": 13.5, "z": 60.05 },
+                                { "x": 83.21, "y": 12.5, "z": 71.97 },
+                                { "x": 87.98, "y": 10.5, "z": 87.5 },
+                                { "x": 92.0, "y": 8.5, "z": 125.0 },
+                                { "x": 87.98, "y": 6.5, "z": 162.5 },
+                                { "x": 83.21, "y": 7.5, "z": 178.03 },
+                                { "x": 77.0, "y": 7.5, "z": 189.95 },
+                                { "x": 63.0, "y": 4.5, "z": 200.0 },
+                            
+                                { "x": 18.23, "y": 3.5, "z": 204.0 },
+                            
+                                { "x": -26.54, "y": 5.5, "z": 208.0 },
+                                { "x": -57.27, "y": 7.5, "z": 199.77 },
+                                { "x": -70.0, "y": 9.5, "z": 190.0 },
+                                { "x": -79.77, "y": 11.5, "z": 177.27 },
+                                { "x": -88.0, "y": 12.5, "z": 146.54 },
+                            
+                                { "x": -87.25, "y": 10.5, "z": 110.04 },
+                                { "x": -86.5, "y": 7.5, "z": 73.54 },
+                                { "x": -85.75, "y": 4.5, "z": 37.04 },
+                                { "x": -85.0, "y": 2.5, "z": 0.0 }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "color": { "r": 1.0, "g": 0.0, "b": 0.0 },
+                    "velocity": 0.4,
+                    "routes": {
+                        "route_1_inside": {
+                            "points": [
+                                {"x": -75.0, "y": 2.5, "z": 0.0 },
+                                {"x": -77.6, "y": 3.5, "z": -29.3 },
+                                {"x": -80.2, "y": 4.5, "z": -58.6 },
+                                {"x": -82.8, "y": 5.5, "z": -87.9 },
+                                {"x": -85.4, "y": 6.5, "z": -117.2 },
+            
+                                { "x": -88.0, "y": 7.5, "z": -146.54 },
+                                { "x": -79.77, "y": 8.5, "z": -177.27 },
+                                { "x": -70.0, "y": 9.5, "z": -190.0 },
+                                { "x": -57.27, "y": 7.5, "z": -199.77 },
+                                { "x": -26.54, "y": 6.5, "z": -208.0 },
+            
+                                { "x": 8.72, "y": 5.5, "z": -208.0 },
+            
+                                { "x": 43.97, "y": 8.5, "z": -208.0 },
+                                { "x": 62.99, "y": 9.5, "z": -195.58 },
+                                { "x": 70.86, "y": 10.5, "z": -182.63 },
+                                { "x": 76.9, "y": 14.5, "z": -165.75 },
+                                { "x": 82.0, "y": 17.5, "z": -125.0 },
+                                { "x": 76.9, "y": 15.5, "z": -84.25 },
+                                { "x": 70.86, "y": 12.5, "z": -67.37 },
+                                { "x": 62.99, "y": 16.5, "z": -54.42 },
+            
+                                { "x": 38.0, "y": 17.5, "z": -40.0 },
+                                { "x": 16.79, "y": 18.5, "z": -28.28 },
+                                { "x": 8.0, "y": 22.5, "z": 0.0 },
+                                { "x": 16.79, "y": 20.5, "z": 28.28 },
+                                { "x": 38.0, "y": 18.5, "z": 40.0 },
+            
+                                { "x": 63.0, "y": 15.5, "z": 50.0 },
+                                { "x": 77.0, "y": 13.5, "z": 60.05 },
+                                { "x": 83.21, "y": 12.5, "z": 71.97 },
+                                { "x": 87.98, "y": 10.5, "z": 87.5 },
+                                { "x": 92.0, "y": 8.5, "z": 125.0 },
+                                { "x": 87.98, "y": 6.5, "z": 162.5 },
+                                { "x": 83.21, "y": 7.5, "z": 178.03 },
+                                { "x": 77.0, "y": 7.5, "z": 189.95 },
+                                { "x": 63.0, "y": 4.5, "z": 200.0 },
+            
+                                { "x": 18.23, "y": 3.5, "z": 204.0 },
+            
+                                { "x": -26.54, "y": 5.5, "z": 208.0 },
+                                { "x": -57.27, "y": 7.5, "z": 199.77 },
+                                { "x": -70.0, "y": 9.5, "z": 190.0 },
+                                { "x": -79.77, "y": 11.5, "z": 177.27 },
+                                { "x": -88.0, "y": 12.5, "z": 146.54 },
+            
+                                { "x": -84.75, "y": 10.5, "z": 110.04 },
+                                { "x": -81.5, "y": 7.5, "z": 73.54 },
+                                { "x": -78.25, "y": 4.5, "z": 37.04 },
+                                { "x": -75.0, "y": 2.5, "z": 0.0 }
+                            ]
+                        },
+                        "route_1_outside": {
+                            "points": [
+                                {"x": -85.0, "y": 2.5, "z": 0.0 },
+                                {"x": -85.1, "y": 3.5, "z": -29.3 },
+                                {"x": -85.2, "y": 4.5, "z": -58.6 },
+                                {"x": -85.3, "y": 5.5, "z": -87.9 },
+                                {"x": -85.4, "y": 6.5, "z": -117.2 },
+                            
+                                { "x": -88.0, "y": 7.5, "z": -146.54 },
+                                { "x": -79.77, "y": 8.5, "z": -177.27 },
+                                { "x": -70.0, "y": 9.5, "z": -190.0 },
+                                { "x": -57.27, "y": 7.5, "z": -199.77 },
+                                { "x": -26.54, "y": 6.5, "z": -208.0 },
+                            
+                                { "x": 8.72, "y": 5.5, "z": -208.0 },
+                            
+                                { "x": 43.97, "y": 8.5, "z": -208.0 },
+                                { "x": 62.99, "y": 9.5, "z": -195.58 },
+                                { "x": 70.86, "y": 10.5, "z": -182.63 },
+                                { "x": 76.9, "y": 14.5, "z": -165.75 },
+                                { "x": 82.0, "y": 17.5, "z": -125.0 },
+                                { "x": 76.9, "y": 15.5, "z": -84.25 },
+                                { "x": 70.86, "y": 12.5, "z": -67.37 },
+                                { "x": 62.99, "y": 16.5, "z": -54.42 },
+                            
+                                { "x": 38.0, "y": 17.5, "z": -40.0 },
+                                { "x": 16.79, "y": 18.5, "z": -28.28 },
+                                { "x": 8.0, "y": 22.5, "z": 0.0 },
+                                { "x": 16.79, "y": 20.5, "z": 28.28 },
+                                { "x": 38.0, "y": 18.5, "z": 40.0 },
+                            
+                                { "x": 63.0, "y": 15.5, "z": 50.0 },
+                                { "x": 77.0, "y": 13.5, "z": 60.05 },
+                                { "x": 83.21, "y": 12.5, "z": 71.97 },
+                                { "x": 87.98, "y": 10.5, "z": 87.5 },
+                                { "x": 92.0, "y": 8.5, "z": 125.0 },
+                                { "x": 87.98, "y": 6.5, "z": 162.5 },
+                                { "x": 83.21, "y": 7.5, "z": 178.03 },
+                                { "x": 77.0, "y": 7.5, "z": 189.95 },
+                                { "x": 63.0, "y": 4.5, "z": 200.0 },
+                            
+                                { "x": 18.23, "y": 3.5, "z": 204.0 },
+                            
+                                { "x": -26.54, "y": 5.5, "z": 208.0 },
+                                { "x": -57.27, "y": 7.5, "z": 199.77 },
+                                { "x": -70.0, "y": 9.5, "z": 190.0 },
+                                { "x": -79.77, "y": 11.5, "z": 177.27 },
+                                { "x": -88.0, "y": 12.5, "z": 146.54 },
+                            
+                                { "x": -87.25, "y": 10.5, "z": 110.04 },
+                                { "x": -86.5, "y": 7.5, "z": 73.54 },
+                                { "x": -85.75, "y": 4.5, "z": 37.04 },
+                                { "x": -85.0, "y": 2.5, "z": 0.0 }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "color": { "r": 0.0, "g": 1.0, "b": 0.0 },
+                    "velocity": 1.5,
+                    "routes": {
+                        "route_2_inside": {
+                            "points": [
+                                {"x": -75.0, "y": 2.5, "z": 0.0},
+                                {"x": -77.8, "y": 9.98, "z": -37.6},
+                                {"x": -80.6, "y": 8.61, "z": -75.2},
+                                {"x": -83.4, "y": 11.21, "z": -112.8},
+                                {"x": -86.6, "y": 7.87, "z": -150.4},
+                                {"x": -86.8, "y": 3.46, "z": -169.2},
+                                {"x": -86.6, "y": 9.83, "z": -169.2},
+                                {"x": -86.4, "y": 11.39, "z": -179.1},
+                                {"x": -86.2, "y": 14.94, "z": -184.05},
+                                {"x": -86.0, "y": 22.71, "z": -189.0},
+
+                                {"x": 20.0, "y": 9.25, "z": -207.0},
+                                {"x": 45.0, "y": 12.27, "z": -207.0},
+                                {"x": 55.0, "y": 19.95, "z": -206.0},
+                            
+                                {"x": 78.0, "y": 23.86, "z": -165.0},
+                            
+                                {"x": 90.0, "y": 11.8, "z": -84.0},
+                            
+                                {"x": 63.0, "y": 23.95, "z": -60.0},
+                                {"x": 16.79, "y": 11.02, "z": -28.28},
+                            
+                                {"x": -6.0, "y": 7.26, "z": 12.0},
+                            
+                                {"x": 82.0, "y": 24.15, "z": 66.0},
+                            
+                                {"x": 103.0, "y": 20.09, "z": 160.0},
+                                {"x": 70.0, "y": 6.15, "z": 192.0},
+                                {"x": -20.0, "y": 21.28, "z": 206.0},
+                                {"x": -40.0, "y": 15.07, "z": 206.0},
+                                {"x": -50.0, "y": 9.62, "z": 206.0},
+                                {"x": -60.0, "y": 3.39, "z": 205.0},
+                                {"x": -87.0, "y": 8.33, "z": 150.0},
+                                {"x": -88.0, "y": 6.01, "z": 112.5},
+                                {"x": -83.67, "y": 3.23, "z": 75.0},
+                                {"x": -79.34, "y": 3.23, "z": 40.0},
+                                {"x": -75.0, "y": 2.5, "z": 0.0}
+                            
+                            
+                            ]
+                        },
+                        "route_2_outside": {
+                            "points": [
+                                {"x": -85.0, "y": 2.5, "z": 0.0},
+                                {"x": -85.4, "y": 9.98, "z": -37.6},
+                                {"x": -85.8, "y": 8.61, "z": -75.2},
+                                {"x": -86.2, "y": 11.21, "z": -112.8},
+                                {"x": -86.6, "y": 7.87, "z": -150.4},
+                                {"x": -86.8, "y": 3.46, "z": -169.2},
+                                {"x": -86.6, "y": 9.83, "z": -169.2},
+                                {"x": -86.4, "y": 11.39, "z": -179.1},
+                                {"x": -86.2, "y": 14.94, "z": -184.05},
+                                {"x": -86.0, "y": 22.71, "z": -189.0},
+
+                                {"x": 20.0, "y": 9.25, "z": -207.0},
+                                {"x": 45.0, "y": 12.27, "z": -207.0},
+                                {"x": 55.0, "y": 19.95, "z": -206.0},
+                                {"x": 78.0, "y": 23.86, "z": -165.0},
+                                {"x": 90.0, "y": 11.8, "z": -84.0},
+                                {"x": 63.0, "y": 23.95, "z": -60.0},
+                                {"x": 16.79, "y": 11.02, "z": -28.28},
+                                {"x": -6.0, "y": 7.26, "z": 12.0},
+                                {"x": 82.0, "y": 24.15, "z": 66.0},
+                                {"x": 103.0, "y": 20.09, "z": 160.0},
+                                {"x": 70.0, "y": 6.15, "z": 192.0},
+                                {"x": -20.0, "y": 21.28, "z": 206.0},
+                                {"x": -40.0, "y": 15.07, "z": 206.0},
+                                {"x": -50.0, "y": 9.62, "z": 206.0},
+                                {"x": -60.0, "y": 3.39, "z": 205.0},
+                            
+                                {"x": -87.0, "y": 8.33, "z": 150.0},
+                                {"x": -88.0, "y": 6.01, "z": 112.5},
+                                {"x": -88.0, "y": 2.5, "z": 75.0}
+                            ]
+                        }
+                    }
+                },
+                {
+                    "color": { "r": 0.0, "g": 0.0, "b": 1.0 },
+                    "velocity": 1,
+                    "routes": {
+                        "route_3_inside": {
+                            "points": [
+                                { "x": -75.0, "y": 2.5, "z": 0.0 },
+                                { "x": -80.0, "y": 4.5, "z": -65.0 },
+                                { "x": -80.0, "y": 6.5, "z": -130.0 },
+                                { "x": -80.0, "y": 8.5, "z": -180.0 },
+                                { "x": -77.32, "y": 12.5, "z": -190.0 },
+                                { "x": -74.14, "y": 14.5, "z": -194.14 },
+                                { "x": -70.0, "y": 16.5, "z": -197.32 },
+                                { "x": -60.0, "y": 14.5, "z": -200.0 },
+                                { "x": 0.0, "y": 12.5, "z": -200.0 },
+                                { "x": 55.0, "y": 10.5, "z": -200.0 },
+                                { "x": 72.5, "y": 8.5, "z": -189.95 },
+                                { "x": 79.75, "y": 6.5, "z": -178.03 },
+                                { "x": 85.31, "y": 8.5, "z": -162.5 },
+                                { "x": 90.0, "y": 10.5, "z": -125.0 },
+                                { "x": 85.31, "y": 12.5, "z": -87.5 },
+                                { "x": 79.75, "y": 14.5, "z": -71.97 },
+                                { "x": 72.5, "y": 16.5, "z": -60.05 },
+                                { "x": 55.0, "y": 14.5, "z": -50.0 },
+                                { "x": 42.5, "y": 12.5, "z": -45.0 },
+                                { "x": 30.0, "y": 10.5, "z": -40.0 },
+                                { "x": 8.79, "y": 12.5, "z": -28.28 },
+                                { "x": 0.0, "y": 14.5, "z": 0.0 },
+                                { "x": 8.79, "y": 16.5, "z": 28.28 },
+                                { "x": 30.0, "y": 18.5, "z": 40.0 },
+                                { "x": 70.0, "y": 20.5, "z": 50.0 },
+                                { "x": 85.0, "y": 22.5, "z": 60.05 },
+                                { "x": 91.21, "y": 20.5, "z": 71.97 },
+                                { "x": 95.98, "y": 18.5, "z": 87.5 },
+                                { "x": 100.0, "y": 16.5, "z": 125.0 },
+                                { "x": 95.98, "y": 14.5, "z": 162.5 },
+                                { "x": 91.21, "y": 12.5, "z": 178.03 },
+                                { "x": 85.0, "y": 10.5, "z": 189.95 },
+                                { "x": 70.0, "y": 8.5, "z": 200.0 },
+                                { "x": 50.0, "y": 6.5, "z": 200.0 },
+                                { "x": 20.0, "y": 4.5, "z": 200.0 },
+                                { "x": 0.0, "y": 2.5, "z": 200.0 },
+                                { "x": -20.0, "y": 4.5, "z": 200.0 },
+                                { "x": -40.0, "y": 6.5, "z": 200.0 },
+                                { "x": -60.0, "y": 8.5, "z": 200.0 },
+                                { "x": -74.14, "y": 10.5, "z": 194.14 },
+                                { "x": -80.0, "y": 8.5, "z": 180.0 },
+                                { "x": -80.0, "y": 6.5, "z": 100.0 },
+                                { "x": -80.0, "y": 4.5, "z": 50.0 },
+                                { "x": -75.0, "y": 2.5, "z": 0.0 }
+                            ]
+                        },
+                        
+                        "route_3_outside": {
+                            "points": [
+                                { "x": -85.0, "y": 4.5, "z": -65.0 },
+                                { "x": -80.0, "y": 6.5, "z": -130.0 },
+                                { "x": -80.0, "y": 8.5, "z": -180.0 },
+                                { "x": -77.32, "y": 12.5, "z": -190.0 },
+                                { "x": -74.14, "y": 14.5, "z": -194.14 },
+                                { "x": -70.0, "y": 16.5, "z": -197.32 },
+                                { "x": -60.0, "y": 14.5, "z": -200.0 },
+                                { "x": 0.0, "y": 12.5, "z": -200.0 },
+                                { "x": 55.0, "y": 10.5, "z": -200.0 },
+                                { "x": 72.5, "y": 8.5, "z": -189.95 },
+                                { "x": 79.75, "y": 6.5, "z": -178.03 },
+                                { "x": 85.31, "y": 8.5, "z": -162.5 },
+                                { "x": 90.0, "y": 10.5, "z": -125.0 },
+                                { "x": 85.31, "y": 12.5, "z": -87.5 },
+                                { "x": 79.75, "y": 14.5, "z": -71.97 },
+                                { "x": 72.5, "y": 16.5, "z": -60.05 },
+                                { "x": 55.0, "y": 14.5, "z": -50.0 },
+                                { "x": 42.5, "y": 12.5, "z": -45.0 },
+                                { "x": 30.0, "y": 10.5, "z": -40.0 },
+                                { "x": 8.79, "y": 12.5, "z": -28.28 },
+                                { "x": 0.0, "y": 14.5, "z": 0.0 },
+                                { "x": 8.79, "y": 16.5, "z": 28.28 },
+                                { "x": 30.0, "y": 18.5, "z": 40.0 },
+                                { "x": 70.0, "y": 20.5, "z": 50.0 },
+                                { "x": 85.0, "y": 22.5, "z": 60.05 },
+                                { "x": 91.21, "y": 20.5, "z": 71.97 },
+                                { "x": 95.98, "y": 18.5, "z": 87.5 },
+                                { "x": 100.0, "y": 16.5, "z": 125.0 },
+                                { "x": 95.98, "y": 14.5, "z": 162.5 },
+                                { "x": 91.21, "y": 12.5, "z": 178.03 },
+                                { "x": 85.0, "y": 10.5, "z": 189.95 },
+                                { "x": 70.0, "y": 8.5, "z": 200.0 },
+                                { "x": 50.0, "y": 6.5, "z": 200.0 },
+                                { "x": 20.0, "y": 4.5, "z": 200.0 },
+                                { "x": 0.0, "y": 2.5, "z": 200.0 },
+                                { "x": -20.0, "y": 4.5, "z": 200.0 },
+                                { "x": -40.0, "y": 6.5, "z": 200.0 },
+                                { "x": -60.0, "y": 8.5, "z": 200.0 },
+                                { "x": -74.14, "y": 10.5, "z": 194.14 },
+                                { "x": -80.0, "y": 8.5, "z": 180.0 },
+                                { "x": -80.0, "y": 6.5, "z": 100.0 },
+                                { "x": -80.0, "y": 4.5, "z": 50.0 },
+                                { "x": -85.0, "y": 2.5, "z": 0.0 }
+                            ]
+                        }
+                    }
+                }
+            ]
+        }
+    }
+}
